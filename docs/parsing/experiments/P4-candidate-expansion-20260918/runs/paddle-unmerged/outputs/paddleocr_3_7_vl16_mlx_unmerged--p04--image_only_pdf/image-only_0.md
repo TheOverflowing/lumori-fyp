@@ -1,0 +1,23 @@
+<div style="text-align: center;">Fig. 3 Time course of the N₂O fluxes from the control (0N) and (NH₄)₂SO₄ (upper figure) and liquid fattening pig manure (traditional farming; lower figure) applied to soil at four application rates: 25 mg N kg⁻¹ (25N), 50 mg N kg⁻¹ (50N), 100 mg N kg⁻¹ (100N), 200 mg N kg⁻¹ (200N). At day 57 water was added (see Fig. 2)</div>
+
+
+<div style="text-align: center;"><img src="imgs/img_in_chart_box_430_99_1090_490.jpg" alt="Image" width="55%" /></div>
+
+
+<div style="text-align: center;"><img src="imgs/img_in_chart_box_430_508_1087_899.jpg" alt="Image" width="55%" /></div>
+
+
+<div style="text-align: center;">Table 4 Total  $ N_{2}O $ emission after application of  $ NH_{4}NO_{3} $ and liquid pig manure (traditional farming) with different application techniques. For each column, different letters indicate statistically</div>
+
+
+<div style="text-align: center;">significant differences ( $ \alpha=0.05 $) in log-transformed N $ _2 $O emission between treatments</div>
+
+
+
+<table border=1 style='margin: auto; word-wrap: break-word;'><tr><td rowspan="3">Application method</td><td colspan="6">$ N_{{2}}O $ emission</td></tr><tr><td colspan="4">(mg N kg $ ^{{-1}} $)</td><td colspan="2">(% of N applied)</td></tr><tr><td colspan="2">$ NH_{{4}}NO_{{3}} $</td><td colspan="2">Liquid pig manure</td><td style='text-align: center; word-wrap: break-word;'>$ NH_{{4}}NO_{{3}} $</td><td style='text-align: center; word-wrap: break-word;'>Liquid pig manure</td></tr><tr><td style='text-align: center; word-wrap: break-word;'>Homogeneously mixed into soil</td><td style='text-align: center; word-wrap: break-word;'>2.7</td><td style='text-align: center; word-wrap: break-word;'>b</td><td style='text-align: center; word-wrap: break-word;'>7.9</td><td style='text-align: center; word-wrap: break-word;'>b</td><td style='text-align: center; word-wrap: break-word;'>2.1</td><td style='text-align: center; word-wrap: break-word;'>7.3</td></tr><tr><td style='text-align: center; word-wrap: break-word;'>Surface applied</td><td style='text-align: center; word-wrap: break-word;'>1.5</td><td style='text-align: center; word-wrap: break-word;'>a</td><td style='text-align: center; word-wrap: break-word;'>5.5</td><td style='text-align: center; word-wrap: break-word;'>b</td><td style='text-align: center; word-wrap: break-word;'>0.9</td><td style='text-align: center; word-wrap: break-word;'>4.9</td></tr><tr><td style='text-align: center; word-wrap: break-word;'>Placed at 5 cm depth</td><td style='text-align: center; word-wrap: break-word;'>3.7</td><td style='text-align: center; word-wrap: break-word;'>c</td><td style='text-align: center; word-wrap: break-word;'>7.5</td><td style='text-align: center; word-wrap: break-word;'>b</td><td style='text-align: center; word-wrap: break-word;'>3.1</td><td style='text-align: center; word-wrap: break-word;'>6.9</td></tr><tr><td style='text-align: center; word-wrap: break-word;'>Placed at 10 cm depth</td><td style='text-align: center; word-wrap: break-word;'>4.6</td><td style='text-align: center; word-wrap: break-word;'>c</td><td style='text-align: center; word-wrap: break-word;'>4.0</td><td style='text-align: center; word-wrap: break-word;'>a</td><td style='text-align: center; word-wrap: break-word;'>4.0</td><td style='text-align: center; word-wrap: break-word;'>3.4</td></tr><tr><td style='text-align: center; word-wrap: break-word;'>Placed in a row at 5 cm depth</td><td style='text-align: center; word-wrap: break-word;'>4.9</td><td style='text-align: center; word-wrap: break-word;'>c</td><td style='text-align: center; word-wrap: break-word;'>12.9</td><td style='text-align: center; word-wrap: break-word;'>c</td><td style='text-align: center; word-wrap: break-word;'>4.3</td><td style='text-align: center; word-wrap: break-word;'>12.3</td></tr></table>
+
+## Discussion
+
+Application of manure and fertilizer increases the amount of mineral N in soil and leads to higher emission of  $ N_{2}O $. Most research so far provides emissions for animal manure as such without discriminating between a range of manure qualities that are found in agricultural practice. The results reported here suggest that  $ N_{2}O $ emission may
+
+be quite different depending on manure species and related quality and on manure management and handling. Most of these effects can be attributed to specific manure or fertilizer characteristics. Even though our results are from laboratory incubations using a soil with relatively low organic matter content and low pH, they may form the basis for designed testing and verification methods in field conditions and eventually lead to the formulation of

@@ -1,0 +1,17 @@
+<!-- image -->
+
+Line chart
+
+Table 4 Total N2O emission after application of NH4NO3 and significant differences (a=0.05) in log-transformed N2O emission between treatments
+
+| Application method            | N2O emission (% of N applied)   | N2O emission (% of N applied)   | N2O emission (% of N applied)   | N2O emission (% of N applied)   |
+|-------------------------------|---------------------------------|---------------------------------|---------------------------------|---------------------------------|
+|                               | (mg N kg-1)                     | Liquid pig manure               | NH4NO3                          | Liquid pig manure               |
+| NH4NO3                        | NH4NO3                          | NH4NO3                          | NH4NO3                          | NH4NO3                          |
+| Homogeneously mixed into soil | 2.7                             | b                               | 2.1                             | 7.3                             |
+| Surface applied               | 1.5                             | a                               | 0.9                             | 4.9                             |
+| Placed at 5 cm depth          | 3.7                             | c                               | 3.1                             | 6.9                             |
+| Placed at 10 cm depth         | 4.6                             | c                               | 4.0                             | 3.4                             |
+| Placed in a row at 5 cm depth | 4.9                             | c                               | 4.3                             | 12.3                            |
+
+be quite different depending on manure species and related quality and on manure management and handling. Most of these effects can be attributed to specific manure or fertilizer characteristics. Even though our results are from laboratory incubations using a soil with relatively from laboratory incubations using a soil with relatively low organic matter content and low pH, they may form low organic matter conditions and eventually lead to the formulation of field conditions and eventually lead to the formulation of

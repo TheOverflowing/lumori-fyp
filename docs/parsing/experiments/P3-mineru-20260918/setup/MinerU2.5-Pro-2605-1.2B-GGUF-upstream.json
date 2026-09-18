@@ -1,0 +1,59 @@
+{
+  "_id": "6a7d22baca55847b94803a58",
+  "id": "jinzhenj/MinerU2.5-Pro-2605-1.2B-GGUF",
+  "private": false,
+  "tags": [
+    "gguf",
+    "endpoints_compatible",
+    "region:us",
+    "conversational"
+  ],
+  "downloads": 510,
+  "likes": 0,
+  "modelId": "jinzhenj/MinerU2.5-Pro-2605-1.2B-GGUF",
+  "author": "jinzhenj",
+  "sha": "9185688a0495e1577d521a757c7c0b62dd38ca48",
+  "lastModified": "2026-08-13T06:12:43.000Z",
+  "gated": false,
+  "disabled": false,
+  "config": {},
+  "gguf": {
+    "total": 494032768,
+    "architecture": "qwen2vl",
+    "context_length": 8192,
+    "chat_template": "{% set image_count = namespace(value=0) %}{% set video_count = namespace(value=0) %}{% for message in messages %}{% if loop.first and message['role'] != 'system' %}<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n{% endif %}<|im_start|>{{ message['role'] }}\n{% if message['content'] is string %}{{ message['content'] }}<|im_end|>\n{% else %}{% for content in message['content'] %}{% if content['type'] == 'image' or 'image' in content or 'image_url' in content %}{% set image_count.value = image_count.value + 1 %}{% if add_vision_id %}Picture {{ image_count.value }}: {% endif %}<|vision_start|><|image_pad|><|vision_end|>{% elif content['type'] == 'video' or 'video' in content %}{% set video_count.value = video_count.value + 1 %}{% if add_vision_id %}Video {{ video_count.value }}: {% endif %}<|vision_start|><|video_pad|><|vision_end|>{% elif 'text' in content %}{{ content['text'] }}{% endif %}{% endfor %}<|im_end|>\n{% endif %}{% endfor %}{% if add_generation_prompt %}<|im_start|>assistant\n{% endif %}",
+    "bos_token": "<|endoftext|>",
+    "eos_token": "<|im_end|>",
+    "totalFileSize": 531066496
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "53d7257ace88cda1144353e6bbdd2fe8dba8b9a5",
+      "size": 2075
+    },
+    {
+      "rfilename": "MinerU2.5-Pro-2605-1.2B-Q8_0.gguf",
+      "blobId": "335a704fb67d9e72fb28464a619f9199fd0705ef",
+      "size": 531066496,
+      "lfs": {
+        "sha256": "3f3523429c880d675c0330cb3de78240452bc40a961d037e24f91ab8488f03e7",
+        "size": 531066496,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "mmproj-MinerU2.5-Pro-2605-1.2B-Q8_0.gguf",
+      "blobId": "e65844d5ca78c214856e0a2c9fb5ef5ca8122da2",
+      "size": 709409600,
+      "lfs": {
+        "sha256": "b6c08ab50352677f7396af45ee60682f353f55488e26911d8154bfc37514d3f8",
+        "size": 709409600,
+        "pointerSize": 134
+      }
+    }
+  ],
+  "spaces": [],
+  "createdAt": "2026-08-13T01:49:46.000Z",
+  "usedStorage": 1240476096
+}

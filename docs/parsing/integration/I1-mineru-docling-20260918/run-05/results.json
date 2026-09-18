@@ -1,0 +1,855 @@
+{
+  "scope": "Live integration smoke; not held-out accuracy or retrieval evaluation",
+  "source": "docs/parsing/benchmarks/omnidocbench-pilot-v1/samples/p06/image-only.pdf",
+  "sha256": "51e3ec81c78d94e73724169f8e9213695a6c1013913ae44f82b59df92972e3dd",
+  "image_analysis": false,
+  "stages": [
+    {
+      "stage": "mineru_standard",
+      "seconds": 17.063,
+      "pages": 1,
+      "characters": 2541,
+      "chunks": 3
+    },
+    {
+      "stage": "mineru_advanced",
+      "seconds": 28.748,
+      "pages": 1,
+      "characters": 2465,
+      "chunks": 3
+    },
+    {
+      "stage": "docling_vision_embedding",
+      "seconds": 16.077,
+      "result": {
+        "document_id": "5721cbca12f44e53a155f86c9c7f59cf",
+        "succeeded": 2,
+        "failed": 1,
+        "reused": 0,
+        "total": 3,
+        "figure_limit_reached": false,
+        "partial_failure": true,
+        "message": "部分图片处理失败，可在文字与原图页面重试。"
+      }
+    },
+    {
+      "stage": "text_index",
+      "result": {
+        "document_id": "5721cbca12f44e53a155f86c9c7f59cf",
+        "chunks": 3,
+        "reused": false,
+        "rechunked": false,
+        "chunking": {
+          "strategy": "recursive_token_v1",
+          "max_chars": 1200,
+          "overlap_chars": 0,
+          "max_tokens": 256,
+          "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+          "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+        }
+      }
+    },
+    {
+      "stage": "retrieval",
+      "sources": [
+        {
+          "id": "context_46ca1d731a93a6a54f651fcba94e3b88",
+          "document_id": "5721cbca12f44e53a155f86c9c7f59cf",
+          "document_name": "public-p06.pdf",
+          "page": 1,
+          "text": "The image is a two-panel educational figure labeled Fig. 4, titled 'PIV cameras and viewing direction (flow from above)'. The left panel is a photograph of PIV camera equipment mounted on a vertical support structure, likely inside a wind tunnel, with visible cabling and dark background walls. The right panel is a schematic diagram showing a circular cross-section with a bold black cross representing horizontal and vertical axes. A green arrow indicates the light sheet or viewing direction, annotated with a 30.65° angle relative to the vertical axis. A dashed line extends from the circle to a camera icon, annotated with a distance of 5.6 m. The diagram illustrates the camera viewing direction relative to the wind tunnel axis.\nPIV 相机 视角方向 风洞 光片 粒子图像测速 实验装置 示意图\nPIV cameras viewing direction wind tunnel light sheet particle image velocimetry experimental setup schematic\nFig. 4. PIV cameras and viewing direction (flow from above)\n30.65°\n5.6m\nThe left photograph shows the physical PIV camera setup, which corresponds to the schematic on the right.\nThe green arrow in the schematic represents the light sheet or viewing direction.\nThe angle 30.65° is measured between the green arrow and the vertical axis of the circular cross-section.\nThe dashed line with distance 5.6 m connects the camera icon to the measurement region.",
+          "metadata": {
+            "source_kind": "figure",
+            "source_asset_ids": [
+              "figure-e55c0c9e64d7f94a1c8d3e236a7abb4b"
+            ],
+            "bbox": [
+              0.07656032127021943,
+              0.7864433463293178,
+              0.6031696396386064,
+              0.9386986497097646
+            ],
+            "extraction_method": "model_image_description",
+            "extraction_status": "needs_review",
+            "extraction_warnings": [
+              "model_description_not_original_text"
+            ],
+            "original_caption": "Fig. 4. PIV cameras and viewing direction (flow from above)",
+            "annotation": {
+              "data": {
+                "description": "The image is a two-panel educational figure labeled Fig. 4, titled 'PIV cameras and viewing direction (flow from above)'. The left panel is a photograph of PIV camera equipment mounted on a vertical support structure, likely inside a wind tunnel, with visible cabling and dark background walls. The right panel is a schematic diagram showing a circular cross-section with a bold black cross representing horizontal and vertical axes. A green arrow indicates the light sheet or viewing direction, annotated with a 30.65° angle relative to the vertical axis. A dashed line extends from the circle to a camera icon, annotated with a distance of 5.6 m. The diagram illustrates the camera viewing direction relative to the wind tunnel axis.",
+                "keywords_zh": [
+                  "PIV",
+                  "相机",
+                  "视角方向",
+                  "风洞",
+                  "光片",
+                  "粒子图像测速",
+                  "实验装置",
+                  "示意图"
+                ],
+                "keywords_en": [
+                  "PIV",
+                  "cameras",
+                  "viewing direction",
+                  "wind tunnel",
+                  "light sheet",
+                  "particle image velocimetry",
+                  "experimental setup",
+                  "schematic"
+                ],
+                "visible_text": "Fig. 4. PIV cameras and viewing direction (flow from above)\n30.65°\n5.6m",
+                "relationships": [
+                  "The left photograph shows the physical PIV camera setup, which corresponds to the schematic on the right.",
+                  "The green arrow in the schematic represents the light sheet or viewing direction.",
+                  "The angle 30.65° is measured between the green arrow and the vertical axis of the circular cross-section.",
+                  "The dashed line with distance 5.6 m connects the camera icon to the measurement region."
+                ],
+                "uncertainties": [
+                  "The exact identity of the camera model is not visible.",
+                  "The precise location of the 30.65° angle vertex is slightly ambiguous due to the schematic representation.",
+                  "The scale and orientation of the photograph relative to the schematic are not specified."
+                ]
+              },
+              "model": "deepseek-flash",
+              "endpoint_signature": "83b11c7b63af3acbbf3c",
+              "prompt_version": "figure-semantics-v2",
+              "origin": "model",
+              "verified": false
+            },
+            "heading_path": [],
+            "coordinate_basis": "image_description",
+            "page_char_start": 0,
+            "page_char_end": 1333,
+            "coordinate_system": "image_description_chars_v1",
+            "context_expansion": "none",
+            "retrieved_chunk_ids": [
+              "figure_ab7a1fee05708fb7897af6a2018ddd3d"
+            ]
+          },
+          "score": 0.31703315561771955,
+          "retrieval": {
+            "version": "retrieval-v2",
+            "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+            "strategy": "hybrid_dense_lexical_v1",
+            "effective_strategy": "hybrid_dense_lexical_v1",
+            "fallback_reason": null,
+            "dense_score": 0.31703315561771955,
+            "lexical_score": 2.291033040020427,
+            "dense_rank": 1,
+            "lexical_rank": 1,
+            "fusion_score": null,
+            "selection_rank": 1,
+            "selection_score": 0.36703315561771954,
+            "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+            "mmr_relevance": null,
+            "mmr_redundancy": null,
+            "normalized_lexical_score": 1.0,
+            "lexical_bonus": 0.05,
+            "rerank_score": 0.53125
+          }
+        },
+        {
+          "id": "context_e57963c0348b8b13422d58b83e9f378a",
+          "document_id": "5721cbca12f44e53a155f86c9c7f59cf",
+          "document_name": "public-p06.pdf",
+          "page": 1,
+          "text": "The figure is a composite of two black-and-white photographs illustrating flow seeding, corresponding to the caption about seed particle distribution in the settling chamber and test section. The left panel shows the interior of a wind tunnel settling chamber, featuring a rectangular distribution rake made of a grid of horizontal and vertical pipes. A seed stream is visible emanating from the rake, appearing as a bright, hazy plume in the lower right of this panel. Several dark, thin lines cross the view diagonally, likely support wires or cables. The right panel shows a close-up of the seeded flow field in the test section. The image is covered with a speckled pattern of bright seed particles on a dark background. In the center, there is a distinctly darker, circular region with a lower density of seed particles. A white arrow points from the lower left toward this dark region. At the bottom of the right panel, the text 'Tip vortex' is visible in white.\n粒子图像测速 种子粒子 风洞 沉降室 试验段 布撒耙 梢涡 流场显示 示踪粒子 DEHS\nPIV seed particles wind tunnel settling chamber test section distribution rake tip vortex flow visualization tracer particles DEHS\nTip vortex\nThe left panel depicts the distribution rake in the settling chamber.\nThe right panel shows the seed particle distribution in the test section.\nThe white arrow in the right panel points to a dark region labeled 'Tip vortex'.\nThe left and right panels are presented side-by-side to compare the seeding setup and the resulting flow field.",
+          "metadata": {
+            "source_kind": "figure",
+            "source_asset_ids": [
+              "figure-519b1e6c2442b91dd0812842a79fa82e"
+            ],
+            "bbox": [
+              0.07720664363579462,
+              0.5622799317648696,
+              0.6037115826702758,
+              0.7537095552789043
+            ],
+            "extraction_method": "model_image_description",
+            "extraction_status": "needs_review",
+            "extraction_warnings": [
+              "model_description_not_original_text"
+            ],
+            "original_caption": "Fig. 3. The distribution of seed particles in the settling chamber and in the test section",
+            "annotation": {
+              "data": {
+                "description": "The figure is a composite of two black-and-white photographs illustrating flow seeding, corresponding to the caption about seed particle distribution in the settling chamber and test section. The left panel shows the interior of a wind tunnel settling chamber, featuring a rectangular distribution rake made of a grid of horizontal and vertical pipes. A seed stream is visible emanating from the rake, appearing as a bright, hazy plume in the lower right of this panel. Several dark, thin lines cross the view diagonally, likely support wires or cables. The right panel shows a close-up of the seeded flow field in the test section. The image is covered with a speckled pattern of bright seed particles on a dark background. In the center, there is a distinctly darker, circular region with a lower density of seed particles. A white arrow points from the lower left toward this dark region. At the bottom of the right panel, the text 'Tip vortex' is visible in white.",
+                "keywords_zh": [
+                  "粒子图像测速",
+                  "种子粒子",
+                  "风洞",
+                  "沉降室",
+                  "试验段",
+                  "布撒耙",
+                  "梢涡",
+                  "流场显示",
+                  "示踪粒子",
+                  "DEHS"
+                ],
+                "keywords_en": [
+                  "PIV",
+                  "seed particles",
+                  "wind tunnel",
+                  "settling chamber",
+                  "test section",
+                  "distribution rake",
+                  "tip vortex",
+                  "flow visualization",
+                  "tracer particles",
+                  "DEHS"
+                ],
+                "visible_text": "Tip vortex",
+                "relationships": [
+                  "The left panel depicts the distribution rake in the settling chamber.",
+                  "The right panel shows the seed particle distribution in the test section.",
+                  "The white arrow in the right panel points to a dark region labeled 'Tip vortex'.",
+                  "The left and right panels are presented side-by-side to compare the seeding setup and the resulting flow field."
+                ],
+                "uncertainties": [
+                  "The exact dimensions or scale of the objects in the images are not provided.",
+                  "The specific type of wind tunnel or facility is not identifiable from the image alone.",
+                  "The dark diagonal lines in the left panel could be support structures or wires, but their exact nature is not confirmed."
+                ]
+              },
+              "model": "deepseek-flash",
+              "endpoint_signature": "83b11c7b63af3acbbf3c",
+              "prompt_version": "figure-semantics-v2",
+              "origin": "model",
+              "verified": false
+            },
+            "heading_path": [],
+            "coordinate_basis": "image_description",
+            "page_char_start": 0,
+            "page_char_end": 1492,
+            "coordinate_system": "image_description_chars_v1",
+            "context_expansion": "none",
+            "retrieved_chunk_ids": [
+              "figure_0bc55e597a6d1d0efbf9e451bd5b1673"
+            ]
+          },
+          "score": 0.2495506232741297,
+          "retrieval": {
+            "version": "retrieval-v2",
+            "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+            "strategy": "hybrid_dense_lexical_v1",
+            "effective_strategy": "hybrid_dense_lexical_v1",
+            "fallback_reason": null,
+            "dense_score": 0.2495506232741297,
+            "lexical_score": 1.2161731600631203,
+            "dense_rank": 2,
+            "lexical_rank": 3,
+            "fusion_score": null,
+            "selection_rank": 2,
+            "selection_score": 0.27609264905068237,
+            "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+            "mmr_relevance": null,
+            "mmr_redundancy": null,
+            "normalized_lexical_score": 0.5308405155310535,
+            "lexical_bonus": 0.026542025776552677,
+            "rerank_score": 0.46875
+          }
+        },
+        {
+          "id": "context_76d6f59282e512ff9b2b755d4fab9c8b",
+          "document_id": "5721cbca12f44e53a155f86c9c7f59cf",
+          "document_name": "public-p06.pdf",
+          "page": 1,
+          "text": "Fig. 2. Diagram of trigger system for rotor-laser synchronization\nTable 1. Example solution for rotor-laser synchronizationRotor Laser flash lamps Rotor frequency/flash lamp rate Camera and q-switch 1,041 RPM~17.35 Hz 9.914 Hz m/n=7/4 2.479 Hz\nconstant rotor frequency, a very accurate and stable phase shift could be achieved.\n3\nFlow seeding\nDi-ethyl-hexyl-sebacat (DEHS) atomized by Laskin nozzle particle generators was used to seed the flow. The particles were pumped through a distribution rake mounted in the settling chamber of the wind tunnel. The rake was remotely traversed to guide the homogeneous seed stream to the region of interest. The DEHS droplets generated and distributed by this arrangement have a mean diameter below 1\\mu \\mathrm{m} as confirmed by previous tests. The rake and the resulting particle distribution during testing can be seen in Fig. 3. Although seed particles are visible inside the tip vortex, the seeding density is noticeably lower than in the remainder of the flow field.",
+          "metadata": {
+            "heading_path": [],
+            "keywords": [
+              "Flow",
+              "seed",
+              "rake",
+              "Fig",
+              "rotor-laser",
+              "Rotor",
+              "seeding",
+              "DEHS"
+            ],
+            "token_count": 235,
+            "token_limit": 256,
+            "protected_block_split": false,
+            "section_start": 0,
+            "section_end": 2465,
+            "chunk_strategy": "recursive_token_v1_no_overlap",
+            "chunking_version": "recursive_token_v1",
+            "chunking_config": {
+              "strategy": "recursive_token_v1",
+              "max_chars": 1200,
+              "overlap_chars": 0,
+              "max_tokens": 256,
+              "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+              "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+            },
+            "chunk_index": 0,
+            "page_char_start": 0,
+            "page_char_end": 1013,
+            "source_page_sha256": "26817a8bf07a4dccb9582ea26fbd9615981800d5450a1f6ae628f7a0035f2cab",
+            "coordinate_system": "parsed_page_python_chars_v1",
+            "language": "en",
+            "split_reason": "recursive_token_budget",
+            "protected_block_types": [],
+            "source_format": ".pdf",
+            "source_document_sha256": "51e3ec81c78d94e73724169f8e9213695a6c1013913ae44f82b59df92972e3dd",
+            "parser_version": "local-document-parser-v1",
+            "extraction_method": "mineru_advanced",
+            "extraction_status": "good",
+            "extraction_warnings": [],
+            "source_asset_ids": [],
+            "coordinate_basis": "extracted_page_text",
+            "ocr_accuracy_verified": false,
+            "context_expansion": "none",
+            "retrieved_chunk_ids": [
+              "7c609639351d147817987de41f495d11"
+            ]
+          },
+          "score": 0.14875893224754086,
+          "retrieval": {
+            "version": "retrieval-v2",
+            "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+            "strategy": "hybrid_dense_lexical_v1",
+            "effective_strategy": "hybrid_dense_lexical_v1",
+            "fallback_reason": null,
+            "dense_score": 0.14875893224754086,
+            "lexical_score": 1.3786630416071899,
+            "dense_rank": 4,
+            "lexical_rank": 2,
+            "fusion_score": null,
+            "selection_rank": 4,
+            "selection_score": 0.1788471723017938,
+            "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+            "mmr_relevance": null,
+            "mmr_redundancy": null,
+            "normalized_lexical_score": 0.6017648010850588,
+            "lexical_bonus": 0.03008824005425294,
+            "rerank_score": 0.1484375
+          }
+        },
+        {
+          "id": "context_31efa188dc364ecbc86cc7c1ad42c889",
+          "document_id": "5721cbca12f44e53a155f86c9c7f59cf",
+          "document_name": "public-p06.pdf",
+          "page": 1,
+          "text": "4) in order to move the cameras parallel to the light sheet in an up and down direction (along the z axis). The common support itself allows for positioning the camera view along three axes (Fig. 5), two lateral axes (x and y) and one rotation\nFig. 3. The distribution of seed particles in the settling chamber and in the test section\nFig. 4. PIV cameras and viewing direction (flow from above)\n148",
+          "metadata": {
+            "heading_path": [],
+            "keywords": [
+              "Fig",
+              "cameras",
+              "direction",
+              "along",
+              "axes",
+              "order",
+              "move",
+              "parallel"
+            ],
+            "token_count": 95,
+            "token_limit": 256,
+            "protected_block_split": false,
+            "section_start": 0,
+            "section_end": 2465,
+            "chunk_strategy": "recursive_token_v1_no_overlap",
+            "chunking_version": "recursive_token_v1",
+            "chunking_config": {
+              "strategy": "recursive_token_v1",
+              "max_chars": 1200,
+              "overlap_chars": 0,
+              "max_tokens": 256,
+              "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+              "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+            },
+            "chunk_index": 2,
+            "page_char_start": 2067,
+            "page_char_end": 2465,
+            "source_page_sha256": "26817a8bf07a4dccb9582ea26fbd9615981800d5450a1f6ae628f7a0035f2cab",
+            "coordinate_system": "parsed_page_python_chars_v1",
+            "language": "en",
+            "split_reason": "recursive_token_budget",
+            "protected_block_types": [],
+            "source_format": ".pdf",
+            "source_document_sha256": "51e3ec81c78d94e73724169f8e9213695a6c1013913ae44f82b59df92972e3dd",
+            "parser_version": "local-document-parser-v1",
+            "extraction_method": "mineru_advanced",
+            "extraction_status": "good",
+            "extraction_warnings": [],
+            "source_asset_ids": [],
+            "coordinate_basis": "extracted_page_text",
+            "ocr_accuracy_verified": false,
+            "context_expansion": "none",
+            "retrieved_chunk_ids": [
+              "b39aeb0bf14133d81d258523a3b50079"
+            ]
+          },
+          "score": 0.20018571238584482,
+          "retrieval": {
+            "version": "retrieval-v2",
+            "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+            "strategy": "hybrid_dense_lexical_v1",
+            "effective_strategy": "hybrid_dense_lexical_v1",
+            "fallback_reason": null,
+            "dense_score": 0.20018571238584482,
+            "lexical_score": 0.5133557384578196,
+            "dense_rank": 3,
+            "lexical_rank": 4,
+            "fusion_score": null,
+            "selection_rank": 3,
+            "selection_score": 0.2113892989227994,
+            "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+            "mmr_relevance": null,
+            "mmr_redundancy": null,
+            "normalized_lexical_score": 0.2240717307390916,
+            "lexical_bonus": 0.01120358653695458,
+            "rerank_score": 0.010986328125
+          }
+        }
+      ],
+      "trace": {
+        "configuration": {
+          "version": "retrieval-v2",
+          "strategy": "hybrid_dense_lexical_v1",
+          "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+          "top_k": 5,
+          "candidate_k": 20,
+          "rrf_k": 60,
+          "mmr_lambda": 0.7,
+          "bm25_k1": 1.2,
+          "bm25_b": 0.75,
+          "query_term_frequency": "binary",
+          "candidate_pool": "top_candidate_k_per_route_then_top_candidate_k_fused_for_mmr",
+          "mmr_relevance": "rrf_score_divided_by_max_candidate_rrf_score",
+          "mmr_redundancy": "maximum_nonnegative_cosine_to_already_selected_chunks",
+          "dense_lexical_bonus_cap": 0.05,
+          "dense_lexical_score": "cosine_plus_capped_max_normalized_bm25",
+          "tie_break": "input_order",
+          "no_lexical_matches": "dense_fallback_for_hybrid_empty_for_bm25",
+          "score_semantics": "original_query_chunk_cosine",
+          "document_encoding": "title_path_v1",
+          "query_encoding": "cs_instruction_v1",
+          "context_tokens": 1024,
+          "expansion": "none",
+          "context_tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d",
+          "context_budget_unit": "qwen_source_serialization_tokens_v1",
+          "reranker_model": "qwen/qwen3-reranker-8b",
+          "reranker_signature": "ea51c5866aec287fbb13"
+        },
+        "query": "Describe the figure and the relationships shown in the diagram",
+        "query_encoding": "cs_instruction_v1",
+        "candidate_count": 5,
+        "selected_count": 4,
+        "corpus_sha256": "e58b04485fa38600184ced243ddfea61ea0e360a1c49641b42bfe5f4d7a2c1b2",
+        "query_vector_sha256": "f05f7139e6d4a4105a71f53ef3f79bbd9ab8c5471b6e609ccc87755fa4d19569",
+        "selected": [
+          {
+            "id": "context_46ca1d731a93a6a54f651fcba94e3b88",
+            "score": 0.31703315561771955,
+            "retrieval": {
+              "version": "retrieval-v2",
+              "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+              "strategy": "hybrid_dense_lexical_v1",
+              "effective_strategy": "hybrid_dense_lexical_v1",
+              "fallback_reason": null,
+              "dense_score": 0.31703315561771955,
+              "lexical_score": 2.291033040020427,
+              "dense_rank": 1,
+              "lexical_rank": 1,
+              "fusion_score": null,
+              "selection_rank": 1,
+              "selection_score": 0.36703315561771954,
+              "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+              "mmr_relevance": null,
+              "mmr_redundancy": null,
+              "normalized_lexical_score": 1.0,
+              "lexical_bonus": 0.05,
+              "rerank_score": 0.53125
+            }
+          },
+          {
+            "id": "context_e57963c0348b8b13422d58b83e9f378a",
+            "score": 0.2495506232741297,
+            "retrieval": {
+              "version": "retrieval-v2",
+              "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+              "strategy": "hybrid_dense_lexical_v1",
+              "effective_strategy": "hybrid_dense_lexical_v1",
+              "fallback_reason": null,
+              "dense_score": 0.2495506232741297,
+              "lexical_score": 1.2161731600631203,
+              "dense_rank": 2,
+              "lexical_rank": 3,
+              "fusion_score": null,
+              "selection_rank": 2,
+              "selection_score": 0.27609264905068237,
+              "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+              "mmr_relevance": null,
+              "mmr_redundancy": null,
+              "normalized_lexical_score": 0.5308405155310535,
+              "lexical_bonus": 0.026542025776552677,
+              "rerank_score": 0.46875
+            }
+          },
+          {
+            "id": "context_76d6f59282e512ff9b2b755d4fab9c8b",
+            "score": 0.14875893224754086,
+            "retrieval": {
+              "version": "retrieval-v2",
+              "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+              "strategy": "hybrid_dense_lexical_v1",
+              "effective_strategy": "hybrid_dense_lexical_v1",
+              "fallback_reason": null,
+              "dense_score": 0.14875893224754086,
+              "lexical_score": 1.3786630416071899,
+              "dense_rank": 4,
+              "lexical_rank": 2,
+              "fusion_score": null,
+              "selection_rank": 4,
+              "selection_score": 0.1788471723017938,
+              "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+              "mmr_relevance": null,
+              "mmr_redundancy": null,
+              "normalized_lexical_score": 0.6017648010850588,
+              "lexical_bonus": 0.03008824005425294,
+              "rerank_score": 0.1484375
+            }
+          },
+          {
+            "id": "context_31efa188dc364ecbc86cc7c1ad42c889",
+            "score": 0.20018571238584482,
+            "retrieval": {
+              "version": "retrieval-v2",
+              "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+              "strategy": "hybrid_dense_lexical_v1",
+              "effective_strategy": "hybrid_dense_lexical_v1",
+              "fallback_reason": null,
+              "dense_score": 0.20018571238584482,
+              "lexical_score": 0.5133557384578196,
+              "dense_rank": 3,
+              "lexical_rank": 4,
+              "fusion_score": null,
+              "selection_rank": 3,
+              "selection_score": 0.2113892989227994,
+              "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+              "mmr_relevance": null,
+              "mmr_redundancy": null,
+              "normalized_lexical_score": 0.2240717307390916,
+              "lexical_bonus": 0.01120358653695458,
+              "rerank_score": 0.010986328125
+            }
+          }
+        ],
+        "timing_ms": {
+          "embedding": 28427.516,
+          "ranking": 9.105,
+          "total": 29945.512,
+          "rerank": 1448.941
+        },
+        "limitation": "Ranking scores are not calibrated evidence sufficiency or factual correctness probabilities.",
+        "context_tokens": 950,
+        "retrieved_leaves": [
+          {
+            "id": "figure_ab7a1fee05708fb7897af6a2018ddd3d",
+            "score": 0.31703315561771955,
+            "retrieval": {
+              "version": "retrieval-v2",
+              "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+              "strategy": "hybrid_dense_lexical_v1",
+              "effective_strategy": "hybrid_dense_lexical_v1",
+              "fallback_reason": null,
+              "dense_score": 0.31703315561771955,
+              "lexical_score": 2.291033040020427,
+              "dense_rank": 1,
+              "lexical_rank": 1,
+              "fusion_score": null,
+              "selection_rank": 1,
+              "selection_score": 0.36703315561771954,
+              "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+              "mmr_relevance": null,
+              "mmr_redundancy": null,
+              "normalized_lexical_score": 1.0,
+              "lexical_bonus": 0.05,
+              "rerank_score": 0.53125
+            }
+          },
+          {
+            "id": "figure_0bc55e597a6d1d0efbf9e451bd5b1673",
+            "score": 0.2495506232741297,
+            "retrieval": {
+              "version": "retrieval-v2",
+              "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+              "strategy": "hybrid_dense_lexical_v1",
+              "effective_strategy": "hybrid_dense_lexical_v1",
+              "fallback_reason": null,
+              "dense_score": 0.2495506232741297,
+              "lexical_score": 1.2161731600631203,
+              "dense_rank": 2,
+              "lexical_rank": 3,
+              "fusion_score": null,
+              "selection_rank": 2,
+              "selection_score": 0.27609264905068237,
+              "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+              "mmr_relevance": null,
+              "mmr_redundancy": null,
+              "normalized_lexical_score": 0.5308405155310535,
+              "lexical_bonus": 0.026542025776552677,
+              "rerank_score": 0.46875
+            }
+          },
+          {
+            "id": "7c609639351d147817987de41f495d11",
+            "score": 0.14875893224754086,
+            "retrieval": {
+              "version": "retrieval-v2",
+              "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+              "strategy": "hybrid_dense_lexical_v1",
+              "effective_strategy": "hybrid_dense_lexical_v1",
+              "fallback_reason": null,
+              "dense_score": 0.14875893224754086,
+              "lexical_score": 1.3786630416071899,
+              "dense_rank": 4,
+              "lexical_rank": 2,
+              "fusion_score": null,
+              "selection_rank": 4,
+              "selection_score": 0.1788471723017938,
+              "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+              "mmr_relevance": null,
+              "mmr_redundancy": null,
+              "normalized_lexical_score": 0.6017648010850588,
+              "lexical_bonus": 0.03008824005425294,
+              "rerank_score": 0.1484375
+            }
+          },
+          {
+            "id": "b39aeb0bf14133d81d258523a3b50079",
+            "score": 0.20018571238584482,
+            "retrieval": {
+              "version": "retrieval-v2",
+              "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+              "strategy": "hybrid_dense_lexical_v1",
+              "effective_strategy": "hybrid_dense_lexical_v1",
+              "fallback_reason": null,
+              "dense_score": 0.20018571238584482,
+              "lexical_score": 0.5133557384578196,
+              "dense_rank": 3,
+              "lexical_rank": 4,
+              "fusion_score": null,
+              "selection_rank": 3,
+              "selection_score": 0.2113892989227994,
+              "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+              "mmr_relevance": null,
+              "mmr_redundancy": null,
+              "normalized_lexical_score": 0.2240717307390916,
+              "lexical_bonus": 0.01120358653695458,
+              "rerank_score": 0.010986328125
+            }
+          },
+          {
+            "id": "249bb94bdbff4402a6a3f698a688e48f",
+            "score": 0.1457993764231926,
+            "retrieval": {
+              "version": "retrieval-v2",
+              "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+              "strategy": "hybrid_dense_lexical_v1",
+              "effective_strategy": "hybrid_dense_lexical_v1",
+              "fallback_reason": null,
+              "dense_score": 0.1457993764231926,
+              "lexical_score": 0.4648039093194727,
+              "dense_rank": 5,
+              "lexical_rank": 5,
+              "fusion_score": null,
+              "selection_rank": 5,
+              "selection_score": 0.15594335735232245,
+              "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+              "mmr_relevance": null,
+              "mmr_redundancy": null,
+              "normalized_lexical_score": 0.20287961858259732,
+              "lexical_bonus": 0.010143980929129867,
+              "rerank_score": 0.001983642578125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "stage": "cached_retry",
+      "new_api_calls": 2,
+      "result": {
+        "document_id": "5721cbca12f44e53a155f86c9c7f59cf",
+        "succeeded": 1,
+        "failed": 0,
+        "reused": 2,
+        "total": 3,
+        "figure_limit_reached": false,
+        "partial_failure": false,
+        "message": "图片处理完成。"
+      }
+    }
+  ],
+  "calls": [
+    {
+      "capability": "vision",
+      "model": "deepseek-flash",
+      "status": "failed",
+      "usage": {
+        "prompt_tokens": 1123,
+        "completion_tokens": 374,
+        "total_tokens": 1497,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 995
+      },
+      "duration_ms": 1945,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    },
+    {
+      "capability": "vision",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 1133,
+        "completion_tokens": 432,
+        "total_tokens": 1565,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 1005
+      },
+      "duration_ms": 2674,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    },
+    {
+      "capability": "embedding",
+      "model": "qwen/qwen3-embedding-8b",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 324,
+        "total_tokens": 324,
+        "cost": 3.24e-06,
+        "cost_details": {
+          "upstream_inference_cost": 3.24e-06
+        }
+      },
+      "duration_ms": 2389,
+      "http_status": 200,
+      "response_model": "Qwen/Qwen3-Embedding-8B"
+    },
+    {
+      "capability": "vision",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 1125,
+        "completion_tokens": 404,
+        "total_tokens": 1529,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 997
+      },
+      "duration_ms": 2196,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    },
+    {
+      "capability": "embedding",
+      "model": "qwen/qwen3-embedding-8b",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 308,
+        "total_tokens": 308,
+        "cost": 3.08e-06,
+        "cost_details": {
+          "upstream_inference_cost": 3.08e-06
+        }
+      },
+      "duration_ms": 1229,
+      "http_status": 200,
+      "response_model": "Qwen/Qwen3-Embedding-8B"
+    },
+    {
+      "capability": "embedding",
+      "model": "qwen/qwen3-embedding-8b",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 585,
+        "total_tokens": 585,
+        "cost": 5.85e-06,
+        "cost_details": {
+          "upstream_inference_cost": 5.85e-06
+        }
+      },
+      "duration_ms": 20515,
+      "http_status": 200,
+      "response_model": "Qwen/Qwen3-Embedding-8B"
+    },
+    {
+      "capability": "embedding",
+      "model": "qwen/qwen3-embedding-8b",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 33,
+        "total_tokens": 33,
+        "cost": 3.3e-07,
+        "cost_details": {
+          "upstream_inference_cost": 3.3e-07
+        }
+      },
+      "duration_ms": 28424,
+      "http_status": 200,
+      "response_model": "Qwen/Qwen3-Embedding-8B"
+    },
+    {
+      "capability": "rerank",
+      "model": "qwen/qwen3-reranker-8b",
+      "status": "succeeded",
+      "usage": {
+        "total_tokens": 1627,
+        "cost": 0.0003254
+      },
+      "duration_ms": 1444,
+      "http_status": 200,
+      "response_model": "accounts/fireworks/models/qwen3-reranker-8b"
+    },
+    {
+      "capability": "vision",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 1123,
+        "completion_tokens": 429,
+        "total_tokens": 1552,
+        "prompt_tokens_details": {
+          "cached_tokens": 896
+        },
+        "prompt_cache_hit_tokens": 896,
+        "prompt_cache_miss_tokens": 227
+      },
+      "duration_ms": 2325,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    },
+    {
+      "capability": "embedding",
+      "model": "qwen/qwen3-embedding-8b",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 339,
+        "total_tokens": 339,
+        "cost": 3.39e-06,
+        "cost_details": {
+          "upstream_inference_cost": 3.39e-06
+        }
+      },
+      "duration_ms": 11999,
+      "http_status": 200,
+      "response_model": "Qwen/Qwen3-Embedding-8B"
+    }
+  ],
+  "completed": true
+}

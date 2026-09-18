@@ -1,0 +1,263 @@
+{
+  "schema_version": "ca1-job-evidence-v1",
+  "exported_at": "2026-09-12T03:56:58.576240+00:00",
+  "job": {
+    "id": "e04b9f70975740139b3a2990882b37ac",
+    "kind": "generate",
+    "status": "failed",
+    "result": null,
+    "error": "生成的题目数量与请求不一致。",
+    "created_at": "2026-09-12T03:56:47.509089+00:00",
+    "updated_at": "2026-09-12T03:56:58.572532+00:00"
+  },
+  "evidence": {
+    "request": {
+      "course_id": "153a227bbb534f67a90145e4c214dc3f",
+      "topic": "Explain RAG ingestion and retrieval, including how passages become vectors and how a learning objective selects evidence.",
+      "material": "lesson",
+      "difficulty": "easy",
+      "question_type": "short_answer",
+      "count": 1,
+      "language": "en",
+      "document_ids": [
+        "b244486ed0484634bf908cd19acdde2d"
+      ]
+    },
+    "prompt_version": "education-v1",
+    "sources": [
+      {
+        "id": "842e225da79e4e7da90d953cbcc4c4b5",
+        "document_id": "b244486ed0484634bf908cd19acdde2d",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "# CA1 demonstration course: evidence, retrieval, and reviewed learning materials\n\nThis is self-authored synthetic teaching material for a software demonstration. It is not an official course handout, a research result, or a benchmark of any model. Its examples deliberately separate evidence from claims about quality. The notes contain several topics so that the application must select a subset of passages for a request. A successful demonstration does not establish accuracy for real students.\n\n## RAG ingestion and retrieval\n\nRAG ingestion begins with extracting text from an allowed document. The application divides the text into passages and stores each passage with an identifier, document name, and page reference. An embedding service maps passage text to a numeric vector. The passage vector and its source metadata belong together: a vector without its text cannot supply a reader with inspectable evidence. A small overlap between neighboring passages can preserve context at a boundary, although overlap also creates repeated text.",
+        "score": 0.8326450339266103
+      },
+      {
+        "id": "b8d1c525d5a74f3d907600b3ab25679d",
+        "document_id": "b244486ed0484634bf908cd19acdde2d",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "l evidence; it does not update the language model's parameters and does not itself prove the final explanation correct.\n\nFor a RAG ingestion example, imagine a document with eight passages and a retrieval limit of three. A request about citations should rank citation passages ahead of unrelated interface notes. The evidence record should preserve the actual ranked passages and similarity scores. A score measures the comparison used by this retrieval configuration; it is not a calibrated probability that the answer is correct. If every passage is returned, the run demonstrates context supply but does not demonstrate selective ranking. A human still checks whether the selected passages cover the requested objective.\n\n## Citation support and evidence boundaries",
+        "score": 0.7030847884590223
+      },
+      {
+        "id": "a3bb2fdd8752421a8ea9593de052ccb5",
+        "document_id": "b244486ed0484634bf908cd19acdde2d",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "l overlap between neighboring passages can preserve context at a boundary, although overlap also creates repeated text.\n\nAt request time, the application embeds the learning objective using a compatible embedding configuration. It compares the query vector with stored passage vectors and ranks the candidates by similarity. The selected passages accompany the objective in a text-generation request. The generator should use those passages to explain a covered concept or write an answerable exercise. Retrieval supplies external evidence; it does not update the language model's parameters and does not itself prove the final explanation correct.",
+        "score": 0.6998016695686421
+      },
+      {
+        "id": "d14b60c9729e4fc08d980b82032db14b",
+        "document_id": "b244486ed0484634bf908cd19acdde2d",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": ". An automated draft must not be described as human-approved merely because its citation identifiers passed validation.\n\nAn evidence boundary is crossed when a requested conclusion cannot be derived from the supplied material. Suppose a learner asks for a clinical treatment dosage while the course notes only explain retrieval systems. The notes provide no clinical evidence. The appropriate response is to report insufficient evidence and avoid inventing a dosage or an exercise that presents one as correct. The generator may explain that the relevant source material is missing. A provider outage or malformed response is an operational failure, not a successful refusal based on evidence.\n\n## Embedding compatibility and index versions\n\nEmbedding compatibility concerns the relationship between stored document vectors and a new query vector. Vectors must have the same dimension before their coordinates can be compared. Matching dimensions alone are insufficient: two models can use different semantic spaces while producing the same number of coordinates. A query from one space must not be assumed compatible with passages embedded by another model.",
+        "score": 0.5699309953979335
+      },
+      {
+        "id": "8652cf4f1cb542c0a739c7b3788b3f4a",
+        "document_id": "b244486ed0484634bf908cd19acdde2d",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "aterial. A useful failure message explains why reindexing is needed instead of silently comparing incompatible vectors.\n\nEmbedding compatibility and a reviewed text version are different concerns. Reindexing changes the vectors used by future retrieval. It does not retrospectively repair or approve an already generated explanation. The earlier explanation remains associated with its original source passages and generation settings. If a reviewer later edits that explanation, the system creates a new text version. Keeping these histories separate lets an observer distinguish a retrieval configuration change from a correction to teaching content.\n\n## Reviewed text version and learning access",
+        "score": 0.5582605513650767
+      }
+    ],
+    "configuration": {
+      "course_id": "153a227bbb534f67a90145e4c214dc3f",
+      "topic": "Explain RAG ingestion and retrieval, including how passages become vectors and how a learning objective selects evidence.",
+      "material": "lesson",
+      "difficulty": "easy",
+      "question_type": "short_answer",
+      "count": 1,
+      "language": "en",
+      "document_ids": [
+        "b244486ed0484634bf908cd19acdde2d"
+      ],
+      "prompt_version": "education-v1",
+      "text_model": "deepseek-flash",
+      "text_endpoint_signature": "83b11c7b63af3acbbf3c",
+      "embedding_model": "qwen/qwen3-embedding-8b",
+      "embedding_signature": "00e64e3f244084054844",
+      "retrieval_top_k": 5
+    },
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "invalid_output",
+        "response": {
+          "title": "RAG Ingestion and Retrieval: From Passages to Vectors to Evidence Selection",
+          "evidence_sufficient": true,
+          "evidence_note": "The reference chunks cover RAG ingestion (text extraction, passage splitting, identifiers, embeddings), retrieval (embedding the learning objective, comparing query and passage vectors, ranking by similarity), evidence handling, and the limit that retrieval does not update model parameters or guarantee correctness.",
+          "learning_objectives": [
+            "Describe how passages become vectors during RAG ingestion, including source metadata.",
+            "Explain how a learning objective selects evidence by embedding the query and ranking passages by similarity.",
+            "State what retrieval supplies and what it does not prove or update."
+          ],
+          "sections": [
+            {
+              "heading": "RAG ingestion: from document to passage vectors",
+              "text": "RAG ingestion starts by extracting text from an allowed document. The application divides that text into passages and stores each passage with an identifier, document name, and page reference. An embedding service maps the passage text to a numeric vector. The passage vector and its source metadata are kept together: a vector without its text cannot give a reader inspectable evidence. Neighboring passages may overlap slightly to preserve context at a boundary, but overlap also repeats text.",
+              "citation_ids": [
+                "842e225da79e4e7da90d953cbcc4c4b5"
+              ]
+            },
+            {
+              "heading": "Retrieval: using the learning objective to rank evidence",
+              "text": "At request time, the application embeds the learning objective using a compatible embedding configuration. It compares the query vector with stored passage vectors and ranks candidates by similarity. The selected passages are then supplied with the objective in a text-generation request. The generator should use those passages to explain a covered concept or write an answerable exercise. A retrieval score measures the comparison used by that retrieval configuration; it is not a calibrated probability that the answer is correct.",
+              "citation_ids": [
+                "a3bb2fdd8752421a8ea9593de052ccb5",
+                "b8d1c525d5a74f3d907600b3ab25679d"
+              ]
+            },
+            {
+              "heading": "What retrieval supplies and what it does not prove",
+              "text": "Retrieval supplies external evidence. It does not update the language model’s parameters and does not itself prove the final explanation correct. A human still checks whether the selected passages cover the requested objective. If a requested conclusion cannot be derived from the supplied material, the evidence boundary is crossed; the appropriate response is to report insufficient evidence rather than invent content.",
+              "citation_ids": [
+                "a3bb2fdd8752421a8ea9593de052ccb5",
+                "b8d1c525d5a74f3d907600b3ab25679d",
+                "d14b60c9729e4fc08d980b82032db14b"
+              ]
+            }
+          ],
+          "questions": [
+            {
+              "kind": "short_answer",
+              "stem": "Explain how a RAG system turns passages into vectors and then uses a learning objective to select evidence.",
+              "options": [],
+              "answer": "During ingestion, the system extracts text from an allowed document, divides it into passages, and stores each passage with an identifier, document name, and page reference. An embedding service maps passage text to a numeric vector, and the vector is kept with its source metadata. At request time, the application embeds the learning objective using a compatible embedding configuration, compares the query vector with stored passage vectors, and ranks candidates by similarity. The selected passages accompany the objective in a text-generation request and provide external evidence, but they do not update the model parameters or prove the final explanation correct.",
+              "explanation": "The key steps are extraction, passage splitting, metadata storage, embedding, similarity comparison, ranking, and evidence supply. The retrieval score is a comparison measure, not a calibrated probability of correctness. A human still checks whether the selected passages cover the requested objective.",
+              "difficulty_reason": "This is a direct explanation and application of one main process described explicitly in the provided passages.",
+              "citation_ids": [
+                "842e225da79e4e7da90d953cbcc4c4b5",
+                "a3bb2fdd8752421a8ea9593de052ccb5",
+                "b8d1c525d5a74f3d907600b3ab25679d"
+              ]
+            }
+          ],
+          "visual_prompt": "A two-part student-facing diagram. Left part shows a document being split into labeled passages, each passage connected to a numeric vector and source metadata card. Right part shows a learning objective entering an embedding component, then a similarity comparison with stored passage vectors, then a ranked shortlist of passages passed into a text-generation request, with a final human review checkpoint."
+        },
+        "error": "模型输出未满足完整 JSON、结构、题型、数量或引用规则。"
+      },
+      {
+        "attempt": 2,
+        "status": "invalid_output",
+        "response": {
+          "title": "RAG Ingestion and Retrieval: From Passages to Vectors to Evidence Selection",
+          "evidence_sufficient": true,
+          "evidence_note": "The provided passages from ca1_rag_course.md describe RAG ingestion (text extraction, passage division, embedding, metadata), retrieval-time query embedding and ranking, citation/evidence boundaries, and a worked example of selecting passages for a learning objective. All content and questions are limited to what these passages state.",
+          "learning_objectives": [
+            "Describe how a document passage becomes a stored numeric vector with source metadata during RAG ingestion.",
+            "Explain how a learning objective is embedded and compared with stored passage vectors at retrieval time to select evidence."
+          ],
+          "sections": [
+            {
+              "heading": "How passages become vectors during ingestion",
+              "text": "RAG ingestion begins by extracting text from an allowed document. The application divides the text into passages and stores each passage with an identifier, document name, and page reference. An embedding service maps passage text to a numeric vector. The passage vector and its source metadata belong together: a vector without its text cannot supply a reader with inspectable evidence. A small overlap between neighboring passages can preserve context at a boundary, although overlap also creates repeated text. For example, a document with eight passages may be stored as eight passage–vector records, each carrying its own source information.",
+              "citation_ids": [
+                "842e225da79e4e7da90d953cbcc4c4b5"
+              ]
+            },
+            {
+              "heading": "How a learning objective selects evidence at retrieval time",
+              "text": "At request time, the application embeds the learning objective using a compatible embedding configuration. It compares the query vector with stored passage vectors and ranks the candidates by similarity. The selected passages accompany the objective in a text-generation request. The generator should use those passages to explain a covered concept or write an answerable exercise. For a document with eight passages and a retrieval limit of three, a request about citations should rank citation passages ahead of unrelated interface notes. The evidence record should preserve the actual ranked passages and similarity scores. A score measures the comparison used by this retrieval configuration; it is not a calibrated probability that the answer is correct. If every passage is returned, the run demonstrates context supply but does not demonstrate selective ranking. A human still checks whether the selected passages cover the requested objective.",
+              "citation_ids": [
+                "b8d1c525d5a74f3d907600b3ab25679d",
+                "a3bb2fdd8752421a8ea9593de052ccb5"
+              ]
+            },
+            {
+              "heading": "What retrieval does and does not establish",
+              "text": "Retrieval supplies external evidence; it does not update the language model's parameters and does not itself prove the final explanation correct. Keeping vectors and source metadata together supports inspectable evidence. Retrieval evidence does not by itself guarantee correctness of generated teaching content; human review remains part of the process.",
+              "citation_ids": [
+                "a3bb2fdd8752421a8ea9593de052ccb5",
+                "b8d1c525d5a74f3d907600b3ab25679d"
+              ]
+            }
+          ],
+          "questions": [
+            {
+              "kind": "short_answer",
+              "stem": "Describe the two main stages of RAG in the course material: (1) how a passage becomes a stored vector during ingestion, and (2) how a learning objective is used at retrieval time to select evidence. Mention metadata and how ranked results are recorded.",
+              "options": [],
+              "answer": "During ingestion, text is extracted from an allowed document, divided into passages, and each passage is stored with an identifier, document name, and page reference. An embedding service maps passage text to a numeric vector, and the vector is kept together with its source metadata. At request time, the application embeds the learning objective with a compatible embedding configuration, compares the query vector with stored passage vectors, and ranks candidates by similarity. The selected passages accompany the objective in a text-generation request, and the evidence record preserves the actual ranked passages and similarity scores.",
+              "explanation": "This follows the ingestion and request-time retrieval steps described in the passages. Metadata (identifier, document name, page reference) stays attached to the vector. Retrieval compares the embedded objective with stored passage vectors and ranks them by similarity. The evidence record keeps the ranked passages and scores. Retrieval supplies external evidence but does not update the language model's parameters and does not itself prove the final explanation correct.",
+              "difficulty_reason": "The question asks for a direct explanation of the single topic described in the passages: ingestion and retrieval. The conditions are complete, and the learner only needs to identify and restate the steps, not infer new conclusions.",
+              "citation_ids": [
+                "842e225da79e4e7da90d953cbcc4c4b5",
+                "a3bb2fdd8752421a8ea9593de052ccb5",
+                "b8d1c525d5a74f3d907600b3ab25679d"
+              ]
+            }
+          ],
+          "visual_prompt": "A two-stage diagram. Left side labeled 'Ingestion': a document icon flows into divided passage blocks, each passage block is paired with a metadata tag (identifier, document name, page reference) and an arrow into a numeric vector icon. Right side labeled 'Retrieval at request time': a learning objective icon flows into an embedding step, the objective vector is compared with stored passage vectors, candidates are ranked by similarity, and selected passages plus scores are recorded; the selected passages accompany the objective into a text-generation request. No answer text or correctness labels appear in the diagram."
+        },
+        "error": "模型输出未满足完整 JSON、结构、题型、数量或引用规则。"
+      }
+    ]
+  },
+  "calls": [
+    {
+      "capability": "embedding",
+      "model": "qwen/qwen3-embedding-8b",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 22,
+        "total_tokens": 22,
+        "cost": 2.2e-07,
+        "cost_details": {
+          "upstream_inference_cost": 2.2e-07
+        }
+      },
+      "created_at": "2026-09-12T03:56:47.522845+00:00",
+      "duration_ms": 632,
+      "http_status": 200,
+      "response_model": "Qwen/Qwen3-Embedding-8B"
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 2128,
+        "completion_tokens": 1053,
+        "total_tokens": 3181,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 2128
+      },
+      "created_at": "2026-09-12T03:56:48.173390+00:00",
+      "duration_ms": 4615,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 2151,
+        "completion_tokens": 1230,
+        "total_tokens": 3381,
+        "prompt_tokens_details": {
+          "cached_tokens": 1920
+        },
+        "prompt_cache_hit_tokens": 1920,
+        "prompt_cache_miss_tokens": 231
+      },
+      "created_at": "2026-09-12T03:56:52.792324+00:00",
+      "duration_ms": 5777,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    }
+  ],
+  "limitations": [
+    "Retrieved passages and citation identifiers do not establish factual correctness.",
+    "Call success describes the provider response contract; inspect job and attempt validation separately."
+  ]
+}

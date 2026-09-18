@@ -1,0 +1,80 @@
+{
+  "status": {
+    "version": "0.1.0",
+    "capabilities": {
+      "text": {
+        "configured": true,
+        "model": "deepseek-flash"
+      },
+      "embedding": {
+        "configured": true,
+        "model": "qwen/qwen3-embedding-8b"
+      },
+      "speech": {
+        "configured": false,
+        "model": ""
+      },
+      "image": {
+        "configured": false,
+        "model": ""
+      }
+    },
+    "calls_today": 18,
+    "daily_call_limit": 100,
+    "mode": "local-development",
+    "retrieval": {
+      "version": "retrieval-v2",
+      "strategy": "hybrid_dense_lexical_v1",
+      "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+      "top_k": 5,
+      "candidate_k": 20,
+      "rrf_k": 60,
+      "mmr_lambda": 0.7,
+      "bm25_k1": 1.2,
+      "bm25_b": 0.75,
+      "query_term_frequency": "binary",
+      "candidate_pool": "top_candidate_k_per_route_then_top_candidate_k_fused_for_mmr",
+      "mmr_relevance": "rrf_score_divided_by_max_candidate_rrf_score",
+      "mmr_redundancy": "maximum_nonnegative_cosine_to_already_selected_chunks",
+      "dense_lexical_bonus_cap": 0.05,
+      "dense_lexical_score": "cosine_plus_capped_max_normalized_bm25",
+      "tie_break": "input_order",
+      "no_lexical_matches": "dense_fallback_for_hybrid_empty_for_bm25",
+      "score_semantics": "original_query_chunk_cosine",
+      "document_encoding": "title_path_v1",
+      "query_encoding": "cs_instruction_v1",
+      "context_tokens": 1024,
+      "expansion": "none",
+      "context_tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d",
+      "context_budget_unit": "qwen_source_serialization_tokens_v1",
+      "reranker_model": "qwen/qwen3-reranker-8b",
+      "reranker_signature": "ea51c5866aec287fbb13"
+    },
+    "chunking": {
+      "strategy": "recursive_token_v1",
+      "max_chars": 1200,
+      "overlap_chars": 0,
+      "max_tokens": 256,
+      "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+      "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+    }
+  },
+  "courses": 3,
+  "documents": [
+    {
+      "id": "f31a1376102d4b51a9303a87bd86acb2",
+      "name": "intro_to_rag.md",
+      "chunks": 6,
+      "index_current": true,
+      "chunking_current": true
+    },
+    {
+      "id": "58801b55a1964873a1f54805bcc9a728",
+      "name": "ca1_rag_course.md",
+      "chunks": 14,
+      "index_current": true,
+      "chunking_current": true
+    }
+  ],
+  "verified": true
+}

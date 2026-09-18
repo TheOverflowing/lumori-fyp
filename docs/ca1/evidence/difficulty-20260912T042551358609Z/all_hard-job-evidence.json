@@ -1,0 +1,1249 @@
+{
+  "schema_version": "ca1-job-evidence-v1",
+  "exported_at": "2026-09-12T04:26:35.518972+00:00",
+  "job": {
+    "id": "6dbef6e933bb4f5abe9d2e18f5fb6f90",
+    "kind": "generate",
+    "status": "succeeded",
+    "result": {
+      "content_id": "7e021d156fd44c5ab9faf674aff247a0"
+    },
+    "error": null,
+    "created_at": "2026-09-12T04:26:03.679345+00:00",
+    "updated_at": "2026-09-12T04:26:35.475804+00:00",
+    "course_id": "db9f279169874de18bb3c435c67f37de",
+    "content_id": "7e021d156fd44c5ab9faf674aff247a0"
+  },
+  "evidence": {
+    "request": {
+      "course_id": "db9f279169874de18bb3c435c67f37de",
+      "topic": "考核课程资料中的检索流程、引用支持、嵌入兼容性与审核版本。按逐题难度计划设计实际任务；需要情境时可明确给定假设条件，不能虚构外部事实。",
+      "material": "quiz",
+      "difficulty": "medium",
+      "difficulty_distribution": {
+        "easy": 0,
+        "medium": 0,
+        "hard": 3
+      },
+      "learner_profile": "已学习所选课程资料的计算机专业本科生，理解检索、引用与审核版本的基本概念。",
+      "question_type": "short_answer",
+      "count": 3,
+      "language": "zh",
+      "document_ids": [
+        "0741e12042924610b524d9286fb7d1c4"
+      ]
+    },
+    "prompt_version": "education-v3",
+    "sources": [
+      {
+        "id": "ff76236a2ba5478b9f72916629d7ab82",
+        "document_id": "0741e12042924610b524d9286fb7d1c4",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "Difficulty should come from the intended reasoning, not from unnecessarily obscure wording or facts outside the source.\n\nFor an easy example, ask what retrieval supplies to a generator. For a medium example, describe an answer with an existing but irrelevant citation and ask why structural validation is insufficient. For a hard example, describe a change to the embedding model and a later edit to approved teaching text, then ask which stored objects need rebuilding or renewed approval. Each example stays within this document. A multiple-choice question needs distinct options and one defensible keyed answer; a short-answer question needs a reference answer that a reviewer can justify from the cited passages.\n\nDifficulty intent is not measured student difficulty. Without learner response data, the system cannot claim that a label predicts how many students will answer correctly. A reviewer can assess whether the requested cognitive demand matches the question design, but that judgment is different from empirical calibration. Record the intended demand and any review notes separately. Do not invent student scores, learning gains, or instructor ratings for a software demonstration.",
+        "score": 0.6065807557529634
+      },
+      {
+        "id": "3aefdf9d56844b0087c9ad5a103275cb",
+        "document_id": "0741e12042924610b524d9286fb7d1c4",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "mes require an appropriate study involving learners. Passing the first category does not establish the second or third.\n\nWhen preserving evaluation records, retain the initial generated draft, the actual retrieved text, generation settings that exclude credentials, and later revisions. A human reviewer supplies their own observations and ratings; an automated test should leave those fields blank. A failed request should remain in the record with its status and safe error information. A request refused because evidence was missing is a different outcome from a network error. Neither should be silently replaced by a fabricated successful example.\n\nA compact demonstration can cover a lesson, a quiz, and an assignment with one question per assessment. One out-of-source objective can probe the refusal behavior. These few examples are integration evidence, not a statistically representative evaluation. State the sample size and whether any human actually reviewed the output. A later evaluation can add diverse course materials, blinded review, and real learner tasks once its protocol is agreed.\n\n## Local operation, exports, and deferred media",
+        "score": 0.5808710828884038
+      },
+      {
+        "id": "5caef4b8eff94d05a4294501bf115e26",
+        "document_id": "0741e12042924610b524d9286fb7d1c4",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "s, blinded review, and real learner tasks once its protocol is agreed.\n\n## Local operation, exports, and deferred media\n\nThis prototype is a local development application. A course groups source documents and generated materials. An export should preserve the teaching text and enough citation metadata to inspect its provenance outside the application. A generation evidence export is more detailed than a student handout: it can contain retrieved passages, configuration signatures, revision history, and provider call usage. Exported material should identify whether the current text is draft or approved.\n\nCredentials belong in local configuration and must not appear in handouts, evidence bundles, or screenshots prepared for review. A daily call limit bounds attempts, including attempts that fail. Before a live demonstration, confirm that text and embedding capabilities are configured; this check alone does not prove that the provider accepts the chosen model. Reusing existing local evidence for workflow demonstrations avoids unnecessary new provider calls.",
+        "score": 0.5693832875883398
+      },
+      {
+        "id": "e9cd2063c2024317800235d50fd44e44",
+        "document_id": "0741e12042924610b524d9286fb7d1c4",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "ed and what a person changed. A technical script exercising these transitions does not supply a human quality judgment.\n\nFor practice questions, the learning view can hide the reference answer, explanation, and difficulty rationale until answers are requested. Hiding fields in the returned student-facing object is stronger than merely hiding text with a visual style. This local demonstration does not implement authenticated roles, secure examinations, or classroom access control. The answer-reveal option is a practice feature. It must not be presented as protection against a learner who directly requests the answer endpoint.\n\n## Difficulty intent and assessment design\n\nDifficulty intent describes the reasoning a question is designed to require. An easy item can ask a learner to identify one concept or explain one direct relationship from the notes. A medium item can apply a concept in a supplied situation or compare two closely related cases. A hard item can require combining several covered concepts and analyzing constraints. Difficulty should come from the intended reasoning, not from unnecessarily obscure wording or facts outside the source.",
+        "score": 0.5500816697571793
+      },
+      {
+        "id": "c7b355510d134e91833f092eec3c72ed",
+        "document_id": "0741e12042924610b524d9286fb7d1c4",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": ". An automated draft must not be described as human-approved merely because its citation identifiers passed validation.\n\nAn evidence boundary is crossed when a requested conclusion cannot be derived from the supplied material. Suppose a learner asks for a clinical treatment dosage while the course notes only explain retrieval systems. The notes provide no clinical evidence. The appropriate response is to report insufficient evidence and avoid inventing a dosage or an exercise that presents one as correct. The generator may explain that the relevant source material is missing. A provider outage or malformed response is an operational failure, not a successful refusal based on evidence.\n\n## Embedding compatibility and index versions\n\nEmbedding compatibility concerns the relationship between stored document vectors and a new query vector. Vectors must have the same dimension before their coordinates can be compared. Matching dimensions alone are insufficient: two models can use different semantic spaces while producing the same number of coordinates. A query from one space must not be assumed compatible with passages embedded by another model.",
+        "score": 0.541687302908386
+      }
+    ],
+    "configuration": {
+      "course_id": "db9f279169874de18bb3c435c67f37de",
+      "topic": "考核课程资料中的检索流程、引用支持、嵌入兼容性与审核版本。按逐题难度计划设计实际任务；需要情境时可明确给定假设条件，不能虚构外部事实。",
+      "material": "quiz",
+      "difficulty": "medium",
+      "difficulty_distribution": {
+        "easy": 0,
+        "medium": 0,
+        "hard": 3
+      },
+      "learner_profile": "已学习所选课程资料的计算机专业本科生，理解检索、引用与审核版本的基本概念。",
+      "question_type": "short_answer",
+      "count": 3,
+      "language": "zh",
+      "document_ids": [
+        "0741e12042924610b524d9286fb7d1c4"
+      ],
+      "prompt_version": "education-v3",
+      "text_model": "deepseek-flash",
+      "text_endpoint_signature": "83b11c7b63af3acbbf3c",
+      "embedding_model": "qwen/qwen3-embedding-8b",
+      "embedding_signature": "00e64e3f244084054844",
+      "retrieval_top_k": 5,
+      "text_json_mode": true,
+      "difficulty_plan": [
+        {
+          "slot_id": "q1",
+          "difficulty": "hard"
+        },
+        {
+          "slot_id": "q2",
+          "difficulty": "hard"
+        },
+        {
+          "slot_id": "q3",
+          "difficulty": "hard"
+        }
+      ],
+      "rubric_version": "difficulty-rubric-v1"
+    },
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "invalid_output",
+        "response": {
+          "title": "检索流程、引用支持、嵌入兼容性与审核版本综合考评",
+          "evidence_sufficient": true,
+          "evidence_note": "所给片段覆盖检索供给、引用结构校验、审核状态、嵌入兼容性、索引版本与证据边界等概念，可用于设计三道 hard 短答题。",
+          "learning_objectives": [
+            "在给定检索流程中定位并整合检索、引用、生成与人工审核的边界。",
+            "分析嵌入模型变更与教学文本编辑对已存对象与审核状态的不同影响。",
+            "评价仅凭引用标识通过校验就宣称人类已批准的风险，并提出分阶段处置方案。"
+          ],
+          "sections": [
+            {
+              "heading": "检索与引用支持的角色",
+              "text": "检索为生成器提供被检索的文本；引用标识可能通过结构校验，但这只说明标识合法，并不等于内容被验证正确，也不等于人类已经批准。自动草稿不能因为引用标识通过验证就描述为人类已批准。",
+              "citation_ids": [
+                "c7b355510d134e91833f092eec3c72ed",
+                "ff76236a2ba5478b9f72916629d7ab82"
+              ]
+            },
+            {
+              "heading": "嵌入兼容性与索引版本",
+              "text": "嵌入兼容性关心已存文档向量与新查询向量之间的关系。向量必须维度相同才能比较坐标；但维度相同并不充分，因为不同模型可以产生同样数量的坐标却处在不同语义空间。来自一个空间的查询不能假定与另一模型嵌入的段落兼容。",
+              "citation_ids": [
+                "c7b355510d134e91833f092eec3c72ed"
+              ]
+            },
+            {
+              "heading": "审核版本与证据记录",
+              "text": "导出材料应标明当前文本是草稿还是已批准。评估记录应保留初始生成草稿、实际检索文本、排除凭据的生成设置以及后续修订；人类评审者提供自己的观察与评分，自动测试应使这些字段保持空白。失败请求应保留状态与安全错误信息，因证据缺失而拒绝与网络错误是不同结果，二者都不应被伪造的成功示例替换。",
+              "citation_ids": [
+                "3aefdf9d56844b0087c9ad5a103275cb",
+                "5caef4b8eff94d05a4294501bf115e26"
+              ]
+            }
+          ],
+          "questions": [
+            {
+              "kind": "short_answer",
+              "stem": "某课程问答系统使用模型 X 生成的段落向量和查询向量，用户提交查询后得到答案，答案附带一个存在的引用标识并通过了结构校验。假设系统未做任何语义一致性检查，也未经过人工审核。请结合资料分析：此时能否把该答案描述为“人类已批准”？并说明结构校验通过这一事实能证明什么、不能证明什么，给出至少两个需要保留的审核记录字段。",
+              "answer": "不能描述为人类已批准。结构校验只说明引用标识在格式或存在性上合法，不能证明所引文本支持该结论，也不能替代人类评审者的观察与批准。可保留的审核记录字段包括：初始生成草稿、实际检索文本、生成设置（排除凭据）以及后续修订；人类评审者应提供自己的观察与评分，自动测试不应替其填写。",
+              "explanation": "关键区分引用标识通过验证与内容/人工批准。引用结构校验只保证标识合法，不保证引用内容支持结论、也不代表人类批准。记录方面应保留草稿、实际检索文本、生成设置与修订，并让人类评审者提供观察与评分。",
+              "difficulty_reason": "需要在给定情境下把引用结构校验、证据边界与人工审核记录整合起来，并论证“不能宣称人类已批准”，属于综合分析与评价。",
+              "citation_ids": [
+                "c7b355510d134e91833f092eec3c72ed",
+                "3aefdf9d56844b0087c9ad5a103275cb",
+                "5caef4b8eff94d05a4294501bf115e26"
+              ],
+              "slot_id": "q1",
+              "difficulty": "hard",
+              "difficulty_design": {
+                "cognitive_process": "evaluate",
+                "concepts": [
+                  "引用标识结构校验",
+                  "人类批准",
+                  "审核记录",
+                  "证据边界"
+                ],
+                "expected_steps": [
+                  "指出结构校验通过不等于内容正确或人类批准。",
+                  "说明引用标识存在只证明标识合法，不能证明支持结论。",
+                  "给出至少两个审核记录字段（如初始草稿、实际检索文本、生成设置、修订）。",
+                  "论证不能把自动草稿描述为人类已批准。"
+                ]
+              }
+            },
+            {
+              "kind": "short_answer",
+              "stem": "某课程资料库最初使用嵌入模型 A 建立索引，后来团队将嵌入模型改为模型 B，并继续使用旧索引处理新查询。同时，一段已批准的教学文本被人工编辑，但尚未重新提交审核。请结合资料分析：(1) 旧索引与新查询向量之间可能存在什么兼容性问题？(2) 这段已编辑文本的审核状态应如何标记？(3) 针对上述两种变化，系统应分别重建或重新批准哪些对象？请说明判断依据。",
+              "answer": "(1) 旧索引中的文档向量由模型 A 生成，新查询向量由模型 B 生成。即使维度相同，也不能假定二者处在同一语义空间，因此不能直接比较坐标；若维度不同则根本无法比较。(2) 已编辑文本尚未重新提交审核，应标记为草稿或待审核，不能继续当作已批准文本使用；导出材料应能识别当前文本是草稿还是已批准。(3) 对模型变更：需要使用模型 B 重新嵌入并重建索引中的文档向量；对已编辑文本：需要重新走审核流程以恢复批准状态，并保留修订记录。判断依据是嵌入兼容性要求向量可比较且语义空间一致，审核版本要求区分草稿与已批准。",
+              "explanation": "嵌入兼容性不能仅看维度，还要考虑语义空间；模型变更需重建文档向量。已编辑的已批准文本在未重新审核前不应标记为已批准，导出材料应标明草稿或已批准。两类变化分别对应索引重建与重新批准。",
+              "difficulty_reason": "需要把嵌入兼容性、索引版本和审核版本三个概念放到同一情境中，分析不同对象应重建还是重新批准，并给出依据。",
+              "citation_ids": [
+                "c7b355510d134e91833f092eec3c72ed",
+                "5caef4b8eff94d05a4294501bf115e26",
+                "3aefdf9d56844b0087c9ad5a103275cb"
+              ],
+              "slot_id": "q2",
+              "difficulty": "hard",
+              "difficulty_design": {
+                "cognitive_process": "analyze",
+                "concepts": [
+                  "嵌入兼容性",
+                  "维度与语义空间",
+                  "索引版本",
+                  "审核版本",
+                  "草稿与已批准"
+                ],
+                "expected_steps": [
+                  "指出旧索引向量与新查询向量可能来自不同语义空间。",
+                  "说明维度相同不充分，维度不同则不可比较。",
+                  "判断已编辑文本应标记为草稿或待审核。",
+                  "对模型变更提出重新嵌入并重建索引。",
+                  "对文本编辑提出重新审核以恢复批准状态。"
+                ]
+              }
+            },
+            {
+              "kind": "short_answer",
+              "stem": "某演示系统记录了一次请求：用户询问一个超出课程资料范围的问题，课程资料只讲解检索系统，不包含该领域内容。系统返回了“证据不足”的说明。随后，同一系统另一次请求因网络错误失败。请结合资料分析：(1) 这两种结果在记录中应如何区分？(2) 为什么不能把网络错误失败静默替换为一个伪造的成功示例？(3) 若要用该演示作为集成证据，还应说明哪些限制？",
+              "answer": "(1) 证据缺失导致的拒绝与网络错误属于不同结果：前者是证据边界未满足，后者是操作失败；记录中应保留各自的请求状态和安全错误信息，不应混同。(2) 伪造成功示例会破坏评估记录的真实性，掩盖真实失败模式，使后续改进和审核失去依据。(3) 应说明样本量很小，仅覆盖少量课程材料和每类一个题目的集成示例，并非统计代表性评估；还需说明是否有真人评审过输出、是否做过盲评等限制。",
+              "explanation": "资料明确指出证据缺失拒绝与网络错误是不同结果，失败请求应保留状态和安全错误信息，不应被伪造成功示例替换。紧凑演示只是集成证据，必须说明样本量、是否有人类评审等限制。",
+              "difficulty_reason": "要求在同一评估记录情境中区分证据不足与操作失败，评价伪造成功示例的危害，并说明集成证据的适用边界，需要综合推理与论证。",
+              "citation_ids": [
+                "3aefdf9d56844b0087c9ad5a103275cb",
+                "c7b355510d134e91833f092eec3c72ed"
+              ],
+              "slot_id": "q3",
+              "difficulty": "hard",
+              "difficulty_design": {
+                "cognitive_process": "evaluate",
+                "concepts": [
+                  "证据边界",
+                  "证据不足拒绝",
+                  "网络错误",
+                  "评估记录",
+                  "集成证据"
+                ],
+                "expected_steps": [
+                  "区分证据不足拒绝与网络错误失败。",
+                  "说明应保留请求状态与安全错误信息。",
+                  "论证不能伪造成功示例替换失败记录。",
+                  "说明演示样本量小、非统计代表性评估。",
+                  "指出需说明是否有人类评审等限制。"
+                ]
+              }
+            }
+          ],
+          "visual_prompt": "一张流程图：左侧输入查询，经过嵌入兼容性检查后进入检索，检索提供文本给生成器；生成器输出引用标识与草稿，经过结构校验后进入人工审核；右侧分支标注“证据不足拒绝”与“网络错误失败”分别进入审核记录。底部标注“导出需标明草稿或已批准”。不显示答案。"
+        },
+        "assessment": {
+          "kind": "blind_model_review",
+          "note": "独立调用的模型复核，尚非教师验证或学习者实测难度。",
+          "status": "failed",
+          "contract": {
+            "task": "difficulty_assessment",
+            "learner_profile": "已学习所选课程资料的计算机专业本科生，理解检索、引用与审核版本的基本概念。",
+            "rubric_version": "difficulty-rubric-v1",
+            "rubric": {
+              "easy": {
+                "description": "直接记忆或解释资料中的一个明确知识点；条件完整，无需选择复杂策略。",
+                "cognitive_processes": [
+                  "remember",
+                  "understand"
+                ],
+                "expected_steps": {
+                  "min": 1,
+                  "max": 2
+                },
+                "requirement": "评分要点为 1–2 个简短关键步骤；答案能由资料直接支持。"
+              },
+              "medium": {
+                "description": "把已学概念应用到具体情境，或比较、分析相关概念及其关系。",
+                "cognitive_processes": [
+                  "apply",
+                  "analyze"
+                ],
+                "expected_steps": {
+                  "min": 2,
+                  "max": 3
+                },
+                "requirement": "评分要点为 2–3 个相互关联的步骤，需要应用或分析，不能只是改写定义。"
+              },
+              "hard": {
+                "description": "在资料范围内综合概念，处理情境约束，进行有依据的分析、评价或设计。",
+                "cognitive_processes": [
+                  "analyze",
+                  "evaluate",
+                  "create"
+                ],
+                "expected_steps": {
+                  "min": 3,
+                  "max": 6
+                },
+                "requirement": "评分要点为 3–6 个关键步骤；题干必须要求处理具体情境约束并论证判断或设计。困难来自知识整合与推理，不能只靠复述、冷门术语、冗长措辞或资料以外的知识。"
+              }
+            },
+            "rubric_note": "以上为相对于 learner_profile 的操作性出题标准。认知过程和评分步骤是设计约束，不能单独证明实际难度；不得把 Bloom 层级或步骤数量等同于实测难度。expected_steps 只写面向学生和教师的简短评分要点，不输出隐藏思维链。",
+            "questions": [
+              {
+                "slot_id": "q1",
+                "kind": "short_answer",
+                "stem": "某课程问答系统使用模型 X 生成的段落向量和查询向量，用户提交查询后得到答案，答案附带一个存在的引用标识并通过了结构校验。假设系统未做任何语义一致性检查，也未经过人工审核。请结合资料分析：此时能否把该答案描述为“人类已批准”？并说明结构校验通过这一事实能证明什么、不能证明什么，给出至少两个需要保留的审核记录字段。",
+                "options": [],
+                "answer": "不能描述为人类已批准。结构校验只说明引用标识在格式或存在性上合法，不能证明所引文本支持该结论，也不能替代人类评审者的观察与批准。可保留的审核记录字段包括：初始生成草稿、实际检索文本、生成设置（排除凭据）以及后续修订；人类评审者应提供自己的观察与评分，自动测试不应替其填写。",
+                "explanation": "关键区分引用标识通过验证与内容/人工批准。引用结构校验只保证标识合法，不保证引用内容支持结论、也不代表人类批准。记录方面应保留草稿、实际检索文本、生成设置与修订，并让人类评审者提供观察与评分。"
+              },
+              {
+                "slot_id": "q2",
+                "kind": "short_answer",
+                "stem": "某课程资料库最初使用嵌入模型 A 建立索引，后来团队将嵌入模型改为模型 B，并继续使用旧索引处理新查询。同时，一段已批准的教学文本被人工编辑，但尚未重新提交审核。请结合资料分析：(1) 旧索引与新查询向量之间可能存在什么兼容性问题？(2) 这段已编辑文本的审核状态应如何标记？(3) 针对上述两种变化，系统应分别重建或重新批准哪些对象？请说明判断依据。",
+                "options": [],
+                "answer": "(1) 旧索引中的文档向量由模型 A 生成，新查询向量由模型 B 生成。即使维度相同，也不能假定二者处在同一语义空间，因此不能直接比较坐标；若维度不同则根本无法比较。(2) 已编辑文本尚未重新提交审核，应标记为草稿或待审核，不能继续当作已批准文本使用；导出材料应能识别当前文本是草稿还是已批准。(3) 对模型变更：需要使用模型 B 重新嵌入并重建索引中的文档向量；对已编辑文本：需要重新走审核流程以恢复批准状态，并保留修订记录。判断依据是嵌入兼容性要求向量可比较且语义空间一致，审核版本要求区分草稿与已批准。",
+                "explanation": "嵌入兼容性不能仅看维度，还要考虑语义空间；模型变更需重建文档向量。已编辑的已批准文本在未重新审核前不应标记为已批准，导出材料应标明草稿或已批准。两类变化分别对应索引重建与重新批准。"
+              },
+              {
+                "slot_id": "q3",
+                "kind": "short_answer",
+                "stem": "某演示系统记录了一次请求：用户询问一个超出课程资料范围的问题，课程资料只讲解检索系统，不包含该领域内容。系统返回了“证据不足”的说明。随后，同一系统另一次请求因网络错误失败。请结合资料分析：(1) 这两种结果在记录中应如何区分？(2) 为什么不能把网络错误失败静默替换为一个伪造的成功示例？(3) 若要用该演示作为集成证据，还应说明哪些限制？",
+                "options": [],
+                "answer": "(1) 证据缺失导致的拒绝与网络错误属于不同结果：前者是证据边界未满足，后者是操作失败；记录中应保留各自的请求状态和安全错误信息，不应混同。(2) 伪造成功示例会破坏评估记录的真实性，掩盖真实失败模式，使后续改进和审核失去依据。(3) 应说明样本量很小，仅覆盖少量课程材料和每类一个题目的集成示例，并非统计代表性评估；还需说明是否有真人评审过输出、是否做过盲评等限制。",
+                "explanation": "资料明确指出证据缺失拒绝与网络错误是不同结果，失败请求应保留状态和安全错误信息，不应被伪造成功示例替换。紧凑演示只是集成证据，必须说明样本量、是否有人类评审等限制。"
+              }
+            ],
+            "reference_chunks": [
+              {
+                "id": "ff76236a2ba5478b9f72916629d7ab82",
+                "document_id": "0741e12042924610b524d9286fb7d1c4",
+                "document_name": "ca1_rag_course.md",
+                "page": 1,
+                "text": "Difficulty should come from the intended reasoning, not from unnecessarily obscure wording or facts outside the source.\n\nFor an easy example, ask what retrieval supplies to a generator. For a medium example, describe an answer with an existing but irrelevant citation and ask why structural validation is insufficient. For a hard example, describe a change to the embedding model and a later edit to approved teaching text, then ask which stored objects need rebuilding or renewed approval. Each example stays within this document. A multiple-choice question needs distinct options and one defensible keyed answer; a short-answer question needs a reference answer that a reviewer can justify from the cited passages.\n\nDifficulty intent is not measured student difficulty. Without learner response data, the system cannot claim that a label predicts how many students will answer correctly. A reviewer can assess whether the requested cognitive demand matches the question design, but that judgment is different from empirical calibration. Record the intended demand and any review notes separately. Do not invent student scores, learning gains, or instructor ratings for a software demonstration.",
+                "score": 0.6065807557529634
+              },
+              {
+                "id": "3aefdf9d56844b0087c9ad5a103275cb",
+                "document_id": "0741e12042924610b524d9286fb7d1c4",
+                "document_name": "ca1_rag_course.md",
+                "page": 1,
+                "text": "mes require an appropriate study involving learners. Passing the first category does not establish the second or third.\n\nWhen preserving evaluation records, retain the initial generated draft, the actual retrieved text, generation settings that exclude credentials, and later revisions. A human reviewer supplies their own observations and ratings; an automated test should leave those fields blank. A failed request should remain in the record with its status and safe error information. A request refused because evidence was missing is a different outcome from a network error. Neither should be silently replaced by a fabricated successful example.\n\nA compact demonstration can cover a lesson, a quiz, and an assignment with one question per assessment. One out-of-source objective can probe the refusal behavior. These few examples are integration evidence, not a statistically representative evaluation. State the sample size and whether any human actually reviewed the output. A later evaluation can add diverse course materials, blinded review, and real learner tasks once its protocol is agreed.\n\n## Local operation, exports, and deferred media",
+                "score": 0.5808710828884038
+              },
+              {
+                "id": "5caef4b8eff94d05a4294501bf115e26",
+                "document_id": "0741e12042924610b524d9286fb7d1c4",
+                "document_name": "ca1_rag_course.md",
+                "page": 1,
+                "text": "s, blinded review, and real learner tasks once its protocol is agreed.\n\n## Local operation, exports, and deferred media\n\nThis prototype is a local development application. A course groups source documents and generated materials. An export should preserve the teaching text and enough citation metadata to inspect its provenance outside the application. A generation evidence export is more detailed than a student handout: it can contain retrieved passages, configuration signatures, revision history, and provider call usage. Exported material should identify whether the current text is draft or approved.\n\nCredentials belong in local configuration and must not appear in handouts, evidence bundles, or screenshots prepared for review. A daily call limit bounds attempts, including attempts that fail. Before a live demonstration, confirm that text and embedding capabilities are configured; this check alone does not prove that the provider accepts the chosen model. Reusing existing local evidence for workflow demonstrations avoids unnecessary new provider calls.",
+                "score": 0.5693832875883398
+              },
+              {
+                "id": "e9cd2063c2024317800235d50fd44e44",
+                "document_id": "0741e12042924610b524d9286fb7d1c4",
+                "document_name": "ca1_rag_course.md",
+                "page": 1,
+                "text": "ed and what a person changed. A technical script exercising these transitions does not supply a human quality judgment.\n\nFor practice questions, the learning view can hide the reference answer, explanation, and difficulty rationale until answers are requested. Hiding fields in the returned student-facing object is stronger than merely hiding text with a visual style. This local demonstration does not implement authenticated roles, secure examinations, or classroom access control. The answer-reveal option is a practice feature. It must not be presented as protection against a learner who directly requests the answer endpoint.\n\n## Difficulty intent and assessment design\n\nDifficulty intent describes the reasoning a question is designed to require. An easy item can ask a learner to identify one concept or explain one direct relationship from the notes. A medium item can apply a concept in a supplied situation or compare two closely related cases. A hard item can require combining several covered concepts and analyzing constraints. Difficulty should come from the intended reasoning, not from unnecessarily obscure wording or facts outside the source.",
+                "score": 0.5500816697571793
+              },
+              {
+                "id": "c7b355510d134e91833f092eec3c72ed",
+                "document_id": "0741e12042924610b524d9286fb7d1c4",
+                "document_name": "ca1_rag_course.md",
+                "page": 1,
+                "text": ". An automated draft must not be described as human-approved merely because its citation identifiers passed validation.\n\nAn evidence boundary is crossed when a requested conclusion cannot be derived from the supplied material. Suppose a learner asks for a clinical treatment dosage while the course notes only explain retrieval systems. The notes provide no clinical evidence. The appropriate response is to report insufficient evidence and avoid inventing a dosage or an exercise that presents one as correct. The generator may explain that the relevant source material is missing. A provider outage or malformed response is an operational failure, not a successful refusal based on evidence.\n\n## Embedding compatibility and index versions\n\nEmbedding compatibility concerns the relationship between stored document vectors and a new query vector. Vectors must have the same dimension before their coordinates can be compared. Matching dimensions alone are insufficient: two models can use different semantic spaces while producing the same number of coordinates. A query from one space must not be assumed compatible with passages embedded by another model.",
+                "score": 0.541687302908386
+              }
+            ],
+            "schema": {
+              "$defs": {
+                "AssessmentItem": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "slot_id": {
+                      "minLength": 1,
+                      "title": "Slot Id",
+                      "type": "string"
+                    },
+                    "assessed_difficulty": {
+                      "enum": [
+                        "easy",
+                        "medium",
+                        "hard"
+                      ],
+                      "title": "Assessed Difficulty",
+                      "type": "string"
+                    },
+                    "confidence": {
+                      "enum": [
+                        "low",
+                        "medium",
+                        "high"
+                      ],
+                      "title": "Confidence",
+                      "type": "string"
+                    },
+                    "rationale": {
+                      "minLength": 1,
+                      "title": "Rationale",
+                      "type": "string"
+                    },
+                    "answerable_from_sources": {
+                      "title": "Answerable From Sources",
+                      "type": "boolean"
+                    },
+                    "ambiguity_free": {
+                      "title": "Ambiguity Free",
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "slot_id",
+                    "assessed_difficulty",
+                    "confidence",
+                    "rationale",
+                    "answerable_from_sources",
+                    "ambiguity_free"
+                  ],
+                  "title": "AssessmentItem",
+                  "type": "object"
+                }
+              },
+              "additionalProperties": false,
+              "properties": {
+                "items": {
+                  "items": {
+                    "$ref": "#/$defs/AssessmentItem"
+                  },
+                  "maxItems": 10,
+                  "minItems": 1,
+                  "title": "Items",
+                  "type": "array"
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "title": "DifficultyAssessment",
+              "type": "object"
+            }
+          },
+          "response": {
+            "items": [
+              {
+                "slot_id": "q1",
+                "assessed_difficulty": "medium",
+                "confidence": "high",
+                "rationale": "需在具体情境中区分结构校验与人工批准，应用资料中引用验证和审核记录概念；两到三个关联要点，未达到硬难度所要求的综合设计。",
+                "answerable_from_sources": true,
+                "ambiguity_free": true
+              },
+              {
+                "slot_id": "q2",
+                "assessed_difficulty": "hard",
+                "confidence": "high",
+                "rationale": "题干给出嵌入模型变更与已批准文本编辑两个约束，需综合嵌入兼容性、索引版本和审核状态，论证重建与重新批准对象，符合硬难度。",
+                "answerable_from_sources": true,
+                "ambiguity_free": true
+              },
+              {
+                "slot_id": "q3",
+                "assessed_difficulty": "medium",
+                "confidence": "high",
+                "rationale": "需在具体情境中区分证据缺失拒绝与网络错误，并说明伪造记录和集成证据限制；属于应用与分析，步骤有限，未达到hard。",
+                "answerable_from_sources": true,
+                "ambiguity_free": true
+              }
+            ]
+          },
+          "validation": {
+            "rule": "difficulty_assessment_failed",
+            "items": [
+              {
+                "slot_id": "q1",
+                "target_difficulty": "hard",
+                "assessed_difficulty": "medium",
+                "confidence": "high",
+                "reasons": [
+                  "difficulty_mismatch"
+                ]
+              },
+              {
+                "slot_id": "q3",
+                "target_difficulty": "hard",
+                "assessed_difficulty": "medium",
+                "confidence": "high",
+                "reasons": [
+                  "difficulty_mismatch"
+                ]
+              }
+            ]
+          }
+        },
+        "error": "模型输出未满足完整 JSON、结构、题型、数量、引用或难度规则。",
+        "validation": {
+          "rule": "difficulty_assessment_failed",
+          "items": [
+            {
+              "slot_id": "q1",
+              "target_difficulty": "hard",
+              "assessed_difficulty": "medium",
+              "confidence": "high",
+              "reasons": [
+                "difficulty_mismatch"
+              ]
+            },
+            {
+              "slot_id": "q3",
+              "target_difficulty": "hard",
+              "assessed_difficulty": "medium",
+              "confidence": "high",
+              "reasons": [
+                "difficulty_mismatch"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "attempt": 2,
+        "status": "valid",
+        "response": {
+          "title": "检索流程、引用支持、嵌入兼容性与审核版本综合测评",
+          "evidence_sufficient": true,
+          "evidence_note": "参考片段覆盖检索流程、引用与证据边界、嵌入兼容性与索引版本、审核与导出等主题，可支撑 3 道 hard 短答题，每题均可引用片段 ID。",
+          "learning_objectives": [
+            "在给定情境中综合检索、引用与证据边界规则，判断生成材料的合规性",
+            "分析嵌入模型变更与教学文本修订对存储向量和审核状态的影响",
+            "评价导出配置签名、人工审核记录与隐私保护的设计要求"
+          ],
+          "sections": [
+            {
+              "heading": "检索流程与质量边界",
+              "text": "根据参考资料，检索为生成器提供支撑材料，但检索到内容不等于结论正确。自动草稿不能仅凭引用标识通过验证就宣称获得人工批准，人工观察与评分字段应由人工填写，自动化测试应保持空白。证据边界被跨越时，应报告证据不足，而不是编造内容。",
+              "citation_ids": [
+                "c7b355510d134e91833f092eec3c72ed",
+                "3aefdf9d56844b0087c9ad5a103275cb"
+              ]
+            },
+            {
+              "heading": "嵌入兼容性与版本约束",
+              "text": "嵌入兼容性关注存储文档向量与查询向量的关系。向量必须具有相同维度才能比较坐标；即使维度相同，不同模型也可能使用不同语义空间，不能假设查询与另一模型生成的段落兼容。索引版本变化需要重建或更新受影响的存储对象。",
+              "citation_ids": [
+                "c7b355510d134e91833f092eec3c72ed"
+              ]
+            },
+            {
+              "heading": "审核记录、导出与本地运行限制",
+              "text": "保留评估记录应包含初始草稿、实际检索文本、不含凭据的生成设置及后续修订。生成证据导出比学生讲义更详细，可包含检索段落、配置签名、修订历史与提供商调用用量。凭证不得出现在讲义、证据包或截图中。每日调用限制约束所有尝试，包括失败尝试。本地演示不实现认证角色、安全考试或课堂访问控制。",
+              "citation_ids": [
+                "5caef4b8eff94d05a4294501bf115e26",
+                "3aefdf9d56844b0087c9ad5a103275cb"
+              ]
+            }
+          ],
+          "questions": [
+            {
+              "slot_id": "q1",
+              "difficulty": "hard",
+              "kind": "short_answer",
+              "stem": "假设你负责审核一份利用课程本地应用生成的测验草稿。该草稿的引用标识全部通过了自动验证，系统因此将其标记为“已准备好用于教学演示”。作为审核者，你需要判断：(1) 自动验证通过能否等同于人工批准？请引用依据；(2) 若后续发现其中一个引用标识指向了确实存在但与该题结论不相关的文档，这属于哪类问题？自动验证为何不能发现？(3) 请给出两条具体且可操作的整改措施，并说明每条措施如何匹配参考资料中的要求。",
+              "answer": "参考答案：(1) 不能等同。根据片段 c7b355510d134e91833f092eec3c72ed 和 3aefdf9d56844b0087c9ad5a103275cb，自动草稿不得仅仅因为引用标识通过验证就被描述为人工批准。(2) 这属于结构验证与人工审核之间的缺口。自动验证只能确认引用标识存在，但不能判断引用是否在语义上支持题目结论，因此不能替代人工对相关性的审查。(3) 可行措施包括：① 由人工审核者填写观察和评分字段，自动化测试保持空白（依据 3aefdf9d56844b0087c9ad5a103275cb）；② 记录初始草稿、实际检索文本、不含凭据的生成设置及后续修订（依据 5caef4b8eff94d05a4294501bf115e26）。每条措施都需对引用的片段负责。评分时应检查学生是否区分自动验证与人工批准，是否指出引用相关性问题，以及整改措施是否可操作且引用具体片段。",
+              "explanation": "本题要求学生在审核情境中综合自动验证、人工审核和引用相关性的概念。学生需要理解自动验证只能检查引用标识存在性，而人工评价和证据相关性需另外判断。评分重点在于能否分步论证并给出有依据的整改措施。",
+              "difficulty_reason": "题目设置了一个审核冲突情境（自动验证通过但引用可能不相关），需要学生综合多个片段进行评价和提出整改，属于 hard 档的分析与评价。",
+              "citation_ids": [
+                "c7b355510d134e91833f092eec3c72ed",
+                "3aefdf9d56844b0087c9ad5a103275cb",
+                "5caef4b8eff94d05a4294501bf115e26"
+              ],
+              "difficulty_design": {
+                "cognitive_process": "evaluate",
+                "concepts": [
+                  "引用验证",
+                  "人工审核",
+                  "证据边界",
+                  "审核记录"
+                ],
+                "expected_steps": [
+                  "判断自动验证不能替代人工批准",
+                  "分析引用存在但不相关属于结构验证的缺口",
+                  "提出至少两条有依据的整改措施"
+                ]
+              }
+            },
+            {
+              "slot_id": "q2",
+              "difficulty": "hard",
+              "kind": "short_answer",
+              "stem": "某课程团队决定更换嵌入模型：旧模型生成 768 维向量，新模型同样生成 768 维向量。同时，一门已审核课程的教学文本被修改。该课程使用本地检索应用。假设存储系统中保留了旧模型的文档向量和旧版审核记录。请分析：(1) 仅维度相同是否足以保证旧文档向量与新查询向量兼容？为什么？(2) 更换嵌入模型后，哪些存储对象需要重建或重新索引？(3) 教学文本修改后，除了向量问题，审核版本相关的哪些对象需要处理？请给出一个考虑上述约束的更新方案，并论证每一步的必要性。",
+              "answer": "参考答案：(1) 维度相同不足以保证兼容。片段 c7b355510d134e91833f092eec3c72ed 指出，向量必须具有相同维度才能比较坐标，但维度相同不代表语义空间相同；不同模型可能使用不同语义空间，因此旧文档向量与新查询向量不能假定兼容。(2) 需要重建或重新索引所有使用旧模型生成的文档向量，使其与新查询向量在同一语义空间中；索引版本也必须同步更新，否则检索会使用不兼容的向量。(3) 教学文本修改后，已审核状态应重新审查；相关的审核记录、导出材料中的版本标记（如“当前文本是草稿还是已批准”）需要更新。更新方案示例：先建立新嵌入模型配置并生成新向量，重建索引，再更新审核记录和导出版本标记；每一步的必要性分别来自嵌入兼容性、索引版本和审核状态要求。评分要点应覆盖三步骤及其依据。",
+              "explanation": "本题围绕嵌入兼容性与版本更新设计情境，学生需要分析维度相同不等于兼容的原因，并设计一个覆盖向量重建、索引更新和审核记录更新的方案。评分重点在于是否理解语义空间差异，以及方案是否完整处理文本修订后的审核痕迹。",
+              "difficulty_reason": "题目给出维度相同但模型更换以及已审核文本修改两个具体约束，要求学生综合嵌入兼容性、索引版本和审核记录知识进行方案设计，属于 hard 档的分析与设计。",
+              "citation_ids": [
+                "c7b355510d134e91833f092eec3c72ed",
+                "ff76236a2ba5478b9f72916629d7ab82",
+                "5caef4b8eff94d05a4294501bf115e26",
+                "3aefdf9d56844b0087c9ad5a103275cb"
+              ],
+              "difficulty_design": {
+                "cognitive_process": "create",
+                "concepts": [
+                  "嵌入兼容性",
+                  "向量维度",
+                  "语义空间",
+                  "索引版本",
+                  "审核版本"
+                ],
+                "expected_steps": [
+                  "论证维度相同不足以保证兼容",
+                  "确定需要重建的文档向量和索引",
+                  "设计更新方案并说明审核记录与导出版本的同步处理"
+                ]
+              }
+            },
+            {
+              "slot_id": "q3",
+              "difficulty": "hard",
+              "kind": "short_answer",
+              "stem": "某本地开发应用准备向教师展示一门课程的生成证据导出包。该导出包将包含检索段落、配置签名、修订历史和提供商调用用量。课程负责人还计划将同一份导出包用于学生 handout，并可能在未来支持多用户访问。假设你被要求审查该计划，请完成以下任务：(1) 指出将生成证据导出包直接用作学生 handout 的至少两处风险，并说明依据；(2) 针对“是否支持多用户角色与课堂访问控制”给出一个评价性结论，并引用资料说明当前应用能做什么、不能做什么；(3) 给出一个既能满足师生不同需求、又能维持当前隐私与审核要求的导出方案，并论证每一步如何匹配资料中的约束。",
+              "answer": "参考答案：(1) 风险一：生成证据导出包比 student handout 更详细，可能包含检索段落、配置签名、修订历史等不宜向学生公开的内容（依据 5caef4b8eff94d05a4294501bf115e26）。风险二：凭据不得出现在讲义、证据包或截图中；若导出包未清理配置信息，可能泄露凭据（依据 5caef4b8eff94d05a4294501bf115e26）。(2) 评价性结论：当前本地演示尚未实现经过身份验证的角色、安全考试或课堂访问控制，因此不能将本地应用直接扩展为多用户教学平台（依据 5caef4b8eff94d05a4294501bf115e26 和 e9cd2063c2024317800235d50fd44e44）。(3) 方案：分别提供学生讲义版和生成证据版。“学生讲义版”仅保留教学文本和必要的出处元数据，去除凭据、详细检索段落和配置签名；“生成证据版”保留检索段落、配置签名、修订历史和调用用量供教师审核，但须确认其中不含凭据。每一步均需引用片段说明依据。评分时检查学生是否区分两类导出的目的、识别凭据与访问控制约束，并给出可操作的方案。",
+              "explanation": "本题要求学生在导出包使用和多用户访问两个情境约束下，评价现有应用的能力边界，并设计分类导出方案。学生需要引用片段说明生成证据导出与学生 handout 的差别，以及本地演示对认证和访问控制的限制。评分重点在于能否处理好隐私、审核和功能需求之间的平衡。",
+              "difficulty_reason": "题目设置了导出包被误用以及多用户访问的假设约束，要求学生评价当前本地应用的能力边界并设计兼顾隐私、审核和不同用户需求的导出方案，涉及整合多个片段的分析、评价与设计，属于 hard 档。",
+              "citation_ids": [
+                "5caef4b8eff94d05a4294501bf115e26",
+                "e9cd2063c2024317800235d50fd44e44",
+                "3aefdf9d56844b0087c9ad5a103275cb"
+              ],
+              "difficulty_design": {
+                "cognitive_process": "evaluate",
+                "concepts": [
+                  "生成证据导出",
+                  "学生讲义",
+                  "凭证隐私",
+                  "访问控制",
+                  "审核版本"
+                ],
+                "expected_steps": [
+                  "指出生成证据导出包直接作为学生 handout 的两处风险",
+                  "评价当前本地应用是否支持多用户角色与课堂访问控制",
+                  "设计分层的导出方案并论证每步与资料约束的匹配"
+                ]
+              }
+            }
+          ],
+          "visual_prompt": "一张流程图：左侧为“课程资料与检索”，指向中间“生成草稿”，再分叉为两条路径。上方路径标注“学生讲义版：仅教学文本与出处元数据”，下方路径标注“生成证据版：检索段落、配置签名、修订历史、调用用量”。两条路径都经过一个检查点“不含凭据”。右侧显示“人工审核”节点，输出“审核记录/审核版本”。流程图底部注明“本地演示：不实现认证角色与课堂访问控制”。"
+        },
+        "assessment": {
+          "kind": "blind_model_review",
+          "note": "独立调用的模型复核，尚非教师验证或学习者实测难度。",
+          "status": "passed",
+          "contract": {
+            "task": "difficulty_assessment",
+            "learner_profile": "已学习所选课程资料的计算机专业本科生，理解检索、引用与审核版本的基本概念。",
+            "rubric_version": "difficulty-rubric-v1",
+            "rubric": {
+              "easy": {
+                "description": "直接记忆或解释资料中的一个明确知识点；条件完整，无需选择复杂策略。",
+                "cognitive_processes": [
+                  "remember",
+                  "understand"
+                ],
+                "expected_steps": {
+                  "min": 1,
+                  "max": 2
+                },
+                "requirement": "评分要点为 1–2 个简短关键步骤；答案能由资料直接支持。"
+              },
+              "medium": {
+                "description": "把已学概念应用到具体情境，或比较、分析相关概念及其关系。",
+                "cognitive_processes": [
+                  "apply",
+                  "analyze"
+                ],
+                "expected_steps": {
+                  "min": 2,
+                  "max": 3
+                },
+                "requirement": "评分要点为 2–3 个相互关联的步骤，需要应用或分析，不能只是改写定义。"
+              },
+              "hard": {
+                "description": "在资料范围内综合概念，处理情境约束，进行有依据的分析、评价或设计。",
+                "cognitive_processes": [
+                  "analyze",
+                  "evaluate",
+                  "create"
+                ],
+                "expected_steps": {
+                  "min": 3,
+                  "max": 6
+                },
+                "requirement": "评分要点为 3–6 个关键步骤；题干必须要求处理具体情境约束并论证判断或设计。困难来自知识整合与推理，不能只靠复述、冷门术语、冗长措辞或资料以外的知识。"
+              }
+            },
+            "rubric_note": "以上为相对于 learner_profile 的操作性出题标准。认知过程和评分步骤是设计约束，不能单独证明实际难度；不得把 Bloom 层级或步骤数量等同于实测难度。expected_steps 只写面向学生和教师的简短评分要点，不输出隐藏思维链。",
+            "questions": [
+              {
+                "slot_id": "q1",
+                "kind": "short_answer",
+                "stem": "假设你负责审核一份利用课程本地应用生成的测验草稿。该草稿的引用标识全部通过了自动验证，系统因此将其标记为“已准备好用于教学演示”。作为审核者，你需要判断：(1) 自动验证通过能否等同于人工批准？请引用依据；(2) 若后续发现其中一个引用标识指向了确实存在但与该题结论不相关的文档，这属于哪类问题？自动验证为何不能发现？(3) 请给出两条具体且可操作的整改措施，并说明每条措施如何匹配参考资料中的要求。",
+                "options": [],
+                "answer": "参考答案：(1) 不能等同。根据片段 c7b355510d134e91833f092eec3c72ed 和 3aefdf9d56844b0087c9ad5a103275cb，自动草稿不得仅仅因为引用标识通过验证就被描述为人工批准。(2) 这属于结构验证与人工审核之间的缺口。自动验证只能确认引用标识存在，但不能判断引用是否在语义上支持题目结论，因此不能替代人工对相关性的审查。(3) 可行措施包括：① 由人工审核者填写观察和评分字段，自动化测试保持空白（依据 3aefdf9d56844b0087c9ad5a103275cb）；② 记录初始草稿、实际检索文本、不含凭据的生成设置及后续修订（依据 5caef4b8eff94d05a4294501bf115e26）。每条措施都需对引用的片段负责。评分时应检查学生是否区分自动验证与人工批准，是否指出引用相关性问题，以及整改措施是否可操作且引用具体片段。",
+                "explanation": "本题要求学生在审核情境中综合自动验证、人工审核和引用相关性的概念。学生需要理解自动验证只能检查引用标识存在性，而人工评价和证据相关性需另外判断。评分重点在于能否分步论证并给出有依据的整改措施。"
+              },
+              {
+                "slot_id": "q2",
+                "kind": "short_answer",
+                "stem": "某课程团队决定更换嵌入模型：旧模型生成 768 维向量，新模型同样生成 768 维向量。同时，一门已审核课程的教学文本被修改。该课程使用本地检索应用。假设存储系统中保留了旧模型的文档向量和旧版审核记录。请分析：(1) 仅维度相同是否足以保证旧文档向量与新查询向量兼容？为什么？(2) 更换嵌入模型后，哪些存储对象需要重建或重新索引？(3) 教学文本修改后，除了向量问题，审核版本相关的哪些对象需要处理？请给出一个考虑上述约束的更新方案，并论证每一步的必要性。",
+                "options": [],
+                "answer": "参考答案：(1) 维度相同不足以保证兼容。片段 c7b355510d134e91833f092eec3c72ed 指出，向量必须具有相同维度才能比较坐标，但维度相同不代表语义空间相同；不同模型可能使用不同语义空间，因此旧文档向量与新查询向量不能假定兼容。(2) 需要重建或重新索引所有使用旧模型生成的文档向量，使其与新查询向量在同一语义空间中；索引版本也必须同步更新，否则检索会使用不兼容的向量。(3) 教学文本修改后，已审核状态应重新审查；相关的审核记录、导出材料中的版本标记（如“当前文本是草稿还是已批准”）需要更新。更新方案示例：先建立新嵌入模型配置并生成新向量，重建索引，再更新审核记录和导出版本标记；每一步的必要性分别来自嵌入兼容性、索引版本和审核状态要求。评分要点应覆盖三步骤及其依据。",
+                "explanation": "本题围绕嵌入兼容性与版本更新设计情境，学生需要分析维度相同不等于兼容的原因，并设计一个覆盖向量重建、索引更新和审核记录更新的方案。评分重点在于是否理解语义空间差异，以及方案是否完整处理文本修订后的审核痕迹。"
+              },
+              {
+                "slot_id": "q3",
+                "kind": "short_answer",
+                "stem": "某本地开发应用准备向教师展示一门课程的生成证据导出包。该导出包将包含检索段落、配置签名、修订历史和提供商调用用量。课程负责人还计划将同一份导出包用于学生 handout，并可能在未来支持多用户访问。假设你被要求审查该计划，请完成以下任务：(1) 指出将生成证据导出包直接用作学生 handout 的至少两处风险，并说明依据；(2) 针对“是否支持多用户角色与课堂访问控制”给出一个评价性结论，并引用资料说明当前应用能做什么、不能做什么；(3) 给出一个既能满足师生不同需求、又能维持当前隐私与审核要求的导出方案，并论证每一步如何匹配资料中的约束。",
+                "options": [],
+                "answer": "参考答案：(1) 风险一：生成证据导出包比 student handout 更详细，可能包含检索段落、配置签名、修订历史等不宜向学生公开的内容（依据 5caef4b8eff94d05a4294501bf115e26）。风险二：凭据不得出现在讲义、证据包或截图中；若导出包未清理配置信息，可能泄露凭据（依据 5caef4b8eff94d05a4294501bf115e26）。(2) 评价性结论：当前本地演示尚未实现经过身份验证的角色、安全考试或课堂访问控制，因此不能将本地应用直接扩展为多用户教学平台（依据 5caef4b8eff94d05a4294501bf115e26 和 e9cd2063c2024317800235d50fd44e44）。(3) 方案：分别提供学生讲义版和生成证据版。“学生讲义版”仅保留教学文本和必要的出处元数据，去除凭据、详细检索段落和配置签名；“生成证据版”保留检索段落、配置签名、修订历史和调用用量供教师审核，但须确认其中不含凭据。每一步均需引用片段说明依据。评分时检查学生是否区分两类导出的目的、识别凭据与访问控制约束，并给出可操作的方案。",
+                "explanation": "本题要求学生在导出包使用和多用户访问两个情境约束下，评价现有应用的能力边界，并设计分类导出方案。学生需要引用片段说明生成证据导出与学生 handout 的差别，以及本地演示对认证和访问控制的限制。评分重点在于能否处理好隐私、审核和功能需求之间的平衡。"
+              }
+            ],
+            "reference_chunks": [
+              {
+                "id": "ff76236a2ba5478b9f72916629d7ab82",
+                "document_id": "0741e12042924610b524d9286fb7d1c4",
+                "document_name": "ca1_rag_course.md",
+                "page": 1,
+                "text": "Difficulty should come from the intended reasoning, not from unnecessarily obscure wording or facts outside the source.\n\nFor an easy example, ask what retrieval supplies to a generator. For a medium example, describe an answer with an existing but irrelevant citation and ask why structural validation is insufficient. For a hard example, describe a change to the embedding model and a later edit to approved teaching text, then ask which stored objects need rebuilding or renewed approval. Each example stays within this document. A multiple-choice question needs distinct options and one defensible keyed answer; a short-answer question needs a reference answer that a reviewer can justify from the cited passages.\n\nDifficulty intent is not measured student difficulty. Without learner response data, the system cannot claim that a label predicts how many students will answer correctly. A reviewer can assess whether the requested cognitive demand matches the question design, but that judgment is different from empirical calibration. Record the intended demand and any review notes separately. Do not invent student scores, learning gains, or instructor ratings for a software demonstration.",
+                "score": 0.6065807557529634
+              },
+              {
+                "id": "3aefdf9d56844b0087c9ad5a103275cb",
+                "document_id": "0741e12042924610b524d9286fb7d1c4",
+                "document_name": "ca1_rag_course.md",
+                "page": 1,
+                "text": "mes require an appropriate study involving learners. Passing the first category does not establish the second or third.\n\nWhen preserving evaluation records, retain the initial generated draft, the actual retrieved text, generation settings that exclude credentials, and later revisions. A human reviewer supplies their own observations and ratings; an automated test should leave those fields blank. A failed request should remain in the record with its status and safe error information. A request refused because evidence was missing is a different outcome from a network error. Neither should be silently replaced by a fabricated successful example.\n\nA compact demonstration can cover a lesson, a quiz, and an assignment with one question per assessment. One out-of-source objective can probe the refusal behavior. These few examples are integration evidence, not a statistically representative evaluation. State the sample size and whether any human actually reviewed the output. A later evaluation can add diverse course materials, blinded review, and real learner tasks once its protocol is agreed.\n\n## Local operation, exports, and deferred media",
+                "score": 0.5808710828884038
+              },
+              {
+                "id": "5caef4b8eff94d05a4294501bf115e26",
+                "document_id": "0741e12042924610b524d9286fb7d1c4",
+                "document_name": "ca1_rag_course.md",
+                "page": 1,
+                "text": "s, blinded review, and real learner tasks once its protocol is agreed.\n\n## Local operation, exports, and deferred media\n\nThis prototype is a local development application. A course groups source documents and generated materials. An export should preserve the teaching text and enough citation metadata to inspect its provenance outside the application. A generation evidence export is more detailed than a student handout: it can contain retrieved passages, configuration signatures, revision history, and provider call usage. Exported material should identify whether the current text is draft or approved.\n\nCredentials belong in local configuration and must not appear in handouts, evidence bundles, or screenshots prepared for review. A daily call limit bounds attempts, including attempts that fail. Before a live demonstration, confirm that text and embedding capabilities are configured; this check alone does not prove that the provider accepts the chosen model. Reusing existing local evidence for workflow demonstrations avoids unnecessary new provider calls.",
+                "score": 0.5693832875883398
+              },
+              {
+                "id": "e9cd2063c2024317800235d50fd44e44",
+                "document_id": "0741e12042924610b524d9286fb7d1c4",
+                "document_name": "ca1_rag_course.md",
+                "page": 1,
+                "text": "ed and what a person changed. A technical script exercising these transitions does not supply a human quality judgment.\n\nFor practice questions, the learning view can hide the reference answer, explanation, and difficulty rationale until answers are requested. Hiding fields in the returned student-facing object is stronger than merely hiding text with a visual style. This local demonstration does not implement authenticated roles, secure examinations, or classroom access control. The answer-reveal option is a practice feature. It must not be presented as protection against a learner who directly requests the answer endpoint.\n\n## Difficulty intent and assessment design\n\nDifficulty intent describes the reasoning a question is designed to require. An easy item can ask a learner to identify one concept or explain one direct relationship from the notes. A medium item can apply a concept in a supplied situation or compare two closely related cases. A hard item can require combining several covered concepts and analyzing constraints. Difficulty should come from the intended reasoning, not from unnecessarily obscure wording or facts outside the source.",
+                "score": 0.5500816697571793
+              },
+              {
+                "id": "c7b355510d134e91833f092eec3c72ed",
+                "document_id": "0741e12042924610b524d9286fb7d1c4",
+                "document_name": "ca1_rag_course.md",
+                "page": 1,
+                "text": ". An automated draft must not be described as human-approved merely because its citation identifiers passed validation.\n\nAn evidence boundary is crossed when a requested conclusion cannot be derived from the supplied material. Suppose a learner asks for a clinical treatment dosage while the course notes only explain retrieval systems. The notes provide no clinical evidence. The appropriate response is to report insufficient evidence and avoid inventing a dosage or an exercise that presents one as correct. The generator may explain that the relevant source material is missing. A provider outage or malformed response is an operational failure, not a successful refusal based on evidence.\n\n## Embedding compatibility and index versions\n\nEmbedding compatibility concerns the relationship between stored document vectors and a new query vector. Vectors must have the same dimension before their coordinates can be compared. Matching dimensions alone are insufficient: two models can use different semantic spaces while producing the same number of coordinates. A query from one space must not be assumed compatible with passages embedded by another model.",
+                "score": 0.541687302908386
+              }
+            ],
+            "schema": {
+              "$defs": {
+                "AssessmentItem": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "slot_id": {
+                      "minLength": 1,
+                      "title": "Slot Id",
+                      "type": "string"
+                    },
+                    "assessed_difficulty": {
+                      "enum": [
+                        "easy",
+                        "medium",
+                        "hard"
+                      ],
+                      "title": "Assessed Difficulty",
+                      "type": "string"
+                    },
+                    "confidence": {
+                      "enum": [
+                        "low",
+                        "medium",
+                        "high"
+                      ],
+                      "title": "Confidence",
+                      "type": "string"
+                    },
+                    "rationale": {
+                      "minLength": 1,
+                      "title": "Rationale",
+                      "type": "string"
+                    },
+                    "answerable_from_sources": {
+                      "title": "Answerable From Sources",
+                      "type": "boolean"
+                    },
+                    "ambiguity_free": {
+                      "title": "Ambiguity Free",
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "slot_id",
+                    "assessed_difficulty",
+                    "confidence",
+                    "rationale",
+                    "answerable_from_sources",
+                    "ambiguity_free"
+                  ],
+                  "title": "AssessmentItem",
+                  "type": "object"
+                }
+              },
+              "additionalProperties": false,
+              "properties": {
+                "items": {
+                  "items": {
+                    "$ref": "#/$defs/AssessmentItem"
+                  },
+                  "maxItems": 10,
+                  "minItems": 1,
+                  "title": "Items",
+                  "type": "array"
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "title": "DifficultyAssessment",
+              "type": "object"
+            }
+          },
+          "response": {
+            "items": [
+              {
+                "slot_id": "q1",
+                "assessed_difficulty": "hard",
+                "confidence": "high",
+                "rationale": "要求在审核情境下区分自动验证与人工批准，识别引用存在但不相关的证据边界问题，并基于给定片段提出两项可操作整改措施，符合处理具体约束并进行有依据论证的 hard 标准。",
+                "answerable_from_sources": true,
+                "ambiguity_free": true
+              },
+              {
+                "slot_id": "q2",
+                "assessed_difficulty": "hard",
+                "confidence": "high",
+                "rationale": "需综合嵌入维度相同不等于语义空间兼容、更换模型后重建向量与索引、教学文本修订后重新审核与导出版本标记等约束，设计更新方案并论证每步必要性，属于多步骤知识整合与设计。",
+                "answerable_from_sources": true,
+                "ambiguity_free": true
+              },
+              {
+                "slot_id": "q3",
+                "assessed_difficulty": "hard",
+                "confidence": "high",
+                "rationale": "要求评价本地演示在角色与课堂访问控制上的能力边界，识别生成证据导出用作学生讲义的两类风险，并设计满足师生不同需求且维持隐私与审核要求的导出方案，需引用资料约束进行论证。",
+                "answerable_from_sources": true,
+                "ambiguity_free": true
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "generation_contract": {
+      "request": {
+        "course_id": "db9f279169874de18bb3c435c67f37de",
+        "topic": "考核课程资料中的检索流程、引用支持、嵌入兼容性与审核版本。按逐题难度计划设计实际任务；需要情境时可明确给定假设条件，不能虚构外部事实。",
+        "material": "quiz",
+        "difficulty": "medium",
+        "difficulty_distribution": {
+          "easy": 0,
+          "medium": 0,
+          "hard": 3
+        },
+        "learner_profile": "已学习所选课程资料的计算机专业本科生，理解检索、引用与审核版本的基本概念。",
+        "question_type": "short_answer",
+        "count": 3,
+        "language": "zh",
+        "document_ids": [
+          "0741e12042924610b524d9286fb7d1c4"
+        ]
+      },
+      "difficulty_rule": "逐题严格遵循 difficulty_plan 及对应 rubric，不设默认混合比例。",
+      "difficulty_plan": [
+        {
+          "slot_id": "q1",
+          "difficulty": "hard"
+        },
+        {
+          "slot_id": "q2",
+          "difficulty": "hard"
+        },
+        {
+          "slot_id": "q3",
+          "difficulty": "hard"
+        }
+      ],
+      "rubric_version": "difficulty-rubric-v1",
+      "rubric": {
+        "easy": {
+          "description": "直接记忆或解释资料中的一个明确知识点；条件完整，无需选择复杂策略。",
+          "cognitive_processes": [
+            "remember",
+            "understand"
+          ],
+          "expected_steps": {
+            "min": 1,
+            "max": 2
+          },
+          "requirement": "评分要点为 1–2 个简短关键步骤；答案能由资料直接支持。"
+        },
+        "medium": {
+          "description": "把已学概念应用到具体情境，或比较、分析相关概念及其关系。",
+          "cognitive_processes": [
+            "apply",
+            "analyze"
+          ],
+          "expected_steps": {
+            "min": 2,
+            "max": 3
+          },
+          "requirement": "评分要点为 2–3 个相互关联的步骤，需要应用或分析，不能只是改写定义。"
+        },
+        "hard": {
+          "description": "在资料范围内综合概念，处理情境约束，进行有依据的分析、评价或设计。",
+          "cognitive_processes": [
+            "analyze",
+            "evaluate",
+            "create"
+          ],
+          "expected_steps": {
+            "min": 3,
+            "max": 6
+          },
+          "requirement": "评分要点为 3–6 个关键步骤；题干必须要求处理具体情境约束并论证判断或设计。困难来自知识整合与推理，不能只靠复述、冷门术语、冗长措辞或资料以外的知识。"
+        }
+      },
+      "rubric_note": "以上为相对于 learner_profile 的操作性出题标准。认知过程和评分步骤是设计约束，不能单独证明实际难度；不得把 Bloom 层级或步骤数量等同于实测难度。expected_steps 只写面向学生和教师的简短评分要点，不输出隐藏思维链。",
+      "learner_profile": "已学习所选课程资料的计算机专业本科生，理解检索、引用与审核版本的基本概念。",
+      "question_count": 3,
+      "schema": {
+        "$defs": {
+          "DifficultyDesign": {
+            "additionalProperties": false,
+            "properties": {
+              "cognitive_process": {
+                "enum": [
+                  "remember",
+                  "understand",
+                  "apply",
+                  "analyze",
+                  "evaluate",
+                  "create"
+                ],
+                "title": "Cognitive Process",
+                "type": "string"
+              },
+              "concepts": {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 6,
+                "minItems": 1,
+                "title": "Concepts",
+                "type": "array"
+              },
+              "expected_steps": {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 8,
+                "minItems": 1,
+                "title": "Expected Steps",
+                "type": "array"
+              }
+            },
+            "required": [
+              "cognitive_process",
+              "concepts",
+              "expected_steps"
+            ],
+            "title": "DifficultyDesign",
+            "type": "object"
+          },
+          "Question": {
+            "additionalProperties": false,
+            "properties": {
+              "slot_id": {
+                "type": "string"
+              },
+              "difficulty": {
+                "enum": [
+                  "easy",
+                  "medium",
+                  "hard"
+                ],
+                "type": "string"
+              },
+              "difficulty_design": {
+                "$ref": "#/$defs/DifficultyDesign"
+              },
+              "kind": {
+                "enum": [
+                  "mcq",
+                  "short_answer"
+                ],
+                "title": "Kind",
+                "type": "string"
+              },
+              "stem": {
+                "minLength": 1,
+                "title": "Stem",
+                "type": "string"
+              },
+              "options": {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 6,
+                "title": "Options",
+                "type": "array"
+              },
+              "answer": {
+                "minLength": 1,
+                "title": "Answer",
+                "type": "string"
+              },
+              "explanation": {
+                "minLength": 1,
+                "title": "Explanation",
+                "type": "string"
+              },
+              "difficulty_reason": {
+                "minLength": 1,
+                "title": "Difficulty Reason",
+                "type": "string"
+              },
+              "citation_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 10,
+                "minItems": 1,
+                "title": "Citation Ids",
+                "type": "array"
+              }
+            },
+            "required": [
+              "kind",
+              "stem",
+              "answer",
+              "explanation",
+              "difficulty_reason",
+              "citation_ids",
+              "slot_id",
+              "difficulty",
+              "difficulty_design"
+            ],
+            "title": "Question",
+            "type": "object"
+          },
+          "Section": {
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "minLength": 1,
+                "title": "Heading",
+                "type": "string"
+              },
+              "text": {
+                "minLength": 1,
+                "title": "Text",
+                "type": "string"
+              },
+              "citation_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 10,
+                "minItems": 1,
+                "title": "Citation Ids",
+                "type": "array"
+              }
+            },
+            "required": [
+              "heading",
+              "text",
+              "citation_ids"
+            ],
+            "title": "Section",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "evidence_sufficient": {
+            "title": "Evidence Sufficient",
+            "type": "boolean"
+          },
+          "evidence_note": {
+            "default": "",
+            "title": "Evidence Note",
+            "type": "string"
+          },
+          "learning_objectives": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "title": "Learning Objectives",
+            "type": "array"
+          },
+          "sections": {
+            "items": {
+              "$ref": "#/$defs/Section"
+            },
+            "maxItems": 10,
+            "title": "Sections",
+            "type": "array"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/$defs/Question"
+            },
+            "maxItems": 3,
+            "title": "Questions",
+            "type": "array"
+          },
+          "visual_prompt": {
+            "default": "",
+            "title": "Visual Prompt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "evidence_sufficient"
+        ],
+        "title": "LearningAsset",
+        "type": "object"
+      }
+    }
+  },
+  "calls": [
+    {
+      "capability": "embedding",
+      "model": "qwen/qwen3-embedding-8b",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 43,
+        "total_tokens": 43,
+        "cost": 4.3e-07,
+        "cost_details": {
+          "upstream_inference_cost": 4.3e-07
+        }
+      },
+      "created_at": "2026-09-12T04:26:03.691083+00:00",
+      "duration_ms": 3213,
+      "http_status": 200,
+      "response_model": "Qwen/Qwen3-Embedding-8B"
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 3258,
+        "completion_tokens": 2239,
+        "total_tokens": 5497,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 3258
+      },
+      "created_at": "2026-09-12T04:26:06.912956+00:00",
+      "duration_ms": 10889,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 3274,
+        "completion_tokens": 219,
+        "total_tokens": 3493,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 3274
+      },
+      "created_at": "2026-09-12T04:26:17.805257+00:00",
+      "duration_ms": 1880,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 3577,
+        "completion_tokens": 2743,
+        "total_tokens": 6320,
+        "prompt_tokens_details": {
+          "cached_tokens": 3200
+        },
+        "prompt_cache_hit_tokens": 3200,
+        "prompt_cache_miss_tokens": 377
+      },
+      "created_at": "2026-09-12T04:26:19.690014+00:00",
+      "duration_ms": 14153,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 3765,
+        "completion_tokens": 253,
+        "total_tokens": 4018,
+        "prompt_tokens_details": {
+          "cached_tokens": 512
+        },
+        "prompt_cache_hit_tokens": 512,
+        "prompt_cache_miss_tokens": 3253
+      },
+      "created_at": "2026-09-12T04:26:33.847462+00:00",
+      "duration_ms": 1621,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    }
+  ],
+  "limitations": [
+    "Retrieved passages and citation identifiers do not establish factual correctness.",
+    "Call success describes the provider response contract; inspect job and attempt validation separately."
+  ]
+}

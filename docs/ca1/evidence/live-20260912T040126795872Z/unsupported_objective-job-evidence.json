@@ -1,0 +1,318 @@
+{
+  "schema_version": "ca1-job-evidence-v1",
+  "exported_at": "2026-09-12T04:01:56.295509+00:00",
+  "job": {
+    "id": "1bf34a0a26e34157ab900123a752a0b8",
+    "kind": "generate",
+    "status": "insufficient_evidence",
+    "result": {
+      "insufficient_evidence": true,
+      "message": "The provided reference chunks only discuss retrieval-augmented generation, citation support, and embedding compatibility. They contain no information about the fictional material CA1-Zirconium-999, its superconducting critical temperature, or any laboratory measurement method. Therefore, the requested objective cannot be supported."
+    },
+    "error": null,
+    "created_at": "2026-09-12T04:01:52.479925+00:00",
+    "updated_at": "2026-09-12T04:01:56.291368+00:00"
+  },
+  "evidence": {
+    "request": {
+      "course_id": "71fbd50fc8f14deabd75f7e22214dbc8",
+      "topic": "State the experimentally measured superconducting critical temperature of the fictional material CA1-Zirconium-999 in kelvin, with the laboratory measurement method.",
+      "material": "lesson",
+      "difficulty": "easy",
+      "question_type": "short_answer",
+      "count": 1,
+      "language": "en",
+      "document_ids": [
+        "58801b55a1964873a1f54805bcc9a728"
+      ]
+    },
+    "prompt_version": "education-v2",
+    "sources": [
+      {
+        "id": "1aca2ff1a17b42f6ac5f0a97e7bdc4f2",
+        "document_id": "58801b55a1964873a1f54805bcc9a728",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "Difficulty should come from the intended reasoning, not from unnecessarily obscure wording or facts outside the source.\n\nFor an easy example, ask what retrieval supplies to a generator. For a medium example, describe an answer with an existing but irrelevant citation and ask why structural validation is insufficient. For a hard example, describe a change to the embedding model and a later edit to approved teaching text, then ask which stored objects need rebuilding or renewed approval. Each example stays within this document. A multiple-choice question needs distinct options and one defensible keyed answer; a short-answer question needs a reference answer that a reviewer can justify from the cited passages.\n\nDifficulty intent is not measured student difficulty. Without learner response data, the system cannot claim that a label predicts how many students will answer correctly. A reviewer can assess whether the requested cognitive demand matches the question design, but that judgment is different from empirical calibration. Record the intended demand and any review notes separately. Do not invent student scores, learning gains, or instructor ratings for a software demonstration.",
+        "score": 0.3017900924103273
+      },
+      {
+        "id": "c06e43812f8f42af8bd75cae70a7718d",
+        "document_id": "58801b55a1964873a1f54805bcc9a728",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "mes require an appropriate study involving learners. Passing the first category does not establish the second or third.\n\nWhen preserving evaluation records, retain the initial generated draft, the actual retrieved text, generation settings that exclude credentials, and later revisions. A human reviewer supplies their own observations and ratings; an automated test should leave those fields blank. A failed request should remain in the record with its status and safe error information. A request refused because evidence was missing is a different outcome from a network error. Neither should be silently replaced by a fabricated successful example.\n\nA compact demonstration can cover a lesson, a quiz, and an assignment with one question per assessment. One out-of-source objective can probe the refusal behavior. These few examples are integration evidence, not a statistically representative evaluation. State the sample size and whether any human actually reviewed the output. A later evaluation can add diverse course materials, blinded review, and real learner tasks once its protocol is agreed.\n\n## Local operation, exports, and deferred media",
+        "score": 0.28271243885361774
+      },
+      {
+        "id": "5dd315c3075b4ddbb4b726be825a4a68",
+        "document_id": "58801b55a1964873a1f54805bcc9a728",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "still checks whether the selected passages cover the requested objective.\n\n## Citation support and evidence boundaries\n\nCitation support requires reading the cited text. An existing citation identifier proves that a passage can be found in the recorded source set. It does not prove that the passage supports every sentence in the explanation. For example, a passage saying that human review is required cannot support a generated claim that retrieval always eliminates mistakes. The citation is structurally valid in that example, but the factual conclusion is unsupported.\n\nWhen assessing citation support, separate three questions. First, does the cited identifier belong to the passages supplied to this generation? Second, does that passage contain the information needed for the claim? Third, does the explanation preserve any conditions or limitations in that information? A program can check the first question mechanically. The second and third require a content judgment. An automated draft must not be described as human-approved merely because its citation identifiers passed validation.",
+        "score": 0.272091251839236
+      },
+      {
+        "id": "ab0c520229f84ae1a3339f57cf1e7e8d",
+        "document_id": "58801b55a1964873a1f54805bcc9a728",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": ". An automated draft must not be described as human-approved merely because its citation identifiers passed validation.\n\nAn evidence boundary is crossed when a requested conclusion cannot be derived from the supplied material. Suppose a learner asks for a clinical treatment dosage while the course notes only explain retrieval systems. The notes provide no clinical evidence. The appropriate response is to report insufficient evidence and avoid inventing a dosage or an exercise that presents one as correct. The generator may explain that the relevant source material is missing. A provider outage or malformed response is an operational failure, not a successful refusal based on evidence.\n\n## Embedding compatibility and index versions\n\nEmbedding compatibility concerns the relationship between stored document vectors and a new query vector. Vectors must have the same dimension before their coordinates can be compared. Matching dimensions alone are insufficient: two models can use different semantic spaces while producing the same number of coordinates. A query from one space must not be assumed compatible with passages embedded by another model.",
+        "score": 0.2650151326706205
+      },
+      {
+        "id": "1c8d810a09b24103aef015c6bbe29ab8",
+        "document_id": "58801b55a1964873a1f54805bcc9a728",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "s, blinded review, and real learner tasks once its protocol is agreed.\n\n## Local operation, exports, and deferred media\n\nThis prototype is a local development application. A course groups source documents and generated materials. An export should preserve the teaching text and enough citation metadata to inspect its provenance outside the application. A generation evidence export is more detailed than a student handout: it can contain retrieved passages, configuration signatures, revision history, and provider call usage. Exported material should identify whether the current text is draft or approved.\n\nCredentials belong in local configuration and must not appear in handouts, evidence bundles, or screenshots prepared for review. A daily call limit bounds attempts, including attempts that fail. Before a live demonstration, confirm that text and embedding capabilities are configured; this check alone does not prove that the provider accepts the chosen model. Reusing existing local evidence for workflow demonstrations avoids unnecessary new provider calls.",
+        "score": 0.2600353449385585
+      }
+    ],
+    "configuration": {
+      "course_id": "71fbd50fc8f14deabd75f7e22214dbc8",
+      "topic": "State the experimentally measured superconducting critical temperature of the fictional material CA1-Zirconium-999 in kelvin, with the laboratory measurement method.",
+      "material": "lesson",
+      "difficulty": "easy",
+      "question_type": "short_answer",
+      "count": 1,
+      "language": "en",
+      "document_ids": [
+        "58801b55a1964873a1f54805bcc9a728"
+      ],
+      "prompt_version": "education-v2",
+      "text_model": "deepseek-flash",
+      "text_endpoint_signature": "83b11c7b63af3acbbf3c",
+      "embedding_model": "qwen/qwen3-embedding-8b",
+      "embedding_signature": "00e64e3f244084054844",
+      "retrieval_top_k": 5,
+      "text_json_mode": true
+    },
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "valid",
+        "response": {
+          "title": "Superconducting Critical Temperature of CA1-Zirconium-999",
+          "evidence_sufficient": false,
+          "evidence_note": "The provided reference chunks only discuss retrieval-augmented generation, citation support, and embedding compatibility. They contain no information about the fictional material CA1-Zirconium-999, its superconducting critical temperature, or any laboratory measurement method. Therefore, the requested objective cannot be supported.",
+          "learning_objectives": [],
+          "sections": [],
+          "questions": [],
+          "visual_prompt": "No visual aids can be provided because the required evidence is missing."
+        }
+      }
+    ],
+    "generation_contract": {
+      "request": {
+        "course_id": "71fbd50fc8f14deabd75f7e22214dbc8",
+        "topic": "State the experimentally measured superconducting critical temperature of the fictional material CA1-Zirconium-999 in kelvin, with the laboratory measurement method.",
+        "material": "lesson",
+        "difficulty": "easy",
+        "language": "en",
+        "document_ids": [
+          "58801b55a1964873a1f54805bcc9a728"
+        ]
+      },
+      "question_count": 0,
+      "schema": {
+        "$defs": {
+          "Question": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "mcq",
+                  "short_answer"
+                ],
+                "title": "Kind",
+                "type": "string"
+              },
+              "stem": {
+                "maxLength": 3000,
+                "minLength": 1,
+                "title": "Stem",
+                "type": "string"
+              },
+              "options": {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 6,
+                "title": "Options",
+                "type": "array"
+              },
+              "answer": {
+                "maxLength": 3000,
+                "minLength": 1,
+                "title": "Answer",
+                "type": "string"
+              },
+              "explanation": {
+                "maxLength": 4000,
+                "minLength": 1,
+                "title": "Explanation",
+                "type": "string"
+              },
+              "difficulty_reason": {
+                "maxLength": 1000,
+                "minLength": 1,
+                "title": "Difficulty Reason",
+                "type": "string"
+              },
+              "citation_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 10,
+                "minItems": 1,
+                "title": "Citation Ids",
+                "type": "array"
+              }
+            },
+            "required": [
+              "kind",
+              "stem",
+              "answer",
+              "explanation",
+              "difficulty_reason",
+              "citation_ids"
+            ],
+            "title": "Question",
+            "type": "object"
+          },
+          "Section": {
+            "additionalProperties": false,
+            "properties": {
+              "heading": {
+                "maxLength": 200,
+                "minLength": 1,
+                "title": "Heading",
+                "type": "string"
+              },
+              "text": {
+                "maxLength": 6000,
+                "minLength": 1,
+                "title": "Text",
+                "type": "string"
+              },
+              "citation_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 10,
+                "minItems": 1,
+                "title": "Citation Ids",
+                "type": "array"
+              }
+            },
+            "required": [
+              "heading",
+              "text",
+              "citation_ids"
+            ],
+            "title": "Section",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "evidence_sufficient": {
+            "title": "Evidence Sufficient",
+            "type": "boolean"
+          },
+          "evidence_note": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Evidence Note",
+            "type": "string"
+          },
+          "learning_objectives": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "title": "Learning Objectives",
+            "type": "array"
+          },
+          "sections": {
+            "items": {
+              "$ref": "#/$defs/Section"
+            },
+            "maxItems": 10,
+            "title": "Sections",
+            "type": "array"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/$defs/Question"
+            },
+            "maxItems": 0,
+            "title": "Questions",
+            "type": "array"
+          },
+          "visual_prompt": {
+            "default": "",
+            "maxLength": 3000,
+            "title": "Visual Prompt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "evidence_sufficient"
+        ],
+        "title": "LearningAsset",
+        "type": "object"
+      }
+    }
+  },
+  "calls": [
+    {
+      "capability": "embedding",
+      "model": "qwen/qwen3-embedding-8b",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 34,
+        "total_tokens": 34,
+        "cost": 3.4e-07,
+        "cost_details": {
+          "upstream_inference_cost": 3.4e-07
+        }
+      },
+      "created_at": "2026-09-12T04:01:52.495407+00:00",
+      "duration_ms": 2728,
+      "http_status": 200,
+      "response_model": "Qwen/Qwen3-Embedding-8B"
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 2431,
+        "completion_tokens": 131,
+        "total_tokens": 2562,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 2431
+      },
+      "created_at": "2026-09-12T04:01:55.228939+00:00",
+      "duration_ms": 1059,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    }
+  ],
+  "limitations": [
+    "Retrieved passages and citation identifiers do not establish factual correctness.",
+    "Call success describes the provider response contract; inspect job and attempt validation separately."
+  ]
+}

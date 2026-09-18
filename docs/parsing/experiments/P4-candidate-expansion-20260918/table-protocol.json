@@ -1,0 +1,14 @@
+{
+  "frozen_at_utc": "2026-09-18T06:58:51.112237+00:00",
+  "stage": "Additional descriptive metric defined after early text results, before calculating any table scores; does not replace preregistered prose CER selection.",
+  "reference": "IBM PubTabNet TEDS; pinned source/license under research/pubtabnet",
+  "normalization": "first HTML table; strip thead/tbody/tfoot; th->td; preserve cell characters; clamp similarity to [0,1]; empty invalid prediction=0",
+  "gold": "all annotation category_type=table with nonempty html; select html field, never best-of html/html_2",
+  "matching": "normalized bbox IoU >= .5 maximum-cardinality one-to-one; unmatched gold scores 0; extra predictions included in localization precision",
+  "variants": [
+    "native_pdf",
+    "image_only_pdf"
+  ],
+  "primary_table_metric": "mean structure-only TEDS per gold table; content TEDS secondary because mathematical cell serialization differs",
+  "limits": "Project diagnostic, not official OmniDocBench metric; coordinate differences and small sample; no formula semantics claim"
+}

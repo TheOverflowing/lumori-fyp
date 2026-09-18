@@ -1,0 +1,151 @@
+{
+  "document_timeout": null,
+  "accelerator_options": {
+    "num_threads": 4,
+    "device": "cpu",
+    "cuda_use_flash_attention2": false
+  },
+  "enable_remote_services": false,
+  "allow_external_plugins": false,
+  "artifacts_path": "/Users/theoverflow/Downloads/FYP/tmp/p4-models",
+  "do_picture_classification": false,
+  "picture_classification_options": {
+    "engine_options": {
+      "engine_type": "transformers",
+      "top_k": null,
+      "torch_dtype": null,
+      "compile_model": false
+    },
+    "model_spec": {
+      "name": "document_figure_classifier_v2",
+      "repo_id": "docling-project/DocumentFigureClassifier-v2.5",
+      "revision": "main",
+      "engine_overrides": {}
+    }
+  },
+  "do_picture_description": false,
+  "picture_description_options": {
+    "batch_size": 8,
+    "scale": 2.0,
+    "picture_area_threshold": 0.05,
+    "classification_allow": null,
+    "classification_deny": null,
+    "classification_min_confidence": 0.0,
+    "engine_options": {
+      "engine_type": "auto_inline",
+      "prefer_vllm": false
+    },
+    "model_spec": {
+      "name": "SmolVLM-256M-Instruct",
+      "default_repo_id": "HuggingFaceTB/SmolVLM-256M-Instruct",
+      "revision": "main",
+      "prompt": "Describe this image in a few sentences.",
+      "response_format": "plaintext",
+      "supported_engines": null,
+      "engine_overrides": {
+        "mlx": {
+          "repo_id": "moot20/SmolVLM-256M-Instruct-MLX",
+          "revision": null,
+          "torch_dtype": null,
+          "min_engine_version": null,
+          "extra_config": {}
+        },
+        "transformers": {
+          "repo_id": null,
+          "revision": null,
+          "torch_dtype": "bfloat16",
+          "min_engine_version": null,
+          "extra_config": {
+            "transformers_model_type": "automodel-imagetexttotext"
+          }
+        }
+      },
+      "api_overrides": {
+        "api_lmstudio": {
+          "params": {
+            "model": "smolvlm-256m-instruct"
+          }
+        }
+      },
+      "trust_remote_code": false,
+      "stop_strings": [],
+      "temperature": 0.0,
+      "max_new_tokens": 4096,
+      "extra_generation_config": {}
+    },
+    "prompt": "Describe this image in a few sentences.",
+    "generation_config": {
+      "max_new_tokens": 200,
+      "do_sample": false
+    }
+  },
+  "do_chart_extraction": false,
+  "chart_extraction_options": {
+    "kind": "chart_extraction",
+    "model": "granite-vision-v4",
+    "chart2csv": true,
+    "chart2code": false,
+    "chart2summary": false
+  },
+  "images_scale": 2.0,
+  "generate_page_images": true,
+  "generate_picture_images": true,
+  "force_backend_text": false,
+  "vlm_options": {
+    "engine_options": {
+      "engine_type": "mlx",
+      "trust_remote_code": false
+    },
+    "model_spec": {
+      "name": "Granite-Docling-258M",
+      "default_repo_id": "ibm-granite/granite-docling-258M",
+      "revision": "main",
+      "prompt": "Convert this page to docling.",
+      "response_format": "doctags",
+      "supported_engines": null,
+      "engine_overrides": {
+        "mlx": {
+          "repo_id": "ibm-granite/granite-docling-258M-mlx",
+          "revision": null,
+          "torch_dtype": null,
+          "min_engine_version": null,
+          "extra_config": {}
+        },
+        "transformers": {
+          "repo_id": null,
+          "revision": null,
+          "torch_dtype": null,
+          "min_engine_version": null,
+          "extra_config": {
+            "transformers_model_type": "automodel-imagetexttotext",
+            "extra_generation_config": {
+              "skip_special_tokens": false
+            }
+          }
+        }
+      },
+      "api_overrides": {
+        "api_ollama": {
+          "params": {
+            "model": "ibm/granite-docling:258m"
+          }
+        }
+      },
+      "trust_remote_code": false,
+      "stop_strings": [
+        "</doctag>",
+        "<|end_of_text|>"
+      ],
+      "temperature": 0.0,
+      "max_new_tokens": 8192,
+      "extra_generation_config": {}
+    },
+    "scale": 2.0,
+    "max_size": null,
+    "batch_size": 1,
+    "force_backend_text": false
+  },
+  "pipeline_class": "VlmPipeline",
+  "ocr_class": null,
+  "table_class": null
+}

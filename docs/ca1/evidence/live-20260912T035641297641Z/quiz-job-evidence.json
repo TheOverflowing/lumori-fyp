@@ -1,0 +1,169 @@
+{
+  "schema_version": "ca1-job-evidence-v1",
+  "exported_at": "2026-09-12T03:57:05.172598+00:00",
+  "job": {
+    "id": "6b1e4b04b89a453e8d513f4698a58059",
+    "kind": "generate",
+    "status": "succeeded",
+    "result": {
+      "content_id": "11b48054423845c28fb11024976a8b86"
+    },
+    "error": null,
+    "created_at": "2026-09-12T03:56:58.579362+00:00",
+    "updated_at": "2026-09-12T03:57:05.166724+00:00"
+  },
+  "evidence": {
+    "request": {
+      "course_id": "153a227bbb534f67a90145e4c214dc3f",
+      "topic": "Assess citation support: why can an existing citation identifier fail to support an answer? Use a concrete example from the notes.",
+      "material": "quiz",
+      "difficulty": "medium",
+      "question_type": "short_answer",
+      "count": 1,
+      "language": "en",
+      "document_ids": [
+        "b244486ed0484634bf908cd19acdde2d"
+      ]
+    },
+    "prompt_version": "education-v1",
+    "sources": [
+      {
+        "id": "927abd040836438c9f6bf776c1ba13e6",
+        "document_id": "b244486ed0484634bf908cd19acdde2d",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "still checks whether the selected passages cover the requested objective.\n\n## Citation support and evidence boundaries\n\nCitation support requires reading the cited text. An existing citation identifier proves that a passage can be found in the recorded source set. It does not prove that the passage supports every sentence in the explanation. For example, a passage saying that human review is required cannot support a generated claim that retrieval always eliminates mistakes. The citation is structurally valid in that example, but the factual conclusion is unsupported.\n\nWhen assessing citation support, separate three questions. First, does the cited identifier belong to the passages supplied to this generation? Second, does that passage contain the information needed for the claim? Third, does the explanation preserve any conditions or limitations in that information? A program can check the first question mechanically. The second and third require a content judgment. An automated draft must not be described as human-approved merely because its citation identifiers passed validation.",
+        "score": 0.8112367543585086
+      },
+      {
+        "id": "b8d1c525d5a74f3d907600b3ab25679d",
+        "document_id": "b244486ed0484634bf908cd19acdde2d",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "l evidence; it does not update the language model's parameters and does not itself prove the final explanation correct.\n\nFor a RAG ingestion example, imagine a document with eight passages and a retrieval limit of three. A request about citations should rank citation passages ahead of unrelated interface notes. The evidence record should preserve the actual ranked passages and similarity scores. A score measures the comparison used by this retrieval configuration; it is not a calibrated probability that the answer is correct. If every passage is returned, the run demonstrates context supply but does not demonstrate selective ranking. A human still checks whether the selected passages cover the requested objective.\n\n## Citation support and evidence boundaries",
+        "score": 0.6061755601287537
+      },
+      {
+        "id": "d14b60c9729e4fc08d980b82032db14b",
+        "document_id": "b244486ed0484634bf908cd19acdde2d",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": ". An automated draft must not be described as human-approved merely because its citation identifiers passed validation.\n\nAn evidence boundary is crossed when a requested conclusion cannot be derived from the supplied material. Suppose a learner asks for a clinical treatment dosage while the course notes only explain retrieval systems. The notes provide no clinical evidence. The appropriate response is to report insufficient evidence and avoid inventing a dosage or an exercise that presents one as correct. The generator may explain that the relevant source material is missing. A provider outage or malformed response is an operational failure, not a successful refusal based on evidence.\n\n## Embedding compatibility and index versions\n\nEmbedding compatibility concerns the relationship between stored document vectors and a new query vector. Vectors must have the same dimension before their coordinates can be compared. Matching dimensions alone are insufficient: two models can use different semantic spaces while producing the same number of coordinates. A query from one space must not be assumed compatible with passages embedded by another model.",
+        "score": 0.6050124548356332
+      },
+      {
+        "id": "00543ff624d047b5af2091756e21a0a1",
+        "document_id": "b244486ed0484634bf908cd19acdde2d",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "Difficulty should come from the intended reasoning, not from unnecessarily obscure wording or facts outside the source.\n\nFor an easy example, ask what retrieval supplies to a generator. For a medium example, describe an answer with an existing but irrelevant citation and ask why structural validation is insufficient. For a hard example, describe a change to the embedding model and a later edit to approved teaching text, then ask which stored objects need rebuilding or renewed approval. Each example stays within this document. A multiple-choice question needs distinct options and one defensible keyed answer; a short-answer question needs a reference answer that a reviewer can justify from the cited passages.\n\nDifficulty intent is not measured student difficulty. Without learner response data, the system cannot claim that a label predicts how many students will answer correctly. A reviewer can assess whether the requested cognitive demand matches the question design, but that judgment is different from empirical calibration. Record the intended demand and any review notes separately. Do not invent student scores, learning gains, or instructor ratings for a software demonstration.",
+        "score": 0.5670822676321075
+      },
+      {
+        "id": "a3bb2fdd8752421a8ea9593de052ccb5",
+        "document_id": "b244486ed0484634bf908cd19acdde2d",
+        "document_name": "ca1_rag_course.md",
+        "page": 1,
+        "text": "l overlap between neighboring passages can preserve context at a boundary, although overlap also creates repeated text.\n\nAt request time, the application embeds the learning objective using a compatible embedding configuration. It compares the query vector with stored passage vectors and ranks the candidates by similarity. The selected passages accompany the objective in a text-generation request. The generator should use those passages to explain a covered concept or write an answerable exercise. Retrieval supplies external evidence; it does not update the language model's parameters and does not itself prove the final explanation correct.",
+        "score": 0.5282274333609451
+      }
+    ],
+    "configuration": {
+      "course_id": "153a227bbb534f67a90145e4c214dc3f",
+      "topic": "Assess citation support: why can an existing citation identifier fail to support an answer? Use a concrete example from the notes.",
+      "material": "quiz",
+      "difficulty": "medium",
+      "question_type": "short_answer",
+      "count": 1,
+      "language": "en",
+      "document_ids": [
+        "b244486ed0484634bf908cd19acdde2d"
+      ],
+      "prompt_version": "education-v1",
+      "text_model": "deepseek-flash",
+      "text_endpoint_signature": "83b11c7b63af3acbbf3c",
+      "embedding_model": "qwen/qwen3-embedding-8b",
+      "embedding_signature": "00e64e3f244084054844",
+      "retrieval_top_k": 5
+    },
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "valid",
+        "response": {
+          "title": "Citation Support vs. Citation Validity",
+          "evidence_sufficient": true,
+          "evidence_note": "The provided notes directly address why an existing citation identifier can fail to support a claim, with the human-review example and the three-question framework in chunk 927abd040836438c9f6bf776c1ba13e6.",
+          "learning_objectives": [
+            "Explain why a structurally valid citation identifier does not guarantee factual support for a claim [927abd040836438c9f6bf776c1ba13e6].",
+            "Apply the three-question citation-support check to a concrete example from the notes [927abd040836438c9f6bf776c1ba13e6]."
+          ],
+          "sections": [
+            {
+              "heading": "A valid citation identifier is not the same as support",
+              "text": "Citation support requires actually reading the cited text. An existing citation identifier only proves that a passage can be found in the recorded source set; it does not prove that the passage supports every sentence in the explanation [927abd040836438c9f6bf776c1ba13e6].\n\nA concrete example from the notes: a passage stating that human review is required cannot support a generated claim that retrieval always eliminates mistakes. In this case the citation is structurally valid, but the factual conclusion is unsupported [927abd040836438c9f6bf776c1ba13e6].\n\nTo assess citation support, the notes separate three questions: (1) does the cited identifier belong to the passages supplied to this generation, (2) does that passage contain the information needed for the claim, and (3) does the explanation preserve any conditions or limitations in that information? A program can check only the first question mechanically; the second and third require a content judgment [927abd040836438c9f6bf776c1ba13e6].",
+              "citation_ids": [
+                "927abd040836438c9f6bf776c1ba13e6"
+              ]
+            }
+          ],
+          "questions": [
+            {
+              "kind": "short_answer",
+              "stem": "Using the example from the notes, explain why an existing citation identifier can fail to support an answer. In your answer, refer to the three questions the notes say should be separated when assessing citation support.",
+              "answer": "An existing citation identifier only proves that a passage can be found in the recorded source set; it does not prove the passage supports every sentence of the explanation. For example, a passage stating that human review is required cannot support a generated claim that retrieval always eliminates mistakes: the citation is structurally valid but the factual conclusion is unsupported. The notes say to separate three questions: (1) does the cited identifier belong to the passages supplied to this generation; (2) does that passage contain the information needed for the claim; (3) does the explanation preserve any conditions or limitations in that information? Only the first can be checked mechanically; the second and third require a content judgment.",
+              "explanation": "A citation identifier is a structural record, not a factual guarantee. The notes give the human-review example: the cited passage requires human review, so it cannot support a claim that retrieval always eliminates mistakes. The three-question framework shows that identifier validity (question 1) is only the mechanical part; whether the passage contains the needed information (question 2) and whether conditions are preserved (question 3) require content judgment [927abd040836438c9f6bf776c1ba13e6].",
+              "difficulty_reason": "The learner must recall a concrete example from the notes, then apply a three-part conceptual distinction (identifier validity vs. content support vs. preserved limitations) to explain why the example fails. This is two-step reasoning within the given material.",
+              "citation_ids": [
+                "927abd040836438c9f6bf776c1ba13e6"
+              ]
+            }
+          ],
+          "visual_prompt": "A two-column diagram titled 'Citation identifier vs. citation support'. Left column: a document icon labeled 'Cited passage', a checkmark labeled 'Identifier found in source set', and a note 'Mechanical check'. Right column: a claim box reading 'Claim: retrieval always eliminates mistakes', an arrow pointing to a passage box reading 'Passage: human review is required', and a warning label 'Content judgment needed'. A footer lists three numbered checkpoints: (1) identifier belongs to supplied passages, (2) passage contains needed information, (3) conditions and limitations preserved. No answer text or conclusion about the claim's correctness is shown."
+        }
+      }
+    ]
+  },
+  "calls": [
+    {
+      "capability": "embedding",
+      "model": "qwen/qwen3-embedding-8b",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 26,
+        "total_tokens": 26,
+        "cost": 2.6e-07,
+        "cost_details": {
+          "upstream_inference_cost": 2.6e-07
+        }
+      },
+      "created_at": "2026-09-12T03:56:58.591979+00:00",
+      "duration_ms": 2275,
+      "http_status": 200,
+      "response_model": "Qwen/Qwen3-Embedding-8B"
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 2223,
+        "completion_tokens": 943,
+        "total_tokens": 3166,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 2223
+      },
+      "created_at": "2026-09-12T03:57:00.872883+00:00",
+      "duration_ms": 4290,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    }
+  ],
+  "limitations": [
+    "Retrieved passages and citation identifiers do not establish factual correctness.",
+    "Call success describes the provider response contract; inspect job and attempt validation separately."
+  ]
+}

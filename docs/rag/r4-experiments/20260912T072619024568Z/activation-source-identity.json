@@ -1,0 +1,18 @@
+[
+  {
+    "name": "ca1_rag_course.md",
+    "sha256": "2071a46cfbfba15b98487f7706ee9cf26d6ecff069fdd6fbbf489ee593841382",
+    "bytes": 11608,
+    "exactly_matches_repository_sample": true,
+    "sample_path": "/Users/theoverflow/Downloads/FYP/sample_data/ca1_rag_course.md",
+    "excerpt": "# CA1 demonstration course: evidence, retrieval, and reviewed learning materials\n\nThis is self-authored synthetic teaching material for a software demonstration. It is not an official course handout, a research result, or a benchmark of any model. Its examples deliberately separate evidence from claims about quality. The notes contain several topics so that the application must select a subset of passages for a request. A successful demonstration does not establish accuracy for real students.\n\n## RAG ingestion and retrieval\n\nRAG ingestion begins with extracting text from an allowed document. The application divides the text into passages and stores each passage with an identifier, document name, and page reference. An embedding service maps"
+  },
+  {
+    "name": "intro_to_rag.md",
+    "sha256": "9cb68eb84a2b40e6a5c4c9339c98307fdc26d3e7d4f1340ea78d94585057ab44",
+    "bytes": 2137,
+    "exactly_matches_repository_sample": true,
+    "sample_path": "/Users/theoverflow/Downloads/FYP/sample_data/intro_to_rag.md",
+    "excerpt": "# RAG 基础示例讲义\n\n本文是为本地流程验证编写的示例资料，不是课程官方教材，也不包含模型评估结果。\n\n## 检索增强生成的流程\n\n检索增强生成（RAG）把外部资料检索与语言模型生成结合起来。资料入库时，系统先提取文档文字，并切分成较短的片段。嵌入模型把片段转换为向量，系统保存向量与片段、来源文档和页码的对应关系。\n\n用户提交学习目标后，系统使用同一嵌入模型将查询转换为向量，再根据相似程度检索相关片段。检索结果与任务要求一起交给文本模型，模型依据这些片段生成解释或练习。\n\n## 引用与正确性\n\n检索到相关资料并不等于生成结果一定正确。模型可能引用正确的片段却得出错误结论，也可能输出存在但无关的引用编号。因此，程序检查引用编号存在，只能验证引用结构；判断结论是否被引用支持，需要阅读片段内容。\n\n当资料没有覆盖用户的知识点时，系统应提示证据不足，而不是编造答案。RAG 的效果同时取决于资料质量、检索能力和模型如何使用检索片段。\n\n## 向量模型的一致性\n\n资料向量和查询向量必须由兼容的嵌入配置产生。不同模型可能使用不同维度或不同的语义空间。更换嵌入模型后，即使向量维度相同，也不能直接假定旧索引兼容。系统应保存模型与索引版本，并重新生成资料向量。\n\n## 教学材料与多模态\n\n教学系统可以先生成文字讲解和练习，再把审核后的文字转换成语音或辅助图。文字与媒体应绑定同一个版本。文字修改后，需要重新检查媒体，避免语音继续播放旧解释。\n\n## 难度与评价\n\n题目可以按基础、应用和综合设置设计目标。基础题侧重识别单一概念；应用题要求把概念用于给定情境；综合题需要分析关系和约束。这些设计标签不等于真实学生作答得到的难度。评价应分别记录内容正确性、资料支持度、题目难度匹配度与多模态一致性。\n"
+  }
+]

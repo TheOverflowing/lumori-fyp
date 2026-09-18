@@ -1,0 +1,37 @@
+--- scripts/evaluate_paddle_parsing.py
++++ scripts/evaluate_paddle_unmerged.py
+@@ -1,4 +1,6 @@
+-"""PaddleOCR-VL 1.6 full pipeline: CPU PP-DocLayoutV3 + local MLX VLM.
++"""Controlled development variant: disable Paddle layout-block merging.
++
++PaddleOCR-VL 1.6 full pipeline: CPU PP-DocLayoutV3 + local MLX VLM.
+ 
+ Official Apple Silicon route. Each timed input owns its server process, so a
+ timeout kills both client and inference and cannot contaminate the next case.
+@@ -23,7 +25,7 @@
+ from scripts.evaluate_document_parsing import text_metrics, sha256
+ from scripts.evaluate_mineru_parsing import VARIANTS, summarize
+ 
+-STRATEGY = 'paddleocr_3_7_vl16_mlx'
++STRATEGY = 'paddleocr_3_7_vl16_mlx_unmerged'
+ PICTURE_LABELS = {'image', 'chart', 'header_image', 'footer_image'}
+ 
+ 
+@@ -65,7 +67,7 @@
+     config = {'pipeline_version': 'v1.6', 'layout_detection_model_dir': str(MODELS/'paddle-layout-v3'),
+               'vl_rec_backend': 'mlx-vlm-server', 'vl_rec_server_url': f'http://127.0.0.1:{port}/',
+               'vl_rec_api_model_name': str(MODELS/'paddleocr-vl16'), 'vl_rec_max_concurrency': 1,
+-              'use_doc_orientation_classify': False, 'use_doc_unwarping': False, 'use_queues': False,
++              'use_doc_orientation_classify': False, 'use_doc_unwarping': False, 'use_queues': False, 'merge_layout_blocks': False,
+               'device': 'cpu', 'cpu_threads': 4, 'enable_mkldnn': False}
+     (out/'options.json').write_text(json.dumps({'client': config, 'server_command': command,
+                                               'predict': {'max_new_tokens': 8192, 'temperature': 0}}, indent=2)+'\n')
+@@ -134,7 +136,7 @@
+ def evaluate(manifest_path, out, timeout):
+     manifest = json.loads(manifest_path.read_text())
+     out.mkdir(parents=True, exist_ok=False); (out/'outputs').mkdir()
+-    sources = ['scripts/evaluate_paddle_parsing.py', 'scripts/evaluate_parsing_candidates.py',
++    sources = ['scripts/evaluate_paddle_unmerged.py', 'scripts/evaluate_paddle_parsing.py', 'scripts/evaluate_parsing_candidates.py',
+                'scripts/evaluate_document_parsing.py', 'scripts/evaluate_mineru_parsing.py']
+     config = {'started_at_utc': datetime.now(timezone.utc).isoformat(), 'strategies': [STRATEGY],
+               'manifest_path': str(manifest_path.relative_to(ROOT)), 'manifest_sha256': sha256(manifest_path),

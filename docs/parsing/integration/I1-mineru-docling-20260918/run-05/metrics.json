@@ -1,0 +1,504 @@
+{
+  "scope": "One public development page only; not a course-level or held-out benchmark",
+  "source_sha256": "51e3ec81c78d94e73724169f8e9213695a6c1013913ae44f82b59df92972e3dd",
+  "normalization": "NFKC, whitespace removed, case sensitive",
+  "ground_truth_characters": 1971,
+  "parser": {
+    "standard": {
+      "edits": 189,
+      "cer": 0.0958904109589041,
+      "pages_with_text": 1,
+      "input_pages": 1,
+      "seconds": 17.063
+    },
+    "advanced": {
+      "edits": 130,
+      "cer": 0.06595636732623034,
+      "pages_with_text": 1,
+      "input_pages": 1,
+      "seconds": 28.748
+    }
+  },
+  "figure_detection": {
+    "tp": 3,
+    "predicted": 3,
+    "ground_truth": 3,
+    "precision": 1.0,
+    "recall": 1.0,
+    "matches": [
+      {
+        "prediction": 1,
+        "truth": 1,
+        "iou": 0.9890104109665548
+      },
+      {
+        "prediction": 2,
+        "truth": 2,
+        "iou": 0.9873845639518231
+      },
+      {
+        "prediction": 0,
+        "truth": 0,
+        "iou": 0.9775496197755109
+      }
+    ],
+    "limitation": "One page with three figures; not an aggregate detection claim."
+  },
+  "caption_binding": {
+    "matched": 3,
+    "total": 3,
+    "basis": "same-page MinerU image block IoU >= 0.5; not manually verified"
+  },
+  "semantic_processing": {
+    "initial": {
+      "document_id": "5721cbca12f44e53a155f86c9c7f59cf",
+      "succeeded": 2,
+      "failed": 1,
+      "reused": 0,
+      "total": 3,
+      "figure_limit_reached": false,
+      "partial_failure": true,
+      "message": "部分图片处理失败，可在文字与原图页面重试。"
+    },
+    "initial_completion_rate": 0.6666666666666666,
+    "explicit_retry": {
+      "document_id": "5721cbca12f44e53a155f86c9c7f59cf",
+      "succeeded": 1,
+      "failed": 0,
+      "reused": 2,
+      "total": 3,
+      "figure_limit_reached": false,
+      "partial_failure": false,
+      "message": "图片处理完成。"
+    },
+    "retry_api_calls": 2,
+    "final_cached_pass": {
+      "result": {
+        "document_id": "5721cbca12f44e53a155f86c9c7f59cf",
+        "succeeded": 0,
+        "failed": 0,
+        "reused": 3,
+        "total": 3,
+        "figure_limit_reached": false,
+        "partial_failure": false,
+        "message": "图片处理完成。"
+      },
+      "new_api_calls": 0
+    },
+    "limitation": "Completion counts transport, schema validation and embeddings, not factual accuracy."
+  },
+  "retrieval": {
+    "query": "Describe the figure and the relationships shown in the diagram",
+    "results": 4,
+    "figure_results": 2,
+    "context_tokens": 950,
+    "recall_at_k": null,
+    "relevance_labels_available": false
+  },
+  "call_ledger": {
+    "runs": {
+      ".": [],
+      "run-02": [],
+      "run-03": [
+        {
+          "capability": "vision",
+          "status": "failed",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 1100,
+            "completion_tokens": 322,
+            "total_tokens": 1422,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 1100
+          }
+        },
+        {
+          "capability": "vision",
+          "status": "failed",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 1105,
+            "completion_tokens": 372,
+            "total_tokens": 1477,
+            "prompt_tokens_details": {
+              "cached_tokens": 768
+            },
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 337
+          }
+        },
+        {
+          "capability": "vision",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 1101,
+            "completion_tokens": 473,
+            "total_tokens": 1574,
+            "prompt_tokens_details": {
+              "cached_tokens": 768
+            },
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 333
+          }
+        },
+        {
+          "capability": "embedding",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 349,
+            "total_tokens": 349,
+            "cost": 3.49e-06,
+            "cost_details": {
+              "upstream_inference_cost": 3.49e-06
+            }
+          }
+        },
+        {
+          "capability": "embedding",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 585,
+            "total_tokens": 585,
+            "cost": 5.85e-06,
+            "cost_details": {
+              "upstream_inference_cost": 5.85e-06
+            }
+          }
+        },
+        {
+          "capability": "embedding",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 33,
+            "total_tokens": 33,
+            "cost": 3.3e-07,
+            "cost_details": {
+              "upstream_inference_cost": 3.3e-07
+            }
+          }
+        },
+        {
+          "capability": "rerank",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "total_tokens": 1262,
+            "cost": 0.0002524
+          }
+        },
+        {
+          "capability": "vision",
+          "status": "failed",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 1100,
+            "completion_tokens": 313,
+            "total_tokens": 1413,
+            "prompt_tokens_details": {
+              "cached_tokens": 896
+            },
+            "prompt_cache_hit_tokens": 896,
+            "prompt_cache_miss_tokens": 204
+          }
+        },
+        {
+          "capability": "vision",
+          "status": "failed",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 1105,
+            "completion_tokens": 377,
+            "total_tokens": 1482,
+            "prompt_tokens_details": {
+              "cached_tokens": 896
+            },
+            "prompt_cache_hit_tokens": 896,
+            "prompt_cache_miss_tokens": 209
+          }
+        },
+        {
+          "capability": "vision",
+          "status": "failed",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 1100,
+            "completion_tokens": 245,
+            "total_tokens": 1345,
+            "prompt_tokens_details": {
+              "cached_tokens": 896
+            },
+            "prompt_cache_hit_tokens": 896,
+            "prompt_cache_miss_tokens": 204
+          }
+        }
+      ],
+      "run-04": [
+        {
+          "capability": "vision",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 1108,
+            "completion_tokens": 391,
+            "total_tokens": 1499,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 1108
+          }
+        },
+        {
+          "capability": "embedding",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 287,
+            "total_tokens": 287,
+            "cost": 2.87e-06,
+            "cost_details": {
+              "upstream_inference_cost": 2.87e-06
+            }
+          }
+        },
+        {
+          "capability": "vision",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 1113,
+            "completion_tokens": 390,
+            "total_tokens": 1503,
+            "prompt_tokens_details": {
+              "cached_tokens": 768
+            },
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 345
+          }
+        },
+        {
+          "capability": "embedding",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 290,
+            "total_tokens": 290,
+            "cost": 2.9e-06,
+            "cost_details": {
+              "upstream_inference_cost": 2.9e-06
+            }
+          }
+        },
+        {
+          "capability": "vision",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 1109,
+            "completion_tokens": 468,
+            "total_tokens": 1577,
+            "prompt_tokens_details": {
+              "cached_tokens": 768
+            },
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 341
+          }
+        },
+        {
+          "capability": "embedding",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 336,
+            "total_tokens": 336,
+            "cost": 3.36e-06,
+            "cost_details": {
+              "upstream_inference_cost": 3.36e-06
+            }
+          }
+        },
+        {
+          "capability": "embedding",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 585,
+            "total_tokens": 585,
+            "cost": 5.85e-06,
+            "cost_details": {
+              "upstream_inference_cost": 5.85e-06
+            }
+          }
+        },
+        {
+          "capability": "embedding",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 33,
+            "total_tokens": 33,
+            "cost": 3.3e-07,
+            "cost_details": {
+              "upstream_inference_cost": 3.3e-07
+            }
+          }
+        },
+        {
+          "capability": "rerank",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "total_tokens": 1990,
+            "cost": 0.000398
+          }
+        }
+      ],
+      "run-05": [
+        {
+          "capability": "vision",
+          "status": "failed",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 1123,
+            "completion_tokens": 374,
+            "total_tokens": 1497,
+            "prompt_tokens_details": {
+              "cached_tokens": 128
+            },
+            "prompt_cache_hit_tokens": 128,
+            "prompt_cache_miss_tokens": 995
+          }
+        },
+        {
+          "capability": "vision",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 1133,
+            "completion_tokens": 432,
+            "total_tokens": 1565,
+            "prompt_tokens_details": {
+              "cached_tokens": 128
+            },
+            "prompt_cache_hit_tokens": 128,
+            "prompt_cache_miss_tokens": 1005
+          }
+        },
+        {
+          "capability": "embedding",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 324,
+            "total_tokens": 324,
+            "cost": 3.24e-06,
+            "cost_details": {
+              "upstream_inference_cost": 3.24e-06
+            }
+          }
+        },
+        {
+          "capability": "vision",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 1125,
+            "completion_tokens": 404,
+            "total_tokens": 1529,
+            "prompt_tokens_details": {
+              "cached_tokens": 128
+            },
+            "prompt_cache_hit_tokens": 128,
+            "prompt_cache_miss_tokens": 997
+          }
+        },
+        {
+          "capability": "embedding",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 308,
+            "total_tokens": 308,
+            "cost": 3.08e-06,
+            "cost_details": {
+              "upstream_inference_cost": 3.08e-06
+            }
+          }
+        },
+        {
+          "capability": "embedding",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 585,
+            "total_tokens": 585,
+            "cost": 5.85e-06,
+            "cost_details": {
+              "upstream_inference_cost": 5.85e-06
+            }
+          }
+        },
+        {
+          "capability": "embedding",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 33,
+            "total_tokens": 33,
+            "cost": 3.3e-07,
+            "cost_details": {
+              "upstream_inference_cost": 3.3e-07
+            }
+          }
+        },
+        {
+          "capability": "rerank",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "total_tokens": 1627,
+            "cost": 0.0003254
+          }
+        },
+        {
+          "capability": "vision",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 1123,
+            "completion_tokens": 429,
+            "total_tokens": 1552,
+            "prompt_tokens_details": {
+              "cached_tokens": 896
+            },
+            "prompt_cache_hit_tokens": 896,
+            "prompt_cache_miss_tokens": 227
+          }
+        },
+        {
+          "capability": "embedding",
+          "status": "succeeded",
+          "http_status": 200,
+          "usage": {
+            "prompt_tokens": 339,
+            "total_tokens": 339,
+            "cost": 3.39e-06,
+            "cost_details": {
+              "upstream_inference_cost": 3.39e-06
+            }
+          }
+        }
+      ]
+    },
+    "known_cost_usd": 0.00101667,
+    "unknown_cost_calls": 13,
+    "limitation": "Known cost excludes calls without reported currency cost; not the total bill."
+  }
+}

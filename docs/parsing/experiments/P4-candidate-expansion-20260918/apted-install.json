@@ -1,0 +1,67 @@
+{
+  "version": "1",
+  "pip_version": "25.0.1",
+  "install": [
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/b9/71/c2bcf92376d3ae65d57111d33f577aca68d343e1b7b1914a3767bfbac18e/apted-1.0.3-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=74193369d023649d335269e67c4df07f922959e5ac2597de1b79af4e694150e8",
+          "hashes": {
+            "sha256": "74193369d023649d335269e67c4df07f922959e5ac2597de1b79af4e694150e8"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.0",
+        "name": "apted",
+        "version": "1.0.3",
+        "platform": [
+          "UNKNOWN"
+        ],
+        "summary": "APTED algorithm for the Tree Edit Distance",
+        "description": "Python APTED algorithm for the Tree Edit Distance\n=================================================\n\nInformation\n-----------\n\nThis is a Python implementation of the APTED algorithm, the\nstate-of-the-art solution for computing the tree edit distance [1,2],\nwhich supersedes the RTED algorithm [3].\n\nIt is a port of the original Java implementation available at\nhttps://github.com/DatabaseGroup/apted. During the port, some changes\nwere made to reduce the duplication on symmetric operations and to make\nit look more Pythonic.\n\nYou can find more information about APTED on the following website\nhttp://tree-edit-distance.dbresearch.uni-salzburg.at/\n\nCiting APTED\n------------\n\nIf you want to refer to APTED in a publication, please cite [1] and [2].\n\nLicence\n-------\n\nThe source code is published under the **MIT licence** found in the root\ndirectory of the project and in the header of each source file.\n\nInput\n-----\n\nCurrently, we support only the so-called bracket notation for the input\ntrees, for example, encoding ``{A{B{X}{Y}{F}}{C}}`` corresponds to the\nfollowing tree:\n\n::\n\n        A\n       / \\\n      B   C\n     /|\\\n    X Y F\n\nOutput\n------\n\nOur tool computes two outputs: - tree edit **distance** value - the\nminimum cost of transforming the source tree into the destination tree.\n- tree edit **mapping** - a mapping between nodes that corresponds to\nthe tree edit distance value. Nodes that are not mapped are deleted\n(source tree) or inserted (destination tree).\n\nGetting started\n---------------\n\nThis version were tested on Python 2.7, 3.4, 3.5, and 3.6.\n\nFirst, install it with pip:\n\n::\n\n    pip install apted\n\nIf you want to compare the trees {a{b}{c}} and {a{b{d}}}, please run:\n\n::\n\n    python -m apted -t {a{b}{c}} {a{b{d}}} -mv\n\nThe output is:\n\n::\n\n    distance:             2\n    runtime:              0.000270843505859\n    {a{b}{c}} -> {a{b{d}}}\n    {c} -> None\n    {b} -> {b{d}}\n    None -> {d}\n\nFor more information on running options, please run\n\n::\n\n    python -m apted -h\n\nCustomizing\n-----------\n\nIt is possible to customize the algorithm to run with custom trees with\nlabels different from simple strings or custom data-structures.\nAdditionally it is possible to customize it to use a more sophisticated\ncost model than unit cost.\n\nFor customizing the algorithm, you can create a custom *Config* class:\n\n.. code:: python\n\n    from apted import APTED, Config\n\n    class CustomConfig(Config):\n       def rename(self, node1, node2):\n            \"\"\"Compares attribute .value of trees\"\"\"\n            return 1 if node1.value != node2.value else 0\n\n        def children(self, node):\n            \"\"\"Get left and right children of binary tree\"\"\"\n            return [x for x in (node.left, node.right) if x]\n\n    apted = APTED(tree1, tree2, CustomConfig())\n    ted = apted.compute_edit_distance()\n    mapping = apted.compute_edit_mapping()\n\nBy default, the included *Config* class consider trees with the atribute\n*name* as label and the atribute *children* as children in left to right\npreorder.\n\nIn addition to the Config class, we also provide a\n*PerEditOperationConfig* class that allows you to specify weights for\neach operation:\n\n.. code:: python\n\n    from apted import APTED, PerEditOperationConfig\n\n    apted = APTED(tree1, tree2, PerEditOperationConfig(.4, .4, .6))\n    ted = apted.compute_edit_distance()\n    mapping = apted.compute_edit_mapping()\n\nIf your main usage for APTED is to obtain the mapping, it is possible to\nconfigure the algorith to keep track of the mapping during the\nexecution. To do so, we provide a function, *meta\\_chained\\_config*,\nthat modifies existing *Config* classes:\n\n.. code:: python\n\n    from apted import APTED, PerEditOperationConfig, meta_chained_config\n\n    new_config = meta_chained_config(PerEditOperationConfig)\n    apted = APTED(tree1, tree2, new_config(.4, .4, .6))\n    ted = apted.compute_edit_distance()\n    mapping = apted.compute_edit_mapping()\n\nNote that this approach uses much more memory and we didn't evaluate if\nit is faster than the original algorithm for the mapping with huge\ntrees. The execution time for the mapping tests were about the same as\nthe original algorithm.\n\nContributing\n------------\n\nFeel free to submit pull resquests to this repository.\n\nThe codebase follows the PEP8 conventions. However it is not too strict.\nFor instance, it is okay to have lines with a little more than 79\ncharacters, but try not to exceed too much.\n\nPlease, run ``python test.py`` during your changes to make sure\neverything is working. It is also desirable to use coverage.py to check\ntest coverage: ``coverage run test.py``.\n\nOriginal Authors\n----------------\n\n-  Mateusz Pawlik\n-  Nikolaus Augsten\n\nImplementation Author\n---------------------\n\n-  Joao Felipe Pimentel\n\nReferences\n----------\n\n1. M. Pawlik and N. Augsten. *Tree edit distance: Robust and memory-\n   efficient*. Information Systems 56. 2016.\n\n2. M. Pawlik and N. Augsten. *Efficient Computation of the Tree Edit\n   Distance*. ACM Transactions on Database Systems (TODS) 40(1). 2015.\n\n3. M. Pawlik and N. Augsten. *RTED: A Robust Algorithm for the Tree Edit\n   Distance*. PVLDB 5(4). 2011.\n\n\n",
+        "keywords": [
+          "APTED",
+          "TED",
+          "tree",
+          "edit",
+          "distance"
+        ],
+        "home_page": "https://github.com/JoaoFelipe/apted",
+        "author": "Joao Pimentel",
+        "author_email": "joaofelipenp@gmail.com",
+        "license": "MIT",
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Science/Research",
+          "Intended Audience :: Developers",
+          "Topic :: Software Development :: Build Tools",
+          "License :: OSI Approved :: MIT License",
+          "Programming Language :: Python :: 2",
+          "Programming Language :: Python :: 2.7",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.4",
+          "Programming Language :: Python :: 3.5",
+          "Programming Language :: Python :: 3.6"
+        ]
+      }
+    }
+  ],
+  "environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.12.14",
+    "os_name": "posix",
+    "platform_machine": "arm64",
+    "platform_release": "27.0.0",
+    "platform_system": "Darwin",
+    "platform_version": "Darwin Kernel Version 27.0.0: Tue Aug 11 21:02:57 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T8132",
+    "python_full_version": "3.12.14",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.12",
+    "sys_platform": "darwin"
+  }
+}

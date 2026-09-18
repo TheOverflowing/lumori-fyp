@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-09-12",
+  "scope": "Chunking and retrieval for bilingual undergraduate computer science course RAG",
+  "review_type": "targeted_primary_source_review_not_systematic_review",
+  "implementation_status": "research_only_no_new_algorithm_experiment",
+  "repository_version_note": "Repository and documentation URLs were read as live pages; no commit-pinned implementation was installed or reproduced.",
+  "sources": [
+    {
+      "id": "S01",
+      "title": "Is Semantic Chunking Worth the Computational Cost?",
+      "date": "2025-04",
+      "date_basis": "conference_publication_month",
+      "type": "peer_reviewed_paper",
+      "venue": "Findings of the Association for Computational Linguistics: NAACL 2025",
+      "url": "https://aclanthology.org/2025.findings-naacl.114/",
+      "relevance": "Retain fixed and recursive chunking as cost-aware baselines.",
+      "limit": "Inconsistent benefits in evaluated settings do not prove semantic chunking never helps."
+    },
+    {
+      "id": "S02",
+      "title": "Chunking Methods on Retrieval-Augmented Generation – Effectiveness Evaluation Against Computational Cost and Limitations",
+      "date": "2026-05-30",
+      "date_basis": "arxiv_v1_submission",
+      "type": "preprint_venue_not_verified",
+      "url": "https://arxiv.org/abs/2606.00881",
+      "read_version": "https://arxiv.org/html/2606.00881v1",
+      "linked_code_not_executed": "https://github.com/ApriiM/Chunking-Research",
+      "relevance": "Compare reliability and runtime as well as retrieval and generation quality.",
+      "limit": "Failed configurations were excluded downstream; success-only averages cannot establish an overall winner."
+    },
+    {
+      "id": "S03",
+      "title": "Evaluating Chunking Strategies for Retrieval-Augmented Generation on Academic Texts",
+      "date": "2026-07-02",
+      "date_basis": "arxiv_v1_submission",
+      "type": "preprint_venue_not_verified",
+      "url": "https://arxiv.org/abs/2607.01852",
+      "read_version": "https://arxiv.org/html/2607.01852v1",
+      "relevance": "Structured academic documents are a closer analogue to course material than generic web snippets.",
+      "limit": "Evaluated cluster chunking did not beat simpler baselines; small local models and MiniLM differ from this project's Qwen setup."
+    },
+    {
+      "id": "S04",
+      "title": "Structure-Aware Semantic Chunking with Title-Chain Prefixes: A 1600-Query Evaluation and the Measurement Trap in Text-Transform Ablations",
+      "date": "2026-08-01",
+      "date_basis": "arxiv_v1_submission_not_internal_manuscript_date",
+      "type": "preprint_venue_not_verified",
+      "url": "https://arxiv.org/abs/2608.00824",
+      "read_version": "https://arxiv.org/html/2608.00824v1",
+      "relevance": "Motivates a separate title-prefix ablation and stable relevance labels across text transformations.",
+      "limit": "Private corpus, combined interventions, two LLM annotators rather than two humans, and unstable judge agreement; not strong isolated causal evidence."
+    },
+    {
+      "id": "S05",
+      "title": "Docling HybridChunker",
+      "date": null,
+      "date_basis": "living_official_documentation_accessed_on_review_date",
+      "type": "official_project_documentation",
+      "url": "https://docling-project.github.io/docling/_generated/examples/hybrid_chunking/",
+      "supporting_url": "https://github.com/docling-project/docling/blob/main/docs/concepts/chunking.md",
+      "relevance": "Hierarchical structure, tokenizer-aware refinement, context serialization and table header repetition.",
+      "limit": "Implementation reference, not a demonstrated course retrieval improvement; parser and tokenizer compatibility need evaluation."
+    },
+    {
+      "id": "S06",
+      "title": "LlamaIndex Auto Merging Retriever",
+      "date": null,
+      "date_basis": "living_official_documentation_accessed_on_review_date",
+      "type": "official_project_documentation",
+      "url": "https://developers.llamaindex.ai/python/framework/integrations/retrievers/auto_merging_retriever/",
+      "relevance": "Index leaves, store parent text, and merge retrieved evidence into larger original contexts.",
+      "limit": "Illustrative example with historical model settings, not a bilingual course benchmark; expansion must obey an independent context budget."
+    },
+    {
+      "id": "S07",
+      "title": "Late Chunking: Contextual Chunk Embeddings Using Long-Context Embedding Models",
+      "date": "2024-09-07",
+      "date_basis": "arxiv_first_submission",
+      "type": "research_paper_arxiv_version_venue_not_used_for_claims",
+      "url": "https://arxiv.org/abs/2409.04701",
+      "read_version": "https://arxiv.org/html/2409.04701v3",
+      "relevance": "Contextualize token representations before pooling into chunk vectors.",
+      "limit": "Needs compatible token-level outputs and pooling; the current pooled-vector remote adapter cannot provide these. Distinct from ColBERT late interaction."
+    },
+    {
+      "id": "S08",
+      "title": "Introducing Contextual Retrieval",
+      "date": "2024-09-19",
+      "date_basis": "official_post_publication",
+      "type": "vendor_engineering_research",
+      "url": "https://www.anthropic.com/engineering/contextual-retrieval",
+      "relevance": "Index-time chunk context can feed both dense and lexical retrieval.",
+      "limit": "Reported relative top-20 failure reduction includes multiple components and is not a 67-point recall gain; extra indexing and reranking costs."
+    },
+    {
+      "id": "S09",
+      "title": "Qwen3 Embedding and Reranker",
+      "date": "2025-06",
+      "date_basis": "model_family_release_month",
+      "type": "official_model_repository",
+      "url": "https://github.com/QwenLM/Qwen3-Embedding",
+      "supporting_url": "https://huggingface.co/Qwen/Qwen3-Reranker-0.6B",
+      "relevance": "Test retrieval-task query instructions and dedicated multilingual rerankers with the current embedding baseline.",
+      "limit": "Historical leaderboard claims are dated; local course gains and rerank endpoint availability have not been established."
+    },
+    {
+      "id": "S10",
+      "title": "jina-reranker-v3.5: Faster Listwise Reranking with Hybrid Attention and Self-Distillation",
+      "date": "2026-08-05",
+      "date_basis": "official_author_release_article",
+      "type": "vendor_author_model_evaluation",
+      "url": "https://huggingface.co/blog/jinaai/jina-reranker-v3-5-faster-listwise-reranking",
+      "relevance": "Recent compact multilingual listwise reranking candidate for a shared-candidate comparison.",
+      "limit": "Author top-100 candidate protocol; BEIR and MIRACL winners differ. Speed comparison uses A100 and Jina v3, not our API or CPU."
+    },
+    {
+      "id": "S11",
+      "title": "DenseOn with the LateOn: Fully Open Dense and Late-Interaction Models for Multilingual, Long-Context, and Code Search",
+      "date": "2026-07-29",
+      "date_basis": "arxiv_v1_submission",
+      "type": "preprint_and_official_model_card",
+      "url": "https://arxiv.org/abs/2607.27178",
+      "read_version": "https://arxiv.org/abs/2607.27178v2",
+      "revision_date": "2026-07-31",
+      "supporting_url": "https://huggingface.co/lightonai/mLateOn",
+      "code_url": "https://github.com/lightonai/mdenseon-mlateon",
+      "relevance": "Open multilingual multi-vector alternative, with 307M mLateOn and reproducible training/evaluation resources.",
+      "limit": "Needs new encoder and index; Chinese is not one of the eight translate-train target languages; author tables do not establish superiority to this project's Qwen 8B."
+    },
+    {
+      "id": "S12",
+      "title": "NextPlaid",
+      "date": null,
+      "date_basis": "living_official_repository_accessed_on_review_date",
+      "type": "official_project_repository",
+      "url": "https://github.com/lightonai/next-plaid",
+      "relevance": "Serving option for multi-vector retrieval with quantization, incremental updates and metadata filtering.",
+      "limit": "Model export and runtime compatibility need verification; published serving hardware differs from this local environment."
+    }
+  ]
+}

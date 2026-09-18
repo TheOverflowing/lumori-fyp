@@ -1,0 +1,52 @@
+2026-09-18 14:02:42.536 python[72828:2940699] 2026-09-18 14:02:42.536545 [W:onnxruntime:Default, telemetry.cc:800 operator()] Failed to persist telemetry device ID; using an in-memory identifier
+2026-09-18 14:02:44.893 | INFO     | mineru.model.vlm.selector:get_vlm_engine:61 - Using llama-cpp-engine as the inference engine for VLM.
+0.00.893.850 E ggml_metal_init: error: failed to create command queue
+0.00.893.856 E ggml_backend_metal_device_init_backend: error: failed to allocate context
+0.01.282.384 E ggml_metal_init: error: failed to create command queue
+0.01.282.394 E ggml_backend_metal_device_init_backend: error: failed to allocate context
+0.01.282.828 E llama_init_from_model: failed to initialize the context: failed to initialize  backend
+0.01.321.546 E common_fit_params: encountered an error while trying to fit params to free device memory: failed to create llama_context from model
+0.01.683.209 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.03.173.690 E ggml_metal_init: error: failed to create command queue
+0.03.173.699 E ggml_backend_metal_device_init_backend: error: failed to allocate context
+0.03.174.371 E llama_init_from_model: failed to initialize the context: failed to initialize  backend
+0.03.174.379 E cmn  common_init_: failed to create context with model '/Users/theoverflow/Downloads/FYP/tmp/mineru-runtime/models/MinerU2.5-Pro-2605-1.2B-GGUF/MinerU2.5-Pro-2605-1.2B-Q8_0.gguf'
+0.03.174.380 E cmn  common_init_: failed to create context with model '/Users/theoverflow/Downloads/FYP/tmp/mineru-runtime/models/MinerU2.5-Pro-2605-1.2B-GGUF/MinerU2.5-Pro-2605-1.2B-Q8_0.gguf'
+0.03.174.383 E srv    load_model: failed to create_context with model '/Users/theoverflow/Downloads/FYP/tmp/mineru-runtime/models/MinerU2.5-Pro-2605-1.2B-GGUF/MinerU2.5-Pro-2605-1.2B-Q8_0.gguf'
+Traceback (most recent call last):
+  File "/Users/theoverflow/Downloads/FYP/scripts/evaluate_mineru_parsing.py", line 213, in <module>
+    elif args.worker:worker(args.worker,args.tier,args.output)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/theoverflow/Downloads/FYP/scripts/evaluate_mineru_parsing.py", line 102, in worker
+    result = parse(source, tier=tier, ocr_mode='auto', image_analysis=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/theoverflow/Downloads/FYP/.venv-mineru/lib/python3.12/site-packages/mineru/parser/__init__.py", line 43, in parse
+    return parser.parse(path, page_range=page_range, source_context=source_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/theoverflow/Downloads/FYP/.venv-mineru/lib/python3.12/site-packages/mineru/parser/mineru_parser.py", line 81, in parse
+    middle_json, model_output = self._run_analysis(prepared)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/theoverflow/Downloads/FYP/.venv-mineru/lib/python3.12/site-packages/mineru/parser/mineru_parser.py", line 115, in _run_analysis
+    return doc_analyze(
+           ^^^^^^^^^^^^
+  File "/Users/theoverflow/Downloads/FYP/.venv-mineru/lib/python3.12/site-packages/mineru/backend/analyze.py", line 53, in doc_analyze
+    result = analyze_pdf(
+             ^^^^^^^^^^^^
+  File "/Users/theoverflow/Downloads/FYP/.venv-mineru/lib/python3.12/site-packages/mineru/backend/analysis/pdf/pipeline.py", line 88, in analyze_pdf
+    _prepare_analysis(state, file_bytes, effort, parse_mode, vlm_config)
+  File "/Users/theoverflow/Downloads/FYP/.venv-mineru/lib/python3.12/site-packages/mineru/backend/analysis/pdf/pipeline.py", line 62, in _prepare_analysis
+    state.predictor, _backend = get_vlm_predictor(vlm_config)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/theoverflow/Downloads/FYP/.venv-mineru/lib/python3.12/site-packages/mineru/model/vlm/client.py", line 36, in get_vlm_predictor
+    return ModelSingleton().get_model(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/theoverflow/Downloads/FYP/.venv-mineru/lib/python3.12/site-packages/mineru/model/vlm/runtime.py", line 101, in get_model
+    else factory()
+         ^^^^^^^^^
+  File "/Users/theoverflow/Downloads/FYP/.venv-mineru/lib/python3.12/site-packages/mineru/model/vlm/runtime.py", line 180, in _create_model
+    llama_cpp_engine = Engine(model_gguf, mmproj_gguf, **engine_kwargs)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/theoverflow/Downloads/FYP/.venv-mineru/lib/python3.12/site-packages/mineru_llama_cpp/engine.py", line 107, in __init__
+    self._core = _EngineCore(
+                 ^^^^^^^^^^^^
+RuntimeError: load_model failed

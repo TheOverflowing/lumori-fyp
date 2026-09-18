@@ -1,0 +1,44 @@
+{
+  "version": "0.1.0",
+  "capabilities": {
+    "text": {
+      "configured": true,
+      "model": "deepseek-flash"
+    },
+    "embedding": {
+      "configured": true,
+      "model": "qwen/qwen3-embedding-8b"
+    },
+    "speech": {
+      "configured": false,
+      "model": ""
+    },
+    "image": {
+      "configured": false,
+      "model": ""
+    }
+  },
+  "calls_today": 10,
+  "daily_call_limit": 100,
+  "mode": "local-development",
+  "retrieval": {
+    "version": "retrieval-v2",
+    "strategy": "dense_v1",
+    "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+    "top_k": 5,
+    "candidate_k": 20,
+    "rrf_k": 60,
+    "mmr_lambda": 0.7,
+    "bm25_k1": 1.2,
+    "bm25_b": 0.75,
+    "query_term_frequency": "binary",
+    "candidate_pool": "top_candidate_k_per_route_then_top_candidate_k_fused_for_mmr",
+    "mmr_relevance": "rrf_score_divided_by_max_candidate_rrf_score",
+    "mmr_redundancy": "maximum_nonnegative_cosine_to_already_selected_chunks",
+    "dense_lexical_bonus_cap": 0.05,
+    "dense_lexical_score": "cosine_plus_capped_max_normalized_bm25",
+    "tie_break": "input_order",
+    "no_lexical_matches": "dense_fallback_for_hybrid_empty_for_bm25",
+    "score_semantics": "original_query_chunk_cosine"
+  }
+}

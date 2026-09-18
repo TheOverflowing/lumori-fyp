@@ -1,0 +1,30 @@
+{
+  "started_at_utc": "2026-09-18T07:07:51.080837+00:00",
+  "strategy_key": "docling_tess_v2",
+  "strategies": [
+    "docling_2_128_tesseract_tableformer_v2"
+  ],
+  "manifest_path": "docs/parsing/benchmarks/omnidocbench-pilot-v1/manifest.json",
+  "manifest_sha256": "ee2b0715a979e7328d9f2a0f689d099a2fe4baf539106f3fe9bc90359b9d36e3",
+  "variants": [
+    "native_pdf",
+    "image_only_pdf",
+    "degraded_image"
+  ],
+  "timeout_seconds": 240,
+  "metric_contract": {
+    "text_accuracy_scope": "prose stratum only, to avoid confusing table HTML/formula LaTeX with text OCR errors",
+    "cer": "Levenshtein(NFKC(text) with whitespace removed) / normalized GT character count; case and punctuation preserved, raw CER may exceed 1; empty/error prediction has CER=1.",
+    "wer": "English prose only; NFKC then Unicode word-or-punctuation tokens, case preserved.",
+    "usable_page": "Custom pilot rule fixed before scores: CER<=0.10 and prediction length >=0.80*GT length. Includes all prose failures in denominator; not an industry standard or a semantic correctness guarantee.",
+    "structure": "Table/figure/formula gold regions preserved; TEDS, CDM, region recall and image semantic accuracy are NOT computed by this pilot.",
+    "aggregation": "Equal-weight macro CER and edit-sum/GT-character-sum micro CER; language and source-page counts reported. Variants are paired observations, not independent new documents."
+  },
+  "adapter": "Docling tree order; all ContentLayers; TextItem.text, table-cell text for non-prose only; no Markdown wrapper or answer-based cleanup.",
+  "execution": "isolated cold subprocess per input; all exceptions/timeouts included as empty predictions; local offline weights; no API keys inherited",
+  "source_sha256": {
+    "scripts/evaluate_parsing_candidates.py": "1a5372c4e3a5fac6cf6cdf08917ea1f23a0669a7166d98e6e24aaef5f2311fa9",
+    "scripts/evaluate_document_parsing.py": "00aa628a5853f14e01bb38804d816619e1e39d916f179f919802104f78ba4ac9",
+    "scripts/evaluate_mineru_parsing.py": "5d56a2a4260ea5dede13adc603fa2bfd229be716e8ed2ff6dd96de5edbe1278b"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "started_at_utc": "2026-09-18T08:26:52.918934+00:00",
+  "mineru": "4.0.2",
+  "strategies": [
+    "mineru_4_0_2_advanced_onnx"
+  ],
+  "tiers": [
+    "advanced"
+  ],
+  "timeout_seconds": 240,
+  "manifest_path": "docs/parsing/benchmarks/omnidocbench-confirmation-v1/manifest.json",
+  "manifest_sha256": "245ac939f46db4051dfd58dc9ed14b3c369f16721fca4ef713fc92265ebc61ee",
+  "variants": [
+    "native_pdf",
+    "image_only_pdf",
+    "degraded_image"
+  ],
+  "metric_contract": {
+    "text_accuracy_scope": "prose stratum only, to avoid confusing table HTML/formula LaTeX with text OCR errors",
+    "cer": "Levenshtein(NFKC(text) with whitespace removed) / normalized GT character count; case and punctuation preserved, raw CER may exceed 1; empty/error prediction has CER=1.",
+    "wer": "English prose only; NFKC then Unicode word-or-punctuation tokens, case preserved.",
+    "usable_page": "Custom pilot rule fixed before scores: CER<=0.10 and prediction length >=0.80*GT length. Includes all prose failures in denominator; not an industry standard or a semantic correctness guarantee.",
+    "structure": "Table/figure/formula gold regions preserved; TEDS, CDM, region recall and image semantic accuracy are NOT computed by this pilot.",
+    "aggregation": "Equal-weight macro CER and edit-sum/GT-character-sum micro CER; language and source-page counts reported. Variants are paired observations, not independent new documents."
+  },
+  "normalization": "nfkc-whitespace-strip-case-sensitive-v1",
+  "input_format_adapter": "ordered MiddleJson content spans, all blocks including headers/footers; no added Markdown; table HTML text only for non-CER complex pages",
+  "source_sha256": {
+    "scripts/evaluate_mineru_parsing.py": "5d56a2a4260ea5dede13adc603fa2bfd229be716e8ed2ff6dd96de5edbe1278b",
+    "scripts/evaluate_document_parsing.py": "00aa628a5853f14e01bb38804d816619e1e39d916f179f919802104f78ba4ac9"
+  },
+  "runtime_config": "model:\n  base_dir: /Users/theoverflow/Downloads/FYP/tmp/mineru-runtime/models\n  source: local\n  small_backend: onnx\n  vlm:\n    engine: llama-cpp\n    max_concurrency: 2\nllm_aided:\n  features:\n    title_leveling: false\n    cross_page_table_cell_merge: false\n",
+  "execution": "sequential isolated cold worker per input; models predownloaded, local source only; no API keys or remote inference; all failures count; not strict P1 speed comparison"
+}

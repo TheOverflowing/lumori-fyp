@@ -1,0 +1,17 @@
+{
+  "created_at_utc": "2026-09-18T06:28:38.200540+00:00",
+  "purpose": "Compare Advanced and additional plausible local parsers with P1/P3; select an explicitly scoped evidence-backed candidate, preserve every attempted result.",
+  "development_manifest": "docs/parsing/benchmarks/omnidocbench-pilot-v1/manifest.json",
+  "candidates": [
+    "MinerU 4.0.2 Advanced ONNX + existing Q8_0 VLM",
+    "Docling standard layout/table pipeline + Tesseract chi_sim/eng",
+    "Docling GraniteDocling VLM",
+    "PaddleOCR-VL-1.6 if a supported local runtime can pass preflight"
+  ],
+  "preflight": "Non-benchmark synthetic image first. Runtime setup failures retained separately from formally attempted benchmark inputs. Do not force CUDA-only libraries onto Apple hardware. No paid cloud or private-material upload.",
+  "advanced_config": "Same P3 frozen evaluator, weights, ocr_mode=auto, image_analysis=True, threads/concurrency, 240s/input; only tier changes.",
+  "scoring": "Preserve P1 prose CER/WER/usable contract and P3 image/chart vs figure IoU0.5 one-to-one metric. Include all 12 x 3 attempts per feasible candidate; report language/variant failures. Complex structure outputs do not imply semantic accuracy.",
+  "selection": "Quality first: equal-weight CER over language and input conditions, failures retained; check per-language regression and figure precision/recall. No all-purpose winner claim when table/formula semantics remain unmeasured. Plan disjoint source-page confirmation for finalists; freeze selection before evaluating confirmation predictions.",
+  "timing": "Local candidate runs sequential for heavy inference; installation/download may overlap. Record actual conditions; no strict cross-P1/P3 speed ranking.",
+  "production": "Do not auto-reparse private documents or alter defaults solely based on candidate development scores."
+}

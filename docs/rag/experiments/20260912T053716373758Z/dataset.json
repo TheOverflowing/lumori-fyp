@@ -1,0 +1,918 @@
+{
+  "schema_version": "rag-benchmark-v1",
+  "dataset_id": "cs-rag-pilot-v1",
+  "label_status": "assistant_authored_unreviewed",
+  "provenance": {
+    "created_date": "2026-09-12",
+    "frozen_before_run_at_utc": "2026-09-12 05:29:40 UTC",
+    "author": "Codex assistant, independently assigned dataset-authoring subtask",
+    "source_kind": "self_authored_undergraduate_computer_science_teaching_passages",
+    "permissions": "Synthetic original teaching material authored for this project; no private course handouts or student records.",
+    "purpose": "Exploratory retrieval-only pilot; not a validated course examination or final publication dataset.",
+    "authoring_boundary": "Passages, queries, qrels, evidence groups and splits authored without inspecting retrieval implementation, ranking output, embedding output, or experimental results.",
+    "freeze_rule": "Freeze this exact file and SHA-256 before the first embedding/ranking run. Corrections after exposure require a new dataset version and an amendment log.",
+    "passage_unit": "Each documents entry is one fixed benchmark passage; use text only for lexical and dense scoring. Titles, topic, language, IDs, qrels and annotation notes are metadata and must not be indexed or appended to the query.",
+    "relevance_policy": "2 = directly supports a necessary answer component; 1 = substantively useful but incomplete supporting context; omitted = 0. Qrels are assistant judgments and require independent review.",
+    "evidence_group_policy": "Every required_evidence_groups group is necessary; any one document inside a group satisfies that component. Relevant partial context is not required merely because it has a qrel.",
+    "split_policy": "dev and test are each 16 queries with 8 Chinese and 8 English. Every family_id belongs to exactly one split; multi-part variants sharing an information-need family stay together. Documents are shared across splits, so this is not chapter-held-out evaluation.",
+    "publication_limitations": [
+      "Assistant-authored passages and qrels may share vocabulary and labeling biases.",
+      "No lecturer validation, inter-rater agreement, learner data or independent held-out course is available.",
+      "Thirty-two deliberately balanced queries are a small diagnostic set, not a representative estimate of university-course performance.",
+      "Grade-0 omissions may include unrecognized relevant alternatives; review is needed before treating qrels as gold."
+    ]
+  },
+  "documents": [
+    {
+      "id": "rag01",
+      "title": "课程讲义的分块边界",
+      "topic": "rag",
+      "language": "zh",
+      "text": "把课程讲义切成检索片段时，应尽量保留一个完整的解释单位。例如定理的假设、结论和紧接着的反例如果被分到互不相邻的小块，系统可能只取回结论，让学生误以为它无条件成立。按标题或段落切分通常比机械截断更容易保留结构，但过长的片段又会夹入无关内容。少量重叠可以保留边界附近的上下文，代价是相邻检索结果更容易重复。每个片段仍应记录原文件及页码，便于教师返回上下文核对。分块策略应和问题类型一起评估，不能仅凭片段越短或越长就推断效果更好。"
+    },
+    {
+      "id": "rag02",
+      "title": "Embedding configuration and index compatibility",
+      "topic": "rag",
+      "language": "en",
+      "text": "A document index and its incoming queries must use compatible embedding spaces. Matching vector dimensions are necessary for computing a dot product, but they do not establish that two models assign the same meaning to each coordinate. Replacing the model while retaining old document vectors can therefore produce numerically valid yet meaningless similarity scores. Record the provider, model name, preprocessing settings, and embedding parameters with the index. After a material configuration change, regenerate document embeddings and use the same configuration for new queries. Normalize vectors consistently when cosine similarity is intended. An unchanged product name is not proof that an upstream model has never changed, so preserve configuration records and regression examples."
+    },
+    {
+      "id": "rag03",
+      "title": "引用存在与证据支持",
+      "topic": "rag",
+      "language": "zh",
+      "text": "教学系统给答案附上片段编号，只能说明它引用了一个可定位的来源，不能证明该来源支持答案。审核者需要把答案中的实质性判断逐项对照原文，检查是否遗漏限制条件、把相关关系写成因果关系，或者引用了同一主题却没有回答问题的段落。程序可以检查编号是否属于本次检索集合，但这样的结构检查不能替代内容判断。导出材料时保存引用片段的文本快照及来源位置，有助于在讲义或索引更新后重现当时依据。没有支持的结论应标明并修订，而不是为了让页面看起来完整而添加一个无关引用。"
+    },
+    {
+      "id": "rag04",
+      "title": "Separating retrieval failure from generation failure",
+      "topic": "rag",
+      "language": "en",
+      "text": "A course-grounded answer can fail at several different stages. The uploaded collection may contain no evidence for the question, the retriever may miss evidence that is present, or the generator may ignore or distort passages that were successfully retrieved. These cases require different diagnoses. Inspect the collection and retrieved passages before changing the generation prompt. A retrieval metric measures whether relevant passages were found; it does not establish whether the final explanation used them faithfully. Conversely, an incorrect generated answer does not by itself prove the retriever failed. Keep the query, source collection version, ranked candidates, selected context, and generated answer so the stages can be inspected separately."
+    },
+    {
+      "id": "rag05",
+      "title": "检索数量与上下文预算",
+      "topic": "rag",
+      "language": "zh",
+      "text": "增加送给生成模型的片段数量，可能让遗漏的证据进入上下文，也可能把更多近主题干扰一起带入。假如一道题需要定义和适用条件两部分依据，只取一个片段可能不够；如果前五个结果都是同一段解释的轻微改写，增加数量也未必带来新的必要信息。因此需要同时观察相关片段覆盖、必要证据是否齐全以及上下文中的无关内容。相似度排名不是答案正确的概率，也不能单独决定资料是否足够。检索数量应在固定任务和上下文预算下比较，记录哪些问题受益、哪些问题退步，不能默认更多片段总会改善教学答案。"
+    },
+    {
+      "id": "rag06",
+      "title": "Lexical retrieval with BM25",
+      "topic": "rag",
+      "language": "en",
+      "text": "BM25 ranks passages using the query terms that also occur in each passage. A term appearing in fewer documents can provide a stronger discrimination signal than a common term. Term frequency has a saturating effect, while document-length normalization limits the advantage of long passages that contain many words. Tokenization determines what counts as a matching term, which matters for identifiers, abbreviations, and Chinese text without spaces. BM25 does not automatically translate an English query into Chinese or recognize every paraphrase. Its score is a ranking value tied to the collection and scoring formula, not a calibrated probability of relevance. Exact terminology can help lexical retrieval even when a dense model misses a specialized phrase."
+    },
+    {
+      "id": "rag07",
+      "title": "用倒数排名融合检索结果",
+      "topic": "rag",
+      "language": "zh",
+      "text": "关键词检索和向量检索提供不同的匹配信号，直接相加它们的原始分数可能受到量纲和分布差异影响。倒数排名融合为每一路结果中的文档按名次计算贡献，再把同一文档的贡献相加。常见形式为各路一除以常数加名次之和，名次从一开始；未进入某一路候选列表的文档不获得该路贡献。这样可以结合两种排序，而不要求两路分数可比较。融合仍受候选池限制：两路都没有召回的片段不会凭空出现。参数、候选数量和同分处理规则应固定记录；融合是一种待验证方法，不能仅凭加入两路检索就宣称一定优于单路。"
+    },
+    {
+      "id": "rag08",
+      "title": "Diversity-aware reranking with MMR",
+      "topic": "rag",
+      "language": "en",
+      "text": "Maximal Marginal Relevance selects results iteratively by balancing relevance to the query against similarity to already selected results. A passage that is highly relevant but almost duplicates an earlier selection may lose to a somewhat lower-ranked passage containing complementary information. A weighting parameter controls this tradeoff. The method can reduce redundant context, but it can also discard similar-looking passages that provide distinct conditions or exceptions required by the question. Similarity is therefore only a proxy for redundancy. Keep the candidate pool and relevance score definition explicit when comparing the method with an unreordered ranking. More varied results are not automatically better evidence, and relevance or evidence coverage may decrease."
+    },
+    {
+      "id": "rag09",
+      "title": "课程资料权限与最小发送范围",
+      "topic": "rag",
+      "language": "zh",
+      "text": "课程资料能够在本地打开，并不表示可以把整份文件发送给外部模型。上传前应确认资料使用权限，并避免把学生姓名、成绩或不必要的个人信息混入检索片段。检索时需要限定当前课程和允许使用的文件，不能因为其他课程的文本相似就跨越访问边界。给模型的上下文应只包含完成任务所需的片段，同时保留所选来源的可追溯记录。索引、模型调用记录和教师导出材料也可能包含原文，因而需要相应的保存与访问安排。内容脱敏和课程隔离属于数据管理要求，不能用较高的检索分数或流畅的生成答案代替。"
+    },
+    {
+      "id": "rag10",
+      "title": "Evaluating retrieval for questions needing several sources",
+      "topic": "rag",
+      "language": "en",
+      "text": "A question may require several independent facts, such as a definition, a boundary condition, and a worked example. Finding one relevant passage can give a good reciprocal-rank score while still leaving the question impossible to answer completely. Annotate the necessary evidence groups before inspecting system rankings. If two passages are interchangeable support for the same fact, place them in one group rather than requiring both. Evidence coverage measures how many groups are represented in the retrieved set; complete-evidence success requires every group. Passage recall remains a different measure because it counts individual relevant passages, including alternatives. Relevance labels require review, and an assistant-authored pilot collection should not be represented as an independently validated gold standard."
+    },
+    {
+      "id": "db01",
+      "title": "事务的原子性与提交",
+      "topic": "databases",
+      "language": "zh",
+      "text": "一个选课操作可能同时减少课程剩余名额并增加学生的选课记录。如果第二项修改违反约束而第一项已经生效，数据库就处于业务不允许的中间状态。事务的原子性要求这组操作作为一个整体成功，或者在失败时撤销尚未提交的修改。提交表示应用要求数据库保留该事务的结果，回滚则放弃它。原子性并不等于并发事务完全互不影响，也不意味着任何业务规则都会自动成立；约束和隔离方式仍需单独设计。讨论故障后的持久保存时，还必须区分已经提交的结果和内存中尚未提交的临时状态。"
+    },
+    {
+      "id": "db02",
+      "title": "Concurrent updates and transaction isolation",
+      "topic": "databases",
+      "language": "en",
+      "text": "Two transactions can read the same available-seat count before either updates it. If both compute a new value from that stale read, one update may overwrite the other, or both students may believe the final seat was reserved. Transaction isolation determines which concurrent interactions are allowed; it is distinct from grouping operations into an atomic unit. Depending on the database, an atomic conditional update, appropriate locking, or a serializable transaction can protect this operation. Applications may still need to retry transactions aborted by a concurrency conflict. A correct design states the invariant, the database guarantees it relies on, and how conflicts are handled, rather than assuming that merely opening a transaction prevents every race."
+    },
+    {
+      "id": "db03",
+      "title": "B+树索引和范围查询",
+      "topic": "databases",
+      "language": "zh",
+      "text": "B+树索引按键值有序组织查找入口，因此既能定位某个键，也能沿有序叶结点访问连续范围。例如按时间查找某一周的订单，比逐行检查整张表更有机会减少访问量。但索引并非免费的副本：插入、删除和相关列更新都需要维护索引结构，并占用额外空间。如果条件会返回表中很大一部分记录，逐个通过索引回到数据页的成本可能高于顺序扫描。是否使用索引由查询优化器估算，不能把存在索引等同于一定走索引。这里讨论的是有序检索能力，不能由此推断索引能够自动解决并发更新冲突。"
+    },
+    {
+      "id": "db04",
+      "title": "Leading columns in a composite index",
+      "topic": "databases",
+      "language": "en",
+      "text": "A composite index on department and enrollment year is ordered first by department and then by year within each department. Predicates on the leading department column can use that ordering directly, and specifying both columns can narrow the matching range further. A predicate on year alone does not have the same straightforward left-prefix access path because equal years are scattered among departments. Some database engines can use other access strategies, so this is not an absolute claim that the index can never help. Index column order should follow actual predicates, ordering requirements, and measured plans. Creating both possible column orders also increases storage and write-maintenance costs."
+    },
+    {
+      "id": "db05",
+      "title": "规范化与更新异常",
+      "topic": "databases",
+      "language": "zh",
+      "text": "如果每条选课记录都重复保存教师办公室，当教师搬迁时就需要修改多行；漏改其中一行会让同一个事实出现不同版本。规范化通过分析属性之间的函数依赖，把属于不同实体的事实放到合适的关系中，减少这类更新异常。第三范式的讨论关注非平凡函数依赖的决定因素和属性角色，实际设计时应先明确键与业务含义，而不是只按列数拆表。分解后通常需要连接才能恢复完整查询结果。规范化改善的是数据事实的组织与一致性风险，并不保证所有查询更快，也不会替代外键、唯一性等可执行约束。"
+    },
+    {
+      "id": "db06",
+      "title": "Denormalization and materialized summaries",
+      "topic": "databases",
+      "language": "en",
+      "text": "A reporting page may repeatedly join enrollment, course, and department tables to show a summary that changes less often than it is read. A materialized view or maintained summary table stores a derived result so later reads can do less work. This exchanges read-time computation for storage, refresh work, and a freshness decision. An immediate maintenance strategy adds cost to writes, while a scheduled refresh can temporarily show stale information. The design must specify which table is authoritative and how derived data is rebuilt after an error. Denormalization is a deliberate performance choice, not evidence that normalization was unnecessary or that duplicated facts will stay consistent automatically."
+    },
+    {
+      "id": "db07",
+      "title": "预写日志与故障恢复",
+      "topic": "databases",
+      "language": "zh",
+      "text": "数据库在修改后的数据页尚未全部落盘时也可能返回提交成功，因此需要一个明确的持久化协议。预写日志要求相关日志记录先于对应数据页持久保存；恢复过程利用日志重做需要保留的已提交修改，并按照具体恢复算法处理未完成事务。检查点可以缩短恢复时需要检查的日志范围，但检查点不是脱离日志也能保证所有历史修改安全的承诺。是否等待日志真正持久化会影响提交后的故障保证。预写日志主要服务于崩溃恢复，不能单独防止管理员合法提交一条误删除语句，也不能替代独立保存并经过恢复演练的备份。"
+    },
+    {
+      "id": "db08",
+      "title": "Replication is different from a recoverable backup",
+      "topic": "databases",
+      "language": "en",
+      "text": "Replication maintains another database copy so a service can continue when one machine becomes unavailable. It can also copy a mistaken deletion or corrupted application update, because those changes may look like ordinary valid transactions. A backup preserves a recoverable earlier state, and its usefulness depends on retention, integrity, restore procedures, and where it is stored. Asynchronous replication may lag, so failover can also involve a recovery-point tradeoff. The recovery point objective concerns acceptable data loss, whereas the recovery time objective concerns how long restoration may take. Neither objective is satisfied simply by counting replicas. Test restoration and document which failures each mechanism actually covers."
+    },
+    {
+      "id": "db09",
+      "title": "执行计划与选择性",
+      "topic": "databases",
+      "language": "zh",
+      "text": "查询优化器会根据统计信息估计条件的选择性，也就是大约有多少记录满足条件。只匹配少量记录的过滤条件，可能适合先走索引再取所需行；匹配绝大多数记录时，全表顺序扫描可能更便宜。过时或不准确的统计信息会让估计偏离实际执行，导致错误的连接顺序或访问路径。分析慢查询时应同时查看估计行数、实际行数、访问方式和数据分布，并注意一次测量受到缓存状态影响。执行计划中的成本通常是优化器内部用于比较方案的估计值，不应直接当成毫秒。索引是否有效需要在具体负载下验证。"
+    },
+    {
+      "id": "db10",
+      "title": "Keys, uniqueness, and referential integrity",
+      "topic": "databases",
+      "language": "en",
+      "text": "A primary key identifies each row and must be unique and non-null. A foreign key constrains a reference to an existing key in another table, subject to the database and constraint definition. An enrollment table can use a composite uniqueness constraint on student and course so the same pair is not recorded twice. These constraints express different invariants: a foreign key does not itself prevent repeated enrollment, and a unique key does not ensure that the referenced course exists. Applications should also decide what should happen when a referenced row is deleted. Constraints are enforced rules, while an informal convention in application code may be bypassed by another writer."
+    },
+    {
+      "id": "net01",
+      "title": "DNS缓存与TTL",
+      "topic": "networks",
+      "language": "zh",
+      "text": "域名解析结果可以缓存在递归解析器和客户端中，避免每次访问都重新向权威服务器查询。资源记录的生存时间规定这份缓存通常还能复用多久；到期后，解析器需要按相应解析过程重新获取结果，而不是永远相信旧地址。修改权威记录不会瞬间清除互联网上已有的缓存，所以用户可能在一段时间内访问到不同地址。缩短生存时间通常有利于更快看到变更，但会增加查询负担。域名缓存只负责名称到记录的解析，不等于浏览器已经缓存网页内容，也不负责验证网页用户是否拥有访问权限。"
+    },
+    {
+      "id": "net02",
+      "title": "Recursive resolvers and authoritative DNS servers",
+      "topic": "networks",
+      "language": "en",
+      "text": "A client commonly sends a domain-name question to a recursive resolver and expects a completed answer or a failure. The resolver follows referrals through the DNS hierarchy when it lacks a usable cached answer. An authoritative server is responsible for the records in a particular zone; it does not need to perform every client's complete recursive lookup. Caches let resolvers answer some questions without contacting the authoritative server on every request. These roles can exist in different services, although software may support several roles. A failure at the resolver, an incorrect zone record, and an expired delegation are different operational problems. Investigating them requires identifying which stage produced the unexpected answer."
+    },
+    {
+      "id": "net03",
+      "title": "TCP字节流与应用消息边界",
+      "topic": "networks",
+      "language": "zh",
+      "text": "TCP向应用提供可靠、有序的字节流，负责按序交付数据并在需要时重传，但它不会保留每次应用写入的消息边界。发送方连续写入两条消息，接收方一次读取可能得到半条、完整一条，或者多条消息拼在一起。因此应用协议应使用长度字段、分隔符或其他明确的分帧规则，并正确处理多次读取。接收窗口帮助发送方避免压垮接收端缓冲区，但字节成功送达不代表业务请求已经被处理，更不代表重试请求天然不会重复执行。TCP的传输可靠性和应用层消息语义应分开设计。"
+    },
+    {
+      "id": "net04",
+      "title": "UDP and delay-sensitive applications",
+      "topic": "networks",
+      "language": "en",
+      "text": "UDP sends datagrams and preserves their boundaries, but it does not provide TCP-style reliable ordered delivery. A receiver may observe loss, duplication, or reordering, and an oversized datagram can create additional delivery problems. Interactive audio may prefer receiving a recent sample promptly to waiting for retransmission of an old sample whose playback deadline has passed. That choice does not make all reliability unnecessary: an application can add sequence numbers, jitter buffering, selective recovery, and congestion-sensitive sending. File transfer has different requirements because missing bytes usually must be recovered. Choosing UDP changes which responsibilities the application must handle; it does not guarantee low delay or solve network congestion by itself."
+    },
+    {
+      "id": "net05",
+      "title": "HTTP缓存的新鲜度与再验证",
+      "topic": "networks",
+      "language": "zh",
+      "text": "HTTP缓存可以在响应仍然新鲜时直接复用它，减少传输和服务器工作。Cache-Control中的max-age表达新鲜度期限；过期并不一定需要重新下载整个资源。缓存可携带ETag发送条件请求，如果服务器确认内容未改变，可以返回304状态，让客户端继续使用已有正文。ETag标识的是资源表示的验证信息，不是用户身份令牌。缓存策略还要考虑响应是否包含个人内容，以及共享缓存是否允许保存它。DNS缓存、浏览器缓存和中间共享缓存处理的对象不同，不能因为域名地址未改变，就推断网页正文也无需更新。"
+    },
+    {
+      "id": "net06",
+      "title": "TLS identity and application authorization",
+      "topic": "networks",
+      "language": "en",
+      "text": "TLS protects data in transit and can authenticate the server name through certificate validation under an appropriate trust model. A browser accepting the server certificate is not proof that the person using the browser may read every record hosted by that server. The application still needs authentication, session handling, and authorization checks for protected actions or data. TLS also does not repair unsafe database queries or remove personal information already placed in a response. When a reverse proxy terminates TLS, the connection from that proxy to the application is a separate transport segment whose protection must be considered. Transport security and application access policy solve different problems."
+    },
+    {
+      "id": "net07",
+      "title": "拥塞控制与接收端流量控制",
+      "topic": "networks",
+      "language": "zh",
+      "text": "发送速度受到两个不同方向的约束。接收端流量控制考虑对方还有多少缓冲空间，避免发送方把接收端来不及处理的数据堆满；网络拥塞控制则考虑路径上的链路和路由器承受能力，试图避免持续排队和丢包恶化。接收端有很大的缓冲区，并不意味着网络中间链路同样空闲；反过来，网络畅通也不保证接收应用足够快。TCP会结合相关窗口限制可在途的数据量。分析吞吐下降时，需要区分接收窗口限制、丢包与拥塞响应，以及应用自身读取缓慢，而不是统一归因于带宽不足。"
+    },
+    {
+      "id": "net08",
+      "title": "Address translation and incoming connections",
+      "topic": "networks",
+      "language": "en",
+      "text": "A home or small-office router commonly translates private IPv4 addresses and transport ports to a public-facing address. For outbound connections it keeps mappings so returning traffic can be delivered to the correct internal endpoint. An unsolicited inbound connection has no corresponding mapping by default in this common setup; exposing an internal service usually requires an explicit forwarding rule or another connectivity mechanism. Address translation is not application authentication, and forwarding a port does not encrypt its traffic. A reverse proxy can provide an application entry point, but the network path to that proxy must still be reachable. State the address, port, and forwarding assumptions when diagnosing connectivity."
+    },
+    {
+      "id": "net09",
+      "title": "反向代理的入口与后端路由",
+      "topic": "networks",
+      "language": "zh",
+      "text": "反向代理作为客户端看到的服务入口，接收请求后根据主机名、路径或负载策略转发到内部应用。这样可以把多个后端组织在同一个外部入口后面，并集中处理部分连接管理工作。代理能够终止外部TLS连接，但代理到后端仍是另一段通信，需要单独考虑保护。代理转发请求不等于已经完成每个应用的用户权限检查，也不会自动让私有网络中的入口从公网可达。排查故障时应分开检查公网到入口的可达性、代理的路由配置和后端服务响应，不能仅凭代理进程正在运行就认定整个访问链路可用。"
+    },
+    {
+      "id": "net10",
+      "title": "Shared web caches and personalized responses",
+      "topic": "networks",
+      "language": "en",
+      "text": "A CDN or shared proxy may reuse one stored response for multiple clients when the response's cache policy allows that reuse. This is useful for public images and other reusable content, but dangerous when the body contains information belonging to one signed-in user. A design must decide whether a response is public, restricted to a private cache, or unsuitable for storage. Cache-Control directives and correctly selected cache-key dimensions help express that policy; adding a cookie alone should not be treated as a universal guarantee that no shared cache will reuse the response. Content freshness and user separation are distinct concerns, so making a private page fresh does not make sharing it safe."
+    },
+    {
+      "id": "os01",
+      "title": "进程与线程的资源边界",
+      "topic": "operating_systems",
+      "language": "zh",
+      "text": "进程通常拥有独立的虚拟地址空间和一组操作系统资源，线程则是在进程内被调度执行的活动单位。同一进程的线程共享地址空间，因此可以方便地访问共同数据，也可能因为缺少同步而互相破坏状态。各线程仍有自己的执行位置、寄存器上下文和栈。多个进程之间通常需要明确的进程间通信机制才能交换数据。创建多个线程并不保证工作一定同时执行：是否能够并行还取决于可用处理核心、运行时限制和任务是否可分。理解共享资源边界有助于区分内存隔离、调度并行和数据同步这几个不同问题。"
+    },
+    {
+      "id": "os02",
+      "title": "Scheduling and context-switch overhead",
+      "topic": "operating_systems",
+      "language": "en",
+      "text": "A scheduler chooses which runnable thread gets a processor. On one available core, switching rapidly between runnable tasks creates concurrency, but only one of those tasks executes on that core at a particular instant. Multiple cores can provide parallel execution when the workload and runtime allow it. A context switch saves and restores execution state and can disrupt useful cache contents, so excessively frequent switching may reduce throughput. A blocked thread is different from a runnable one waiting for its turn: it cannot make progress until its awaited event occurs. The best number of workers depends on compute demand, waiting time, available cores, and coordination cost, not merely the number of tasks submitted."
+    },
+    {
+      "id": "os03",
+      "title": "互斥锁与条件变量的队列模式",
+      "topic": "operating_systems",
+      "language": "zh",
+      "text": "有界任务队列需要同时保护共享数据和协调等待条件。互斥锁保证队列状态在检查和修改时不会被其他线程同时破坏；条件变量让线程在队列为空或已满时等待状态变化，而不是不断占用处理器轮询。等待条件变量通常会原子地释放相关互斥锁，线程被唤醒后再重新取得锁。被唤醒不保证所需条件此时一定成立，因为其他线程可能已先改变状态，也可能存在虚假唤醒，所以应在循环中重新检查条件。发出通知本身不保存队列元素，也不能代替保护共享状态的锁。"
+    },
+    {
+      "id": "os04",
+      "title": "Counting semaphores for bounded queues",
+      "topic": "operating_systems",
+      "language": "en",
+      "text": "A counting semaphore represents a number of available permits. A bounded queue can use one semaphore for free slots and another for stored items: producers obtain a slot permit before adding an item, while consumers obtain an item permit before removing one. A separate mutex is still commonly used to protect the queue's internal data structure. Unlike a condition-variable notification, a released semaphore permit remains available to a later waiter until it is acquired. Operations must be ordered carefully so a thread does not hold the queue mutex while waiting for a permit that another thread needs that mutex to release. Permits represent availability; they do not automatically make arbitrary shared data updates atomic."
+    },
+    {
+      "id": "os05",
+      "title": "死锁条件与统一加锁顺序",
+      "topic": "operating_systems",
+      "language": "zh",
+      "text": "两个线程分别持有对方接下来需要的锁，并且都等待对方释放时，就可能永久停止推进。经典死锁分析讨论互斥、占有并等待、不可抢占和循环等待等必要条件。为所有相关锁规定一致的获取顺序，可以破坏循环等待：线程不能一会儿先拿甲再拿乙，另一处却先拿乙再拿甲。这个规则必须覆盖实际共享资源的获取路径，局部遵守不足以保证全局安全。超时可以帮助检测或脱离某些等待，却不自动提供正确的恢复语义。避免死锁也不同于避免饥饿，线程仍可能长期抢不到执行机会。"
+    },
+    {
+      "id": "os06",
+      "title": "Virtual addresses and page-fault handling",
+      "topic": "operating_systems",
+      "language": "en",
+      "text": "A process uses virtual addresses that are translated through page tables into physical memory locations. A page fault means the requested translation or access cannot be completed in the current state; it does not always mean the program has a bug or that disk input is required. A valid demand-zero page may be allocated on first use, a file-backed page may need loading, or an invalid access may cause the process to receive a fault signal. The operating system checks the mapping and permissions before deciding which action is appropriate. When physical frames are scarce, replacement decisions can evict pages, making future valid accesses fault again. Address validity and current physical residency are different properties."
+    },
+    {
+      "id": "os07",
+      "title": "局部性、页面置换与抖动",
+      "topic": "operating_systems",
+      "language": "zh",
+      "text": "程序常在一段时间内反复访问某一小部分数据和指令，这种局部性使缓存与页面管理能够利用近期访问历史。最近最少使用策略尝试优先淘汰较久没有使用的页面，但过去不常访问并不保证以后也不需要。循环扫描超过可用内存的工作集合时，刚淘汰的页面可能很快又被访问，导致频繁缺页。系统把大量时间花在换入换出而不是执行有用工作时，会出现抖动。此时单纯提高并发任务数可能让内存竞争更严重，应检查活跃工作集合、缺页情况和内存压力，而不是只观察处理器利用率。"
+    },
+    {
+      "id": "os08",
+      "title": "Open file descriptors and unlinking a name",
+      "topic": "operating_systems",
+      "language": "en",
+      "text": "In a Unix-like file system, a file descriptor refers to an open file description rather than merely remembering a pathname for each operation. Removing a directory entry with unlink removes that name, but an already open descriptor may continue to access the file's contents until the remaining references are released. This explains why a process can keep writing to a file that no longer appears under the old name, and why disk space may not be reclaimed immediately. Closing a descriptor releases that process's reference; other descriptors or names can still keep the underlying file alive. Path lookup, open handles, and storage lifetime are related but distinct concepts."
+    },
+    {
+      "id": "os09",
+      "title": "页缓存、写入返回与持久化",
+      "topic": "operating_systems",
+      "language": "zh",
+      "text": "应用调用写入操作后，数据可能先进入操作系统页缓存，随后才由系统安排写到设备。写入返回成功因此不总是代表突然断电后数据仍然存在。需要更强持久化保证的程序，应按照平台及文件系统的语义使用适当的同步操作，并考虑文件内容与目录元数据更新之间的关系。缓存改善平均读写效率，却也使应用观察到的完成时间和实际稳定存储时间不同。数据库日志的持久化要求最终仍需要下层存储配合。测试持久化时应说明故障类型和存储假设，不能用进程正常退出的一次试验代替所有崩溃与掉电场景。"
+    },
+    {
+      "id": "os10",
+      "title": "Blocking work inside an asynchronous event loop",
+      "topic": "operating_systems",
+      "language": "en",
+      "text": "An asynchronous event loop can serve many tasks efficiently when they frequently wait for input or output and yield control while waiting. Declaring a function asynchronous does not make long computation disappear or automatically assign it to another core. If a callback performs a long CPU-bound calculation without yielding, other callbacks on that loop must wait, increasing response latency even when they do little work themselves. Moving suitable blocking work to a bounded worker pool or separate processes can help, but introduces scheduling and communication costs. Evaluate waiting time and compute time separately. The number of concurrent requests is not the same as the amount of computation that can execute in parallel."
+    }
+  ],
+  "queries": [
+    {
+      "id": "q01",
+      "text": "解释倒数排名融合如何合并BM25和向量检索结果，以及为什么不需要直接相加两路原始分数。",
+      "split": "dev",
+      "category": "lexical",
+      "language": "zh",
+      "family_id": "rank_fusion",
+      "answerable": true,
+      "relevance": {
+        "rag07": 2,
+        "rag06": 1
+      },
+      "required_evidence_groups": [
+        [
+          "rag07"
+        ]
+      ],
+      "annotation_note": "rag07直接说明按名次贡献相加、分数量纲问题及候选边界；rag06部分支持BM25分数并非可校准概率这一前提，但不能独立说明融合算法。"
+    },
+    {
+      "id": "q02",
+      "text": "Explain how the leading column of a composite index affects predicates on department, enrollment year, or both.",
+      "split": "dev",
+      "category": "lexical",
+      "language": "en",
+      "family_id": "composite_index_prefix",
+      "answerable": true,
+      "relevance": {
+        "db04": 2,
+        "db03": 1
+      },
+      "required_evidence_groups": [
+        [
+          "db04"
+        ]
+      ],
+      "annotation_note": "db04完整给出列顺序与三种谓词关系；db03只补充有序索引与范围访问的一般机制，不能替代前缀解释。"
+    },
+    {
+      "id": "q03",
+      "text": "说明DNS缓存记录的TTL到期后会发生什么，以及修改权威记录为何不一定立即影响所有用户。",
+      "split": "dev",
+      "category": "lexical",
+      "language": "zh",
+      "family_id": "dns_cache_expiry",
+      "answerable": true,
+      "relevance": {
+        "net01": 2,
+        "net02": 1
+      },
+      "required_evidence_groups": [
+        [
+          "net01"
+        ]
+      ],
+      "annotation_note": "net01直接覆盖到期重新获取与旧缓存造成变更延迟；net02支持解析器缓存和权威职责，但没有完整说明TTL到期。"
+    },
+    {
+      "id": "q04",
+      "text": "Distinguish TLS server-certificate validation from authorization to read a signed-in user account.",
+      "split": "test",
+      "category": "lexical",
+      "language": "en",
+      "family_id": "public_service_boundaries",
+      "answerable": true,
+      "relevance": {
+        "net06": 2,
+        "net09": 1
+      },
+      "required_evidence_groups": [
+        [
+          "net06"
+        ]
+      ],
+      "annotation_note": "net06完整区分服务器证书与应用用户权限；net09只部分支持代理/TLS不能替代应用权限检查，未解释证书验证本身。"
+    },
+    {
+      "id": "q05",
+      "text": "列出经典死锁的必要条件，并解释统一加锁顺序破坏的是哪一个条件。",
+      "split": "test",
+      "category": "lexical",
+      "language": "zh",
+      "family_id": "deadlock_prevention",
+      "answerable": true,
+      "relevance": {
+        "os05": 2
+      },
+      "required_evidence_groups": [
+        [
+          "os05"
+        ]
+      ],
+      "annotation_note": "os05列出四条件并说明统一顺序破坏循环等待，其他同步片段不足以列出这些条件。"
+    },
+    {
+      "id": "q06",
+      "text": "Explain why unlinking a pathname may not stop an existing file descriptor from writing or immediately release disk space.",
+      "split": "dev",
+      "category": "lexical",
+      "language": "en",
+      "family_id": "open_file_lifetime",
+      "answerable": true,
+      "relevance": {
+        "os08": 2
+      },
+      "required_evidence_groups": [
+        [
+          "os08"
+        ]
+      ],
+      "annotation_note": "os08完整解释目录项、打开引用与存储寿命；页缓存片段涉及另一种写入行为，不能作为这个结论的支持。"
+    },
+    {
+      "id": "q07",
+      "text": "分析执行计划中选择性估计与实际行数差距很大时应检查什么，以及为什么有索引仍可能选择全表扫描。",
+      "split": "test",
+      "category": "lexical",
+      "language": "zh",
+      "family_id": "optimizer_selectivity",
+      "answerable": true,
+      "relevance": {
+        "db09": 2,
+        "db03": 1
+      },
+      "required_evidence_groups": [
+        [
+          "db09"
+        ]
+      ],
+      "annotation_note": "db09覆盖统计信息、估计与实际行数、访问代价；db03支持大量命中时顺序扫描可能更便宜，但不回答统计偏差诊断。"
+    },
+    {
+      "id": "q08",
+      "text": "A study assistant gives a wrong explanation even though the lecturer uploaded the right material. Identify the distinct stages that must be checked before blaming the search component.",
+      "split": "dev",
+      "category": "semantic",
+      "language": "en",
+      "family_id": "retrieval_failure_diagnosis",
+      "answerable": true,
+      "relevance": {
+        "rag04": 2,
+        "rag03": 1
+      },
+      "required_evidence_groups": [
+        [
+          "rag04"
+        ]
+      ],
+      "annotation_note": "rag04区分集合缺证据、召回遗漏、生成误用，并列出诊断记录；rag03部分支持生成结论可能曲解已经找到的来源。"
+    },
+    {
+      "id": "q09",
+      "text": "教师换了一间办公室，选课系统却要改动许多记录，而且有些页面仍显示旧地址。解释这种数据组织问题及一种合理改造方向。",
+      "split": "test",
+      "category": "semantic",
+      "language": "zh",
+      "family_id": "normalization_anomalies",
+      "answerable": true,
+      "relevance": {
+        "db05": 2,
+        "db06": 1
+      },
+      "required_evidence_groups": [
+        [
+          "db05"
+        ]
+      ],
+      "annotation_note": "db05用该类重复事实解释更新异常与按依赖分解；db06说明重复派生数据需明确权威源和维护，只支持部分一致性分析。"
+    },
+    {
+      "id": "q10",
+      "text": "One request performs a long calculation and other tiny requests stop responding, despite the server using async functions. Explain the bottleneck and a suitable way to move the work.",
+      "split": "test",
+      "category": "semantic",
+      "language": "en",
+      "family_id": "execution_parallelism",
+      "answerable": true,
+      "relevance": {
+        "os10": 2,
+        "os02": 1
+      },
+      "required_evidence_groups": [
+        [
+          "os10"
+        ]
+      ],
+      "annotation_note": "os10直接覆盖不让出CPU的计算阻塞事件循环及工作池/进程；os02部分解释核心与调度成本，不能独立定位事件循环。"
+    },
+    {
+      "id": "q11",
+      "text": "客户端连续发了两条业务消息，服务端却先读到半条，下一次读到剩余部分和另一条。解释原因并给出协议层的处理办法。",
+      "split": "test",
+      "category": "semantic",
+      "language": "zh",
+      "family_id": "stream_framing",
+      "answerable": true,
+      "relevance": {
+        "net03": 2,
+        "net04": 1
+      },
+      "required_evidence_groups": [
+        [
+          "net03"
+        ]
+      ],
+      "annotation_note": "net03明确说明字节流不保留写入边界以及长度/分隔符分帧；net04的保留数据报边界仅提供对照，不能替代TCP应用分帧方案。"
+    },
+    {
+      "id": "q12",
+      "text": "A dashboard repeatedly recomputes almost the same joined totals. Explain how keeping the result could speed up reads, and what freshness and maintenance decisions the design creates.",
+      "split": "dev",
+      "category": "semantic",
+      "language": "en",
+      "family_id": "materialized_summary_tradeoff",
+      "answerable": true,
+      "relevance": {
+        "db06": 2
+      },
+      "required_evidence_groups": [
+        [
+          "db06"
+        ]
+      ],
+      "annotation_note": "db06完整覆盖预计算结果、读写成本与刷新新鲜度；规范化片段没有描述物化维护策略，因此不标为相关证据。"
+    },
+    {
+      "id": "q13",
+      "text": "答案旁边每个来源编号都能点开，教师却发现一条关键结论根本没有依据。说明自动检查通过为何仍可能出现这个问题，以及应保留什么用于复查。",
+      "split": "dev",
+      "category": "semantic",
+      "language": "zh",
+      "family_id": "evidence_attribution",
+      "answerable": true,
+      "relevance": {
+        "rag03": 2,
+        "rag04": 1
+      },
+      "required_evidence_groups": [
+        [
+          "rag03"
+        ]
+      ],
+      "annotation_note": "rag03覆盖引用可定位不等于支持、逐项核对和文本快照；rag04部分支持保存源版本/上下文并区分生成曲解。"
+    },
+    {
+      "id": "q14",
+      "text": "For a live voice conversation, an old sound sample may be useless once its playback time has passed. Explain why an application might accept some missing samples and which delivery responsibilities remain.",
+      "split": "test",
+      "category": "semantic",
+      "language": "en",
+      "family_id": "datagram_media_tradeoff",
+      "answerable": true,
+      "relevance": {
+        "net04": 2,
+        "net03": 1
+      },
+      "required_evidence_groups": [
+        [
+          "net04"
+        ]
+      ],
+      "annotation_note": "net04直接说明时限、丢包取舍和应用的序号/抖动缓冲/恢复责任；net03提供可靠有序传输与重传这一对照背景。"
+    },
+    {
+      "id": "q15",
+      "text": "A retrieved theorem statement lost the assumptions printed immediately above it. Explain how passage boundaries and overlap can affect this failure without assuming that longer passages always help.",
+      "split": "test",
+      "category": "cross_language",
+      "language": "en",
+      "family_id": "chunk_context_boundaries",
+      "answerable": true,
+      "relevance": {
+        "rag01": 2,
+        "rag05": 1
+      },
+      "required_evidence_groups": [
+        [
+          "rag01"
+        ]
+      ],
+      "annotation_note": "主要必需来源rag01为中文，完整解释假设被切断、重叠和长度代价；rag05中文只支持过多上下文可带来干扰。"
+    },
+    {
+      "id": "q16",
+      "text": "换了嵌入模型之后，新查询向量与旧文档向量维数仍相同。说明为什么不能据此继续沿用旧索引，以及需要保存和重建哪些东西。",
+      "split": "dev",
+      "category": "cross_language",
+      "language": "zh",
+      "family_id": "embedding_space_compatibility",
+      "answerable": true,
+      "relevance": {
+        "rag02": 2
+      },
+      "required_evidence_groups": [
+        [
+          "rag02"
+        ]
+      ],
+      "annotation_note": "英文rag02唯一完整覆盖同维数不代表同语义空间、配置记录及重算文档向量。"
+    },
+    {
+      "id": "q17",
+      "text": "An enrollment operation decrements the available-seat count, but adding the student record then violates a constraint before commit. Explain which transaction property prevents the half-finished business state.",
+      "split": "dev",
+      "category": "cross_language",
+      "language": "en",
+      "family_id": "transaction_atomicity",
+      "answerable": true,
+      "relevance": {
+        "db01": 2
+      },
+      "required_evidence_groups": [
+        [
+          "db01"
+        ]
+      ],
+      "annotation_note": "中文db01直接给出两个更新组成整体以及未提交失败回滚；db02讨论并发、db07讨论故障持久化，均不能替代该原子性问题。"
+    },
+    {
+      "id": "q18",
+      "text": "为选课表设计约束时，怎样分别保证课程引用有效、同一学生不能重复选同一课程，以及每行记录可以被唯一识别？",
+      "split": "test",
+      "category": "cross_language",
+      "language": "zh",
+      "family_id": "relational_key_invariants",
+      "answerable": true,
+      "relevance": {
+        "db10": 2
+      },
+      "required_evidence_groups": [
+        [
+          "db10"
+        ]
+      ],
+      "annotation_note": "英文db10分别说明外键、学生课程复合唯一性和主键；规范化只讨论事实组织，不完整支持这些可执行约束。"
+    },
+    {
+      "id": "q19",
+      "text": "A receiver has plenty of free buffer space, yet the sender still has to slow down. Explain the difference between protecting the receiver and protecting the network path.",
+      "split": "test",
+      "category": "cross_language",
+      "language": "en",
+      "family_id": "transport_rate_control",
+      "answerable": true,
+      "relevance": {
+        "net07": 2,
+        "net03": 1
+      },
+      "required_evidence_groups": [
+        [
+          "net07"
+        ]
+      ],
+      "annotation_note": "中文net07完整区分网络路径拥塞与接收缓冲限制；net03中文仅支持接收窗口的作用。"
+    },
+    {
+      "id": "q20",
+      "text": "进程第一次访问一个合法地址却触发了缺页。解释为什么这既不一定是程序错误，也不一定要从磁盘读取。",
+      "split": "dev",
+      "category": "cross_language",
+      "language": "zh",
+      "family_id": "virtual_memory_fault_classification",
+      "answerable": true,
+      "relevance": {
+        "os06": 2
+      },
+      "required_evidence_groups": [
+        [
+          "os06"
+        ]
+      ],
+      "annotation_note": "英文os06区分合法需求零页、文件支持页和非法访问，并明确缺页不必读盘。"
+    },
+    {
+      "id": "q21",
+      "text": "Why can repeatedly scanning a working set larger than physical memory cause constant page replacement, and why might adding more concurrent tasks make it worse?",
+      "split": "dev",
+      "category": "cross_language",
+      "language": "en",
+      "family_id": "working_set_thrashing",
+      "answerable": true,
+      "relevance": {
+        "os07": 2,
+        "os06": 1
+      },
+      "required_evidence_groups": [
+        [
+          "os07"
+        ]
+      ],
+      "annotation_note": "中文os07完整说明局部性、超内存工作集合与抖动；英文os06部分支持内存稀缺时淘汰导致再次缺页，不覆盖并发工作集合竞争。"
+    },
+    {
+      "id": "q22",
+      "text": "一道题需要分散在不同段落中的依据，但前几个检索结果彼此重复。比较增加返回片段数量与使用多样性重排两种做法，各指出可能的收益和代价。",
+      "split": "test",
+      "category": "multi_evidence",
+      "language": "zh",
+      "family_id": "retrieval_budget_and_diversity",
+      "answerable": true,
+      "relevance": {
+        "rag05": 2,
+        "rag08": 2,
+        "rag01": 1
+      },
+      "required_evidence_groups": [
+        [
+          "rag05"
+        ],
+        [
+          "rag08"
+        ]
+      ],
+      "annotation_note": "必须同时有rag05的数量/上下文预算权衡和rag08的多样性选择及漏掉相似但必要信息风险；rag01只解释重叠为何制造重复。"
+    },
+    {
+      "id": "q23",
+      "text": "Design a recovery explanation for two incidents: a database machine crashes after commit, and an administrator accidentally commits a deletion that reaches every replica. Explain which protection addresses each incident, and why counting replicas does not specify acceptable data loss or restoration time.",
+      "split": "test",
+      "category": "multi_evidence",
+      "language": "en",
+      "family_id": "durability_and_recovery",
+      "answerable": true,
+      "relevance": {
+        "db07": 2,
+        "db08": 2,
+        "os09": 1
+      },
+      "required_evidence_groups": [
+        [
+          "db07"
+        ],
+        [
+          "db08"
+        ]
+      ],
+      "annotation_note": "db07必需于已提交修改的预写日志与崩溃恢复；db08必需于误删可被复制、可恢复备份及恢复点/恢复时间目标；os09仅支持底层持久化与返回时间的差别。"
+    },
+    {
+      "id": "q24",
+      "text": "为有界生产者消费者队列比较条件变量和计数信号量：共享队列由谁保护，条件等待如何处理锁、醒来为何要复查，以及通知和许可在没有等待者时有什么差异？",
+      "split": "dev",
+      "category": "multi_evidence",
+      "language": "zh",
+      "family_id": "bounded_queue_synchronization",
+      "answerable": true,
+      "relevance": {
+        "os03": 2,
+        "os04": 2
+      },
+      "required_evidence_groups": [
+        [
+          "os03"
+        ],
+        [
+          "os04"
+        ]
+      ],
+      "annotation_note": "os03必需于锁保护、释放锁等待和循环复查；os04必需于空槽/元素许可和许可可保留，与非存储的通知形成对照。"
+    },
+    {
+      "id": "q25",
+      "text": "A CDN serves a personalized grade page whose content rarely changes. Explain how freshness and ETag revalidation differ from deciding whether a cached response may be reused for another student, and why a login cookie alone is not a sufficient cache policy.",
+      "split": "dev",
+      "category": "multi_evidence",
+      "language": "en",
+      "family_id": "web_cache_freshness_and_privacy",
+      "answerable": true,
+      "relevance": {
+        "net05": 2,
+        "net10": 2
+      },
+      "required_evidence_groups": [
+        [
+          "net05"
+        ],
+        [
+          "net10"
+        ]
+      ],
+      "annotation_note": "net05提供新鲜度与ETag/304再验证机制；net10提供共享缓存、个人响应和cookie本身不保证隔离，缺一不能完整回答。"
+    },
+    {
+      "id": "q26",
+      "text": "准备把课程资料发给外部教学模型，并评价一道需要定义和限制条件的题目。说明发送前的资料边界、如何检查答案引用，以及如何评估检索是否找齐必要依据。",
+      "split": "dev",
+      "category": "multi_evidence",
+      "language": "zh",
+      "family_id": "evidence_attribution",
+      "answerable": true,
+      "relevance": {
+        "rag09": 2,
+        "rag03": 2,
+        "rag10": 2,
+        "rag04": 1
+      },
+      "required_evidence_groups": [
+        [
+          "rag09"
+        ],
+        [
+          "rag03"
+        ],
+        [
+          "rag10"
+        ]
+      ],
+      "annotation_note": "rag09必需于权限、个人信息和最小发送范围；rag03必需于结论支持检查；rag10必需于按必要证据组评价覆盖。rag04只补充分开诊断检索与生成。"
+    },
+    {
+      "id": "q27",
+      "text": "Explain why adding threads or async requests does not guarantee that a computation-heavy teaching server runs work simultaneously. Relate shared process resources, available CPU cores, event-loop blocking, and the overhead of rapidly switching tasks on one core.",
+      "split": "test",
+      "category": "multi_evidence",
+      "language": "en",
+      "family_id": "execution_parallelism",
+      "answerable": true,
+      "relevance": {
+        "os01": 2,
+        "os02": 2,
+        "os10": 2
+      },
+      "required_evidence_groups": [
+        [
+          "os01"
+        ],
+        [
+          "os02"
+        ],
+        [
+          "os10"
+        ]
+      ],
+      "annotation_note": "os01提供进程/线程资源共享边界；os02必需于单核并发与多核并行、上下文切换及缓存代价；os10提供async不转移CPU工作与事件循环阻塞。"
+    },
+    {
+      "id": "q28",
+      "text": "校园演示应用放在私有IPv4网络后，计划用反向代理和HTTPS开放给学生。分别解释公网请求怎样到达入口、代理怎样找到后端，以及为什么证书有效仍不能代替学生权限检查。",
+      "split": "test",
+      "category": "multi_evidence",
+      "language": "zh",
+      "family_id": "public_service_boundaries",
+      "answerable": true,
+      "relevance": {
+        "net08": 2,
+        "net09": 2,
+        "net06": 2
+      },
+      "required_evidence_groups": [
+        [
+          "net08"
+        ],
+        [
+          "net09"
+        ],
+        [
+          "net06"
+        ]
+      ],
+      "annotation_note": "net08必需于私网地址映射与入站转发；net09必需于代理入口/路由；net06必需于TLS证书身份和应用授权区别。net09对TLS仅部分重叠，未完整解释证书验证。"
+    },
+    {
+      "id": "q29",
+      "text": "给出本校选课生产数据库上学期的事务吞吐量实测值，并注明测量硬件、并发人数和测试日期。",
+      "split": "dev",
+      "category": "unanswerable",
+      "language": "zh",
+      "family_id": "unavailable_local_measurement",
+      "answerable": false,
+      "relevance": {},
+      "required_evidence_groups": [],
+      "annotation_note": "本集合只有自编概念讲义，没有本校生产系统日志或任何吞吐实测、硬件和日期，不能用索引或执行计划原理补出数值。"
+    },
+    {
+      "id": "q30",
+      "text": "Give a proven worst-case interrupt response time for the specific real-time kernel used in our laboratory, including its hardware configuration and scheduling analysis.",
+      "split": "test",
+      "category": "unanswerable",
+      "language": "en",
+      "family_id": "unspecified_realtime_bound",
+      "answerable": false,
+      "relevance": {},
+      "required_evidence_groups": [],
+      "annotation_note": "集合没有实验室内核型号、硬件、实时调度假设或中断最坏响应证明，通用调度片段不能给出该保证。"
+    },
+    {
+      "id": "q31",
+      "text": "推导网络授时系统采用的闰秒平滑函数，并算出一天内每小时的时间偏移。",
+      "split": "test",
+      "category": "unanswerable",
+      "language": "zh",
+      "family_id": "time_synchronization_out_of_scope",
+      "answerable": false,
+      "relevance": {},
+      "required_evidence_groups": [],
+      "annotation_note": "网络片段涉及DNS、传输、HTTP、TLS和路由，没有授时协议、闰秒平滑函数或计算参数。"
+    },
+    {
+      "id": "q32",
+      "text": "Use the course material to derive the gradient update equations for training the embedding model from scratch with a contrastive loss.",
+      "split": "dev",
+      "category": "unanswerable",
+      "language": "en",
+      "family_id": "embedding_training_out_of_scope",
+      "answerable": false,
+      "relevance": {},
+      "required_evidence_groups": [],
+      "annotation_note": "集合说明使用嵌入进行检索和索引兼容性，没有对比学习损失、模型训练或梯度推导依据。"
+    }
+  ]
+}

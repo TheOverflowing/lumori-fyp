@@ -1,0 +1,48 @@
+{
+  "started_at_utc": "2026-09-18T03:30:54.625540+00:00",
+  "manifest_path": "docs/parsing/benchmarks/omnidocbench-pilot-v1/manifest.json",
+  "manifest_sha256": "ee2b0715a979e7328d9f2a0f689d099a2fe4baf539106f3fe9bc90359b9d36e3",
+  "strategies": [
+    "pypdf_baseline_v0",
+    "poppler_layout_v1",
+    "tesseract_v1",
+    "tesseract_psm6_v1",
+    "adaptive_local_v1",
+    "rapidocr_v1"
+  ],
+  "variants": [
+    "native_pdf",
+    "image_only_pdf",
+    "degraded_image"
+  ],
+  "samples": null,
+  "normalization": "nfkc-whitespace-strip-case-sensitive-v1",
+  "metric_contract": {
+    "text_accuracy_scope": "prose stratum only, to avoid confusing table HTML/formula LaTeX with text OCR errors",
+    "cer": "Levenshtein(NFKC(text) with whitespace removed) / normalized GT character count; case and punctuation preserved, raw CER may exceed 1; empty/error prediction has CER=1.",
+    "wer": "English prose only; NFKC then Unicode word-or-punctuation tokens, case preserved.",
+    "usable_page": "Custom pilot rule fixed before scores: CER<=0.10 and prediction length >=0.80*GT length. Includes all prose failures in denominator; not an industry standard or a semantic correctness guarantee.",
+    "structure": "Table/figure/formula gold regions preserved; TEDS, CDM, region recall and image semantic accuracy are NOT computed by this pilot.",
+    "aggregation": "Equal-weight macro CER and edit-sum/GT-character-sum micro CER; language and source-page counts reported. Variants are paired observations, not independent new documents."
+  },
+  "execution": "Sequential local calls; warm OS cache possible; one trial per case; includes rendering/OCR subprocess startup; asset extraction disabled to isolate recognition. No network or paid API calls. Timings are descriptive, not stable throughput claims.",
+  "versions": {
+    "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "pypdf": "6.18.0",
+    "tesseract": "tesseract 5.5.1",
+    "poppler": "pdftotext version 26.04.0"
+  },
+  "source_hashes": {
+    "scripts/evaluate_document_parsing.py": "1889028491c77998fbbeedb5cc98a1f7502c2459fb0f03c32435eebb7e709759",
+    "scripts/prepare_parsing_benchmark.py": "4117f985454d287948bed046a0165bec8b1e0e2c87830ddd5c4bbb0d5595b2c9",
+    "app/document_parsing.py": "e3ea2ee69be5e2a2152734c2812b230e68c7aa79b1aaba84d8fdce313433b181"
+  },
+  "limitations": [
+    "Small purposive pilot, not an official OmniDocBench score or representative CS-course test.",
+    "No table structure/formula/semantic figure accuracy is estimated.",
+    "The same source across variants is paired, not independent new data.",
+    "Native PDF source revision differs from annotation revision; same released page identifier.",
+    "Reference text includes annotated headers/footers in annotated order; parser ordering affects CER."
+  ]
+}

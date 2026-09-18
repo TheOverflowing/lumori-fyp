@@ -1,0 +1,104 @@
+{
+  "verified_at": "2026-09-12T04:36:06.057127+00:00",
+  "prompt_version": "education-v3",
+  "rubric_version": "difficulty-rubric-v1",
+  "python_tests": {
+    "passed": 106,
+    "failed": 0,
+    "warnings": 2,
+    "xml": "difficulty-tests-20260912.xml"
+  },
+  "frontend_tests": {
+    "passed": 33,
+    "failed": 0,
+    "command": "node --test tests/frontend_difficulty.test.mjs tests/frontend_live_updates.test.mjs tests/frontend_preferences.test.mjs"
+  },
+  "live_api": {
+    "results": "difficulty-20260912T042551358609Z/results.json",
+    "technical_checks_passed": true,
+    "indexed_chunks": 14,
+    "provider_attempts": 9,
+    "final_question_count": 6,
+    "all_hard": [
+      0,
+      0,
+      3
+    ],
+    "mixed": [
+      1,
+      1,
+      1
+    ],
+    "observed_repair": "all_hard first q1 and q3 assessed medium; one regeneration then all three assessed hard"
+  },
+  "browser_qa": {
+    "environment": "isolated scripts.ui_fixture_server with mock providers, temporary database, port 8766",
+    "real_quality_assessment": false,
+    "checks_passed": [
+      "all-hard 0/0/5 allocation",
+      "total changed to 6 retains allocation, missing-one message and blocked submit",
+      "lesson depth independent; switching back preserves quiz allocation",
+      "mixed 1/2/2 generation and per-question target display",
+      "model_checked display for original version",
+      "partial teacher ratings blocked",
+      "all uncertain ratings saved with explicit fixture-only note",
+      "Chinese and English controls",
+      "desktop difficulty area visual inspection",
+      "real page refreshed with original course and quiz choice preserved"
+    ],
+    "small_screen_checked": false
+  },
+  "runtime": {
+    "url": "http://127.0.0.1:8765/#generate",
+    "restarted_with_current_backend": true,
+    "status_verified": true,
+    "text_model": "deepseek-flash",
+    "embedding_model": "qwen/qwen3-embedding-8b",
+    "difficulty_fields_and_csv_route_verified": true,
+    "database_backup": "tmp/difficulty-before-restart-20260912T043421Z/studio.sqlite3"
+  },
+  "manual_quality_verified": false,
+  "student_difficulty_calibrated": false,
+  "limitations": [
+    "Generator and reviewer use the same model in separate contexts; correlated errors remain possible.",
+    "Exact allocation and operational rubric checks do not establish empirical learner difficulty.",
+    "Browser ratings are fixture data, not teacher study results."
+  ],
+  "sha256": {
+    "app/__init__.py": "fb13e48fd602513ab8bd12a8f14905db0e2df76641164977929061add52671fd",
+    "app/config.py": "9a429cf71f602b7fd8baf87608537cea54e25c0fbb26752eac57afc9f237c526",
+    "app/difficulty.py": "c915257336c2e810ace1d2c3a58ebb7034521f7eb71f9b8b22b1fb4ea18f8e00",
+    "app/main.py": "dbd6dd3de192cc0128c16ab2fe6bc6b3c11c6e9a82b32da44a01059753bfa044",
+    "app/models.py": "fe1ffc40e43dcc04f592d2c2f0e2d140def7018742192b4f03d73abec959313d",
+    "app/pipeline.py": "8f6b4028ee702e8875606cb39f5aa341c68f3d5c26b29775d7f1823abcd4ffb4",
+    "app/providers.py": "db9644eb2f74679bd4c5a5d3dad7a983b8dd27c6cd2df7a4baf5767dc39c1c8d",
+    "app/static/app.js": "160a010ac371ba70233186ab40c504201a8628cf87ca01acc4421e63063ecdda",
+    "app/static/difficulty.js": "9b141c2d96b6ff6cf215b80d021c7b37435c5b375c8f65add4cc136dee5a2917",
+    "app/static/i18n.js": "4fd66f9fd27e7de8c16a37003b5aa0b135e0c43543b69948c1a4557974823844",
+    "app/static/index.html": "de332df3139af58e639e58982ef3c2a22944429b3abad3a5139bc20f68ae54f3",
+    "app/static/library.css": "e91f18a55fa2152cd8e616829e879022ca2560f677952642938a59cecc437328",
+    "app/static/live-updates.js": "8fca270818ebcebac4a4870f761c33d4a584831893804ac1fc00923e889edf44",
+    "app/static/material.css": "c3f469b9bed408edc40d8378a3fa1c81b9d0f87ddbbace6b20ed055d905ed0ae",
+    "app/static/multimodal.css": "11f804abb03cb8abac8734e8d8bb7413e31ef16e3bf7c86bb8412dcb42e16f79",
+    "app/static/multimodal.js": "c2f7aeae38d04aff6c23d35a96b5037e70f0a8f69cf35dae4995d4a2e4ddb238",
+    "app/static/preferences.css": "5709305e2086d968249ffa628ee4ae2653479c549716fc592941d1e9a382e6f2",
+    "app/static/preferences.js": "3c19e4aff8bb2c7e669f2bc2e8a153520a913595080bfa0110a0e8ccc8e2f97d",
+    "app/static/style.css": "bf56cc182b7c286fbc907f4469716f2e82e6bde3606192784db3da37b90189f4",
+    "app/static/translations.js": "0963c990f4b1af61a7be4c98d4959d38543e159b8d53ad7eca50a192841f6efc",
+    "app/store.py": "746a4c0e952410824448995518ccc7c2045fc1255a03e440bd966ec1a9e0154e",
+    "scripts/ca1_smoke.py": "48c500860eccd0f3199a8ec77dd8066ed1214dd8a3e2b9a521bea7e621c3ec74",
+    "scripts/difficulty_smoke.py": "f2886ce0ce4c6dd61e23e5f485593910e1cf92733d72133b3e776f9569fe3f92",
+    "tests/frontend_difficulty.test.mjs": "2be998ffe06046b487877929990a8b03f634b4766ff3cd63ef667f0996210c19",
+    "tests/frontend_live_updates.test.mjs": "46d90effe9b5ec999d5f234470c0e52ef45ccc7c2627657c813616a6d2089ed5",
+    "tests/frontend_preferences.test.mjs": "0bc0e855ff344fbd2ffe5e216544c7c2c761fd536143a185ff94bf45ba51a28a",
+    "tests/test_ca1_smoke.py": "edba84ba2c50ab4666668c665f5476598e05ddc1e58fb3719a26770d9745abfe",
+    "tests/test_content_library.py": "ae0a0aea378e3f5b7cfd5ddc0bd8100dbc82984657c7216963ebe7895323b019",
+    "tests/test_difficulty_api.py": "6e71a87aacaae336b95f784d7f1dee855e8e8d529d2c99c0c081e265943319f3",
+    "tests/test_difficulty_pipeline.py": "9fc654e2d98f419947f742a39108b8af6bd0cff6885fc2c661229375787c245b",
+    "tests/test_providers.py": "13024b452a1aa49eada404d78f5b9a39e5292b4dc10490b41db5df090ccf0c71",
+    "tests/test_retrieval.py": "4e9998afe0527d0f99dc58e12550f0cd592cba487221ccb6bb2f66e50d0fe209",
+    "tests/test_text_limits.py": "bca4331c8797bd20934c1751b71504d3a1b08fd18b3c4f82decd323176edb096",
+    "tests/test_workflow.py": "0b0a170dcb14e33607959692b4e24fb08200ecb1d23bb6b099e84ea0b6d7c6a6"
+  },
+  "configured_credentials_absent_from_changed_source_and_new_evidence": true
+}

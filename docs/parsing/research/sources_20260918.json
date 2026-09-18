@@ -1,0 +1,876 @@
+{
+  "schema_version": "fyp-parsing-references-v1",
+  "accessed_on": "2026-09-18",
+  "scope": "Bilingual computer-science course PDFs, scans, photographs and visual evidence",
+  "selection_policy": "Primary author papers, official repositories, official documentation, official model/dataset cards only. Latest is latest verified in these sources on the access date, not an exhaustive global ranking.",
+  "own_measurements": [],
+  "reported_result_policy": "All numerical literature scores are external_reported. FYP measurements live in separate run artifacts; no score is transferred to this system.",
+  "sources": [
+    {
+      "id": "S01",
+      "title": "pypdf: Extract Text from a PDF",
+      "url": "https://pypdf.readthedocs.io/en/stable/user/extract-text.html",
+      "source_type": "official_documentation",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "stable documentation observed as 6.19.0",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Text-layer extraction cannot recognize text contained only in image pixels.",
+        "Digitally-born PDFs, scans, and OCRed PDFs have different failure modes."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "A successful extract_text call does not establish page completeness, reading-order correctness, or OCR accuracy."
+      ]
+    },
+    {
+      "id": "S02",
+      "title": "MinerU releases",
+      "url": "https://github.com/opendatalab/MinerU/releases",
+      "source_type": "official_release_notes",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-09-17",
+      "observed_version": "4.0.2; release commit prefix 1e0015c",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "4.0.0 released 2026-09-16, replacing 3.x backend selection with flash/basic/standard/advanced tiers.",
+        "The new HTTP API is V1, and old /file_parse and /tasks are not provided."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "New major release; a 2.5 model paper does not validate every 4.0 pipeline configuration."
+      ]
+    },
+    {
+      "id": "S03",
+      "title": "MinerU 4.0 Quick Start",
+      "url": "https://opendatalab.github.io/MinerU/quick_start/",
+      "source_type": "official_documentation",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "4.0 stable",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Python >=3.10,<3.15; practical fresh environment recommendation is Python3.12.",
+        "Native no-inference PDF extraction explicitly uses mineru-kit parse input.pdf -o output.md --tier flash --ocr-mode txt.",
+        "Apple Silicon base package includes Torch dependencies."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "flash --ocr-mode txt does not add OCR for scanned pages.",
+        "Default PDF parse is standard and may download model weights."
+      ]
+    },
+    {
+      "id": "S04",
+      "title": "MinerU Tiers and Runtimes",
+      "url": "https://opendatalab.github.io/MinerU/usage/tiers/",
+      "source_type": "official_documentation",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "4.0 stable",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "basic can use ONNX or Torch small models without a VLM.",
+        "Apple Silicon automatically chooses Torch/MPS small models and llama.cpp VLM.",
+        "flash OCR requires models even though native flash text extraction does not."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": []
+    },
+    {
+      "id": "S05",
+      "title": "MinerU README resource table",
+      "url": "https://github.com/opendatalab/MinerU/blob/master/README.md",
+      "source_type": "official_repository",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "4.0.2 era",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Reported basic model download approximately0.8GB; standard/advanced approximately2GB for llama.cpp configurations.",
+        "Reported minimumRAM basic ONNX2GB; basic Torch8GB."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "Download sizes exclude package runtime dependencies and are approximate upstream specifications, not local measurements."
+      ]
+    },
+    {
+      "id": "S06",
+      "title": "MinerU Open Source License",
+      "url": "https://github.com/opendatalab/MinerU/blob/master/LICENSE.md",
+      "source_type": "official_license",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "2026 current",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Based on Apache2.0 with additional conditions.",
+        "Online services must visibly attribute MinerU.",
+        "Additional commercial license thresholds include over100millionMAU or over20millionUSD total monthly revenue for combined affiliates."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": "LicenseRef-MinerU-Open-Source-License; not plain Apache-2.0",
+      "limitations": [
+        "Model bundles and dependencies require separate license inspection."
+      ]
+    },
+    {
+      "id": "S07",
+      "title": "MinerU2.5: A Decoupled Vision-Language Model for Efficient High-Resolution Document Parsing",
+      "url": "https://arxiv.org/abs/2509.22186",
+      "source_type": "paper",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2025-09-26",
+      "observed_version": "v2 revised2025-09-29",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "1.2B model separates downsampled global layout detection from recognition of native-resolution region crops."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "Architecture paper; not a reproduction of the current application."
+      ],
+      "arxiv_id": "2509.22186",
+      "doi": "10.48550/arXiv.2509.22186"
+    },
+    {
+      "id": "S08",
+      "title": "MinerU2.5-Pro: Pushing the Limits of Data-Centric Document Parsing at Scale",
+      "url": "https://arxiv.org/abs/2604.04771",
+      "source_type": "paper",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-04-06",
+      "observed_version": "v2 revised2026-04-09",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Keeps1.2B architecture; focuses on difficult samples, cross-model agreement, render-and-verify annotation refinement and progressive training.",
+        "Introduces evaluation changes for OmniDocBenchv1.6."
+      ],
+      "reported_results": [
+        {
+          "metric": "Overall",
+          "value": 95.69,
+          "unit": "score",
+          "benchmark": "OmniDocBench v1.6",
+          "evidence_type": "external_reported",
+          "note": "Author-reported; not measured in this FYP project."
+        },
+        {
+          "metric": "same-architecture baseline improvement",
+          "value": 2.71,
+          "unit": "points",
+          "benchmark": "OmniDocBench v1.6",
+          "evidence_type": "external_reported",
+          "note": "Author-reported; not measured in this FYP project."
+        }
+      ],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [],
+      "arxiv_id": "2604.04771",
+      "doi": "10.48550/arXiv.2604.04771"
+    },
+    {
+      "id": "S09",
+      "title": "PaddleOCR releases",
+      "url": "https://github.com/PaddlePaddle/PaddleOCR/releases",
+      "source_type": "official_release_notes",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-06-11",
+      "observed_version": "3.7.0; commit prefix b03f464",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "PP-OCRv6 released2026-06-11, with tiny/small/medium tiers and50language coverage including Chinese andEnglish.",
+        "PaddleOCR-VL1.6 released in3.6.0 on2026-05-28.",
+        "Do not confuse toolkit3.7.0, OCRv6 and VLM1.6 version numbers."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": []
+    },
+    {
+      "id": "S10",
+      "title": "PP-OCRv6: From 1.5M to 34.5M Parameters, Surpassing Billion-Scale VLMs on OCR Tasks",
+      "url": "https://arxiv.org/abs/2606.13108",
+      "source_type": "paper",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-06-11",
+      "observed_version": "v1",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Task-specific compact detector and recognizer tiers; a plausible CPU OCR fallback experiment."
+      ],
+      "reported_results": [
+        {
+          "metric": "recognition accuracy",
+          "value": 83.2,
+          "unit": "percent",
+          "benchmark": "authors in-house OCR benchmark",
+          "evidence_type": "external_reported",
+          "note": "Author-reported; not measured in this FYP project."
+        },
+        {
+          "metric": "detection Hmean",
+          "value": 86.2,
+          "unit": "percent",
+          "benchmark": "authors in-house OCR benchmark",
+          "evidence_type": "external_reported",
+          "note": "Author-reported; not measured in this FYP project."
+        },
+        {
+          "metric": "tiny speedup vs PP-OCRv5_mobile",
+          "value": 3.9,
+          "unit": "times",
+          "benchmark": "authors Intel Xeon CPU setup",
+          "evidence_type": "external_reported",
+          "note": "Author-reported; not measured in this FYP project."
+        }
+      ],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "Not whole-document parsing success; hardware/workload differ from this Mac."
+      ],
+      "arxiv_id": "2606.13108",
+      "doi": "10.48550/arXiv.2606.13108"
+    },
+    {
+      "id": "S11",
+      "title": "RapidOCR releases",
+      "url": "https://github.com/RapidAI/RapidOCR/releases",
+      "source_type": "official_release_notes",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-07-21",
+      "observed_version": "3.9.2; commit prefix095232a",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "3.9.0 (2026-06-23) switched default models to PP-OCRv6 det small and rec small.",
+        "That release reported approximately29MB wheel size including bundled models.",
+        "3.9.2 is the latest release observed."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "Wheel size is not total runtime/model disk footprint."
+      ]
+    },
+    {
+      "id": "S12",
+      "title": "RapidOCR Installation Guide",
+      "url": "https://rapidai.github.io/RapidOCRDocs/main/en/install_usage/rapidocr/install/",
+      "source_type": "official_documentation",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "3.9.2 era",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Install rapidocr plus onnxruntime; newer rapidocr does not itself require a specific inference engine dependency.",
+        "Legacy rapidocr_onnxruntime package is being retired."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "Do not infer model version from package import name; archive actual model hashes."
+      ]
+    },
+    {
+      "id": "S13",
+      "title": "RapidOCR default model registry",
+      "url": "https://github.com/RapidAI/RapidOCR/blob/main/python/rapidocr/default_models.yaml",
+      "source_type": "official_code",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "v3.9.2 model URLs",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Registry specifies engine/model download paths and hashes for PP-OCRv6 candidates."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": "Apache-2.0 code: https://github.com/RapidAI/RapidOCR/blob/main/LICENSE",
+      "limitations": []
+    },
+    {
+      "id": "S14",
+      "title": "PaddleOCR-VL-1.5: Towards a Multi-Task 0.9B VLM for Robust In-the-Wild Document Parsing",
+      "url": "https://arxiv.org/abs/2601.21957",
+      "source_type": "paper",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-01-29",
+      "observed_version": "v2 revised2026-04-03",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Introduces Real5 evaluation for scan, skew, warping, screen photography and illumination."
+      ],
+      "reported_results": [
+        {
+          "metric": "Overall",
+          "value": 94.5,
+          "unit": "score",
+          "benchmark": "OmniDocBench v1.5",
+          "evidence_type": "external_reported",
+          "note": "Author-reported; not measured in this FYP project."
+        }
+      ],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [],
+      "arxiv_id": "2601.21957",
+      "doi": "10.48550/arXiv.2601.21957"
+    },
+    {
+      "id": "S15",
+      "title": "PaddleOCR-VL-1.6: Expanding the Frontier of Document Parsing with Under-Optimized Region Refinement and Progressive Post-Training",
+      "url": "https://arxiv.org/abs/2606.03264",
+      "source_type": "paper",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-06-02",
+      "observed_version": "v1",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Focuses additional optimization on weak regions rather than indiscriminate data expansion."
+      ],
+      "reported_results": [
+        {
+          "metric": "Overall",
+          "value": 96.33,
+          "unit": "score",
+          "benchmark": "OmniDocBench v1.6",
+          "evidence_type": "external_reported",
+          "note": "Author-reported; not measured in this FYP project."
+        }
+      ],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [],
+      "arxiv_id": "2606.03264",
+      "doi": "10.48550/arXiv.2606.03264"
+    },
+    {
+      "id": "S16",
+      "title": "PaddleOCR-VL-1.6 model card",
+      "url": "https://huggingface.co/PaddlePaddle/PaddleOCR-VL-1.6",
+      "source_type": "official_model_card",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "PaddleOCR-VL-1.6",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Task prompts include OCR, tables, formulas, charts, spotting and seals.",
+        "Model card does not show a HuggingFace Inference Provider deployment at access time."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": "Apache-2.0",
+      "limitations": [
+        "A public model repository does not imply the user existing API key can access that model.",
+        "Model-card CPU fallback example is not measured Mac latency or complete-layout pipeline support."
+      ]
+    },
+    {
+      "id": "S17",
+      "title": "Docling: An Efficient Open-Source Toolkit for AI-driven Document Conversion",
+      "url": "https://arxiv.org/abs/2501.17887",
+      "source_type": "paper",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2025-01-27",
+      "observed_version": "v1",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Modular toolkit combines layout and table-structure models in a rich document representation."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [],
+      "arxiv_id": "2501.17887",
+      "doi": "10.48550/arXiv.2501.17887"
+    },
+    {
+      "id": "S18",
+      "title": "Docling repository",
+      "url": "https://github.com/docling-project/docling",
+      "source_type": "official_repository",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "2.128.0 era",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Supports macOS/Linux/Windows and arm64/x86_64; Python3.10 orhigher.",
+        "Code MIT; component model licenses are separate."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": "MIT code; individual models separate",
+      "limitations": [
+        "Selecting a tool does not specify its OCR engine, models or enrichment options."
+      ]
+    },
+    {
+      "id": "S19",
+      "title": "Docling releases",
+      "url": "https://github.com/docling-project/docling/releases",
+      "source_type": "official_release_notes",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-09-16",
+      "observed_version": "2.128.0; commit prefix01eaf83",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Current release observed includes image EXIF orientation fix and PDF backend change."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "Pin parser/backend/model together for reproducible comparisons."
+      ]
+    },
+    {
+      "id": "S20",
+      "title": "Docling figure export example",
+      "url": "https://github.com/docling-project/docling/blob/main/docs/examples/export_figures.py",
+      "source_type": "official_code",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": null,
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Supports retaining page images and exporting figure/table crops; picture image generation is explicit."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "Figure crop extraction preserves evidence; it does not infer the chart or diagram meaning."
+      ]
+    },
+    {
+      "id": "S21",
+      "title": "Docling vision model documentation",
+      "url": "https://github.com/docling-project/docling/blob/main/docs/usage/vision_models.md",
+      "source_type": "official_documentation",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": null,
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Picture descriptions and picture pixels have different storage paths.",
+        "Retained page images permit provenance-based picture crops.",
+        "Malformed or partial VLM output may be reported as partial success."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "Generated descriptions remain model outputs, not original source quotations."
+      ]
+    },
+    {
+      "id": "S22",
+      "title": "olmOCR 2: Unit Test Rewards for Document OCR",
+      "url": "https://arxiv.org/abs/2510.19817",
+      "source_type": "paper",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2025-10-22",
+      "observed_version": "v1",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "7B VLM trained with verifiable unit-test rewards.",
+        "Evaluation target is English-language olmOCR-Bench."
+      ],
+      "reported_results": [
+        {
+          "metric": "unit-test score",
+          "value": 82.4,
+          "unit": "percent",
+          "benchmark": "olmOCR-Bench",
+          "evidence_type": "external_reported",
+          "note": "Author-reported82.4±1.1; not a document-level success rate."
+        }
+      ],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "English benchmark cannot establish Chinese course-note accuracy."
+      ],
+      "arxiv_id": "2510.19817",
+      "doi": "10.48550/arXiv.2510.19817"
+    },
+    {
+      "id": "S23",
+      "title": "olmOCR 2 full text and benchmark definitions",
+      "url": "https://arxiv.org/html/2510.19817v1",
+      "source_type": "paper_full_text",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2025-10-22",
+      "observed_version": "v1",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Unit tests check text presence/absence, reading order, relative table cells, rendered formulas and repetition.",
+        "This motivates source-grounded task tests in addition to character distance."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": []
+    },
+    {
+      "id": "S24",
+      "title": "olmOCR repository",
+      "url": "https://github.com/allenai/olmocr",
+      "source_type": "official_repository",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "model olmOCR-2-7B-1025",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Remote OpenAI-compatible serving is supported with a lightweight client install.",
+        "LocalGPU path listsNVIDIA GPU with at least12GBVRAM and30GBdisk."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": "Apache-2.0",
+      "limitations": [
+        "Those GPU requirements do not establish Mac CPU inference suitability."
+      ]
+    },
+    {
+      "id": "S25",
+      "title": "DeepSeek-OCR 2: Visual Causal Flow",
+      "url": "https://arxiv.org/abs/2601.20552",
+      "source_type": "paper",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-01-28",
+      "observed_version": "v1",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "DeepEncoderV2 attempts semantic reordering of visual tokens for complex layout."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [],
+      "arxiv_id": "2601.20552",
+      "doi": "10.48550/arXiv.2601.20552"
+    },
+    {
+      "id": "S26",
+      "title": "DeepSeek-OCR 2 full text",
+      "url": "https://arxiv.org/html/2601.20552v1",
+      "source_type": "paper_full_text",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-01-28",
+      "observed_version": "v1",
+      "verification": "primary_source_read",
+      "key_claims": [],
+      "reported_results": [
+        {
+          "metric": "Overall",
+          "value": 91.09,
+          "unit": "score",
+          "benchmark": "OmniDocBench v1.5",
+          "evidence_type": "external_reported",
+          "note": "Author-reported; not measured in this FYP project."
+        },
+        {
+          "metric": "reading-order edit distance",
+          "value": 0.057,
+          "unit": "score",
+          "benchmark": "OmniDocBench v1.5",
+          "evidence_type": "external_reported",
+          "note": "Author-reported; not measured in this FYP project."
+        }
+      ],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "Does not directly compare to v1.6/v1.7 scores."
+      ]
+    },
+    {
+      "id": "S27",
+      "title": "DeepSeek-OCR 2 repository and model",
+      "url": "https://github.com/deepseek-ai/DeepSeek-OCR-2",
+      "source_type": "official_repository",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "DeepSeek-OCR-2",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Official inference examples use CUDA, vLLM and Transformers; dynamic crops are supported."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": "Apache-2.0 code and official model card https://huggingface.co/deepseek-ai/DeepSeek-OCR-2",
+      "limitations": [
+        "Not the same model as deepseek-flash; existing DeepSeek chat endpoint support is not established."
+      ]
+    },
+    {
+      "id": "S28",
+      "title": "OmniDocBench benchmark and evaluator",
+      "url": "https://github.com/opendatalab/OmniDocBench",
+      "source_type": "official_repository",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "repository v1.7 update2026-04-30; leaderboard update2026-09-11",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "v1.6 introduces multi-granularity matching corrections; old and new protocols cannot be freely merged.",
+        "Observed v1.6_full Overall = mean of100*(1-texteditdistance), tableTEDS, formulaCDM.",
+        "Reading-order edit distance is reported separately."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": "CodeApache-2.0; README source PDFs research-only/noncommercial",
+      "limitations": [
+        "Repository version and dataset protocol version are separate.",
+        "CompositeOverall is not fraction of documents parsed correctly."
+      ]
+    },
+    {
+      "id": "S29",
+      "title": "OmniDocBench: Benchmarking Diverse PDF Document Parsing with Comprehensive Annotations",
+      "url": "https://arxiv.org/abs/2412.07626",
+      "source_type": "paper",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2024-12-10",
+      "observed_version": "CVPR2025 paper; original arXiv identifier",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Multi-source document benchmark includes diverse layouts and element annotations."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "Use current selected protocol alongside the original paper citation."
+      ],
+      "arxiv_id": "2412.07626",
+      "doi": "10.48550/arXiv.2412.07626"
+    },
+    {
+      "id": "S30",
+      "title": "Real5-OmniDocBench: A Full-Scale Physical Reconstruction Benchmark for Robust Document Parsing in the Wild",
+      "url": "https://arxiv.org/abs/2603.04205",
+      "source_type": "paper",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-03-04",
+      "observed_version": "v2 revised2026-06-22",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Maps all1355 OmniDocBenchv1.5 pages one-to-one into five physical acquisition scenarios.",
+        "Allows paired tests isolating distortion from document content."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [],
+      "arxiv_id": "2603.04205",
+      "doi": "10.48550/arXiv.2603.04205"
+    },
+    {
+      "id": "S31",
+      "title": "Real5-OmniDocBench dataset",
+      "url": "https://huggingface.co/datasets/PaddlePaddle/Real5-OmniDocBench",
+      "source_type": "official_dataset",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-01-28",
+      "observed_version": "leaderboard observed2026-09-18",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Fiveconditions total6775images; dataset card tagsChinese andEnglish.",
+        "Fulldatasetfiles listed16.9GB ataccess."
+      ],
+      "reported_results": [
+        {
+          "metric": "Overall",
+          "value": 93.19,
+          "unit": "score",
+          "benchmark": "Real5-OmniDocBench",
+          "evidence_type": "external_reported",
+          "note": "Dataset-maintainer reported PaddleOCR-VL1.6; snapshot2026-09-18."
+        }
+      ],
+      "own_measurements": [],
+      "license_observed": "Apache-2.0 dataset materials; source pages and inherited annotations remain subject to OmniDocBench/source-document terms",
+      "limitations": [
+        "Use a bounded lawful subset forpilot; do notdownload fullset unintentionally."
+      ]
+    },
+    {
+      "id": "S32",
+      "title": "OvisOCR2 Technical Report",
+      "url": "https://arxiv.org/abs/2607.13639",
+      "source_type": "paper",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-07-15",
+      "observed_version": "v1",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "0.8B end-to-end model produces Markdown including visual regions."
+      ],
+      "reported_results": [
+        {
+          "metric": "Overall",
+          "value": 96.58,
+          "unit": "score",
+          "benchmark": "OmniDocBench v1.6",
+          "evidence_type": "external_reported",
+          "note": "Author-reported; not measured in this FYP project."
+        }
+      ],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "ObservedOmniDocBenchrepositoryrow96.47 differs frompaper96.58; retainbothcontexts, donotaverage."
+      ],
+      "arxiv_id": "2607.13639",
+      "doi": "10.48550/arXiv.2607.13639"
+    },
+    {
+      "id": "S33",
+      "title": "OvisOCR2 model card",
+      "url": "https://huggingface.co/ATH-MaaS/OvisOCR2",
+      "source_type": "official_model_card",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "OvisOCR2",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Provides output with visualregiontags and example of faithful page-image crops."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": "Apache-2.0",
+      "limitations": [
+        "Initialresearchcandidate; noMacbenchmark performed."
+      ]
+    },
+    {
+      "id": "S34",
+      "title": "HPD-Parsing: Hierarchical Parallel Document Parsing",
+      "url": "https://arxiv.org/abs/2607.18839",
+      "source_type": "paper",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-07-21",
+      "observed_version": "v1",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "Global layout branch coordinates parallel block decoding; progressive multi-token prediction reduces sequentialsteps."
+      ],
+      "reported_results": [
+        {
+          "metric": "throughput",
+          "value": 4752,
+          "unit": "tokens/second",
+          "benchmark": "authors evaluation hardware and batching setup",
+          "evidence_type": "external_reported",
+          "note": "Author-reported; not measured in this FYP project."
+        }
+      ],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "TPS is notpages/sec, end-to-endlatency, or Macperformance."
+      ],
+      "arxiv_id": "2607.18839",
+      "doi": "10.48550/arXiv.2607.18839"
+    },
+    {
+      "id": "S35",
+      "title": "HPD-Parsing model card",
+      "url": "https://huggingface.co/PaddlePaddle/HPD-Parsing",
+      "source_type": "official_model_card",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "HPD-Parsing1B",
+      "verification": "primary_source_read",
+      "key_claims": [],
+      "reported_results": [
+        {
+          "metric": "Overall",
+          "value": 94.91,
+          "unit": "score",
+          "benchmark": "OmniDocBench v1.6",
+          "evidence_type": "external_reported",
+          "note": "Author-reported; not measured in this FYP project."
+        }
+      ],
+      "own_measurements": [],
+      "license_observed": "Apache-2.0",
+      "limitations": [
+        "Separate custom inference implementation; not a drop-in speedup forcurrentpypdf."
+      ]
+    },
+    {
+      "id": "S36",
+      "title": "WildHandBench: A Benchmark for Handwritten Text Understanding that Challenges MLLMs and Humans",
+      "url": "https://arxiv.org/abs/2608.22959",
+      "source_type": "paper",
+      "accessed_on": "2026-09-18",
+      "publication_date": "2026-08-24",
+      "observed_version": "v1",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "500 handwritten documents; text/tables/formulas and real-worldconditions.",
+        "Proposes a prior-drivenerror metric to examine visuallyunsupportedrecognition."
+      ],
+      "reported_results": [
+        {
+          "metric": "best evaluated model overall",
+          "value": 71.85,
+          "unit": "percent",
+          "benchmark": "WildHandBench authors evaluation",
+          "evidence_type": "external_reported",
+          "note": "Author-reported; not measured in this FYP project."
+        }
+      ],
+      "own_measurements": [],
+      "license_observed": null,
+      "limitations": [
+        "Recentpreprint; handwrittenresults cannotbe inferred fromprintedOmniDocBenchscores."
+      ],
+      "arxiv_id": "2608.22959",
+      "doi": "10.48550/arXiv.2608.22959"
+    },
+    {
+      "id": "S37",
+      "title": "PP-OCRv6 tiny ONNX recognition model files",
+      "url": "https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_rec_onnx/tree/main",
+      "source_type": "official_model_files",
+      "accessed_on": "2026-09-18",
+      "publication_date": null,
+      "observed_version": "observedcommitprefix2612ab3",
+      "verification": "primary_source_read",
+      "key_claims": [
+        "OfficialtinyrecognitionONNXweight listed4.46MB; fullmodelrepotree4.65MB."
+      ],
+      "reported_results": [],
+      "own_measurements": [],
+      "license_observed": "Apache-2.0 model repository",
+      "limitations": [
+        "Recognizeronly; detection, dictionary, preprocessing andruntimealso required."
+      ]
+    }
+  ]
+}

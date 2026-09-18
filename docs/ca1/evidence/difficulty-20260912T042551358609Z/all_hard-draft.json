@@ -1,0 +1,250 @@
+{
+  "id": "7e021d156fd44c5ab9faf674aff247a0",
+  "course_id": "db9f279169874de18bb3c435c67f37de",
+  "job_id": "6dbef6e933bb4f5abe9d2e18f5fb6f90",
+  "version": 1,
+  "status": "draft",
+  "asset": {
+    "title": "检索流程、引用支持、嵌入兼容性与审核版本综合测评",
+    "evidence_sufficient": true,
+    "evidence_note": "参考片段覆盖检索流程、引用与证据边界、嵌入兼容性与索引版本、审核与导出等主题，可支撑 3 道 hard 短答题，每题均可引用片段 ID。",
+    "learning_objectives": [
+      "在给定情境中综合检索、引用与证据边界规则，判断生成材料的合规性",
+      "分析嵌入模型变更与教学文本修订对存储向量和审核状态的影响",
+      "评价导出配置签名、人工审核记录与隐私保护的设计要求"
+    ],
+    "sections": [
+      {
+        "heading": "检索流程与质量边界",
+        "text": "根据参考资料，检索为生成器提供支撑材料，但检索到内容不等于结论正确。自动草稿不能仅凭引用标识通过验证就宣称获得人工批准，人工观察与评分字段应由人工填写，自动化测试应保持空白。证据边界被跨越时，应报告证据不足，而不是编造内容。",
+        "citation_ids": [
+          "c7b355510d134e91833f092eec3c72ed",
+          "3aefdf9d56844b0087c9ad5a103275cb"
+        ]
+      },
+      {
+        "heading": "嵌入兼容性与版本约束",
+        "text": "嵌入兼容性关注存储文档向量与查询向量的关系。向量必须具有相同维度才能比较坐标；即使维度相同，不同模型也可能使用不同语义空间，不能假设查询与另一模型生成的段落兼容。索引版本变化需要重建或更新受影响的存储对象。",
+        "citation_ids": [
+          "c7b355510d134e91833f092eec3c72ed"
+        ]
+      },
+      {
+        "heading": "审核记录、导出与本地运行限制",
+        "text": "保留评估记录应包含初始草稿、实际检索文本、不含凭据的生成设置及后续修订。生成证据导出比学生讲义更详细，可包含检索段落、配置签名、修订历史与提供商调用用量。凭证不得出现在讲义、证据包或截图中。每日调用限制约束所有尝试，包括失败尝试。本地演示不实现认证角色、安全考试或课堂访问控制。",
+        "citation_ids": [
+          "5caef4b8eff94d05a4294501bf115e26",
+          "3aefdf9d56844b0087c9ad5a103275cb"
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "slot_id": "q1",
+        "difficulty": "hard",
+        "difficulty_design": {
+          "cognitive_process": "evaluate",
+          "concepts": [
+            "引用验证",
+            "人工审核",
+            "证据边界",
+            "审核记录"
+          ],
+          "expected_steps": [
+            "判断自动验证不能替代人工批准",
+            "分析引用存在但不相关属于结构验证的缺口",
+            "提出至少两条有依据的整改措施"
+          ]
+        },
+        "kind": "short_answer",
+        "stem": "假设你负责审核一份利用课程本地应用生成的测验草稿。该草稿的引用标识全部通过了自动验证，系统因此将其标记为“已准备好用于教学演示”。作为审核者，你需要判断：(1) 自动验证通过能否等同于人工批准？请引用依据；(2) 若后续发现其中一个引用标识指向了确实存在但与该题结论不相关的文档，这属于哪类问题？自动验证为何不能发现？(3) 请给出两条具体且可操作的整改措施，并说明每条措施如何匹配参考资料中的要求。",
+        "options": [],
+        "answer": "参考答案：(1) 不能等同。根据片段 c7b355510d134e91833f092eec3c72ed 和 3aefdf9d56844b0087c9ad5a103275cb，自动草稿不得仅仅因为引用标识通过验证就被描述为人工批准。(2) 这属于结构验证与人工审核之间的缺口。自动验证只能确认引用标识存在，但不能判断引用是否在语义上支持题目结论，因此不能替代人工对相关性的审查。(3) 可行措施包括：① 由人工审核者填写观察和评分字段，自动化测试保持空白（依据 3aefdf9d56844b0087c9ad5a103275cb）；② 记录初始草稿、实际检索文本、不含凭据的生成设置及后续修订（依据 5caef4b8eff94d05a4294501bf115e26）。每条措施都需对引用的片段负责。评分时应检查学生是否区分自动验证与人工批准，是否指出引用相关性问题，以及整改措施是否可操作且引用具体片段。",
+        "explanation": "本题要求学生在审核情境中综合自动验证、人工审核和引用相关性的概念。学生需要理解自动验证只能检查引用标识存在性，而人工评价和证据相关性需另外判断。评分重点在于能否分步论证并给出有依据的整改措施。",
+        "difficulty_reason": "题目设置了一个审核冲突情境（自动验证通过但引用可能不相关），需要学生综合多个片段进行评价和提出整改，属于 hard 档的分析与评价。",
+        "citation_ids": [
+          "c7b355510d134e91833f092eec3c72ed",
+          "3aefdf9d56844b0087c9ad5a103275cb",
+          "5caef4b8eff94d05a4294501bf115e26"
+        ]
+      },
+      {
+        "slot_id": "q2",
+        "difficulty": "hard",
+        "difficulty_design": {
+          "cognitive_process": "create",
+          "concepts": [
+            "嵌入兼容性",
+            "向量维度",
+            "语义空间",
+            "索引版本",
+            "审核版本"
+          ],
+          "expected_steps": [
+            "论证维度相同不足以保证兼容",
+            "确定需要重建的文档向量和索引",
+            "设计更新方案并说明审核记录与导出版本的同步处理"
+          ]
+        },
+        "kind": "short_answer",
+        "stem": "某课程团队决定更换嵌入模型：旧模型生成 768 维向量，新模型同样生成 768 维向量。同时，一门已审核课程的教学文本被修改。该课程使用本地检索应用。假设存储系统中保留了旧模型的文档向量和旧版审核记录。请分析：(1) 仅维度相同是否足以保证旧文档向量与新查询向量兼容？为什么？(2) 更换嵌入模型后，哪些存储对象需要重建或重新索引？(3) 教学文本修改后，除了向量问题，审核版本相关的哪些对象需要处理？请给出一个考虑上述约束的更新方案，并论证每一步的必要性。",
+        "options": [],
+        "answer": "参考答案：(1) 维度相同不足以保证兼容。片段 c7b355510d134e91833f092eec3c72ed 指出，向量必须具有相同维度才能比较坐标，但维度相同不代表语义空间相同；不同模型可能使用不同语义空间，因此旧文档向量与新查询向量不能假定兼容。(2) 需要重建或重新索引所有使用旧模型生成的文档向量，使其与新查询向量在同一语义空间中；索引版本也必须同步更新，否则检索会使用不兼容的向量。(3) 教学文本修改后，已审核状态应重新审查；相关的审核记录、导出材料中的版本标记（如“当前文本是草稿还是已批准”）需要更新。更新方案示例：先建立新嵌入模型配置并生成新向量，重建索引，再更新审核记录和导出版本标记；每一步的必要性分别来自嵌入兼容性、索引版本和审核状态要求。评分要点应覆盖三步骤及其依据。",
+        "explanation": "本题围绕嵌入兼容性与版本更新设计情境，学生需要分析维度相同不等于兼容的原因，并设计一个覆盖向量重建、索引更新和审核记录更新的方案。评分重点在于是否理解语义空间差异，以及方案是否完整处理文本修订后的审核痕迹。",
+        "difficulty_reason": "题目给出维度相同但模型更换以及已审核文本修改两个具体约束，要求学生综合嵌入兼容性、索引版本和审核记录知识进行方案设计，属于 hard 档的分析与设计。",
+        "citation_ids": [
+          "c7b355510d134e91833f092eec3c72ed",
+          "ff76236a2ba5478b9f72916629d7ab82",
+          "5caef4b8eff94d05a4294501bf115e26",
+          "3aefdf9d56844b0087c9ad5a103275cb"
+        ]
+      },
+      {
+        "slot_id": "q3",
+        "difficulty": "hard",
+        "difficulty_design": {
+          "cognitive_process": "evaluate",
+          "concepts": [
+            "生成证据导出",
+            "学生讲义",
+            "凭证隐私",
+            "访问控制",
+            "审核版本"
+          ],
+          "expected_steps": [
+            "指出生成证据导出包直接作为学生 handout 的两处风险",
+            "评价当前本地应用是否支持多用户角色与课堂访问控制",
+            "设计分层的导出方案并论证每步与资料约束的匹配"
+          ]
+        },
+        "kind": "short_answer",
+        "stem": "某本地开发应用准备向教师展示一门课程的生成证据导出包。该导出包将包含检索段落、配置签名、修订历史和提供商调用用量。课程负责人还计划将同一份导出包用于学生 handout，并可能在未来支持多用户访问。假设你被要求审查该计划，请完成以下任务：(1) 指出将生成证据导出包直接用作学生 handout 的至少两处风险，并说明依据；(2) 针对“是否支持多用户角色与课堂访问控制”给出一个评价性结论，并引用资料说明当前应用能做什么、不能做什么；(3) 给出一个既能满足师生不同需求、又能维持当前隐私与审核要求的导出方案，并论证每一步如何匹配资料中的约束。",
+        "options": [],
+        "answer": "参考答案：(1) 风险一：生成证据导出包比 student handout 更详细，可能包含检索段落、配置签名、修订历史等不宜向学生公开的内容（依据 5caef4b8eff94d05a4294501bf115e26）。风险二：凭据不得出现在讲义、证据包或截图中；若导出包未清理配置信息，可能泄露凭据（依据 5caef4b8eff94d05a4294501bf115e26）。(2) 评价性结论：当前本地演示尚未实现经过身份验证的角色、安全考试或课堂访问控制，因此不能将本地应用直接扩展为多用户教学平台（依据 5caef4b8eff94d05a4294501bf115e26 和 e9cd2063c2024317800235d50fd44e44）。(3) 方案：分别提供学生讲义版和生成证据版。“学生讲义版”仅保留教学文本和必要的出处元数据，去除凭据、详细检索段落和配置签名；“生成证据版”保留检索段落、配置签名、修订历史和调用用量供教师审核，但须确认其中不含凭据。每一步均需引用片段说明依据。评分时检查学生是否区分两类导出的目的、识别凭据与访问控制约束，并给出可操作的方案。",
+        "explanation": "本题要求学生在导出包使用和多用户访问两个情境约束下，评价现有应用的能力边界，并设计分类导出方案。学生需要引用片段说明生成证据导出与学生 handout 的差别，以及本地演示对认证和访问控制的限制。评分重点在于能否处理好隐私、审核和功能需求之间的平衡。",
+        "difficulty_reason": "题目设置了导出包被误用以及多用户访问的假设约束，要求学生评价当前本地应用的能力边界并设计兼顾隐私、审核和不同用户需求的导出方案，涉及整合多个片段的分析、评价与设计，属于 hard 档。",
+        "citation_ids": [
+          "5caef4b8eff94d05a4294501bf115e26",
+          "e9cd2063c2024317800235d50fd44e44",
+          "3aefdf9d56844b0087c9ad5a103275cb"
+        ]
+      }
+    ],
+    "visual_prompt": "一张流程图：左侧为“课程资料与检索”，指向中间“生成草稿”，再分叉为两条路径。上方路径标注“学生讲义版：仅教学文本与出处元数据”，下方路径标注“生成证据版：检索段落、配置签名、修订历史、调用用量”。两条路径都经过一个检查点“不含凭据”。右侧显示“人工审核”节点，输出“审核记录/审核版本”。流程图底部注明“本地演示：不实现认证角色与课堂访问控制”。"
+  },
+  "sources": [
+    {
+      "id": "ff76236a2ba5478b9f72916629d7ab82",
+      "document_id": "0741e12042924610b524d9286fb7d1c4",
+      "document_name": "ca1_rag_course.md",
+      "page": 1,
+      "text": "Difficulty should come from the intended reasoning, not from unnecessarily obscure wording or facts outside the source.\n\nFor an easy example, ask what retrieval supplies to a generator. For a medium example, describe an answer with an existing but irrelevant citation and ask why structural validation is insufficient. For a hard example, describe a change to the embedding model and a later edit to approved teaching text, then ask which stored objects need rebuilding or renewed approval. Each example stays within this document. A multiple-choice question needs distinct options and one defensible keyed answer; a short-answer question needs a reference answer that a reviewer can justify from the cited passages.\n\nDifficulty intent is not measured student difficulty. Without learner response data, the system cannot claim that a label predicts how many students will answer correctly. A reviewer can assess whether the requested cognitive demand matches the question design, but that judgment is different from empirical calibration. Record the intended demand and any review notes separately. Do not invent student scores, learning gains, or instructor ratings for a software demonstration.",
+      "score": 0.6065807557529634
+    },
+    {
+      "id": "3aefdf9d56844b0087c9ad5a103275cb",
+      "document_id": "0741e12042924610b524d9286fb7d1c4",
+      "document_name": "ca1_rag_course.md",
+      "page": 1,
+      "text": "mes require an appropriate study involving learners. Passing the first category does not establish the second or third.\n\nWhen preserving evaluation records, retain the initial generated draft, the actual retrieved text, generation settings that exclude credentials, and later revisions. A human reviewer supplies their own observations and ratings; an automated test should leave those fields blank. A failed request should remain in the record with its status and safe error information. A request refused because evidence was missing is a different outcome from a network error. Neither should be silently replaced by a fabricated successful example.\n\nA compact demonstration can cover a lesson, a quiz, and an assignment with one question per assessment. One out-of-source objective can probe the refusal behavior. These few examples are integration evidence, not a statistically representative evaluation. State the sample size and whether any human actually reviewed the output. A later evaluation can add diverse course materials, blinded review, and real learner tasks once its protocol is agreed.\n\n## Local operation, exports, and deferred media",
+      "score": 0.5808710828884038
+    },
+    {
+      "id": "5caef4b8eff94d05a4294501bf115e26",
+      "document_id": "0741e12042924610b524d9286fb7d1c4",
+      "document_name": "ca1_rag_course.md",
+      "page": 1,
+      "text": "s, blinded review, and real learner tasks once its protocol is agreed.\n\n## Local operation, exports, and deferred media\n\nThis prototype is a local development application. A course groups source documents and generated materials. An export should preserve the teaching text and enough citation metadata to inspect its provenance outside the application. A generation evidence export is more detailed than a student handout: it can contain retrieved passages, configuration signatures, revision history, and provider call usage. Exported material should identify whether the current text is draft or approved.\n\nCredentials belong in local configuration and must not appear in handouts, evidence bundles, or screenshots prepared for review. A daily call limit bounds attempts, including attempts that fail. Before a live demonstration, confirm that text and embedding capabilities are configured; this check alone does not prove that the provider accepts the chosen model. Reusing existing local evidence for workflow demonstrations avoids unnecessary new provider calls.",
+      "score": 0.5693832875883398
+    },
+    {
+      "id": "e9cd2063c2024317800235d50fd44e44",
+      "document_id": "0741e12042924610b524d9286fb7d1c4",
+      "document_name": "ca1_rag_course.md",
+      "page": 1,
+      "text": "ed and what a person changed. A technical script exercising these transitions does not supply a human quality judgment.\n\nFor practice questions, the learning view can hide the reference answer, explanation, and difficulty rationale until answers are requested. Hiding fields in the returned student-facing object is stronger than merely hiding text with a visual style. This local demonstration does not implement authenticated roles, secure examinations, or classroom access control. The answer-reveal option is a practice feature. It must not be presented as protection against a learner who directly requests the answer endpoint.\n\n## Difficulty intent and assessment design\n\nDifficulty intent describes the reasoning a question is designed to require. An easy item can ask a learner to identify one concept or explain one direct relationship from the notes. A medium item can apply a concept in a supplied situation or compare two closely related cases. A hard item can require combining several covered concepts and analyzing constraints. Difficulty should come from the intended reasoning, not from unnecessarily obscure wording or facts outside the source.",
+      "score": 0.5500816697571793
+    },
+    {
+      "id": "c7b355510d134e91833f092eec3c72ed",
+      "document_id": "0741e12042924610b524d9286fb7d1c4",
+      "document_name": "ca1_rag_course.md",
+      "page": 1,
+      "text": ". An automated draft must not be described as human-approved merely because its citation identifiers passed validation.\n\nAn evidence boundary is crossed when a requested conclusion cannot be derived from the supplied material. Suppose a learner asks for a clinical treatment dosage while the course notes only explain retrieval systems. The notes provide no clinical evidence. The appropriate response is to report insufficient evidence and avoid inventing a dosage or an exercise that presents one as correct. The generator may explain that the relevant source material is missing. A provider outage or malformed response is an operational failure, not a successful refusal based on evidence.\n\n## Embedding compatibility and index versions\n\nEmbedding compatibility concerns the relationship between stored document vectors and a new query vector. Vectors must have the same dimension before their coordinates can be compared. Matching dimensions alone are insufficient: two models can use different semantic spaces while producing the same number of coordinates. A query from one space must not be assumed compatible with passages embedded by another model.",
+      "score": 0.541687302908386
+    }
+  ],
+  "config": {
+    "course_id": "db9f279169874de18bb3c435c67f37de",
+    "topic": "考核课程资料中的检索流程、引用支持、嵌入兼容性与审核版本。按逐题难度计划设计实际任务；需要情境时可明确给定假设条件，不能虚构外部事实。",
+    "material": "quiz",
+    "difficulty": "medium",
+    "difficulty_distribution": {
+      "easy": 0,
+      "medium": 0,
+      "hard": 3
+    },
+    "learner_profile": "已学习所选课程资料的计算机专业本科生，理解检索、引用与审核版本的基本概念。",
+    "question_type": "short_answer",
+    "count": 3,
+    "language": "zh",
+    "document_ids": [
+      "0741e12042924610b524d9286fb7d1c4"
+    ],
+    "prompt_version": "education-v3",
+    "text_model": "deepseek-flash",
+    "text_endpoint_signature": "83b11c7b63af3acbbf3c",
+    "embedding_model": "qwen/qwen3-embedding-8b",
+    "embedding_signature": "00e64e3f244084054844",
+    "retrieval_top_k": 5,
+    "text_json_mode": true,
+    "difficulty_plan": [
+      {
+        "slot_id": "q1",
+        "difficulty": "hard"
+      },
+      {
+        "slot_id": "q2",
+        "difficulty": "hard"
+      },
+      {
+        "slot_id": "q3",
+        "difficulty": "hard"
+      }
+    ],
+    "rubric_version": "difficulty-rubric-v1"
+  },
+  "created_at": "2026-09-12T04:26:35.474528+00:00",
+  "media": [],
+  "difficulty_assessment": {
+    "status": "model_checked",
+    "version": 1,
+    "items": [
+      {
+        "slot_id": "q1",
+        "assessed_difficulty": "hard",
+        "confidence": "high",
+        "rationale": "要求在审核情境下区分自动验证与人工批准，识别引用存在但不相关的证据边界问题，并基于给定片段提出两项可操作整改措施，符合处理具体约束并进行有依据论证的 hard 标准。",
+        "answerable_from_sources": true,
+        "ambiguity_free": true
+      },
+      {
+        "slot_id": "q2",
+        "assessed_difficulty": "hard",
+        "confidence": "high",
+        "rationale": "需综合嵌入维度相同不等于语义空间兼容、更换模型后重建向量与索引、教学文本修订后重新审核与导出版本标记等约束，设计更新方案并论证每步必要性，属于多步骤知识整合与设计。",
+        "answerable_from_sources": true,
+        "ambiguity_free": true
+      },
+      {
+        "slot_id": "q3",
+        "assessed_difficulty": "hard",
+        "confidence": "high",
+        "rationale": "要求评价本地演示在角色与课堂访问控制上的能力边界，识别生成证据导出用作学生讲义的两类风险，并设计满足师生不同需求且维持隐私与审核要求的导出方案，需引用资料约束进行论证。",
+        "answerable_from_sources": true,
+        "ambiguity_free": true
+      }
+    ],
+    "limitation": "模型按认知要求复核，不等于教师确认或学生实际作答难度。"
+  }
+}

@@ -1,0 +1,2288 @@
+passage_id,language,source_id,source_url,source_path,line_start,line_end,text
+hello_algo_zh:binary_search:001,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_searching/binary_search.md#L1-L36,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_searching/binary_search.md,1,36,"# 二分查找
+
+<u>二分查找（binary search）</u>是一种基于分治策略的高效搜索算法。它利用数据的有序性，每轮缩小一半搜索范围，直至找到目标元素或搜索区间为空为止。
+
+!!! question
+
+    给定一个长度为 $n$ 的数组 `nums` ，元素按从小到大的顺序排列且不重复。请查找并返回元素 `target` 在该数组中的索引。若数组不包含该元素，则返回 $-1$ 。示例如下图所示。
+
+![二分查找示例数据](binary_search.assets/binary_search_example.png)
+
+如下图所示，我们先初始化指针 $i = 0$ 和 $j = n - 1$ ，分别指向数组首元素和尾元素，代表搜索区间 $[0, n - 1]$ 。请注意，中括号表示闭区间，其包含边界值本身。
+
+接下来，循环执行以下两步。
+
+1. 计算中点索引 $m = \lfloor {(i + j) / 2} \rfloor$ ，其中 $\lfloor \: \rfloor$ 表示向下取整操作。
+2. 判断 `nums[m]` 和 `target` 的大小关系，分为以下三种情况。
+    1. 当 `nums[m] < target` 时，说明 `target` 在区间 $[m + 1, j]$ 中，因此执行 $i = m + 1$ 。
+    2. 当 `nums[m] > target` 时，说明 `target` 在区间 $[i, m - 1]$ 中，因此执行 $j = m - 1$ 。
+    3. 当 `nums[m] = target` 时，说明找到 `target` ，因此返回索引 $m$ 。
+
+若数组不包含目标元素，搜索区间最终会缩小为空。此时返回 $-1$ 。
+
+=== ""<1>""
+    ![二分查找流程](binary_search.assets/binary_search_step1.png)
+
+=== ""<2>""
+    ![binary_search_step2](binary_search.assets/binary_search_step2.png)
+
+=== ""<3>""
+    ![binary_search_step3](binary_search.assets/binary_search_step3.png)
+
+=== ""<4>""
+    ![binary_search_step4](binary_search.assets/binary_search_step4.png)
+
+=== ""<5>""
+    ![binary_search_step5](binary_search.assets/binary_search_step5.png)"
+hello_algo_zh:binary_search:002,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_searching/binary_search.md#L38-L79,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_searching/binary_search.md,38,79,"=== ""<6>""
+    ![binary_search_step6](binary_search.assets/binary_search_step6.png)
+
+=== ""<7>""
+    ![binary_search_step7](binary_search.assets/binary_search_step7.png)
+
+值得注意的是，由于 $i$ 和 $j$ 都是 `int` 类型，**因此 $i + j$ 可能会超出 `int` 类型的取值范围**。为了避免大数越界，我们通常采用公式 $m = \lfloor {i + (j - i) / 2} \rfloor$ 来计算中点。
+
+代码如下所示：
+
+```src
+[file]{binary_search}-[class]{}-[func]{binary_search}
+```
+
+**时间复杂度为 $O(\log n)$** ：在二分循环中，区间每轮缩小一半，因此循环次数为 $\log_2 n$ 。
+
+**空间复杂度为 $O(1)$** ：指针 $i$ 和 $j$ 使用常数大小空间。
+
+## 区间表示方法
+
+除了上述双闭区间外，常见的区间表示还有“左闭右开”区间，定义为 $[0, n)$ ，即左边界包含自身，右边界不包含自身。在该表示下，区间 $[i, j)$ 在 $i = j$ 时为空。
+
+我们可以基于该表示实现具有相同功能的二分查找算法：
+
+```src
+[file]{binary_search}-[class]{}-[func]{binary_search_lcro}
+```
+
+如下图所示，在两种区间表示下，二分查找算法的初始化、循环条件和缩小区间操作皆有所不同。
+
+由于“双闭区间”表示中的左右边界都被定义为闭区间，因此通过指针 $i$ 和指针 $j$ 缩小区间的操作也是对称的。这样更不容易出错，**因此一般建议采用“双闭区间”的写法**。
+
+![两种区间定义](binary_search.assets/binary_search_ranges.png)
+
+## 优点与局限性
+
+二分查找在时间和空间方面都有较好的性能。
+
+- 二分查找的时间效率高。在大数据量下，对数阶的时间复杂度具有显著优势。例如，当数据大小 $n = 2^{20}$ 时，线性查找需要 $2^{20} = 1048576$ 轮循环，而二分查找仅需 $\log_2 2^{20} = 20$ 轮循环。
+- 二分查找无须额外空间。相较于需要借助额外空间的搜索算法（例如哈希查找），二分查找更加节省空间。
+
+然而，二分查找并非适用于所有情况，主要有以下原因。"
+hello_algo_zh:binary_search:003,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_searching/binary_search.md#L81-L83,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_searching/binary_search.md,81,83,"- 二分查找仅适用于有序数据。若输入数据无序，为了使用二分查找而专门进行排序，得不偿失。因为排序算法的时间复杂度通常为 $O(n \log n)$ ，比线性查找和二分查找都更高。对于频繁插入元素的场景，为保持数组有序性，需要将元素插入到特定位置，时间复杂度为 $O(n)$ ，也是非常昂贵的。
+- 二分查找仅适用于数组。二分查找需要跳跃式（非连续地）访问元素，而在链表中执行跳跃式访问的效率较低，因此不适合应用在链表或基于链表实现的数据结构。
+- 小数据量下，线性查找性能更佳。在线性查找中，每轮只需 1 次判断操作；而在二分查找中，需要 1 次加法、1 次除法、1 ~ 3 次判断操作、1 次加法（减法），共 4 ~ 6 个单元操作；因此，当数据量 $n$ 较小时，线性查找反而比二分查找更快。"
+hello_algo_zh:hash_collision:001,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_hashing/hash_collision.md#L1-L42,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_hashing/hash_collision.md,1,42,"# 哈希冲突
+
+上一节提到，**通常情况下哈希函数的输入空间远大于输出空间**，因此理论上哈希冲突是不可避免的。比如，输入空间为全体整数，输出空间为数组容量大小，则必然有多个整数映射至同一桶索引。
+
+哈希冲突会导致查询结果错误，严重影响哈希表的可用性。为了解决该问题，每当遇到哈希冲突时，我们就进行哈希表扩容，直至冲突消失为止。此方法简单粗暴且有效，但效率太低，因为哈希表扩容需要进行大量的数据搬运与哈希值计算。为了提升效率，我们可以采用以下策略。
+
+1. 改良哈希表数据结构，**使得哈希表可以在出现哈希冲突时正常工作**。
+2. 仅在必要时，即当哈希冲突比较严重时，才执行扩容操作。
+
+哈希表的结构改良方法主要包括“链式地址”和“开放寻址”。
+
+## 链式地址
+
+在原始哈希表中，每个桶仅能存储一个键值对。<u>链式地址（separate chaining）</u>将单个元素转换为链表，将键值对作为链表节点，将所有发生冲突的键值对都存储在同一链表中。下图展示了一个链式地址哈希表的例子。
+
+![链式地址哈希表](hash_collision.assets/hash_table_chaining.png)
+
+基于链式地址实现的哈希表的操作方法发生了以下变化。
+
+- **查询元素**：输入 `key` ，经过哈希函数得到桶索引，即可访问链表头节点，然后遍历链表并对比 `key` 以查找目标键值对。
+- **添加元素**：首先通过哈希函数访问链表头节点，然后将节点（键值对）添加到链表中。
+- **删除元素**：根据哈希函数的结果访问链表头部，接着遍历链表以查找目标节点并将其删除。
+
+链式地址存在以下局限性。
+
+- **占用空间增大**：链表包含节点指针，它相比数组更加耗费内存空间。
+- **查询效率降低**：因为需要线性遍历链表来查找对应元素。
+
+以下代码给出了链式地址哈希表的简单实现，需要注意两点。
+
+- 使用列表（动态数组）代替链表，从而简化代码。在这种设定下，哈希表（数组）包含多个桶，每个桶都是一个列表。
+- 以下实现包含哈希表扩容方法。当负载因子超过 $\frac{2}{3}$ 时，我们将哈希表扩容至原先的 $2$ 倍。
+
+```src
+[file]{hash_map_chaining}-[class]{hash_map_chaining}-[func]{}
+```
+
+值得注意的是，当链表很长时，查询效率 $O(n)$ 很差。**此时可以将链表转换为“AVL 树”或“红黑树”**，从而将查询操作的时间复杂度优化至 $O(\log n)$ 。
+
+## 开放寻址
+
+<u>开放寻址（open addressing）</u>不引入额外的数据结构，而是通过“多次探测”来处理哈希冲突，探测方式主要包括线性探测、平方探测和多次哈希等。"
+hello_algo_zh:hash_collision:002,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_hashing/hash_collision.md#L44-L69,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_hashing/hash_collision.md,44,69,"下面以线性探测为例，介绍开放寻址哈希表的工作机制。
+
+### 线性探测
+
+线性探测采用固定步长的线性搜索来进行探测，其操作方法与普通哈希表有所不同。
+
+- **插入元素**：通过哈希函数计算桶索引，若发现桶内已有元素，则从冲突位置向后线性遍历（步长通常为 $1$ ），直至找到空桶，将元素插入其中。
+- **查找元素**：若发现哈希冲突，则使用相同步长向后进行线性遍历，直到找到对应元素，返回 `value` 即可；如果遇到空桶，说明目标元素不在哈希表中，返回 `None` 。
+
+下图展示了开放寻址（线性探测）哈希表的键值对分布。根据此哈希函数，最后两位相同的 `key` 都会被映射到相同的桶。而通过线性探测，它们被依次存储在该桶以及之下的桶中。
+
+![开放寻址（线性探测）哈希表的键值对分布](hash_collision.assets/hash_table_linear_probing.png)
+
+然而，**线性探测容易产生“聚集现象”**。具体来说，数组中连续被占用的位置越长，这些连续位置发生哈希冲突的可能性越大，从而进一步促使该位置的聚堆生长，形成恶性循环，最终导致增删查改操作效率劣化。
+
+值得注意的是，**我们不能在开放寻址哈希表中直接删除元素**。这是因为删除元素会在数组内产生一个空桶 `None` ，而当查询元素时，线性探测到该空桶就会返回，因此在该空桶之下的元素都无法再被访问到，程序可能误判这些元素不存在，如下图所示。
+
+![在开放寻址中删除元素导致的查询问题](hash_collision.assets/hash_table_open_addressing_deletion.png)
+
+为了解决该问题，我们可以采用<u>懒删除（lazy deletion）</u>机制：它不直接从哈希表中移除元素，**而是利用一个常量 `TOMBSTONE` 来标记这个桶**。在该机制下，`None` 和 `TOMBSTONE` 都代表空桶，都可以放置键值对。但不同的是，线性探测到 `TOMBSTONE` 时应该继续遍历，因为其之下可能还存在键值对。
+
+然而，**懒删除可能会加速哈希表的性能退化**。这是因为每次删除操作都会产生一个删除标记，随着 `TOMBSTONE` 的增加，搜索时间也会增加，因为线性探测可能需要跳过多个 `TOMBSTONE` 才能找到目标元素。
+
+为此，考虑在线性探测中记录遇到的首个 `TOMBSTONE` 的索引，并将搜索到的目标元素与该 `TOMBSTONE` 交换位置。这样做的好处是当每次查询或添加元素时，元素会被移动至距离理想位置（探测起始点）更近的桶，从而优化查询效率。
+
+以下代码实现了一个包含懒删除的开放寻址（线性探测）哈希表。为了更加充分地使用哈希表的空间，我们将哈希表看作一个“环形数组”，当越过数组尾部时，回到头部继续遍历。"
+hello_algo_zh:hash_collision:003,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_hashing/hash_collision.md#L71-L108,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_hashing/hash_collision.md,71,108,"```src
+[file]{hash_map_open_addressing}-[class]{hash_map_open_addressing}-[func]{}
+```
+
+### 平方探测
+
+平方探测与线性探测类似，都是开放寻址的常见策略之一。当发生冲突时，平方探测不是简单地跳过一个固定的步数，而是跳过“探测次数的平方”的步数，即 $1, 4, 9, \dots$ 步。
+
+平方探测主要具有以下优势。
+
+- 平方探测通过跳过探测次数平方的距离，试图缓解线性探测的聚集效应。
+- 平方探测会跳过更大的距离来寻找空位置，有助于数据分布得更加均匀。
+
+然而，平方探测并不是完美的。
+
+- 仍然存在聚集现象，即某些位置比其他位置更容易被占用。
+- 由于平方的增长，平方探测可能不会探测整个哈希表，这意味着即使哈希表中有空桶，平方探测也可能无法访问到它。
+
+### 多次哈希
+
+顾名思义，多次哈希方法使用多个哈希函数 $f_1(x)$、$f_2(x)$、$f_3(x)$、$\dots$ 进行探测。
+
+- **插入元素**：若哈希函数 $f_1(x)$ 出现冲突，则尝试 $f_2(x)$ ，以此类推，直到找到空位后插入元素。
+- **查找元素**：在相同的哈希函数顺序下进行查找，直到找到目标元素时返回；若遇到空位或已尝试所有哈希函数，说明哈希表中不存在该元素，则返回 `None` 。
+
+与线性探测相比，多次哈希方法不易产生聚集，但多个哈希函数会带来额外的计算量。
+
+!!! tip
+
+    请注意，开放寻址（线性探测、平方探测和多次哈希）哈希表都存在“不能直接删除元素”的问题。
+
+## 编程语言的选择
+
+各种编程语言采取了不同的哈希表实现策略，下面举几个例子。
+
+- Python 采用开放寻址。字典 `dict` 使用伪随机数进行探测。
+- Java 采用链式地址。自 JDK 1.8 以来，当 `HashMap` 内数组长度达到 64 且链表长度达到 8 时，链表会转换为红黑树以提升查找性能。
+- Go 采用链式地址。Go 规定每个桶最多存储 8 个键值对，超出容量则连接一个溢出桶；当溢出桶过多时，会执行一次特殊的等量扩容操作，以确保性能。"
+hello_algo_zh:avl_tree:001,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_tree/avl_tree.md#L1-L35,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_tree/avl_tree.md,1,35,"# AVL 树 *
+
+在“二叉搜索树”章节中我们提到，在多次插入和删除操作后，二叉搜索树可能退化为链表。在这种情况下，所有操作的时间复杂度将从 $O(\log n)$ 劣化为 $O(n)$ 。
+
+如下图所示，经过两次删除节点操作，这棵二叉搜索树便会退化为链表。
+
+![AVL 树在删除节点后发生退化](avl_tree.assets/avltree_degradation_from_removing_node.png)
+
+再例如，在下图所示的完美二叉树中插入两个节点后，树将严重向左倾斜，查找操作的时间复杂度也随之劣化。
+
+![AVL 树在插入节点后发生退化](avl_tree.assets/avltree_degradation_from_inserting_node.png)
+
+1962 年 G. M. Adelson-Velsky 和 E. M. Landis 在论文“An algorithm for the organization of information”中提出了 <u>AVL 树</u>。论文中详细描述了一系列操作，确保在持续添加和删除节点后，AVL 树不会退化，从而使得各种操作的时间复杂度保持在 $O(\log n)$ 级别。换句话说，在需要频繁进行增删查改操作的场景中，AVL 树能始终保持高效的数据操作性能，具有很好的应用价值。
+
+## AVL 树常见术语
+
+AVL 树既是二叉搜索树，也是平衡二叉树，同时满足这两类二叉树的所有性质，因此是一种<u>平衡二叉搜索树（balanced binary search tree）</u>。
+
+### 节点高度
+
+由于 AVL 树的相关操作需要获取节点高度，因此我们需要为节点类添加 `height` 变量：
+
+=== ""Python""
+
+    ```python title=""""
+    class TreeNode:
+        """"""AVL 树节点类""""""
+        def __init__(self, val: int):
+            self.val: int = val                 # 节点值
+            self.height: int = 0                # 节点高度
+            self.left: TreeNode | None = None   # 左子节点引用
+            self.right: TreeNode | None = None  # 右子节点引用
+    ```
+
+=== ""C++"""
+hello_algo_zh:avl_tree:002,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_tree/avl_tree.md#L37-L86,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_tree/avl_tree.md,37,86,"    ```cpp title=""""
+    /* AVL 树节点类 */
+    struct TreeNode {
+        int val{};          // 节点值
+        int height = 0;     // 节点高度
+        TreeNode *left{};   // 左子节点
+        TreeNode *right{};  // 右子节点
+        TreeNode() = default;
+        explicit TreeNode(int x) : val(x){}
+    };
+    ```
+
+=== ""Java""
+
+    ```java title=""""
+    /* AVL 树节点类 */
+    class TreeNode {
+        public int val;        // 节点值
+        public int height;     // 节点高度
+        public TreeNode left;  // 左子节点
+        public TreeNode right; // 右子节点
+        public TreeNode(int x) { val = x; }
+    }
+    ```
+
+=== ""C#""
+
+    ```csharp title=""""
+    /* AVL 树节点类 */
+    class TreeNode(int? x) {
+        public int? val = x;    // 节点值
+        public int height;      // 节点高度
+        public TreeNode? left;  // 左子节点引用
+        public TreeNode? right; // 右子节点引用
+    }
+    ```
+
+=== ""Go""
+
+    ```go title=""""
+    /* AVL 树节点结构体 */
+    type TreeNode struct {
+        Val    int       // 节点值
+        Height int       // 节点高度
+        Left   *TreeNode // 左子节点引用
+        Right  *TreeNode // 右子节点引用
+    }
+    ```
+
+=== ""Swift"""
+hello_algo_zh:avl_tree:003,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_tree/avl_tree.md#L88-L121,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_tree/avl_tree.md,88,121,"    ```swift title=""""
+    /* AVL 树节点类 */
+    class TreeNode {
+        var val: Int // 节点值
+        var height: Int // 节点高度
+        var left: TreeNode? // 左子节点
+        var right: TreeNode? // 右子节点
+
+        init(x: Int) {
+            val = x
+            height = 0
+        }
+    }
+    ```
+
+=== ""JS""
+
+    ```javascript title=""""
+    /* AVL 树节点类 */
+    class TreeNode {
+        val; // 节点值
+        height; //节点高度
+        left; // 左子节点指针
+        right; // 右子节点指针
+        constructor(val, left, right, height) {
+            this.val = val === undefined ? 0 : val;
+            this.height = height === undefined ? 0 : height;
+            this.left = left === undefined ? null : left;
+            this.right = right === undefined ? null : right;
+        }
+    }
+    ```
+
+=== ""TS"""
+hello_algo_zh:avl_tree:004,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_tree/avl_tree.md#L123-L156,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_tree/avl_tree.md,123,156,"    ```typescript title=""""
+    /* AVL 树节点类 */
+    class TreeNode {
+        val: number;            // 节点值
+        height: number;         // 节点高度
+        left: TreeNode | null;  // 左子节点指针
+        right: TreeNode | null; // 右子节点指针
+        constructor(val?: number, height?: number, left?: TreeNode | null, right?: TreeNode | null) {
+            this.val = val === undefined ? 0 : val;
+            this.height = height === undefined ? 0 : height;
+            this.left = left === undefined ? null : left;
+            this.right = right === undefined ? null : right;
+        }
+    }
+    ```
+
+=== ""Dart""
+
+    ```dart title=""""
+    /* AVL 树节点类 */
+    class TreeNode {
+      int val;         // 节点值
+      int height;      // 节点高度
+      TreeNode? left;  // 左子节点
+      TreeNode? right; // 右子节点
+      TreeNode(this.val, [this.height = 0, this.left, this.right]);
+    }
+    ```
+
+=== ""Rust""
+
+    ```rust title=""""
+    use std::rc::Rc;
+    use std::cell::RefCell;"
+hello_algo_zh:avl_tree:005,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_tree/avl_tree.md#L158-L203,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_tree/avl_tree.md,158,203,"    /* AVL 树节点结构体 */
+    struct TreeNode {
+        val: i32,                               // 节点值
+        height: i32,                            // 节点高度
+        left: Option<Rc<RefCell<TreeNode>>>,    // 左子节点
+        right: Option<Rc<RefCell<TreeNode>>>,   // 右子节点
+    }
+
+    impl TreeNode {
+        /* 构造方法 */
+        fn new(val: i32) -> Rc<RefCell<Self>> {
+            Rc::new(RefCell::new(Self {
+                val,
+                height: 0,
+                left: None,
+                right: None
+            }))
+        }
+    }
+    ```
+
+=== ""C""
+
+    ```c title=""""
+    /* AVL 树节点结构体 */
+    typedef struct TreeNode {
+        int val;
+        int height;
+        struct TreeNode *left;
+        struct TreeNode *right;
+    } TreeNode;
+
+    /* 构造函数 */
+    TreeNode *newTreeNode(int val) {
+        TreeNode *node;
+
+        node = (TreeNode *)malloc(sizeof(TreeNode));
+        node->val = val;
+        node->height = 0;
+        node->left = NULL;
+        node->right = NULL;
+        return node;
+    }
+    ```
+
+=== ""Kotlin"""
+hello_algo_zh:avl_tree:006,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_tree/avl_tree.md#L205-L255,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_tree/avl_tree.md,205,255,"    ```kotlin title=""""
+    /* AVL 树节点类 */
+    class TreeNode(val _val: Int) {  // 节点值
+        var height: Int = 0          // 节点高度
+        var left: TreeNode? = null   // 左子节点
+        var right: TreeNode? = null  // 右子节点
+    }
+    ```
+
+=== ""Ruby""
+
+    ```ruby title=""""
+    ### AVL 树节点类 ###
+    class TreeNode
+      attr_accessor :val    # 节点值
+      attr_accessor :height # 节点高度
+      attr_accessor :left   # 左子节点引用
+      attr_accessor :right  # 右子节点引用
+
+      def initialize(val)
+        @val = val
+        @height = 0
+      end
+    end
+    ```
+
+“节点高度”是指从该节点到它的最远叶节点的距离，即所经过的“边”的数量。需要特别注意的是，叶节点的高度为 $0$ ，而空节点的高度为 $-1$ 。我们将创建两个工具函数，分别用于获取和更新节点的高度：
+
+```src
+[file]{avl_tree}-[class]{avl_tree}-[func]{update_height}
+```
+
+### 节点平衡因子
+
+节点的<u>平衡因子（balance factor）</u>定义为节点左子树的高度减去右子树的高度，同时规定空节点的平衡因子为 $0$ 。我们同样将获取节点平衡因子的功能封装成函数，方便后续使用：
+
+```src
+[file]{avl_tree}-[class]{avl_tree}-[func]{balance_factor}
+```
+
+!!! tip
+
+    设平衡因子为 $f$ ，则一棵 AVL 树的任意节点的平衡因子皆满足 $-1 \le f \le 1$ 。
+
+## AVL 树旋转
+
+AVL 树的特点在于“旋转”操作，它能够在不影响二叉树的中序遍历序列的前提下，使失衡节点重新恢复平衡。换句话说，**旋转操作既能保持“二叉搜索树”的性质，也能使树重新变为“平衡二叉树”**。
+
+我们将平衡因子绝对值 $> 1$ 的节点称为“失衡节点”。根据节点失衡情况的不同，旋转操作分为四种：右旋、左旋、先右旋后左旋、先左旋后右旋。下面详细介绍这些旋转操作。
+
+### 右旋"
+hello_algo_zh:avl_tree:007,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_tree/avl_tree.md#L257-L291,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_tree/avl_tree.md,257,291,"如下图所示，节点下方为平衡因子。从底至顶看，二叉树中首个失衡节点是“节点 3”。我们关注以该失衡节点为根节点的子树，将该节点记为 `node` ，其左子节点记为 `child` ，执行“右旋”操作。完成右旋后，子树恢复平衡，并且仍然保持二叉搜索树的性质。
+
+=== ""<1>""
+    ![右旋操作步骤](avl_tree.assets/avltree_right_rotate_step1.png)
+
+=== ""<2>""
+    ![avltree_right_rotate_step2](avl_tree.assets/avltree_right_rotate_step2.png)
+
+=== ""<3>""
+    ![avltree_right_rotate_step3](avl_tree.assets/avltree_right_rotate_step3.png)
+
+=== ""<4>""
+    ![avltree_right_rotate_step4](avl_tree.assets/avltree_right_rotate_step4.png)
+
+如下图所示，当节点 `child` 有右子节点（记为 `grand_child` ）时，需要在右旋中添加一步：将 `grand_child` 作为 `node` 的左子节点。
+
+![有 grand_child 的右旋操作](avl_tree.assets/avltree_right_rotate_with_grandchild.png)
+
+“向右旋转”是一种形象化的说法，实际上需要通过修改节点指针来实现，代码如下所示：
+
+```src
+[file]{avl_tree}-[class]{avl_tree}-[func]{right_rotate}
+```
+
+### 左旋
+
+相应地，如果考虑上述失衡二叉树的“镜像”，则需要执行下图所示的“左旋”操作。
+
+![左旋操作](avl_tree.assets/avltree_left_rotate.png)
+
+同理，如下图所示，当节点 `child` 有左子节点（记为 `grand_child` ）时，需要在左旋中添加一步：将 `grand_child` 作为 `node` 的右子节点。
+
+![有 grand_child 的左旋操作](avl_tree.assets/avltree_left_rotate_with_grandchild.png)
+
+可以观察到，**右旋和左旋操作在逻辑上是镜像对称的，它们分别解决的两种失衡情况也是对称的**。基于对称性，我们只需将右旋的实现代码中的所有的 `left` 替换为 `right` ，将所有的 `right` 替换为 `left` ，即可得到左旋的实现代码："
+hello_algo_zh:avl_tree:008,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_tree/avl_tree.md#L293-L336,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_tree/avl_tree.md,293,336,"```src
+[file]{avl_tree}-[class]{avl_tree}-[func]{left_rotate}
+```
+
+### 先左旋后右旋
+
+对于下图中的失衡节点 3 ，仅使用左旋或右旋都无法使子树恢复平衡。此时需要先对 `child` 执行“左旋”，再对 `node` 执行“右旋”。
+
+![先左旋后右旋](avl_tree.assets/avltree_left_right_rotate.png)
+
+### 先右旋后左旋
+
+如下图所示，对于上述失衡二叉树的镜像情况，需要先对 `child` 执行“右旋”，再对 `node` 执行“左旋”。
+
+![先右旋后左旋](avl_tree.assets/avltree_right_left_rotate.png)
+
+### 旋转的选择
+
+下图展示的四种失衡情况与上述案例逐个对应，分别需要采用右旋、先左旋后右旋、先右旋后左旋、左旋的操作。
+
+![AVL 树的四种旋转情况](avl_tree.assets/avltree_rotation_cases.png)
+
+如下表所示，我们通过判断失衡节点的平衡因子以及较高一侧子节点的平衡因子的正负号，来确定失衡节点属于上图中的哪种情况。
+
+<p align=""center""> 表 <id> &nbsp; 四种旋转情况的选择条件 </p>
+
+| 失衡节点的平衡因子 | 子节点的平衡因子 | 应采用的旋转方法 |
+| ------------------ | ---------------- | ---------------- |
+| $> 1$ （左偏树）   | $\geq 0$         | 右旋             |
+| $> 1$ （左偏树）   | $<0$             | 先左旋后右旋     |
+| $< -1$ （右偏树）  | $\leq 0$         | 左旋             |
+| $< -1$ （右偏树）  | $>0$             | 先右旋后左旋     |
+
+为了便于使用，我们将旋转操作封装成一个函数。**有了这个函数，我们就能对各种失衡情况进行旋转，使失衡节点重新恢复平衡**。代码如下所示：
+
+```src
+[file]{avl_tree}-[class]{avl_tree}-[func]{rotate}
+```
+
+## AVL 树常用操作
+
+### 插入节点
+
+AVL 树的节点插入操作与二叉搜索树在主体上类似。唯一的区别在于，在 AVL 树中插入节点后，从该节点到根节点的路径上可能会出现一系列失衡节点。因此，**我们需要从这个节点开始，自底向上执行旋转操作，使所有失衡节点恢复平衡**。代码如下所示："
+hello_algo_zh:avl_tree:009,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_tree/avl_tree.md#L338-L358,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_tree/avl_tree.md,338,358,"```src
+[file]{avl_tree}-[class]{avl_tree}-[func]{insert_helper}
+```
+
+### 删除节点
+
+类似地，在二叉搜索树的删除节点方法的基础上，需要从底至顶执行旋转操作，使所有失衡节点恢复平衡。代码如下所示：
+
+```src
+[file]{avl_tree}-[class]{avl_tree}-[func]{remove_helper}
+```
+
+### 查找节点
+
+AVL 树的节点查找操作与二叉搜索树一致，在此不再赘述。
+
+## AVL 树典型应用
+
+- 组织和存储大型数据，适用于高频查找、低频增删的场景。
+- 用于构建数据库中的索引系统。
+- 红黑树也是一种常见的平衡二叉搜索树。相较于 AVL 树，红黑树的平衡条件更宽松，插入与删除节点所需的旋转操作更少，节点增删操作的平均效率更高。"
+hello_algo_zh:stack:001,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_stack_and_queue/stack.md#L1-L56,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_stack_and_queue/stack.md,1,56,"# 栈
+
+<u>栈（stack）</u>是一种遵循先入后出逻辑的线性数据结构。
+
+我们可以将栈类比为桌面上的一摞盘子，规定每次只能移动一个盘子，那么想取出底部的盘子，则需要先将上面的盘子依次移走。我们将盘子替换为各种类型的元素（如整数、字符、对象等），就得到了栈这种数据结构。
+
+如下图所示，我们把堆叠元素的顶部称为“栈顶”，底部称为“栈底”。将把元素添加到栈顶的操作叫作“入栈”，删除栈顶元素的操作叫作“出栈”。
+
+![栈的先入后出规则](stack.assets/stack_operations.png)
+
+## 栈的常用操作
+
+栈的常用操作如下表所示，具体的方法名需要根据所使用的编程语言来确定。在此，我们以常见的 `push()`、`pop()`、`peek()` 命名为例。
+
+<p align=""center""> 表 <id> &nbsp; 栈的操作效率 </p>
+
+| 方法     | 描述                   | 时间复杂度 |
+| -------- | ---------------------- | ---------- |
+| `push()` | 元素入栈（添加至栈顶） | $O(1)$     |
+| `pop()`  | 栈顶元素出栈           | $O(1)$     |
+| `peek()` | 访问栈顶元素           | $O(1)$     |
+
+通常情况下，我们可以直接使用编程语言内置的栈类。然而，某些语言可能没有专门提供栈类，这时我们可以将该语言的“数组”或“链表”当作栈来使用，并在程序逻辑上忽略与栈无关的操作。
+
+=== ""Python""
+
+    ```python title=""stack.py""
+    # 初始化栈
+    # Python 没有内置的栈类，可以把 list 当作栈来使用
+    stack: list[int] = []
+
+    # 元素入栈
+    stack.append(1)
+    stack.append(3)
+    stack.append(2)
+    stack.append(5)
+    stack.append(4)
+
+    # 访问栈顶元素
+    peek: int = stack[-1]
+
+    # 元素出栈
+    pop: int = stack.pop()
+
+    # 获取栈的长度
+    size: int = len(stack)
+
+    # 判断是否为空
+    is_empty: bool = len(stack) == 0
+    ```
+
+=== ""C++""
+
+    ```cpp title=""stack.cpp""
+    /* 初始化栈 */
+    stack<int> stack;"
+hello_algo_zh:stack:002,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_stack_and_queue/stack.md#L58-L130,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_stack_and_queue/stack.md,58,130,"    /* 元素入栈 */
+    stack.push(1);
+    stack.push(3);
+    stack.push(2);
+    stack.push(5);
+    stack.push(4);
+
+    /* 访问栈顶元素 */
+    int top = stack.top();
+
+    /* 元素出栈 */
+    stack.pop(); // 无返回值
+
+    /* 获取栈的长度 */
+    int size = stack.size();
+
+    /* 判断是否为空 */
+    bool empty = stack.empty();
+    ```
+
+=== ""Java""
+
+    ```java title=""stack.java""
+    /* 初始化栈 */
+    Stack<Integer> stack = new Stack<>();
+
+    /* 元素入栈 */
+    stack.push(1);
+    stack.push(3);
+    stack.push(2);
+    stack.push(5);
+    stack.push(4);
+
+    /* 访问栈顶元素 */
+    int peek = stack.peek();
+
+    /* 元素出栈 */
+    int pop = stack.pop();
+
+    /* 获取栈的长度 */
+    int size = stack.size();
+
+    /* 判断是否为空 */
+    boolean isEmpty = stack.isEmpty();
+    ```
+
+=== ""C#""
+
+    ```csharp title=""stack.cs""
+    /* 初始化栈 */
+    Stack<int> stack = new();
+
+    /* 元素入栈 */
+    stack.Push(1);
+    stack.Push(3);
+    stack.Push(2);
+    stack.Push(5);
+    stack.Push(4);
+
+    /* 访问栈顶元素 */
+    int peek = stack.Peek();
+
+    /* 元素出栈 */
+    int pop = stack.Pop();
+
+    /* 获取栈的长度 */
+    int size = stack.Count;
+
+    /* 判断是否为空 */
+    bool isEmpty = stack.Count == 0;
+    ```
+
+=== ""Go"""
+hello_algo_zh:stack:003,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_stack_and_queue/stack.md#L132-L197,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_stack_and_queue/stack.md,132,197,"    ```go title=""stack_test.go""
+    /* 初始化栈 */
+    // 在 Go 中，推荐将 Slice 当作栈来使用
+    var stack []int
+
+    /* 元素入栈 */
+    stack = append(stack, 1)
+    stack = append(stack, 3)
+    stack = append(stack, 2)
+    stack = append(stack, 5)
+    stack = append(stack, 4)
+
+    /* 访问栈顶元素 */
+    peek := stack[len(stack)-1]
+
+    /* 元素出栈 */
+    pop := stack[len(stack)-1]
+    stack = stack[:len(stack)-1]
+
+    /* 获取栈的长度 */
+    size := len(stack)
+
+    /* 判断是否为空 */
+    isEmpty := len(stack) == 0
+    ```
+
+=== ""Swift""
+
+    ```swift title=""stack.swift""
+    /* 初始化栈 */
+    // Swift 没有内置的栈类，可以把 Array 当作栈来使用
+    var stack: [Int] = []
+
+    /* 元素入栈 */
+    stack.append(1)
+    stack.append(3)
+    stack.append(2)
+    stack.append(5)
+    stack.append(4)
+
+    /* 访问栈顶元素 */
+    let peek = stack.last!
+
+    /* 元素出栈 */
+    let pop = stack.removeLast()
+
+    /* 获取栈的长度 */
+    let size = stack.count
+
+    /* 判断是否为空 */
+    let isEmpty = stack.isEmpty
+    ```
+
+=== ""JS""
+
+    ```javascript title=""stack.js""
+    /* 初始化栈 */
+    // JavaScript 没有内置的栈类，可以把 Array 当作栈来使用
+    const stack = [];
+
+    /* 元素入栈 */
+    stack.push(1);
+    stack.push(3);
+    stack.push(2);
+    stack.push(5);
+    stack.push(4);"
+hello_algo_zh:stack:004,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_stack_and_queue/stack.md#L199-L266,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_stack_and_queue/stack.md,199,266,"    /* 访问栈顶元素 */
+    const peek = stack[stack.length-1];
+
+    /* 元素出栈 */
+    const pop = stack.pop();
+
+    /* 获取栈的长度 */
+    const size = stack.length;
+
+    /* 判断是否为空 */
+    const is_empty = stack.length === 0;
+    ```
+
+=== ""TS""
+
+    ```typescript title=""stack.ts""
+    /* 初始化栈 */
+    // TypeScript 没有内置的栈类，可以把 Array 当作栈来使用
+    const stack: number[] = [];
+
+    /* 元素入栈 */
+    stack.push(1);
+    stack.push(3);
+    stack.push(2);
+    stack.push(5);
+    stack.push(4);
+
+    /* 访问栈顶元素 */
+    const peek = stack[stack.length - 1];
+
+    /* 元素出栈 */
+    const pop = stack.pop();
+
+    /* 获取栈的长度 */
+    const size = stack.length;
+
+    /* 判断是否为空 */
+    const is_empty = stack.length === 0;
+    ```
+
+=== ""Dart""
+
+    ```dart title=""stack.dart""
+    /* 初始化栈 */
+    // Dart 没有内置的栈类，可以把 List 当作栈来使用
+    List<int> stack = [];
+
+    /* 元素入栈 */
+    stack.add(1);
+    stack.add(3);
+    stack.add(2);
+    stack.add(5);
+    stack.add(4);
+
+    /* 访问栈顶元素 */
+    int peek = stack.last;
+
+    /* 元素出栈 */
+    int pop = stack.removeLast();
+
+    /* 获取栈的长度 */
+    int size = stack.length;
+
+    /* 判断是否为空 */
+    bool isEmpty = stack.isEmpty;
+    ```
+
+=== ""Rust"""
+hello_algo_zh:stack:005,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_stack_and_queue/stack.md#L268-L346,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_stack_and_queue/stack.md,268,346,"    ```rust title=""stack.rs""
+    /* 初始化栈 */
+    // 把 Vec 当作栈来使用
+    let mut stack: Vec<i32> = Vec::new();
+
+    /* 元素入栈 */
+    stack.push(1);
+    stack.push(3);
+    stack.push(2);
+    stack.push(5);
+    stack.push(4);
+
+    /* 访问栈顶元素 */
+    let top = stack.last().unwrap();
+
+    /* 元素出栈 */
+    let pop = stack.pop().unwrap();
+
+    /* 获取栈的长度 */
+    let size = stack.len();
+
+    /* 判断是否为空 */
+    let is_empty = stack.is_empty();
+    ```
+
+=== ""C""
+
+    ```c title=""stack.c""
+    // C 未提供内置栈
+    ```
+
+=== ""Kotlin""
+
+    ```kotlin title=""stack.kt""
+    /* 初始化栈 */
+    val stack = Stack<Int>()
+
+    /* 元素入栈 */
+    stack.push(1)
+    stack.push(3)
+    stack.push(2)
+    stack.push(5)
+    stack.push(4)
+
+    /* 访问栈顶元素 */
+    val peek = stack.peek()
+
+    /* 元素出栈 */
+    val pop = stack.pop()
+
+    /* 获取栈的长度 */
+    val size = stack.size
+
+    /* 判断是否为空 */
+    val isEmpty = stack.isEmpty()
+    ```
+
+=== ""Ruby""
+
+    ```ruby title=""stack.rb""
+    # 初始化栈
+    # Ruby 没有内置的栈类，可以把 Array 当作栈来使用
+    stack = []
+
+    # 元素入栈
+    stack << 1
+    stack << 3
+    stack << 2
+    stack << 5
+    stack << 4
+
+    # 访问栈顶元素
+    peek = stack.last
+
+    # 元素出栈
+    pop = stack.pop
+
+    # 获取栈的长度
+    size = stack.length"
+hello_algo_zh:stack:006,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_stack_and_queue/stack.md#L348-L352,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_stack_and_queue/stack.md,348,352,"    # 判断是否为空
+    is_empty = stack.empty?
+    ```
+
+??? pythontutor ""可视化运行"""
+hello_algo_zh:stack:007,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_stack_and_queue/stack.md#L354-L354,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_stack_and_queue/stack.md,354,354,"    https://pythontutor.com/render.html#code=%22%22%22Driver%20Code%22%22%22%0Aif%20__name__%20%3D%3D%20%22__main__%22%3A%0A%20%20%20%20%23%20%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A0%88%0A%20%20%20%20%23%20Python%20%E6%B2%A1%E6%9C%89%E5%86%85%E7%BD%AE%E7%9A%84%E6%A0%88%E7%B1%BB%EF%BC%8C%E5%8F%AF%E4%BB%A5%E6%8A%8A%20list%20%E5%BD%93%E4%BD%9C%E6%A0%88%E6%9D%A5%E4%BD%BF%E7%94%A8%0A%20%20%20%20stack%20%3D%20%5B%5D%0A%0A%20%20%20%20%23%20%E5%85%83%E7%B4%A0%E5%85%A5%E6%A0%88%0A%20%20%20%20stack.append%281%29%0A%20%20%20%20stack.append%283%29%0A%20%20%20%20stack.append%282%29%0A%20%20%20%20stack.append%285%29%0A%20%20%20%20stack.append%284%29%0A%20%20%20%20print%28%22%E6%A0%88%20stack%20%3D%22,%20stack%29%0A%0A%20%20%20%20%23%20%E8%AE%BF%E9%97%AE%E6%A0%88%E9%A1%B6%E5%85%83%E7%B4%A0%0A%20%20%20%20peek%20%3D%20stack%5B-1%5D%0A%20%20%20%20print%28%22%E6%A0%88%E9%A1%B6%E5%85%83%E7%B4%A0%20peek%20%3D%22,%20peek%29%0A%0A%20%20%20%20%23%20%E5%85%83%E7%B4%A0%E5%87%BA%E6%A0%88%0A%20%20%20%20pop%20%3D%20stack.pop%28%29%0A%20%20%20%20print%28%22%E5%87%BA%E6%A0%88%E5%85%83%E7%B4%A0%20pop%20%3D%22,%20pop%29%0A%20%20%20%20print%28%22%E5%87%BA%E6%A0%88%E5%90%8E%20stack%20%3D%22,%20stack%29%0A%0A%20%20%20%20%23%20%E8%8E%B7%E5%8F%96%E6%A0%88%E7%9A%84%E9%95%BF%E5%BA%A6%0A%20%20%20%20size%20%3D%20len%28stack%29%0A%20%20%20%20print%28%22%E6%A0%88%E7%9A%84%E9%95%BF%E5%BA%A6%20size%20%3D%22,%20size%29%0A%0A%20%20%20%20%23%20%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA%0A%20%20%20%20is_empty%20%3D%20len%28stack%29%20%3D%3D%200%0A%20%20%20%20print%28%22%E6%A0%88%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA%20%3D%22,%20is_empty%29&cumulative=false&curInstr=2&heapPrimitives=nevernest&mode=display&origin=opt-frontend.js&py=311&rawInputLstJSON=%5B%5D&textReferences=false"
+hello_algo_zh:stack:008,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_stack_and_queue/stack.md#L356-L408,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_stack_and_queue/stack.md,356,408,"## 栈的实现
+
+为了深入了解栈的运行机制，我们来尝试自己实现一个栈类。
+
+栈遵循先入后出的原则，因此我们只能在栈顶添加或删除元素。然而，数组和链表都可以在任意位置添加和删除元素，**因此栈可以视为一种受限制的数组或链表**。换句话说，我们可以“屏蔽”数组或链表的部分无关操作，使其对外表现的逻辑符合栈的特性。
+
+### 基于链表的实现
+
+使用链表实现栈时，我们可以将链表的头节点视为栈顶，尾节点视为栈底。
+
+如下图所示，对于入栈操作，我们只需将元素插入链表头部，这种节点插入方法被称为“头插法”。而对于出栈操作，只需将头节点从链表中删除即可。
+
+=== ""<1>""
+    ![基于链表实现栈的入栈出栈操作](stack.assets/linkedlist_stack_step1.png)
+
+=== ""<2>""
+    ![linkedlist_stack_push](stack.assets/linkedlist_stack_step2_push.png)
+
+=== ""<3>""
+    ![linkedlist_stack_pop](stack.assets/linkedlist_stack_step3_pop.png)
+
+以下是基于链表实现栈的示例代码：
+
+```src
+[file]{linkedlist_stack}-[class]{linked_list_stack}-[func]{}
+```
+
+### 基于数组的实现
+
+使用数组实现栈时，我们可以将数组的尾部作为栈顶。如下图所示，入栈与出栈操作分别对应在数组尾部添加元素与删除元素，时间复杂度都为 $O(1)$ 。
+
+=== ""<1>""
+    ![基于数组实现栈的入栈出栈操作](stack.assets/array_stack_step1.png)
+
+=== ""<2>""
+    ![array_stack_push](stack.assets/array_stack_step2_push.png)
+
+=== ""<3>""
+    ![array_stack_pop](stack.assets/array_stack_step3_pop.png)
+
+由于入栈的元素可能会源源不断地增加，因此我们可以使用动态数组，这样就无须自行处理数组扩容问题。以下为示例代码：
+
+```src
+[file]{array_stack}-[class]{array_stack}-[func]{}
+```
+
+## 两种实现对比
+
+**支持操作**
+
+两种实现都支持栈定义中的各项操作。数组实现额外支持随机访问，但这已超出了栈的定义范畴，因此一般不会用到。
+
+**时间效率**"
+hello_algo_zh:stack:009,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_stack_and_queue/stack.md#L410-L430,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_stack_and_queue/stack.md,410,430,"在基于数组的实现中，入栈和出栈操作都在预先分配好的连续内存中进行，具有很好的缓存本地性，因此效率较高。然而，如果入栈时超出数组容量，会触发扩容机制，导致该次入栈操作的时间复杂度变为 $O(n)$ 。
+
+在基于链表的实现中，链表的扩容非常灵活，不存在上述数组扩容时效率降低的问题。但是，入栈操作需要初始化节点对象并修改指针，因此效率相对较低。不过，如果入栈元素本身就是节点对象，那么可以省去初始化步骤，从而提高效率。
+
+综上所述，当入栈与出栈操作的元素是基本数据类型时，例如 `int` 或 `double` ，我们可以得出以下结论。
+
+- 基于数组实现的栈在触发扩容时效率会降低，但由于扩容是低频操作，因此平均效率更高。
+- 基于链表实现的栈可以提供更加稳定的效率表现。
+
+**空间效率**
+
+在初始化列表时，系统会为列表分配“初始容量”，该容量可能超出实际需求；并且，扩容机制通常是按照特定倍率（例如 2 倍）进行扩容的，扩容后的容量也可能超出实际需求。因此，**基于数组实现的栈可能造成一定的空间浪费**。
+
+然而，由于链表节点需要额外存储指针，**因此链表节点占用的空间相对较大**。
+
+综上，我们不能简单地确定哪种实现更加节省内存，需要针对具体情况进行分析。
+
+## 栈的典型应用
+
+- **浏览器中的后退与前进、软件中的撤销与反撤销**。每当我们打开新的网页，浏览器就会对上一个网页执行入栈，这样我们就可以通过后退操作回到上一个网页。后退操作实际上是在执行出栈。如果要同时支持后退和前进，那么需要两个栈来配合实现。
+- **程序内存管理**。每次调用函数时，系统都会在栈顶添加一个栈帧，用于记录函数的上下文信息。在递归函数中，向下递推阶段会不断执行入栈操作，而向上回溯阶段则会不断执行出栈操作。"
+hello_algo_zh:graph_traversal:001,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_graph/graph_traversal.md#L1-L46,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_graph/graph_traversal.md,1,46,"# 图的遍历
+
+树代表的是“一对多”的关系，而图则具有更高的自由度，可以表示任意的“多对多”关系。因此，我们可以把树看作图的一种特例。显然，**树的遍历操作也是图的遍历操作的一种特例**。
+
+图和树都需要应用搜索算法来实现遍历操作。图的遍历方式也可分为两种：<u>广度优先遍历</u>和<u>深度优先遍历</u>。
+
+## 广度优先遍历
+
+**广度优先遍历是一种由近及远的遍历方式，从某个节点出发，始终优先访问距离最近的顶点，并一层层向外扩张**。如下图所示，从左上角顶点出发，首先遍历该顶点的所有邻接顶点，然后遍历下一个顶点的所有邻接顶点，以此类推，直至所有顶点访问完毕。
+
+![图的广度优先遍历](graph_traversal.assets/graph_bfs.png)
+
+### 算法实现
+
+BFS 通常借助队列来实现，代码如下所示。队列具有“先入先出”的性质，这与 BFS 的“由近及远”的思想异曲同工。
+
+1. 将遍历起始顶点 `startVet` 加入队列，并开启循环。
+2. 在循环的每轮迭代中，弹出队首顶点并记录访问，然后将该顶点的所有邻接顶点加入到队列尾部。
+3. 循环步骤 `2.` ，直到所有顶点被访问完毕后结束。
+
+为了防止重复遍历顶点，我们需要借助一个哈希集合 `visited` 来记录哪些节点已被访问。
+
+!!! tip
+
+    哈希集合可以看作一个只存储 `key` 而不存储 `value` 的哈希表，它可以在 $O(1)$ 时间复杂度下进行 `key` 的增删查改操作。根据 `key` 的唯一性，哈希集合通常用于数据去重等场景。
+
+```src
+[file]{graph_bfs}-[class]{}-[func]{graph_bfs}
+```
+
+代码相对抽象，建议对照下图来加深理解。
+
+=== ""<1>""
+    ![图的广度优先遍历步骤](graph_traversal.assets/graph_bfs_step1.png)
+
+=== ""<2>""
+    ![graph_bfs_step2](graph_traversal.assets/graph_bfs_step2.png)
+
+=== ""<3>""
+    ![graph_bfs_step3](graph_traversal.assets/graph_bfs_step3.png)
+
+=== ""<4>""
+    ![graph_bfs_step4](graph_traversal.assets/graph_bfs_step4.png)
+
+=== ""<5>""
+    ![graph_bfs_step5](graph_traversal.assets/graph_bfs_step5.png)"
+hello_algo_zh:graph_traversal:002,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_graph/graph_traversal.md#L48-L90,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_graph/graph_traversal.md,48,90,"=== ""<6>""
+    ![graph_bfs_step6](graph_traversal.assets/graph_bfs_step6.png)
+
+=== ""<7>""
+    ![graph_bfs_step7](graph_traversal.assets/graph_bfs_step7.png)
+
+=== ""<8>""
+    ![graph_bfs_step8](graph_traversal.assets/graph_bfs_step8.png)
+
+=== ""<9>""
+    ![graph_bfs_step9](graph_traversal.assets/graph_bfs_step9.png)
+
+=== ""<10>""
+    ![graph_bfs_step10](graph_traversal.assets/graph_bfs_step10.png)
+
+=== ""<11>""
+    ![graph_bfs_step11](graph_traversal.assets/graph_bfs_step11.png)
+
+!!! question ""广度优先遍历的序列是否唯一？""
+
+    不唯一。广度优先遍历只要求按“由近及远”的顺序遍历，**而多个相同距离的顶点的遍历顺序允许被任意打乱**。以上图为例，顶点 $1$、$3$ 的访问顺序可以交换，顶点 $2$、$4$、$6$ 的访问顺序也可以任意交换。
+
+### 复杂度分析
+
+**时间复杂度**：所有顶点都会入队并出队一次，使用 $O(|V|)$ 时间；在遍历邻接顶点的过程中，由于是无向图，因此所有边都会被访问 $2$ 次，使用 $O(2|E|)$ 时间；总体使用 $O(|V| + |E|)$ 时间。
+
+**空间复杂度**：列表 `res` ，哈希集合 `visited` ，队列 `que` 中的顶点数量最多为 $|V|$ ，使用 $O(|V|)$ 空间。
+
+## 深度优先遍历
+
+**深度优先遍历是一种优先走到底、无路可走再回头的遍历方式**。如下图所示，从左上角顶点出发，访问当前顶点的某个邻接顶点，直到走到尽头时返回，再继续走到尽头并返回，以此类推，直至所有顶点遍历完成。
+
+![图的深度优先遍历](graph_traversal.assets/graph_dfs.png)
+
+### 算法实现
+
+这种“走到尽头再返回”的算法范式通常基于递归来实现。与广度优先遍历类似，在深度优先遍历中，我们也需要借助一个哈希集合 `visited` 来记录已被访问的顶点，以避免重复访问顶点。
+
+```src
+[file]{graph_dfs}-[class]{}-[func]{graph_dfs}
+```
+
+深度优先遍历的算法流程如下图所示。"
+hello_algo_zh:graph_traversal:003,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_graph/graph_traversal.md#L92-L132,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_graph/graph_traversal.md,92,132,"- **直虚线代表向下递推**，表示开启了一个新的递归方法来访问新顶点。
+- **曲虚线代表向上回溯**，表示此递归方法已经返回，回溯到了开启此方法的位置。
+
+为了加深理解，建议将下图与代码结合起来，在脑中模拟（或者用笔画下来）整个 DFS 过程，包括每个递归方法何时开启、何时返回。
+
+=== ""<1>""
+    ![图的深度优先遍历步骤](graph_traversal.assets/graph_dfs_step1.png)
+
+=== ""<2>""
+    ![graph_dfs_step2](graph_traversal.assets/graph_dfs_step2.png)
+
+=== ""<3>""
+    ![graph_dfs_step3](graph_traversal.assets/graph_dfs_step3.png)
+
+=== ""<4>""
+    ![graph_dfs_step4](graph_traversal.assets/graph_dfs_step4.png)
+
+=== ""<5>""
+    ![graph_dfs_step5](graph_traversal.assets/graph_dfs_step5.png)
+
+=== ""<6>""
+    ![graph_dfs_step6](graph_traversal.assets/graph_dfs_step6.png)
+
+=== ""<7>""
+    ![graph_dfs_step7](graph_traversal.assets/graph_dfs_step7.png)
+
+=== ""<8>""
+    ![graph_dfs_step8](graph_traversal.assets/graph_dfs_step8.png)
+
+=== ""<9>""
+    ![graph_dfs_step9](graph_traversal.assets/graph_dfs_step9.png)
+
+=== ""<10>""
+    ![graph_dfs_step10](graph_traversal.assets/graph_dfs_step10.png)
+
+=== ""<11>""
+    ![graph_dfs_step11](graph_traversal.assets/graph_dfs_step11.png)
+
+!!! question ""深度优先遍历的序列是否唯一？""
+
+    与广度优先遍历类似，深度优先遍历序列的顺序也不是唯一的。给定某顶点，先往哪个方向探索都可以，即邻接顶点的顺序可以任意打乱，都是深度优先遍历。"
+hello_algo_zh:graph_traversal:004,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_graph/graph_traversal.md#L134-L140,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_graph/graph_traversal.md,134,140,"    以树的遍历为例，“根 $\rightarrow$ 左 $\rightarrow$ 右”“左 $\rightarrow$ 根 $\rightarrow$ 右”“左 $\rightarrow$ 右 $\rightarrow$ 根”分别对应前序、中序、后序遍历，它们展示了三种遍历优先级，然而这三者都属于深度优先遍历。
+
+### 复杂度分析
+
+**时间复杂度**：所有顶点都会被访问 $1$ 次，使用 $O(|V|)$ 时间；所有边都会被访问 $2$ 次，使用 $O(2|E|)$ 时间；总体使用 $O(|V| + |E|)$ 时间。
+
+**空间复杂度**：列表 `res` ，哈希集合 `visited` 顶点数量最多为 $|V|$ ，递归深度最大为 $|V|$ ，因此使用 $O(|V|)$ 空间。"
+hello_algo_zh:quick_sort:001,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_sorting/quick_sort.md#L1-L42,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_sorting/quick_sort.md,1,42,"# 快速排序
+
+<u>快速排序（quick sort）</u>是一种基于分治策略的排序算法，运行高效，应用广泛。
+
+快速排序的核心操作是“哨兵划分”，其目标是：选择数组中的某个元素作为“基准数”，将所有小于基准数的元素移到其左侧，而大于基准数的元素移到其右侧。具体来说，哨兵划分的流程如下图所示。
+
+1. 选取数组最左端元素作为基准数，初始化两个指针 `i` 和 `j` 分别指向数组的两端。
+2. 设置一个循环，在每轮中使用 `i`（`j`）分别寻找第一个比基准数大（小）的元素，然后交换这两个元素。
+3. 循环执行步骤 `2.` ，直到 `i` 和 `j` 相遇时停止，最后将基准数交换至两个子数组的分界线。
+
+=== ""<1>""
+    ![哨兵划分步骤](quick_sort.assets/pivot_division_step1.png)
+
+=== ""<2>""
+    ![pivot_division_step2](quick_sort.assets/pivot_division_step2.png)
+
+=== ""<3>""
+    ![pivot_division_step3](quick_sort.assets/pivot_division_step3.png)
+
+=== ""<4>""
+    ![pivot_division_step4](quick_sort.assets/pivot_division_step4.png)
+
+=== ""<5>""
+    ![pivot_division_step5](quick_sort.assets/pivot_division_step5.png)
+
+=== ""<6>""
+    ![pivot_division_step6](quick_sort.assets/pivot_division_step6.png)
+
+=== ""<7>""
+    ![pivot_division_step7](quick_sort.assets/pivot_division_step7.png)
+
+=== ""<8>""
+    ![pivot_division_step8](quick_sort.assets/pivot_division_step8.png)
+
+=== ""<9>""
+    ![pivot_division_step9](quick_sort.assets/pivot_division_step9.png)
+
+哨兵划分完成后，原数组被划分成三部分：左子数组、基准数、右子数组，且满足“左子数组任意元素 $\leq$ 基准数 $\leq$ 右子数组任意元素”。因此，我们接下来只需对这两个子数组进行排序。
+
+!!! note ""快速排序的分治策略""
+
+    哨兵划分的实质是将一个较长数组的排序问题简化为两个较短数组的排序问题。"
+hello_algo_zh:quick_sort:002,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_sorting/quick_sort.md#L44-L78,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_sorting/quick_sort.md,44,78,"```src
+[file]{quick_sort}-[class]{quick_sort}-[func]{partition}
+```
+
+## 算法流程
+
+快速排序的整体流程如下图所示。
+
+1. 首先，对原数组执行一次“哨兵划分”，得到未排序的左子数组和右子数组。
+2. 然后，对左子数组和右子数组分别递归执行“哨兵划分”。
+3. 持续递归，直至子数组长度为 1 时终止，从而完成整个数组的排序。
+
+![快速排序流程](quick_sort.assets/quick_sort_overview.png)
+
+```src
+[file]{quick_sort}-[class]{quick_sort}-[func]{quick_sort}
+```
+
+## 算法特性
+
+- **时间复杂度为 $O(n \log n)$、非自适应排序**：在平均情况下，哨兵划分的递归层数为 $\log n$ ，每层中的总循环数为 $n$ ，总体使用 $O(n \log n)$ 时间。在最差情况下，每轮哨兵划分操作都将长度为 $n$ 的数组划分为长度为 $0$ 和 $n - 1$ 的两个子数组，此时递归层数达到 $n$ ，每层中的循环数为 $n$ ，总体使用 $O(n^2)$ 时间。
+- **空间复杂度为 $O(n)$、原地排序**：在输入数组完全倒序的情况下，达到最差递归深度 $n$ ，使用 $O(n)$ 栈帧空间。排序操作是在原数组上进行的，未借助额外数组。
+- **非稳定排序**：在哨兵划分的最后一步，基准数可能会被交换至相等元素的右侧。
+
+## 快速排序为什么快
+
+从名称上就能看出，快速排序在效率方面应该具有一定的优势。尽管快速排序的平均时间复杂度与“归并排序”和“堆排序”相同，但通常快速排序的效率更高，主要有以下原因。
+
+- **出现最差情况的概率很低**：虽然快速排序的最差时间复杂度为 $O(n^2)$ ，没有归并排序稳定，但在绝大多数情况下，快速排序能在 $O(n \log n)$ 的时间复杂度下运行。
+- **缓存使用效率高**：在执行哨兵划分操作时，系统可将整个子数组加载到缓存，因此访问元素的效率较高。而像“堆排序”这类算法需要跳跃式访问元素，从而缺乏这一特性。
+- **复杂度的常数系数小**：在上述三种算法中，快速排序的比较、赋值、交换等操作的总数量最少。这与“插入排序”比“冒泡排序”更快的原因类似。
+
+## 基准数优化
+
+**快速排序在某些输入下的时间效率可能降低**。举一个极端例子，假设输入数组是完全倒序的，由于我们选择最左端元素作为基准数，那么在哨兵划分完成后，基准数被交换至数组最右端，导致左子数组长度为 $n - 1$、右子数组长度为 $0$ 。如此递归下去，每轮哨兵划分后都有一个子数组的长度为 $0$ ，分治策略失效，快速排序退化为“冒泡排序”的近似形式。"
+hello_algo_zh:quick_sort:003,zh,hello_algo_zh,https://github.com/krahets/hello-algo/blob/28c1e74c1d3594fca7cc41b78a6bd18b700c5ce9/docs/chapter_sorting/quick_sort.md#L80-L100,benchmarks/rag/course_sources/hello_algo_zh/docs/chapter_sorting/quick_sort.md,80,100,"为了尽量避免这种情况发生，**我们可以优化哨兵划分中的基准数的选取策略**。例如，我们可以随机选取一个元素作为基准数。然而，如果运气不佳，每次都选到不理想的基准数，效率仍然不尽如人意。
+
+需要注意的是，编程语言通常生成的是“伪随机数”。如果我们针对伪随机数序列构建一个特定的测试样例，那么快速排序的效率仍然可能劣化。
+
+为了进一步改进，我们可以在数组中选取三个候选元素（通常为数组的首、尾、中点元素），**并将这三个候选元素的中位数作为基准数**。这样一来，基准数“既不太小也不太大”的概率将大幅提升。当然，我们还可以选取更多候选元素，以进一步提高算法的稳健性。采用这种方法后，时间复杂度劣化至 $O(n^2)$ 的概率大大降低。
+
+示例代码如下：
+
+```src
+[file]{quick_sort}-[class]{quick_sort_median}-[func]{partition}
+```
+
+## 递归深度优化
+
+**在某些输入下，快速排序可能占用空间较多**。以完全有序的输入数组为例，设递归中的子数组长度为 $m$ ，每轮哨兵划分操作都将产生长度为 $0$ 的左子数组和长度为 $m - 1$ 的右子数组，这意味着每一层递归调用减少的问题规模非常小（只减少一个元素），递归树的高度会达到 $n - 1$ ，此时需要占用 $O(n)$ 大小的栈帧空间。
+
+为了防止栈帧空间的累积，我们可以在每轮哨兵排序完成后，比较两个子数组的长度，**仅对较短的子数组进行递归**。由于较短子数组的长度不会超过 $n / 2$ ，因此这种方法能确保递归深度不超过 $\log n$ ，从而将最差空间复杂度优化至 $O(\log n)$ 。代码如下所示：
+
+```src
+[file]{quick_sort}-[class]{quick_sort_tail_call}-[func]{quick_sort}
+```"
+opendsa_en:InsertionSort:001,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/InsertionSort.rst#L1-L25,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/InsertionSort.rst,1,25,".. This file is part of the OpenDSA eTextbook project. See
+.. http://opendsa.org for more details.
+.. Copyright (c) 2012-2020 by the OpenDSA Project Contributors, and
+.. distributed under an MIT open source license.
+
+.. avmetadata::
+   :title: Insertion Sort
+   :author: Cliff Shaffer
+   :institution: Virginia Tech
+   :requires: sorting terminology; comparison
+   :satisfies: insertion sort
+   :topic: Sorting
+   :keyword: Sorting; Insertion Sort
+   :naturallanguage: en
+   :programminglanguage: Java; C++
+   :description: Presentation of Insertion Sort including visualizations, code, and self-test questions and exercises
+
+.. index:: ! Insertion Sort
+
+
+Insertion Sort
+==============
+
+Insertion Sort
+--------------"
+opendsa_en:InsertionSort:002,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/InsertionSort.rst#L27-L50,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/InsertionSort.rst,27,50,"What would you do if you have a stack of phone bills from the past
+two years and you want to order by date?
+A fairly natural way to handle this is to look at the first two
+bills and put them in order.
+Then take the third bill and put it into the right position with
+respect to the first two, and so on.
+As you take each bill, you would add it to the sorted pile that you
+have already made.
+This simple approach is the inspiration for
+our first sorting algorithm, called :term:`Insertion Sort`.
+
+Insertion Sort iterates through a list of records.
+For each iteration, the current record is inserted in turn at the
+correct position within a sorted list composed of those records
+already processed.
+Here is an implementation.
+The input is an array named ``A`` that stores :math:`n` records.
+
+.. _introduction:
+
+.. codeinclude:: Sorting/Insertionsort
+   :tag: Insertionsort
+
+.. _practice:"
+opendsa_en:InsertionSort:003,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/InsertionSort.rst#L52-L72,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/InsertionSort.rst,52,72,"(Note that to make the explanation for these sorting algorithms as
+simple as possible, our visualizations will show the array as though
+it stored simple integers rather than more complex records.
+But you should realize that in practice, there is rarely any point
+to sorting an array of simple integers.
+Nearly always we want to sort more complex records that each have a
+:term:`key` value.
+In such cases we must :ref:`have a way <comparable> <Comparison>` to
+associate a key value with a record.
+The Java version of the code snippet above uses an ``int`` array,
+while the Java (Generic) version shows a version using an Object that
+supports the :term:`Comparable <comparable>` interface.)
+
+Here we see the first few iterations of Insertion Sort.
+
+.. inlineav:: insertionsortCON ss
+   :long_name: Insertion Sort Slideshow
+   :links: 
+   :scripts: AV/Sorting/insertionsortCON.js
+   :output: show
+   :keyword: Sorting; Insertion Sort"
+opendsa_en:InsertionSort:004,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/InsertionSort.rst#L74-L103,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/InsertionSort.rst,74,103,"This continues on with each record in turn.
+Call the current record :math:`x`.
+Insertion Sort will move it to the left so
+long as its value is less than that of the record immediately
+preceding it.
+As soon as a key value less than or equal to :math:`x` is
+encountered, ``inssort`` is done with that record because all
+records to its left in the array must have smaller keys.
+
+.. avembed:: AV/Sorting/insertionsortAV.html ss
+   :long_name: Insertion Sort Visualization
+   :keyword: Sorting; Insertion Sort
+
+
+.. avembed:: Exercises/Sorting/InssortPRO.html ka
+   :long_name: Insertion Sort Proficiency Exercise
+   :keyword: Sorting; Insertion Sort
+
+
+Insertion Sort Analysis
+-----------------------
+
+.. inlineav:: InsertionSortWorstCaseCON ss
+   :long_name: Insertion Sort Worst Case Slideshow
+   :links: AV/Sorting/InsertionSortWorstCaseCON.css
+   :scripts: AV/Sorting/InsertionSortWorstCaseCON.js
+   :output: show
+   :keyword: Sorting; Insertion Sort
+
+|"
+opendsa_en:InsertionSort:005,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/InsertionSort.rst#L105-L119,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/InsertionSort.rst,105,119,".. inlineav:: InsertionSortBestCaseCON ss
+   :long_name: Insertion Sort Best Case Slideshow
+   :links: AV/Sorting/InsertionSortBestCaseCON.css
+   :scripts: AV/Sorting/InsertionSortBestCaseCON.js
+   :output: show
+   :keyword: Sorting; Insertion Sort
+
+|
+
+.. inlineav:: InsertionSortAverageCaseCON ss
+   :long_name: Insertion Sort Average Case Slideshow
+   :links: AV/Sorting/InsertionSortAverageCaseCON.css
+   :scripts: AV/Sorting/InsertionSortAverageCaseCON.js
+   :output: show
+   :keyword: Sorting; Insertion Sort"
+opendsa_en:InsertionSort:006,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/InsertionSort.rst#L121-L137,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/InsertionSort.rst,121,137,"While the best case is significantly faster than the average and worst
+cases, the average and worst cases are usually more reliable
+indicators of the ""typical"" running time.
+However, there are situations where we can expect the input to be in
+sorted or nearly sorted order.
+One example is when an already sorted list is slightly disordered by a
+small number of additions to the list;
+restoring sorted order using Insertion Sort might be a good idea if we
+know that the disordering is slight.
+And even when the input is not perfectly sorted, Insertion Sort's cost
+goes up in proportion to the number of inversions.
+So a ""nearly sorted"" list will always be cheap to sort with Insertion
+Sort.
+Examples of algorithms that take advantage of Insertion Sort's
+near-best-case running time are
+:ref:`Shellsort <Shellsort> <Shellsort>`
+and :ref:`Quicksort <Quicksort> <Quicksort>`."
+opendsa_en:InsertionSort:007,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/InsertionSort.rst#L139-L146,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/InsertionSort.rst,139,146,"Counting comparisons or swaps yields similar results.
+Each time through the inner ``for`` loop yields both a
+comparison and a swap, except the last (i.e., the comparison that
+fails the inner ``for`` loop's test), which has no swap.
+Thus, the number of swaps for the entire sort operation is
+:math:`n-1` less than the number of comparisons.
+This is 0 in the best case, and :math:`\Theta(n^2)` in the
+average and worst cases."
+opendsa_en:InsertionSort:008,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/InsertionSort.rst#L148-L170,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/InsertionSort.rst,148,170,"Later we will see algorithms whose growth rate is much
+better than :math:`\Theta(n^2)`.
+Thus for larger arrays, Insertion Sort will not be so good a
+performer as other algorithms.
+So Insertion Sort is not the best sorting algorithm to use in most
+situations.
+But there are special situations where it is ideal.
+We already know that Insertion Sort works great when the input is
+sorted or nearly so.
+Another good time to use Insertion Sort is when the array is very
+small, since Insertion Sort is so simple.
+The algorithms that have better asymptotic growth rates tend to be
+more complicated, which leads to larger constant factors in their
+running time.
+That means they typically need fewer comparisons for larger arrays,
+but they cost more per comparison.
+This observation might not seem that helpful, since even an algorithm
+with high cost per comparison will be fast on small input sizes.
+But there are times when we might need to do many, many sorts on very
+small arrays.
+You should spend some time right now trying to think of a situation
+where you will need to sort many small arrays.
+Actually, it happens a lot."
+opendsa_en:InsertionSort:009,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/InsertionSort.rst#L172-L184,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/InsertionSort.rst,172,184,".. avembed:: Exercises/Sorting/InssortSumm.html ka
+   :long_name: Insertion Sort Summary Exercise
+   :keyword: Sorting; Insertion Sort
+
+See |external_link| for a discussion on how the relative costs of
+search and insert can affect what is the best sort algorithm to use.
+
+.. |external_link| raw:: html
+
+   <a href=""http://computationaltales.blogspot.com/2011/04/why-tailors-use-insertion-sort.html"" target=""_blank"">Computational Fairy Tales: Why Tailors Use Insertion Sort</a>
+
+.. `Computational Fairy Tales: Why Tailors Use Insertion Sort
+.. <http://computationaltales.blogspot.com/2011/04/why-tailors-use-insertion-sort.html target = ""_blank"">`_"
+opendsa_en:Mergesort:001,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Mergesort.rst#L1-L33,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Mergesort.rst,1,33,".. This file is part of the OpenDSA eTextbook project. See
+.. http://opendsa.org for more details.
+.. Copyright (c) 2012-2020 by the OpenDSA Project Contributors, and
+.. distributed under an MIT open source license.
+
+.. avmetadata::
+   :title: Mergesort Concepts
+   :author: Cliff Shaffer
+   :institution: Virginia Tech
+   :requires: comparison; sorting terminology
+   :satisfies: mergesort
+   :topic: Sorting
+   :keyword: Mergesort
+   :naturallanguage: en
+   :programminglanguage: Java
+   :description: Presentation of Mergesort including visualizations, code, and self-test questions and exercises.
+
+.. index:: ! Mergesort
+
+
+Mergesort Concepts
+==================
+
+Mergesort Concepts
+------------------
+
+A natural approach to problem solving is divide and conquer.
+To use divide and conquer when sorting, we might consider breaking the
+list to be sorted into pieces, process the pieces, and then put them
+back together somehow.
+A simple way to do this would be to split the list in half, sort
+the halves, and then merge the sorted halves together.
+This is the idea behind :term:`Mergesort`."
+opendsa_en:Mergesort:002,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Mergesort.rst#L35-L62,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Mergesort.rst,35,62,"Mergesort is one of the simplest sorting algorithms conceptually,
+and has good performance both in the asymptotic 
+sense and in empirical running time.
+Unfortunately, even though it is based on a simple concept,
+it is relatively difficult to implement in practice.
+Here is a pseudocode sketch of Mergesort::
+
+    List mergesort(List inlist) {
+      if (inlist.length() <= 1) return inlist;;
+      List L1 = half of the items from inlist;
+      List L2 = other half of the items from inlist;
+      return merge(mergesort(L1), mergesort(L2));
+    }
+
+Here is a visualization that illustrates how Mergesort works.
+
+.. avembed:: AV/Sorting/mergesortAV.html ss
+   :long_name: Mergesort Visualization
+   :keyword: Sorting; Mergesort
+
+The hardest step to understand about Mergesort is the merge function.
+The merge function starts by examining the first record of each
+sublist and picks the smaller value as the smallest record overall.
+This smaller value is removed from its sublist and placed into the
+output list.
+Merging continues in this way, comparing the front
+records of the sublists and continually appending the smaller to the
+output list until no more input records remain."
+opendsa_en:Mergesort:003,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Mergesort.rst#L64-L107,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Mergesort.rst,64,107,"Here is pseudocode for merge on lists::
+
+    List merge(List L1, List L2) {
+      List answer = new List();
+      while (L1 != NULL || L2 != NULL) {
+        if (L1 == NULL) { // Done L1
+          answer.append(L2);
+          L2 = NULL;
+        }
+        else if (L2 == NULL) { // Done L2
+          answer.append(L1);
+          L1 = NULL;
+        }
+        else if (L1.value() <= L2.value()) {
+          answer.append(L1.value());
+          L1 = L1.next();
+        }
+        else {
+          answer.append(L2.value());
+          L2 = L2.next();
+        }
+      }
+      return answer;
+    }
+
+Here is a visualization for the merge operation.
+
+.. inlineav:: mergesortCON ss
+   :long_name: Merging Slideshow
+   :scripts: AV/Sorting/mergesortCON.js
+   :output: show
+   :keyword: Sorting; Mergesort
+
+Here is a mergesort warmup exercise to practice merging.
+
+.. avembed:: Exercises/Sorting/MergesortMergePRO.html ka
+   :long_name: Mergesort Merging Proficiency Exercise
+   :keyword: Sorting; Mergesort
+
+
+Mergesort Practice Exercise
+---------------------------
+
+Now here is a full proficiency exercise to put it all together."
+opendsa_en:Mergesort:004,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Mergesort.rst#L109-L120,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Mergesort.rst,109,120,".. avembed:: AV/Sorting/mergesortPRO.html pe
+   :long_name: Mergesort Proficiency Exercise
+   :keyword: Sorting; Mergesort
+
+This visualization provides a running time analysis for Merge Sort.
+
+.. inlineav:: MergeSortAnalysisCON ss
+   :long_name: Mergesort Analysis Slideshow
+   :links: AV/Sorting/MergeSortAnalysisCON.css
+   :scripts: AV/Sorting/MergeSortAnalysisCON.js
+   :output: show
+   :keyword: Sorting; Mergesort"
+opendsa_en:Quicksort:001,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L1-L33,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,1,33,".. This file is part of the OpenDSA eTextbook project. See
+.. http://opendsa.org for more details.
+.. Copyright (c) 2012-2020 by the OpenDSA Project Contributors, and
+.. distributed under an MIT open source license.
+
+.. avmetadata::
+   :title: Quicksort
+   :author: Cliff Shaffer
+   :institution: Virginia Tech
+   :requires: sorting terminology; sort code tuning; insertion sort
+   :satisfies: quicksort
+   :topic: Sorting
+   :keyword: Quicksort
+   :naturallanguage: en
+   :programminglanguage: Java
+   :description: Presentation of Quicksort, including visualizations and practice exercises.
+
+.. index:: ! Quicksort
+
+
+Quicksort
+=========
+
+Introduction
+------------
+
+While Mergesort uses the most obvious form of divide and conquer
+(split the list in half then sort the halves), this is not the only way
+that we can break down the sorting problem.
+We saw that doing the merge step for Mergesort when using an array
+implementation is not so easy.
+So perhaps a different divide and conquer strategy might turn out to
+be more efficient?"
+opendsa_en:Quicksort:002,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L35-L44,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,35,44,":term:`Quicksort` is aptly named because, when properly
+implemented, it is the fastest known general-purpose in-memory sorting
+algorithm in the average case.
+It does not require the extra array needed by Mergesort, so it is
+space efficient as well.
+Quicksort is widely used, and is typically the algorithm implemented
+in a library sort routine such as the UNIX ``qsort``
+function.
+Interestingly, Quicksort is hampered by exceedingly poor worst-case
+performance, thus making it inappropriate for certain applications."
+opendsa_en:Quicksort:003,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L46-L64,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,46,64,"Before we get to Quicksort, consider for a moment the practicality
+of using a Binary Search Tree for sorting.
+You could insert all of the values to be sorted into the BST
+one by one, then traverse the completed tree using an inorder traversal.
+The output would form a sorted list.
+This approach has a number of drawbacks, including the extra space
+required by BST pointers and the amount of time required to insert
+nodes into the tree.
+However, this method introduces some interesting ideas.
+First, the root of the BST (i.e., the first node inserted) splits the
+list into two sublists:
+The left subtree contains those values in the
+list less than the root value while the right subtree contains those
+values in the list greater than or equal to the root value.
+Thus, the BST implicitly implements a ""divide and conquer"" approach
+to sorting the left and right subtrees.
+Quicksort implements this same concept in a much more efficient way.
+
+.. index:: ! pivot"
+opendsa_en:Quicksort:004,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L66-L86,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,66,86,"Quicksort first selects a value called the :term:`pivot`.
+(This is conceptually like the root node's value in the BST.)
+Assume that the input array contains :math:`k` records with key values
+less than the pivot.
+The records are then rearranged in such a way that the :math:`k`
+values less than the pivot are placed in the first, or leftmost,
+:math:`k` positions in the array, and the values greater than or equal
+to the pivot are placed in the last, or rightmost, :math:`n-k`
+positions.
+This is called a :term:`partition` of the array.
+The values placed in a given partition need not (and typically will
+not) be sorted with respect to each other.
+All that is required is that all values end up in the correct
+partition.
+The pivot value itself is placed in position :math:`k`.
+Quicksort then proceeds to sort the resulting subarrays now on either
+side of the pivot, one of size :math:`k` and the other of size
+:math:`n-k-1`.
+How are these values sorted?
+Because Quicksort is such a good algorithm, using Quicksort on
+the subarrays would be appropriate."
+opendsa_en:Quicksort:005,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L88-L103,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,88,103,"Unlike some of the sorts that we have seen earlier in this chapter,
+Quicksort might not seem very ""natural"" in that it is not an
+approach that a person is likely to use to sort real objects.
+But it should not be too surprising that a really efficient sort for
+huge numbers of abstract objects on a computer would be rather
+different from our experiences with sorting a relatively few physical
+objects.
+
+Here is an implementation for Quicksort.
+Parameters ``i`` and ``j`` define the left and right
+indices, respectively, for the subarray being sorted.
+The initial call to ``quicksort`` would be
+``quicksort(array, 0, n-1)``.
+
+.. codeinclude:: Sorting/Quicksort
+   :tag: Quicksort"
+opendsa_en:Quicksort:006,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L105-L117,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,105,117,"Function ``partition`` will move records to the
+appropriate partition and then return ``k``, the first
+position in the right partition.
+Note that the pivot value is initially placed at the end of the array
+(position ``j``).
+Thus, ``partition`` must not affect the value of array position ``j``.
+After partitioning, the pivot value is placed in position ``k``,
+which is its correct position in the final, sorted array.
+By doing so, we guarantee that at least one value (the pivot) will not
+be processed in the recursive calls to ``qsort``.
+Even if a bad pivot is selected, yielding a completely empty
+partition to one side of the pivot, the larger partition will contain
+at most :math:`n-1` records."
+opendsa_en:Quicksort:007,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L119-L139,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,119,139,"Selecting a pivot can be done in many ways.
+The simplest is to use the first key.
+However, if the input is sorted or reverse sorted, this will produce a
+poor partitioning with all values to one side of the pivot.
+It is better to pick a value at random, thereby reducing the chance of
+a bad input order affecting the sort.
+Unfortunately, using a random number generator is relatively
+expensive, and we can do nearly as well by selecting the middle
+position in the array.
+Here is a simple ``findpivot`` function.
+
+.. codeinclude:: Sorting/Quicksort
+   :tag: findpivot
+
+.. avembed:: Exercises/Sorting/QuicksortPivotPRO.html ka
+   :long_name: Quicksort Pivot Proficiency Exercise
+   :keyword: Sorting; Quicksort
+
+
+Partition
+---------"
+opendsa_en:Quicksort:008,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L141-L163,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,141,163,"We now turn to function ``partition``.
+If we knew in advance how many keys are less than the pivot,
+``partition`` could simply copy records with key values less
+than the pivot to the low end of the array, and records with larger
+keys to the high end.
+Because we do not know in advance how many keys are less than
+the pivot,
+we use a clever algorithm that moves indices inwards from the
+ends of the subarray, swapping values as necessary until the two
+indices meet.
+Here is an implementation for the partition step.
+
+.. codeinclude:: Sorting/Quicksort
+   :tag: partition
+
+Note the check that ``right >= left`` in the second inner
+``while`` loop.
+This ensures that ``right`` does not run off the low end of the
+partition in the case where the pivot is the least value in that
+partition.
+Function ``partition`` returns the first index of the right
+partition (the place where ``left`` ends at) so that the subarray
+bound for the recursive calls to ``qsort`` can be determined."
+opendsa_en:Quicksort:009,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L165-L196,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,165,196,".. inlineav:: quicksortCON ss
+   :long_name: Quicksort Partition Slideshow
+   :links: AV/Sorting/quicksortCON.css
+   :scripts: AV/Sorting/quicksortCODE.js AV/Sorting/quicksortCON.js
+   :output: show
+   :keyword: Sorting; Quicksort
+
+
+.. avembed:: Exercises/Sorting/QuicksortPartitPRO.html ka
+   :long_name: Quicksort Partition Proficiency Exercise
+   :keyword: Sorting; Quicksort
+
+And here is a visualization illustrating the running time analysis of the partition function
+
+.. inlineav:: QuickSortPartitionAnalysisCON ss
+   :long_name: Quicksort Partition Analysis Slideshow
+   :links: AV/Sorting/QuickSortPartitionAnalysisCON.css
+   :scripts: AV/Sorting/QuickSortPartitionAnalysisCON.js
+   :output: show
+   :keyword: Sorting; Quicksort
+
+
+Putting It Together
+-------------------
+
+Here is a visualization for the entire Quicksort algorithm.
+This visualization shows you how the logical decomposition caused by
+the partitioning process works.
+In the visualization, the separate sub-partitions are separated out to
+match the recursion tree.
+In reality, there is only a single array involved (as you will see in
+the proficiency exercise that follows the visualization)."
+opendsa_en:Quicksort:010,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L198-L233,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,198,233,".. avembed:: AV/Sorting/quicksortAV.html ss
+   :long_name: Quicksort Visualization
+   :keyword: Sorting; Quicksort
+
+
+Here is a complete proficiency exercise to see how well you understand
+Quicksort.
+
+.. avembed:: AV/Sorting/quicksortPRO.html pe
+   :long_name: Quicksort Proficiency Exercise
+   :keyword: Sorting; Quicksort
+
+
+Quicksort Analysis
+------------------
+
+This visualization explains the worst-case running time of Quick Sort
+
+.. inlineav:: QuickSortWorstCaseCON ss
+   :long_name: Quicksort Worst Case Analysis Slideshow
+   :links: AV/Sorting/QuickSortWorstCaseCON.css
+   :scripts: AV/Sorting/QuickSortWorstCaseCON.js
+   :output: show
+   :keyword: Sorting; Quicksort
+
+This is terrible, no better than Bubble Sort.
+When will this worst case occur?
+Only when each pivot yields a bad partitioning of the array.
+If the pivot values are selected at random, then this is extremely
+unlikely to happen.
+When selecting the middle position of the current subarray, it is
+still unlikely to happen.
+It does not take many good partitionings for Quicksort to
+work fairly well.
+
+This visualization explains the best-case running time of Quick Sort"
+opendsa_en:Quicksort:011,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L235-L263,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,235,263,".. inlineav:: QuickSortBestCaseCON ss
+   :long_name: Quicksort Best Case Analysis Slideshow
+   :links: AV/Sorting/QuickSortBestCaseCON.css
+   :scripts: AV/Sorting/QuickSortBestCaseCON.js
+   :output: show
+   :keyword: Sorting; Quicksort
+
+Quicksort's average-case behavior falls somewhere
+between the extremes of worst and best case.
+Average-case analysis considers the cost for all possible arrangements
+of input, summing the costs and dividing by the number of cases.
+We make one reasonable simplifying assumption:
+At each partition step, the pivot is
+equally likely to end in any position in the (sorted) array.
+In other words, the pivot is equally likely to break an array into
+partitions of sizes 0 and :math:`n-1`, or 1 and :math:`n-2`, and so
+on.
+
+Given this assumption, the average-case cost is computed from the
+following equation:
+
+.. math::
+
+   {\bf T}(n) = cn + \frac{1}{n}\sum_{k=0}^{n-1}[{\bf T}(k) +
+   {\bf T}(n - 1 - k)],
+   \quad {\bf T}(0) = {\bf T}(1) = c.
+
+This visualization will help you to understand how this recurrence
+relation was formed."
+opendsa_en:Quicksort:012,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L265-L270,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,265,270,".. inlineav:: QuickSortAverageCaseCON ss
+   :long_name: Quicksort Average Case Analysis Slideshow
+   :links: AV/Sorting/QuickSortAverageCaseCON.css
+   :scripts: AV/Sorting/QuickSortAverageCaseCON.js
+   :output: show
+   :keyword: Sorting; Quicksort"
+opendsa_en:Quicksort:013,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L272-L295,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,272,295,"This is an unusual situation that the average case cost and the worst
+case cost have asymptotically different growth rates.
+Consider what ""average case"" actually means.
+We compute an average cost for inputs of size :math:`n` by summing up
+for every possible input of size :math:`n` the product of the running
+time cost of that input times the probability that that input will
+occur.
+To simplify things, we assumed that every permutation is equally
+likely to occur.
+Thus, finding the average means summing up the cost for every
+permutation and dividing by the number of permutations
+(which is :math:`n!`).
+We know that some of these :math:`n!` inputs cost :math:`O(n^2)`.
+But the sum of all the permutation costs has to be
+:math:`(n!)(O(n \log n))`.
+Given the extremely high cost of the worst inputs, there must be
+very few of them.
+In fact, there cannot be a constant fraction of the inputs with cost
+:math:`O(n^2)`.
+If even, say, 1% of the inputs have cost :math:`O(n^2)`, this would
+lead to an average cost of :math:`O(n^2)`.
+Thus, as :math:`n` grows, the fraction of inputs with high cost must
+be going toward a limit of zero.
+We can conclude that Quicksort will run fast if"
+opendsa_en:Quicksort:014,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L296-L297,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,296,297,"we can avoid those very few bad input permutations.
+This is why picking a good pivot is so important."
+opendsa_en:Quicksort:015,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L299-L317,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,299,317,"The running time for Quicksort can be improved (by a constant factor),
+and much study has gone into optimizing this algorithm.
+Since Quicksort's worst case behavior arises when the pivot does a
+poor job of splitting the array into equal size subarrays,
+improving ``findpivot`` seems like a good place to start.
+If we are willing to do more work searching for a better pivot, the
+effects of a bad pivot can be decreased or even eliminated.
+Hopefully this will save more time than was added by the additional
+work needed to find the pivot.
+One widely-used choice is to use the ""median of three"" algorithm,
+which uses as a pivot the middle of three randomly selected values.
+Using a random number generator to choose the positions is relatively
+expensive, so a common compromise is to look at the first, middle, and
+last positions of the current subarray.
+However, our simple ``findpivot`` function that takes the
+middle value as its pivot has the virtue of making it highly unlikely
+to get a bad input by chance, and it is quite cheap to implement.
+This is in sharp contrast to selecting the first or last record as
+the pivot, which would yield bad performance for many permutations"
+opendsa_en:Quicksort:016,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L318-L329,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,318,329,"that are nearly sorted or nearly reverse sorted.
+
+A significant improvement can be gained by recognizing that
+Quicksort is relatively slow when :math:`n` is small.
+This might not seem to be relevant if most of the time we sort
+large arrays, nor should it matter how long Quicksort takes in the
+rare instance when a small array is sorted because it will be fast
+anyway.
+But you should notice that Quicksort itself sorts many, many small
+arrays!
+This happens as a natural by-product of the divide and conquer
+approach."
+opendsa_en:Quicksort:017,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L331-L349,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,331,349,"A simple improvement might then be to replace Quicksort with a faster
+sort for small numbers, say Insertion Sort or Selection Sort.
+However, there is an even better---and still simpler---optimization.
+When Quicksort partitions are below a certain size, do nothing!
+The values within that partition will be out of order.
+However, we do know that all values in the array to the left of the
+partition are smaller than all values in the partition.
+All values in the array to the right of the partition are greater than
+all values in the partition.
+Thus, even if Quicksort only gets the values to
+""nearly"" the right locations, the array will be close to sorted.
+This is an ideal situation in which to take advantage of the (near)
+best-case performance of Insertion Sort.
+The final step is a single call to Insertion Sort to process the
+entire array, putting the records into final sorted order.
+The exact threshold value to use depends on the details of the
+implementation and runtime environment, but empirical testing shows
+that the subarrays should be left unordered whenever they get down to
+somewhere around 10-15 records."
+opendsa_en:Quicksort:018,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L351-L380,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,351,380,"The last speedup we will consider reduces the cost of making
+recursive calls.
+Quicksort is inherently recursive, because each Quicksort operation
+must sort two sublists.
+Thus, there is no simple way to turn Quicksort into an iterative
+algorithm.
+However, Quicksort can be implemented using a stack
+to imitate recursion, as the amount of information that must
+be stored is small.
+We need not store copies of a subarray, only the subarray bounds.
+Furthermore, the stack depth can be kept small if care is taken on
+the order in which Quicksort's recursive calls are executed.
+We can also place the code for ``findpivot`` and
+``partition`` inline to eliminate the remaining function
+calls.
+Note however that by not processing small sublists as suggested above,
+about three quarters of the function calls will already have been
+eliminated.
+Thus, eliminating the remaining function calls will yield only a
+modest speedup.
+
+Here is a sample implementation for Quicksort that takes advantage of
+the optimizations described above.
+
+.. codeinclude:: Sorting/Quicksort
+   :tag: Quicksortopt
+
+
+.. TODO::
+   :type: Exercise"
+opendsa_en:Quicksort:019,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Sorting/Quicksort.rst#L382-L394,benchmarks/rag/course_sources/opendsa_en/RST/en/Sorting/Quicksort.rst,382,394,"   Consider the Quicksort implementation for this module, where the
+   pivot is selected as the middle value of the partition.
+   Give a permutation for the values 0 through 7 that will cause
+   Quicksort to have its worst-case behavior.
+
+   There are a number of possible correct answers. To assess the
+   answer, will need to run Quicksort over student's
+   partition, and verify that at each step it will generate new
+   partitions of size 6, 5, 4, 3, 2, then 1.
+
+.. avembed:: Exercises/Sorting/QuicksortSumm.html ka
+   :long_name: Quicksort Summary Exercise
+   :keyword: Sorting; Quicksort"
+opendsa_en:StackArray:001,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/List/StackArray.rst#L1-L23,benchmarks/rag/course_sources/opendsa_en/RST/en/List/StackArray.rst,1,23,".. This file is part of the OpenDSA eTextbook project. See
+.. http://opendsa.org for more details.
+.. Copyright (c) 2012-2020 by the OpenDSA Project Contributors, and
+.. distributed under an MIT open source license.
+
+.. avmetadata::
+   :title: Implementing an Array-Based Stack
+   :author: Cliff Shaffer
+   :institution: Virginia Tech
+   :requires: list ADT
+   :satisfies: stack ADT; array-based stack; stack
+   :topic: Lists
+   :keyword: Array-Based Stack
+   :naturallanguage: en
+   :programminglanguage: Java
+   :description: Introduces stacks and an implementation for array-based stacks.
+
+
+Stacks
+======
+
+Stack Terminology and Implementation
+------------------------------------"
+opendsa_en:StackArray:002,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/List/StackArray.rst#L25-L50,benchmarks/rag/course_sources/opendsa_en/RST/en/List/StackArray.rst,25,50,"The :term:`stack` is a list-like structure
+in which elements may be inserted or removed from only one end.
+While this restriction makes stacks less flexible than lists,
+it also makes stacks both efficient (for those operations they can do)
+and easy to implement.
+Many applications require only the limited form of
+insert and remove operations that stacks provide.
+In such cases, it is more efficient to use the simpler stack data
+structure rather than the generic list.
+For example, the :ref:`freelist <freelist> <Freelist>` is really a
+stack.
+
+Despite their restrictions, stacks have many uses.
+Thus, a special vocabulary for stacks has developed.
+Accountants used stacks long before the invention of the computer.
+They called the stack a "":term:`LIFO`"" list,
+which stands for ""Last-In, First-Out.""
+Note that one implication of the LIFO policy is that stacks
+remove elements in reverse order of their arrival.
+
+The accessible element of the stack is called the ``top`` element.
+Elements are not said to be inserted, they are :term:`pushed <push>`
+onto the stack.
+When removed, an element is said to be :term:`popped <pop>` from the
+stack.
+Here is a simple stack :term:`ADT`."
+opendsa_en:StackArray:003,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/List/StackArray.rst#L52-L91,benchmarks/rag/course_sources/opendsa_en/RST/en/List/StackArray.rst,52,91,".. codeinclude:: Lists/Stack
+   :tag: Stack
+
+As with lists, there are many variations on stack implementation.
+The two approaches presented here are the :term:`array-based stack`
+and the :ref:`linked stack <linked stack> <StackLinked>`, 
+which are analogous to array-based and linked lists, respectively.
+
+
+Array-Based Stacks
+~~~~~~~~~~~~~~~~~~
+
+Here is a complete implementation for
+the array-based stack class.
+
+.. codeinclude:: Lists/AStack
+   :tag: AStack1,AStack2
+
+|
+
+.. inlineav:: astackVarCON ss
+   :long_name: Array stack variables slideshow
+   :links: AV/List/astackCON.css
+   :scripts: AV/List/astackVarCON.js
+   :output: show
+   :keyword: Array-based Stack Implementation
+
+The array-based stack implementation is essentially
+a simplified version of the array-based list.
+The only important design decision to be made is which end of the
+array should represent the top of the stack.
+
+.. inlineav:: astackTopCON ss
+   :long_name: Array stack top position slideshow
+   :links: AV/List/astackCON.css
+   :scripts: AV/List/astackTopCON.js
+   :output: show
+   :keyword: Array-based Stack Implementation
+   
+|"
+opendsa_en:StackArray:004,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/List/StackArray.rst#L93-L116,benchmarks/rag/course_sources/opendsa_en/RST/en/List/StackArray.rst,93,116,".. inlineav:: astackPushCON ss
+   :long_name: Array stack push slideshow
+   :links: AV/List/astackCON.css
+   :scripts: AV/List/astackPushCON.js
+   :output: show
+   :keyword: Array-based Stack Implementation
+
+.. avembed:: Exercises/List/AstackPushPRO.html ka
+   :long_name: Array-based Stack Push Exercise
+   :keyword: Array-based Stack Implementation
+
+Pop
+---
+
+.. inlineav:: astackPopCON ss
+   :long_name: Array stack pop slideshow
+   :links: AV/List/astackCON.css
+   :scripts: AV/List/astackPopCON.js
+   :output: show
+   :keyword: Array-based Stack Implementation
+   
+.. avembed:: Exercises/List/AstackPopPRO.html ka
+   :long_name: Array-based Stack Pop Exercise
+   :keyword: Array-based Stack Implementation"
+opendsa_en:GraphTraversal:001,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Graph/GraphTraversal.rst#L1-L23,benchmarks/rag/course_sources/opendsa_en/RST/en/Graph/GraphTraversal.rst,1,23,".. This file is part of the OpenDSA eTextbook project. See
+.. http://opendsa.org for more details.
+.. Copyright (c) 2012-2020 by the OpenDSA Project Contributors, and
+.. distributed under an MIT open source license.
+
+.. avmetadata::
+   :title: Graph Traversals
+   :author: Cliff Shaffer
+   :institution: Virginia Tech
+   :requires: graph implementation
+   :satisfies: graph traversal
+   :topic: Graphs
+   :keyword: Graph Traversal
+   :naturallanguage: en
+   :programminglanguage: N/A
+   :description: Presents standard graph traversals: Depth-first search and breadth-first search. Includes visualizations and algorithm proficiency practice exercises.
+
+
+Graph Traversals
+================
+
+Graph Traversals
+----------------"
+opendsa_en:GraphTraversal:002,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Graph/GraphTraversal.rst#L25-L46,benchmarks/rag/course_sources/opendsa_en/RST/en/Graph/GraphTraversal.rst,25,46,"Many graph applications need to visit the vertices of a graph in some
+specific order based on the graph's topology.
+This is known as a graph :term:`traversal` and is similar in concept
+to a :ref:`tree traversal <BinaryTreeTraversal>`.
+Recall that tree traversals visit every node exactly once, in some
+specified order such as preorder, inorder, or postorder.
+Multiple tree traversals exist because various applications require
+the nodes to be visited in a particular order.
+For example, to print a BST's nodes in ascending order requires an
+inorder traversal as opposed to some other
+traversal.
+Standard graph traversal orders also exist.
+Each is appropriate for solving certain problems.
+For example, many problems in artificial intelligence programming
+are modeled using graphs.
+The problem domain might consist of a large collection of states,
+with connections between various pairs of states.
+Solving this sort of problem requires getting from a specified start
+state to a specified goal state by moving between states only
+through the connections.
+Typically, the start and goal states are not directly connected.
+To solve this problem, the vertices of the graph must be searched in"
+opendsa_en:GraphTraversal:003,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Graph/GraphTraversal.rst#L47-L66,benchmarks/rag/course_sources/opendsa_en/RST/en/Graph/GraphTraversal.rst,47,66,"some organized manner.
+
+Graph traversal algorithms typically begin with a start vertex and
+attempt to visit the remaining vertices from there.
+Graph traversals must deal with a number of troublesome cases.
+First, it might not be possible to reach all vertices from the start
+vertex.
+This occurs when the graph is not connected.
+Second, the graph might contain cycles, and we must make sure that
+cycles do not cause the algorithm to go into an infinite loop.
+
+Graph traversal algorithms can solve both of these problems
+by flagging vertices as ``VISITED`` when appropriate.
+At the beginning of the algorithm, no vertex is flagged as ``VISITED``.
+The flag for a vertex is set when the vertex is first visited
+during the traversal.
+If a flagged vertex is encountered during traversal, it is not visited
+a second time.
+This keeps the program from going into an infinite loop when it
+encounters a cycle."
+opendsa_en:GraphTraversal:004,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Graph/GraphTraversal.rst#L68-L85,benchmarks/rag/course_sources/opendsa_en/RST/en/Graph/GraphTraversal.rst,68,85,"Once the traversal algorithm completes, we can check to see if all
+vertices have been processed by checking whether they have the
+``VISITED`` flag set.
+If not all vertices are flagged,
+we can continue the traversal from another unvisited vertex.
+Note that this process works regardless of whether the graph is
+directed or undirected.
+To ensure visiting all vertices, ``graphTraverse`` could be called
+as follows on a graph :math:`\mathbf{G}`:
+
+.. codeinclude:: Graphs/GraphTrav
+   :tag: GraphTrav
+
+Function ``doTraversal`` might be implemented by using
+one of the graph traversals described next.
+
+Depth-First Search
+~~~~~~~~~~~~~~~~~~"
+opendsa_en:GraphTraversal:005,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Graph/GraphTraversal.rst#L87-L116,benchmarks/rag/course_sources/opendsa_en/RST/en/Graph/GraphTraversal.rst,87,116,"Our first method for organized graph traversal is called
+:term:`depth-first search` (DFS).
+Whenever a vertex :math:`v` is visited during the search,
+DFS will recursively visit all of :math:`v` 's unvisited neighbors.
+Equivalently, DFS will add all edges leading out of :math:`v` to a
+stack.
+The next vertex to be visited is determined by popping the stack and
+following that edge.
+The effect is to follow one branch through the graph to its
+conclusion, then it will back up and follow another branch, and so on.
+The DFS process can be used to define a
+:term:`depth-first search tree`.
+This tree is composed of the edges that were followed to any new
+(unvisited) vertex during the traversal, and leaves out the edges that
+lead to already visited vertices.
+DFS can be applied to directed or undirected graphs.
+
+This visualization shows a graph and the result of performing a DFS on
+it, resulting in a depth-first search tree.
+
+.. inlineav:: DFSCON ss
+   :long_name: Depth-First Search Slideshow
+   :links: AV/Graph/DFSCON.css
+   :scripts: AV/Graph/DFSCON.js
+   :output: show
+
+Here is an implementation for the DFS algorithm.
+
+.. codeinclude:: Graphs/DFS
+   :tag: DFS"
+opendsa_en:GraphTraversal:006,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Graph/GraphTraversal.rst#L118-L144,benchmarks/rag/course_sources/opendsa_en/RST/en/Graph/GraphTraversal.rst,118,144,"This implementation contains calls to functions ``PreVisit`` and
+``PostVisit``.
+These functions specify what activity should take place during the
+search.
+Just as a preorder tree traversal requires action before the subtrees
+are visited, some graph traversals require that a vertex be processed
+before ones further along in the DFS.
+Alternatively, some applications require activity *after* the
+remaining vertices are processed; hence the call to function
+``PostVisit``.
+This would be a natural opportunity to make use of the
+:ref:`visitor <visitor> <DesignPatterns>` design pattern.
+
+The following visualization shows a random graph each time that you
+start it, so that you can see the behavior on different examples.
+It can show you DFS run on a directed graph or an undirected graph.
+Be sure to look at an example for each type of graph.
+
+ .. avembed:: AV/Graph/DFSAV.html ss
+    :long_name: DFS AV
+    :keyword: Graphs; Graph Traversals; Breadth-First Search
+
+DFS processes each edge once in a directed graph.
+In an undirected graph, DFS processes each edge from both
+directions.
+Each vertex must be visited, but only once, so the total cost is
+:math:`\Theta(|\mathbf{V}| + |\mathbf{E}|)`."
+opendsa_en:GraphTraversal:007,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Graph/GraphTraversal.rst#L146-L178,benchmarks/rag/course_sources/opendsa_en/RST/en/Graph/GraphTraversal.rst,146,178,"Here is an exercise for you to practice DFS.
+
+.. avembed:: AV/Graph/DFSPE.html pe
+   :long_name: DFS Proficiency Exercise
+   :keyword: Graphs; Graph Traversals; Breadth-First Search
+
+
+Breadth-First Search
+--------------------
+
+Our second graph traversal algorithm is known as a
+:term:`breadth-first search` (BFS).
+BFS examines all vertices connected to the start vertex
+before visiting vertices further away.
+BFS is implemented similarly to DFS, except that a queue
+replaces the recursion stack.
+Note that if the graph is a tree and the start vertex is at the root,
+BFS is equivalent to visiting vertices level by level from top to
+bottom.
+
+This visualization shows a graph and the result of performing a BFS on
+it, resulting in a breadth-first search tree.
+
+.. inlineav:: BFSCON ss
+   :long_name: Breadth-First Search Slideshow
+   :links: AV/Graph/BFSCON.css
+   :scripts: AV/Graph/BFSCON.js
+   :output: show
+
+Here is an implementation for BFS.
+
+.. codeinclude:: Graphs/BFS
+   :tag: BFS"
+opendsa_en:GraphTraversal:008,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Graph/GraphTraversal.rst#L180-L198,benchmarks/rag/course_sources/opendsa_en/RST/en/Graph/GraphTraversal.rst,180,198,"The following visualization shows a random graph each time that you
+start it, so that you can see the behavior on different examples.
+It can show you BFS run on a directed graph or an undirected graph.
+Be sure to look at an example for each type of graph.
+
+.. avembed:: AV/Graph/BFSAV.html ss
+   :long_name: BFS AV
+   :keyword: Graphs; Graph Traversals; Breadth-First Search
+
+Here is an exercise for you to practice BFS.
+
+.. avembed:: AV/Graph/BFSPE.html pe
+   :long_name: BFS Proficiency Exercise
+   :keyword: Graphs; Graph Traversals; Breadth-First Search
+
+.. TODO::
+   :type: Exercise
+
+   Summary exercise for graph traversals."
+opendsa_en:BinarySearch:001,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Searching/BinarySearch.rst#L1-L33,benchmarks/rag/course_sources/opendsa_en/RST/en/Searching/BinarySearch.rst,1,33,".. This file is part of the OpenDSA eTextbook project. See
+.. http://opendsa.org for more details.
+.. Copyright (c) 2012-2020 by the OpenDSA Project Contributors, and
+.. distributed under an MIT open source license.
+
+.. avmetadata::
+   :author: Cliff Shaffer
+   :satisfies: binary search
+   :topic: Searching
+   :keyword: Search; Binary Search
+
+
+Searching in an Array
+=====================
+
+Searching in an Array
+---------------------
+
+Sequential Search
+~~~~~~~~~~~~~~~~~
+
+If you want to find the position in an unsorted array of :math:`n`
+integers that stores a particular value, you cannot really do better
+than simply looking through the array from the beginning and move
+toward the end until you find what you are looking for.
+This algorithm is called :term:`sequential search`.
+If you do find it, we call this a :term:`successful search`.
+If the value is not in the array, eventually you will reach the end.
+We will call this an :term:`unsuccessful search`.
+Here is a simple implementation for sequential search.
+
+.. codeinclude:: Searching/Sequential
+      :tag: Sequential"
+opendsa_en:BinarySearch:002,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Searching/BinarySearch.rst#L35-L61,benchmarks/rag/course_sources/opendsa_en/RST/en/Searching/BinarySearch.rst,35,61,"It is natural to ask how long a program or algorithm will take to
+run.
+But we do not really care exactly how long a particular program will
+run on a particular computer.
+We just want some sort of estimate that will let us compare one
+approach to solving a problem with another.
+This is the basic idea of :term:`algorithm analysis`.
+In the case of sequential search, it is easy to see that if the value
+is in position :math:`i` of the array, then sequential search will
+look at :math:`i` values to find it.
+If the value is not in the array at all, then we must look at
+:math:`n` values if the array holds :math:`n` values.
+This would be called the :term:`worst case` for sequential search.
+Since the amount of work is proportional to :math:`n`,
+we say that the worst case for sequential search has
+:term:`linear cost <linear growth rate>`.
+For this reason, the sequential search algorithm is sometimes
+called :term:`linear search`.
+
+Binary Search
+~~~~~~~~~~~~~
+
+Sequential search is the best that we can do when trying to find a
+value in an unsorted array. [#]_
+But if the array is sorted in increasing order by value, then we can
+do much better.
+We use a process called :term:`binary search`."
+opendsa_en:BinarySearch:003,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Searching/BinarySearch.rst#L63-L85,benchmarks/rag/course_sources/opendsa_en/RST/en/Searching/BinarySearch.rst,63,85,"Binary search begins by examining the value in the middle
+position of the array; call this position :math:`mid` and the
+corresponding value :math:`k_{mid}`.
+If :math:`k_{mid} = K`, then processing can stop immediately.
+This is unlikely to be the case, however.
+Fortunately, knowing the middle value provides useful information
+that can help guide the search process.
+In particular, if :math:`k_{mid} > K`, then you know that the value
+:math:`K` cannot appear in the array at any position greater
+than :math:`mid`. 
+Thus, you can eliminate future search in the upper half of the array.
+Conversely, if :math:`k_{mid} < K`, then you know that you can
+ignore all positions in the array less than :math:`mid`.
+Either way, half of the positions are eliminated from further
+consideration.
+Binary search next looks at the middle position in that part of the
+array where value :math:`K` may exist.
+The value at this position again allows us to eliminate half
+of the remaining positions from consideration.
+This process repeats until either the desired value is found, or
+there are no positions remaining in the array that might contain the
+value :math:`K`.
+Here is an illustration of the binary search method."
+opendsa_en:BinarySearch:004,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Searching/BinarySearch.rst#L87-L105,benchmarks/rag/course_sources/opendsa_en/RST/en/Searching/BinarySearch.rst,87,105,".. inlineav:: binarySearchCON ss
+   :long_name: Binary Search Algorithm Slideshow
+   :links: AV/Searching/binarySearchCON.css
+   :scripts: AV/Searching/binarySearchCON.js
+   :output: show
+   :keyword: Search; Binary Search
+
+With the right math techniques, it is not too hard to show that the
+cost of binary search on an array of :math:`n` values is at most
+:math:`\log n`.
+This is because we are repeatedly splitting the size of the subarray
+that we must look at in half.
+We stop (in the worst case) when we reach a subarray of size 1.
+And we can only cut the value of :math:`n` in half :math:`\log n`
+times before we reach 1. [#]_
+
+.. avembed:: AV/Searching/binarySearchPRO.html pe
+   :long_name: Binary Search Proficiency Exercise
+   :keyword: Search; Binary Search"
+opendsa_en:BinarySearch:005,en,opendsa_en,https://github.com/OpenDSA/OpenDSA/blob/347b2872a70eb4b10e20f2a91ffd131656de8266/RST/en/Searching/BinarySearch.rst#L107-L121,benchmarks/rag/course_sources/opendsa_en/RST/en/Searching/BinarySearch.rst,107,121,".. [#] It seems to be really ""obvious"" that sequential search is the
+       best that you can do on an unsorted array. 
+       But writing a convincing proof that no algorithm could ever be
+       discovered that is better is surprisingly difficult.
+       This is an example of a
+       :term:`lower bounds proof` to find the cost for the best
+       possible :term:`algorithm` to solve the :term:`problem` of
+       search in an unsorted array.
+
+.. [#] It is possible to
+       :ref:`prove <search lower bound> <SortedSearch>`
+       that binary search is the most efficient algorithm possible in
+       the worst case when searching in a sorted array.
+       This is even more difficult than proving that sequential search
+       is the most efficient algorithm possible on an unsorted array."

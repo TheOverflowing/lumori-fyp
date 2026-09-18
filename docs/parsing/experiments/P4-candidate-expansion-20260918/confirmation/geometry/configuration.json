@@ -1,0 +1,30 @@
+{
+  "started_at_utc": "2026-09-18T09:18:13.601901+00:00",
+  "strategies": [
+    "paddleocr_3_7_vl16_mlx_unmerged_xycut"
+  ],
+  "manifest_path": "docs/parsing/benchmarks/omnidocbench-confirmation-v1/manifest.json",
+  "manifest_sha256": "245ac939f46db4051dfd58dc9ed14b3c369f16721fca4ef713fc92265ebc61ee",
+  "variants": [
+    "native_pdf",
+    "image_only_pdf",
+    "degraded_image"
+  ],
+  "metric_contract": {
+    "text_accuracy_scope": "prose stratum only, to avoid confusing table HTML/formula LaTeX with text OCR errors",
+    "cer": "Levenshtein(NFKC(text) with whitespace removed) / normalized GT character count; case and punctuation preserved, raw CER may exceed 1; empty/error prediction has CER=1.",
+    "wer": "English prose only; NFKC then Unicode word-or-punctuation tokens, case preserved.",
+    "usable_page": "Custom pilot rule fixed before scores: CER<=0.10 and prediction length >=0.80*GT length. Includes all prose failures in denominator; not an industry standard or a semantic correctness guarantee.",
+    "structure": "Table/figure/formula gold regions preserved; TEDS, CDM, region recall and image semantic accuracy are NOT computed by this pilot.",
+    "aggregation": "Equal-weight macro CER and edit-sum/GT-character-sum micro CER; language and source-page counts reported. Variants are paired observations, not independent new documents."
+  },
+  "inference_source_run": "docs/parsing/experiments/P4-candidate-expansion-20260918/confirmation/geometry-raw",
+  "inference_source_rows_sha256": "ad0652409706e62c04682a8d003ea109d24e4f5c1f6d7fa7d1682640356b6db4",
+  "new_model_inference_calls": 0,
+  "execution": "Offline coordinate-only ordering replay; elapsed_seconds = recorded parent inference time + measured replay seconds, NOT an independent timing run.",
+  "source_sha256": {
+    "scripts/parsing_reading_order.py": "e31baf57c84fd0ac8abaa87f8451dfa4176b2e41c6b6744ba6c2310569cef2f0",
+    "scripts/derive_parsing_reading_order.py": "318e22360e50d44452093d28073655569c667a209f254b88a9ba05348c1e4b4a",
+    "scripts/evaluate_document_parsing.py": "00aa628a5853f14e01bb38804d816619e1e39d916f179f919802104f78ba4ac9"
+  }
+}

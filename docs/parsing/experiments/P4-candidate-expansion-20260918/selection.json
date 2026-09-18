@@ -1,0 +1,137 @@
+{
+  "recorded_at_utc": "2026-09-18T09:22:53.385317+00:00",
+  "status": "Provisional research recommendation; production parser unchanged",
+  "primary_strategy": "mineru_4_0_2_advanced_onnx",
+  "rule": "Quality first: lowest observed equal-language/equal-condition macro CER among the fixed confirmation candidates; every failure retained. No post-confirmation parameter tuning or oracle page routing.",
+  "confirmation": {
+    "split": "confirmation",
+    "strategy": "mineru_4_0_2_advanced_onnx",
+    "variant": "all",
+    "language": "all",
+    "cases": 36,
+    "independent_source_pages": 12,
+    "completed_without_exception": 36,
+    "nonempty_pages": 36,
+    "nonempty_page_rate": 1.0,
+    "accuracy_eligible_cases": 24,
+    "usable_pages": 23,
+    "usable_page_rate": 0.9583333333333334,
+    "macro_cer": 0.02904564411836925,
+    "micro_cer": 0.022518059855521157,
+    "macro_english_wer": 0.08645239550724,
+    "mean_seconds_per_page": 45.698011432944945
+  },
+  "development_winner": "mineru_4_0_2_standard_onnx",
+  "confirmation_ranking": [
+    {
+      "strategy": "mineru_4_0_2_advanced_onnx",
+      "macro_cer": 0.02904564411836925,
+      "usable": 23,
+      "eligible": 24
+    },
+    {
+      "strategy": "paddleocr_3_7_vl16_mlx_unmerged_xycut",
+      "macro_cer": 0.03978209791877242,
+      "usable": 24,
+      "eligible": 24
+    },
+    {
+      "strategy": "mineru_4_0_2_standard_onnx",
+      "macro_cer": 0.06410719241849909,
+      "usable": 20,
+      "eligible": 24
+    },
+    {
+      "strategy": "adaptive_local_v1",
+      "macro_cer": 0.17833035321909754,
+      "usable": 16,
+      "eligible": 24
+    }
+  ],
+  "uncertainty": {
+    "confirmation_interval": {
+      "baseline": "mineru_4_0_2_standard_onnx",
+      "challenger": "mineru_4_0_2_advanced_onnx",
+      "mean_cer_reduction": 0.035061548300129836,
+      "percentile_interval_95": [
+        -0.001186233986870928,
+        0.09756522130952006
+      ],
+      "draws": 20000,
+      "seed": 20260918,
+      "unit": "paired source-page clusters; all three conditions together; resample within language",
+      "scope": "Exploratory sample uncertainty, not population significance; public benchmark may occur in model training."
+    },
+    "geometry_confirmation_interval": {
+      "baseline": "mineru_4_0_2_standard_onnx",
+      "challenger": "paddleocr_3_7_vl16_mlx_unmerged_xycut",
+      "mean_cer_reduction": 0.024325094499726668,
+      "percentile_interval_95": [
+        -0.013681873746752959,
+        0.08556842274910043
+      ],
+      "draws": 20000,
+      "seed": 20260918,
+      "unit": "paired source-page clusters; all three conditions together; resample within language",
+      "scope": "Exploratory sample uncertainty, not population significance; public benchmark may occur in model training."
+    },
+    "additional_finalist_interval": {
+      "baseline": "mineru_4_0_2_advanced_onnx",
+      "challenger": "paddleocr_3_7_vl16_mlx_unmerged_xycut",
+      "mean_cer_reduction": -0.01073645380040317,
+      "percentile_interval_95": [
+        -0.01662619822563737,
+        -0.004615809758250655
+      ],
+      "draws": 20000,
+      "seed": 20260918,
+      "unit": "paired source-page clusters; all three conditions together; resample within language",
+      "scope": "Exploratory sample uncertainty, not population significance; public benchmark may occur in model training."
+    },
+    "paired_ordering_effect": {
+      "baseline": "paddleocr_3_7_vl16_mlx_unmerged",
+      "challenger": "paddleocr_3_7_vl16_mlx_unmerged_xycut",
+      "mean_cer_reduction": 0.0037349397590361443,
+      "percentile_interval_95": [
+        0.0,
+        0.011204819277108433
+      ],
+      "draws": 20000,
+      "seed": 20260918,
+      "unit": "paired source-page clusters; all three conditions together; resample within language",
+      "scope": "Exploratory sample uncertainty, not population significance; public benchmark may occur in model training."
+    }
+  },
+  "tradeoffs": [
+    "Development ranking differs; Advanced had one retained 240-second timeout there.",
+    "Paddle with fixed order achieves 24/24 custom usability versus Advanced23/24 and has lower Chinese mean CER; no all-metric dominance.",
+    "Advanced/Standard interval includes zero; additional Advanced/Paddle comparison is exploratory and uncorrected for multiplicity.",
+    "Figure localization has development evidence only; confirmation has no figure gold. Tables have just three confirmation gold regions."
+  ],
+  "scope": [
+    "Local Apple Silicon configurations, fixed weights and runtime versions, explicit cold-worker budgets.",
+    "Six development and eight confirmation text source pages, three paired variants each; not 18/24 independent documents.",
+    "Public benchmark with released annotations, possible training exposure and suspected annotation noise; no new project human labels.",
+    "Not a representative computer-science-course or real-phone-photo benchmark.",
+    "No verified downstream RAG, formula semantics, or figure interpretation improvement."
+  ],
+  "not_evaluated": [
+    "OvisOCR2",
+    "DeepSeek-OCR2",
+    "HPD-Parsing",
+    "olmOCR2",
+    "complete XY-Cut++ algorithm",
+    "graph/language-model reading-order methods"
+  ],
+  "production_changes": false,
+  "paid_inference_calls": 0,
+  "private_document_uploads": false,
+  "evidence": [
+    "report.md",
+    "FINDINGS.md",
+    "audit.json",
+    "comparison.json",
+    "REFERENCES.md",
+    "SETUP.md"
+  ]
+}

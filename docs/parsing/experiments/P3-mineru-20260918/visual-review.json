@@ -1,0 +1,28 @@
+{
+  "recorded_at_utc": "2026-09-18T06:12:19.497101+00:00",
+  "reviewer": "assistant visual inspection of source page and extracted crop",
+  "scope": "Two selected Basic native-PDF crops. Qualitative inspection only, not a new human gold annotation or a semantic accuracy score. No corrections applied to predictions.",
+  "rows": [
+    {
+      "sample_id": "p06",
+      "source": "docs/parsing/benchmarks/omnidocbench-pilot-v1/samples/p06/page.jpg",
+      "source_sha256": "2d5dd15d51beb6e5a74c1c48208f3464c10ef9893f251956e3e8ea6ac44f700e",
+      "crop": "runs/basic/outputs/mineru_4_0_2_basic_onnx--p06--native_pdf/images/page_0_image_body_15.jpg",
+      "crop_sha256": "0ac62e4f92cef696325a2fa0d3e13a38dc1c0ae33fa24ac592dbc74a8c52f898",
+      "observation": "The equipment photograph and adjacent circular field-of-view diagram remain visible in the extracted crop; the Figure 4 caption is outside this image-body crop."
+    },
+    {
+      "sample_id": "p10",
+      "source": "docs/parsing/benchmarks/omnidocbench-pilot-v1/samples/p10/page.jpg",
+      "source_sha256": "b586623f22a6077ad7a580150423f2f9b3ec2bdf42cfefb1eb71dcd7b8c9f9ff",
+      "crop": "runs/basic/outputs/mineru_4_0_2_basic_onnx--p10--native_pdf/images/page_0_image_body_15.jpg",
+      "crop_sha256": "39f193274fdfd4e1a56447b8e4db5bb7ebac778923ffee7c6ec180e1df57d038",
+      "observation": "The lower-left dashed hexagonal/triangular grid, A/B labels and arrow remain visible in the extracted crop; the caption is a separate block."
+    }
+  ],
+  "metric_diagnostic": {
+    "sample_id": "p04",
+    "method": "Read saved MiddleJson boxes and official annotation; not an additional visual review.",
+    "observation": "Gold has one combined two-panel figure; prediction has two chart-body boxes. Each individual box has IoU below 0.5 against the combined gold, so the frozen one-to-one metric records zero matches. This does not prove the visual panels were omitted. No merging or threshold adjustment was applied."
+  }
+}

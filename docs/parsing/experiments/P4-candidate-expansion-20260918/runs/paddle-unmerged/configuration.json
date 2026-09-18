@@ -1,0 +1,31 @@
+{
+  "started_at_utc": "2026-09-18T07:55:45.359213+00:00",
+  "strategies": [
+    "paddleocr_3_7_vl16_mlx_unmerged"
+  ],
+  "manifest_path": "docs/parsing/benchmarks/omnidocbench-pilot-v1/manifest.json",
+  "manifest_sha256": "ee2b0715a979e7328d9f2a0f689d099a2fe4baf539106f3fe9bc90359b9d36e3",
+  "timeout_seconds": 240,
+  "variants": [
+    "native_pdf",
+    "image_only_pdf",
+    "degraded_image"
+  ],
+  "metric_contract": {
+    "text_accuracy_scope": "prose stratum only, to avoid confusing table HTML/formula LaTeX with text OCR errors",
+    "cer": "Levenshtein(NFKC(text) with whitespace removed) / normalized GT character count; case and punctuation preserved, raw CER may exceed 1; empty/error prediction has CER=1.",
+    "wer": "English prose only; NFKC then Unicode word-or-punctuation tokens, case preserved.",
+    "usable_page": "Custom pilot rule fixed before scores: CER<=0.10 and prediction length >=0.80*GT length. Includes all prose failures in denominator; not an industry standard or a semantic correctness guarantee.",
+    "structure": "Table/figure/formula gold regions preserved; TEDS, CDM, region recall and image semantic accuracy are NOT computed by this pilot.",
+    "aggregation": "Equal-weight macro CER and edit-sum/GT-character-sum micro CER; language and source-page counts reported. Variants are paired observations, not independent new documents."
+  },
+  "execution": "cold full pipeline + owned MLX server per input; group timeout includes startup and export",
+  "adapter": "raw parsing_res_list order; all text furniture retained, pictures excluded from prose; tables plain cell text and preserved HTML",
+  "source_sha256": {
+    "scripts/evaluate_paddle_unmerged.py": "ae90a5b02dc6bd65e1139568a5217e91cc52934dbc103936a338f803e109b8a1",
+    "scripts/evaluate_paddle_parsing.py": "fabdb18b17e210d5911117763fbfb541ffd3d5cd7c8fb447c14a116d33fc55da",
+    "scripts/evaluate_parsing_candidates.py": "1a5372c4e3a5fac6cf6cdf08917ea1f23a0669a7166d98e6e24aaef5f2311fa9",
+    "scripts/evaluate_document_parsing.py": "00aa628a5853f14e01bb38804d816619e1e39d916f179f919802104f78ba4ac9",
+    "scripts/evaluate_mineru_parsing.py": "5d56a2a4260ea5dede13adc603fa2bfd229be716e8ed2ff6dd96de5edbe1278b"
+  }
+}

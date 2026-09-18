@@ -1,0 +1,239 @@
+{
+  "schema_version": "ca1-evidence-v1",
+  "exported_at": "2026-09-12T03:57:15.070069+00:00",
+  "content_id": "bf1d18cc1992481791f2d04dddb5b654",
+  "version": 1,
+  "status": "draft",
+  "asset": {
+    "title": "Embedding Compatibility, Review Status, and What Must Be Rebuilt",
+    "evidence_sufficient": true,
+    "evidence_note": "The supplied course fragments define embedding configuration signatures, the need to check compatibility and usually rebuild document vectors after a model change, and the separate lifecycle of reviewed text versions (draft, approval, new draft after edit). This is sufficient for a hard short-answer item within those boundaries.",
+    "learning_objectives": [
+      "Distinguish an embedding configuration change (model/options) from a query-compatibility problem.",
+      "Explain why changing the embedding model usually requires rebuilding or reindexing document vectors.",
+      "Explain why reindexing does not retroactively approve or alter an already generated explanation.",
+      "Trace how a reviewed text version becomes a draft again after an edit and needs renewed approval.",
+      "Decide what needs rebuilding (index) versus what needs renewed approval (text version) after a model change combined with an edit."
+    ],
+    "sections": [
+      {
+        "heading": "Embedding compatibility and the embedding configuration signature",
+        "text": "Embedding compatibility concerns the relationship between stored document vectors and a new query vector. Vectors must have the same dimension before coordinates can be compared, but matching dimensions alone are not enough: two models can use different semantic spaces while producing the same number of coordinates. A query from one space must not be assumed compatible with passages embedded by another model. The application should associate an embedding configuration signature with each indexed passage; this signature can identify the embedding model, endpoint, and relevant options without containing an API credential. Replacing a credential for the same embedding configuration does not by itself change the semantic space, but changing the model or relevant embedding options requires checking compatibility and usually rebuilding document vectors before generating new material. A useful failure message explains why reindexing is needed instead of silently comparing incompatible vectors.",
+        "citation_ids": [
+          "7e841d89f57e41e4b04745d3b883044b",
+          "d14b60c9729e4fc08d980b82032db14b"
+        ]
+      },
+      {
+        "heading": "Reindexing is not approval",
+        "text": "Embedding compatibility and a reviewed text version are different concerns. Reindexing changes the vectors used by future retrieval. It does not retrospectively repair or approve an already generated explanation. The earlier explanation remains associated with its original source passages and generation settings. Keeping these histories separate lets an observer distinguish a retrieval configuration change from a correction to teaching content.",
+        "citation_ids": [
+          "8652cf4f1cb542c0a739c7b3788b3f4a"
+        ]
+      },
+      {
+        "heading": "Reviewed text versions and renewed approval",
+        "text": "A reviewed text version identifies the exact content a reviewer inspected. Newly generated teaching material begins as a draft. Saving an edit creates a later draft version, and approval applies to the current version. A learning view should show content only when that current version is approved. If someone changes approved text, its new version needs review before it is shown as published learning material. An approval request for an older version should fail instead of approving unseen changes. For example, version one is the original generated draft; a reviewer corrects its title or explanation and saves version two; approval of version two permits the learning view to display that text; a later save creates version three and returns the material to draft. The original version-one evidence should remain inspectable so an evaluator can tell what the generator produced and what a person changed. A technical script exercising these transitions does not supply a human quality judgment.",
+        "citation_ids": [
+          "6252d551cbf3483a80ddbb893aa33e9c"
+        ]
+      },
+      {
+        "heading": "What a model change plus an edit requires",
+        "text": "If the embedding model or relevant embedding options change, compatibility with the existing index must be checked and the document vectors usually rebuilt; otherwise a query vector from the new model may be compared against passages from an incompatible space. If a reviewer also edits an approved explanation, that edit creates a new text version that returns to draft and needs renewed approval before it is shown as published learning material. Rebuilding the index does not approve the edited explanation, and approving the edited text does not fix the index. Both the retrieval configuration change and the content correction have their own required actions and histories.",
+        "citation_ids": [
+          "7e841d89f57e41e4b04745d3b883044b",
+          "8652cf4f1cb542c0a739c7b3788b3f4a",
+          "6252d551cbf3483a80ddbb893aa33e9c"
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "kind": "short_answer",
+        "stem": "A team changes the embedding model used for retrieval. At the same time, a reviewer edits an already approved explanation. Explain (a) how embedding compatibility between the new model and the existing index should be handled, including what usually needs rebuilding, and (b) what happens to the edited explanation at the text-version level, including what renewed approval is required. Then explain why completing one of these actions does not take care of the other.",
+        "options": [],
+        "answer": "For (a), the new model or changed embedding options mean compatibility with the existing index must be checked. Vectors must have the same dimension to be comparable, but matching dimensions alone are not sufficient because two models can use different semantic spaces while producing the same number of coordinates; a query from one space must not be assumed compatible with passages embedded by another model (d14b60c9729e4fc08d980b82032db14b). The embedding configuration signature associated with each indexed passage identifies the model, endpoint, and relevant options without containing an API credential; replacing only a credential for the same configuration does not change the semantic space (7e841d89f57e41e4b04745d3b883044b). Changing the model or relevant embedding options therefore usually requires rebuilding the document vectors before generating new material, and if reindexing is needed, the failure message should explain why rather than silently comparing incompatible vectors (7e841d89f57e41e4b04745d3b883044b). For (b), newly generated teaching material begins as a draft, and approval applies to the current version. Saving an edit creates a later draft version, so the approved text becomes a draft that needs review, and the learning view should show content only when its current version is approved; an approval request for an older version should fail instead of approving unseen changes (6252d551cbf3483a80ddbb893aa33e9c). Completing one action does not substitute for the other because reindexing changes the vectors used by future retrieval but does not retrospectively repair or approve an already generated explanation, and the earlier explanation remains associated with its original source passages and generation settings; keeping these histories separate lets an observer distinguish a retrieval configuration change from a correction to teaching content (8652cf4f1cb542c0a739c7b3788b3f4a). Thus the index must be checked and usually rebuilt for retrieval compatibility, while the edited explanation needs renewed approval as a new draft text version.",
+        "explanation": "Start by separating the two concerns. Retrieval compatibility depends on whether stored document vectors and the new query vector belong to the same embedding configuration; a changed model or changed relevant options requires a compatibility check and usually a rebuild of document vectors, because equal dimension count does not guarantee the same semantic space (d14b60c9729e4fc08d980b82032db14b, 7e841d89f57e41e4b04745d3b883044b). Separately, text approval tracks the exact inspected version: a save after approval creates a later draft, so the edited explanation returns to draft and needs renewed approval before being shown (6252d551cbf3483a80ddbb893aa33e9c). The two do not substitute for each other: reindexing changes future retrieval but does not repair or approve an earlier explanation and its original source passages and settings (8652cf4f1cb542c0a739c7b3788b3f4a).",
+        "difficulty_reason": "The item requires coordinating two independent lifecycles: retrieval embedding compatibility and text-version approval. The hard part is reasoning that matching dimensions is insufficient, that reindexing is not approval, and that an edit returns approved text to draft even when the model change is handled.",
+        "citation_ids": [
+          "d14b60c9729e4fc08d980b82032db14b",
+          "7e841d89f57e41e4b04745d3b883044b",
+          "8652cf4f1cb542c0a739c7b3788b3f4a",
+          "6252d551cbf3483a80ddbb893aa33e9c"
+        ]
+      }
+    ],
+    "visual_prompt": "A two-track diagram. Top track labeled 'Retrieval / Embeddings': an embedding configuration signature box feeding into stored document vectors and a query vector; a changed model icon triggers a 'compatibility check' arrow, with a branch labeled 'usually rebuild document vectors'. Bottom track labeled 'Reviewed text': a draft version to approval, then an edit creating a later draft that requires renewed approval before learning view display; original version evidence remains inspectable. A dashed divider between tracks with crossed-out arrows showing that rebuilding vectors does not approve text and approving text does not rebuild the index. No answers or correct choices are written in the diagram."
+  },
+  "sources": [
+    {
+      "id": "8652cf4f1cb542c0a739c7b3788b3f4a",
+      "document_id": "b244486ed0484634bf908cd19acdde2d",
+      "document_name": "ca1_rag_course.md",
+      "page": 1,
+      "text": "aterial. A useful failure message explains why reindexing is needed instead of silently comparing incompatible vectors.\n\nEmbedding compatibility and a reviewed text version are different concerns. Reindexing changes the vectors used by future retrieval. It does not retrospectively repair or approve an already generated explanation. The earlier explanation remains associated with its original source passages and generation settings. If a reviewer later edits that explanation, the system creates a new text version. Keeping these histories separate lets an observer distinguish a retrieval configuration change from a correction to teaching content.\n\n## Reviewed text version and learning access",
+      "score": 0.7544356164015183
+    },
+    {
+      "id": "6252d551cbf3483a80ddbb893aa33e9c",
+      "document_id": "b244486ed0484634bf908cd19acdde2d",
+      "document_name": "ca1_rag_course.md",
+      "page": 1,
+      "text": "h a retrieval configuration change from a correction to teaching content.\n\n## Reviewed text version and learning access\n\nA reviewed text version identifies the exact content a reviewer inspected. Newly generated teaching material begins as a draft. Saving an edit creates a later draft version, and approval applies to the current version. A learning view should show content only when that current version is approved. If someone changes approved text, its new version needs review before it is shown as published learning material. An approval request for an older version should fail instead of approving unseen changes.\n\nFor a reviewed text version example, version one is the original generated draft. A reviewer corrects its title or explanation and saves version two. Approval of version two permits the learning view to display that text. A later save creates version three and returns the material to draft. The original version-one evidence should remain inspectable so an evaluator can tell what the generator produced and what a person changed. A technical script exercising these transitions does not supply a human quality judgment.",
+      "score": 0.6981561897440154
+    },
+    {
+      "id": "7e841d89f57e41e4b04745d3b883044b",
+      "document_id": "b244486ed0484634bf908cd19acdde2d",
+      "document_name": "ca1_rag_course.md",
+      "page": 1,
+      "text": "e number of coordinates. A query from one space must not be assumed compatible with passages embedded by another model.\n\nThe application should associate an embedding configuration signature with each indexed passage. A signature can identify the embedding model, endpoint, and relevant options without containing an API credential. Replacing a credential for the same embedding configuration does not by itself change the semantic space. Changing the model or relevant embedding options requires checking compatibility and usually rebuilding document vectors before generating new material. A useful failure message explains why reindexing is needed instead of silently comparing incompatible vectors.",
+      "score": 0.692698572567066
+    },
+    {
+      "id": "d14b60c9729e4fc08d980b82032db14b",
+      "document_id": "b244486ed0484634bf908cd19acdde2d",
+      "document_name": "ca1_rag_course.md",
+      "page": 1,
+      "text": ". An automated draft must not be described as human-approved merely because its citation identifiers passed validation.\n\nAn evidence boundary is crossed when a requested conclusion cannot be derived from the supplied material. Suppose a learner asks for a clinical treatment dosage while the course notes only explain retrieval systems. The notes provide no clinical evidence. The appropriate response is to report insufficient evidence and avoid inventing a dosage or an exercise that presents one as correct. The generator may explain that the relevant source material is missing. A provider outage or malformed response is an operational failure, not a successful refusal based on evidence.\n\n## Embedding compatibility and index versions\n\nEmbedding compatibility concerns the relationship between stored document vectors and a new query vector. Vectors must have the same dimension before their coordinates can be compared. Matching dimensions alone are insufficient: two models can use different semantic spaces while producing the same number of coordinates. A query from one space must not be assumed compatible with passages embedded by another model.",
+      "score": 0.6490927561023052
+    },
+    {
+      "id": "59d6ea0db5084434a6649e74373dfdc6",
+      "document_id": "b244486ed0484634bf908cd19acdde2d",
+      "document_name": "ca1_rag_course.md",
+      "page": 1,
+      "text": "ts the chosen model. Reusing existing local evidence for workflow demonstrations avoids unnecessary new provider calls.\n\nSpeech and image generation are deferred in this text-focused CA1 demonstration. A future media asset should be tied to the exact reviewed text version so that it cannot silently accompany an unrelated revision. After editing the text, previously approved media should require a consistency check. The presence of an image or audio API setting is not evidence that media quality has been validated. The current demonstration should make only the claims supported by its saved text, retrieval, and workflow records.",
+      "score": 0.6318886764332695
+    }
+  ],
+  "configuration": {
+    "course_id": "153a227bbb534f67a90145e4c214dc3f",
+    "topic": "Compare embedding compatibility after a model change with a reviewed text version after an edit. Explain what needs rebuilding or renewed approval.",
+    "material": "assignment",
+    "difficulty": "hard",
+    "question_type": "short_answer",
+    "count": 1,
+    "language": "en",
+    "document_ids": [
+      "b244486ed0484634bf908cd19acdde2d"
+    ],
+    "prompt_version": "education-v1",
+    "text_model": "deepseek-flash",
+    "text_endpoint_signature": "83b11c7b63af3acbbf3c",
+    "embedding_model": "qwen/qwen3-embedding-8b",
+    "embedding_signature": "00e64e3f244084054844",
+    "retrieval_top_k": 5
+  },
+  "generation_calls": [
+    {
+      "capability": "embedding",
+      "model": "qwen/qwen3-embedding-8b",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 25,
+        "total_tokens": 25,
+        "cost": 2.5e-07,
+        "cost_details": {
+          "upstream_inference_cost": 2.5e-07
+        }
+      },
+      "created_at": "2026-09-12T03:57:05.218504+00:00",
+      "duration_ms": 736,
+      "http_status": 200,
+      "response_model": "Qwen/Qwen3-Embedding-8B"
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 2131,
+        "completion_tokens": 2067,
+        "total_tokens": 4198,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 2131
+      },
+      "created_at": "2026-09-12T03:57:05.958095+00:00",
+      "duration_ms": 9057,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    }
+  ],
+  "revisions": [
+    {
+      "version": 1,
+      "asset": {
+        "title": "Embedding Compatibility, Review Status, and What Must Be Rebuilt",
+        "evidence_sufficient": true,
+        "evidence_note": "The supplied course fragments define embedding configuration signatures, the need to check compatibility and usually rebuild document vectors after a model change, and the separate lifecycle of reviewed text versions (draft, approval, new draft after edit). This is sufficient for a hard short-answer item within those boundaries.",
+        "learning_objectives": [
+          "Distinguish an embedding configuration change (model/options) from a query-compatibility problem.",
+          "Explain why changing the embedding model usually requires rebuilding or reindexing document vectors.",
+          "Explain why reindexing does not retroactively approve or alter an already generated explanation.",
+          "Trace how a reviewed text version becomes a draft again after an edit and needs renewed approval.",
+          "Decide what needs rebuilding (index) versus what needs renewed approval (text version) after a model change combined with an edit."
+        ],
+        "sections": [
+          {
+            "heading": "Embedding compatibility and the embedding configuration signature",
+            "text": "Embedding compatibility concerns the relationship between stored document vectors and a new query vector. Vectors must have the same dimension before coordinates can be compared, but matching dimensions alone are not enough: two models can use different semantic spaces while producing the same number of coordinates. A query from one space must not be assumed compatible with passages embedded by another model. The application should associate an embedding configuration signature with each indexed passage; this signature can identify the embedding model, endpoint, and relevant options without containing an API credential. Replacing a credential for the same embedding configuration does not by itself change the semantic space, but changing the model or relevant embedding options requires checking compatibility and usually rebuilding document vectors before generating new material. A useful failure message explains why reindexing is needed instead of silently comparing incompatible vectors.",
+            "citation_ids": [
+              "7e841d89f57e41e4b04745d3b883044b",
+              "d14b60c9729e4fc08d980b82032db14b"
+            ]
+          },
+          {
+            "heading": "Reindexing is not approval",
+            "text": "Embedding compatibility and a reviewed text version are different concerns. Reindexing changes the vectors used by future retrieval. It does not retrospectively repair or approve an already generated explanation. The earlier explanation remains associated with its original source passages and generation settings. Keeping these histories separate lets an observer distinguish a retrieval configuration change from a correction to teaching content.",
+            "citation_ids": [
+              "8652cf4f1cb542c0a739c7b3788b3f4a"
+            ]
+          },
+          {
+            "heading": "Reviewed text versions and renewed approval",
+            "text": "A reviewed text version identifies the exact content a reviewer inspected. Newly generated teaching material begins as a draft. Saving an edit creates a later draft version, and approval applies to the current version. A learning view should show content only when that current version is approved. If someone changes approved text, its new version needs review before it is shown as published learning material. An approval request for an older version should fail instead of approving unseen changes. For example, version one is the original generated draft; a reviewer corrects its title or explanation and saves version two; approval of version two permits the learning view to display that text; a later save creates version three and returns the material to draft. The original version-one evidence should remain inspectable so an evaluator can tell what the generator produced and what a person changed. A technical script exercising these transitions does not supply a human quality judgment.",
+            "citation_ids": [
+              "6252d551cbf3483a80ddbb893aa33e9c"
+            ]
+          },
+          {
+            "heading": "What a model change plus an edit requires",
+            "text": "If the embedding model or relevant embedding options change, compatibility with the existing index must be checked and the document vectors usually rebuilt; otherwise a query vector from the new model may be compared against passages from an incompatible space. If a reviewer also edits an approved explanation, that edit creates a new text version that returns to draft and needs renewed approval before it is shown as published learning material. Rebuilding the index does not approve the edited explanation, and approving the edited text does not fix the index. Both the retrieval configuration change and the content correction have their own required actions and histories.",
+            "citation_ids": [
+              "7e841d89f57e41e4b04745d3b883044b",
+              "8652cf4f1cb542c0a739c7b3788b3f4a",
+              "6252d551cbf3483a80ddbb893aa33e9c"
+            ]
+          }
+        ],
+        "questions": [
+          {
+            "kind": "short_answer",
+            "stem": "A team changes the embedding model used for retrieval. At the same time, a reviewer edits an already approved explanation. Explain (a) how embedding compatibility between the new model and the existing index should be handled, including what usually needs rebuilding, and (b) what happens to the edited explanation at the text-version level, including what renewed approval is required. Then explain why completing one of these actions does not take care of the other.",
+            "options": [],
+            "answer": "For (a), the new model or changed embedding options mean compatibility with the existing index must be checked. Vectors must have the same dimension to be comparable, but matching dimensions alone are not sufficient because two models can use different semantic spaces while producing the same number of coordinates; a query from one space must not be assumed compatible with passages embedded by another model (d14b60c9729e4fc08d980b82032db14b). The embedding configuration signature associated with each indexed passage identifies the model, endpoint, and relevant options without containing an API credential; replacing only a credential for the same configuration does not change the semantic space (7e841d89f57e41e4b04745d3b883044b). Changing the model or relevant embedding options therefore usually requires rebuilding the document vectors before generating new material, and if reindexing is needed, the failure message should explain why rather than silently comparing incompatible vectors (7e841d89f57e41e4b04745d3b883044b). For (b), newly generated teaching material begins as a draft, and approval applies to the current version. Saving an edit creates a later draft version, so the approved text becomes a draft that needs review, and the learning view should show content only when its current version is approved; an approval request for an older version should fail instead of approving unseen changes (6252d551cbf3483a80ddbb893aa33e9c). Completing one action does not substitute for the other because reindexing changes the vectors used by future retrieval but does not retrospectively repair or approve an already generated explanation, and the earlier explanation remains associated with its original source passages and generation settings; keeping these histories separate lets an observer distinguish a retrieval configuration change from a correction to teaching content (8652cf4f1cb542c0a739c7b3788b3f4a). Thus the index must be checked and usually rebuilt for retrieval compatibility, while the edited explanation needs renewed approval as a new draft text version.",
+            "explanation": "Start by separating the two concerns. Retrieval compatibility depends on whether stored document vectors and the new query vector belong to the same embedding configuration; a changed model or changed relevant options requires a compatibility check and usually a rebuild of document vectors, because equal dimension count does not guarantee the same semantic space (d14b60c9729e4fc08d980b82032db14b, 7e841d89f57e41e4b04745d3b883044b). Separately, text approval tracks the exact inspected version: a save after approval creates a later draft, so the edited explanation returns to draft and needs renewed approval before being shown (6252d551cbf3483a80ddbb893aa33e9c). The two do not substitute for each other: reindexing changes future retrieval but does not repair or approve an earlier explanation and its original source passages and settings (8652cf4f1cb542c0a739c7b3788b3f4a).",
+            "difficulty_reason": "The item requires coordinating two independent lifecycles: retrieval embedding compatibility and text-version approval. The hard part is reasoning that matching dimensions is insufficient, that reindexing is not approval, and that an edit returns approved text to draft even when the model change is handled.",
+            "citation_ids": [
+              "d14b60c9729e4fc08d980b82032db14b",
+              "7e841d89f57e41e4b04745d3b883044b",
+              "8652cf4f1cb542c0a739c7b3788b3f4a",
+              "6252d551cbf3483a80ddbb893aa33e9c"
+            ]
+          }
+        ],
+        "visual_prompt": "A two-track diagram. Top track labeled 'Retrieval / Embeddings': an embedding configuration signature box feeding into stored document vectors and a query vector; a changed model icon triggers a 'compatibility check' arrow, with a branch labeled 'usually rebuild document vectors'. Bottom track labeled 'Reviewed text': a draft version to approval, then an edit creating a later draft that requires renewed approval before learning view display; original version evidence remains inspectable. A dashed divider between tracks with crossed-out arrows showing that rebuilding vectors does not approve text and approving text does not rebuild the index. No answers or correct choices are written in the diagram."
+      },
+      "created_at": "2026-09-12T03:57:15.017162+00:00"
+    }
+  ],
+  "limitations": [
+    "Citation identifiers establish provenance, not factual correctness.",
+    "Call records describe initial generation; content may have been edited afterwards."
+  ]
+}
