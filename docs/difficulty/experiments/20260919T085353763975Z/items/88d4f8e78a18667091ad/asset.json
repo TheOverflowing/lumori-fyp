@@ -1,0 +1,50 @@
+{
+  "title": "二分查找：区间约定、边界更新与适用条件",
+  "evidence_sufficient": true,
+  "evidence_note": "参考片段 fixthe_binary_search_zh 完整给出了二分查找的区间约定、初始化、循环条件、边界更新、复杂度与适用条件，足以生成一道 easy 选择题。",
+  "learning_objectives": [
+    "理解闭区间 [left, right] 的初始化、循环条件与边界更新方式",
+    "能判断二分查找对有序性与随机访问的依赖"
+  ],
+  "sections": [
+    {
+      "heading": "闭区间二分查找的基本约定",
+      "text": "本资料假定数组按升序排列、元素互异，按下标访问需要常数时间。闭区间 [left, right] 保存所有仍可能包含目标的位置，初始 left=0、right=n-1。每轮取 mid=left+向下取整((right-left)/2)。若中间值等于目标，返回 mid；若中间值小于目标，将 left 更新为 mid+1；若中间值大于目标，将 right 更新为 mid-1。循环条件是 left<=right，区间为空时返回 -1。",
+      "citation_ids": [
+        "fixture_binary_search_zh"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "slot_id": "q1",
+      "difficulty": "easy",
+      "difficulty_design": {
+        "cognitive_process": "remember",
+        "concepts": [
+          "闭区间约定",
+          "初始化"
+        ],
+        "expected_steps": [
+          "回忆闭区间 [left, right] 的初始化规则",
+          "选出 right=n-1"
+        ]
+      },
+      "kind": "mcq",
+      "stem": "在资料采用的闭区间 [left, right] 二分查找中，初始 right 的值是什么？",
+      "options": [
+        "n",
+        "n-1",
+        "0",
+        "mid"
+      ],
+      "answer": "B",
+      "explanation": "资料写明闭区间 [left, right] 初始 left=0、right=n-1，因此选 n-1。",
+      "difficulty_reason": "该题只需从资料中直接提取闭区间的初始化约定，条件完整，无需选择策略。",
+      "citation_ids": [
+        "fixture_binary_search_zh"
+      ]
+    }
+  ],
+  "visual_prompt": "画一个升序数组，下标从 0 到 n-1，用方括号标出闭区间 [left, right] 覆盖的连续位置，并标注 left=0、right=n-1。"
+}

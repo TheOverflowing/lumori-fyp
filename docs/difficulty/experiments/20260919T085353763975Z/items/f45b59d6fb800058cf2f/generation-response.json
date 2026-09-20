@@ -1,0 +1,41 @@
+{
+  "title": "Database Transactions: Atomicity, Snapshot Visibility, and Retries — Quiz",
+  "evidence_sufficient": true,
+  "evidence_note": "The supplied fixture (fixture_transactions_en) contains explicit PostgreSQL semantics for BEGIN/COMMIT/ROLLBACK, Read Committed vs. Repeatable Read visibility, Serializable rejection, and retry requirements, plus stated modeling conventions for schedules. One medium short-answer item can be generated within these premises.",
+  "learning_objectives": [
+    "Apply the stated PostgreSQL Read Committed and Repeatable Read visibility rules to a concrete two-session schedule (fixture_transactions_en).",
+    "Distinguish an uncommitted write from a committed state change when judging all-or-nothing outcomes (fixture_transactions_en).",
+    "Analyze why a retry must rerun the reads and application decisions that selected the writes (fixture_transactions_en)."
+  ],
+  "sections": [],
+  "questions": [
+    {
+      "kind": "short_answer",
+      "stem": "Consider the following educational-fixture schedule. The isolation level is PostgreSQL Repeatable Read for both sessions. Initial table accounts: (id=1, balance=100), (id=2, balance=50). There are no hidden triggers, constraints, background transactions, or external side effects.\n\nSession A: BEGIN; SELECT balance FROM accounts WHERE id=1;  -- statement A1\nSession B: BEGIN; UPDATE accounts SET balance = balance - 30 WHERE id=1; COMMIT;  -- statement B1\nSession A: SELECT balance FROM accounts WHERE id=1;  -- statement A2\nSession A: UPDATE accounts SET balance = balance + 10 WHERE id=1; COMMIT;  -- statement A3\n\n(a) State the value returned by A1 and the value returned by A2, and justify each using the Repeatable Read snapshot rule stated in the notes.\n(b) After the schedule completes, what is the committed balance of account id=1? Show how you combine Session A's own change with Session B's committed change, and explain why treating A3's write as committed before A's COMMIT would be incorrect.\n(c) Suppose the isolation level were changed to PostgreSQL Serializable and A3 were rejected with a serialization failure. Explain what the application must retry and why retrying only A3 would be insufficient, referring to the role of the reads and decisions in this schedule.",
+      "options": [],
+      "answer": "(a) A1 returns 100. A2 also returns 100. Under Repeatable Read, ordinary queries use the snapshot associated with the transaction's first non-transaction-control statement (here A1), so B1's concurrent commit does not change A's view between A1 and A2.\n\n(b) The committed balance is 100 - 30 + 10 = 80. Session B's committed change (-30) and Session A's own committed change (+10) both apply to the initial 100. A3's write is uncommitted until A's COMMIT, so it must not be counted as a committed state change before then; if A had rolled back instead, only B's -30 would remain committed (balance 70).\n\n(c) The application must retry the complete transaction, including the reads and the application decisions that selected the writes (A1/A2 and the decision leading to A3). Retrying only A3 would reuse a decision made from a state that is no longer appropriate, because the snapshot and the concurrent commits may have changed; the notes state that retrying only the final failed statement can reuse decisions made from a state that is no longer appropriate. A retry can also fail, so a considered retry policy is needed rather than assuming one attempt always succeeds.",
+      "explanation": "This item applies the fixture's stated rules to a concrete two-session schedule. Part (a) tests the Repeatable Read snapshot rule: the snapshot is tied to the first non-transaction-control statement, so A2 keeps seeing 100 even after B1 commits. Part (b) separates an uncommitted write from a committed state change: A3's +10 counts only because A commits, and B's -30 counts because B committed, giving 80; had A rolled back, the balance would be 70. Part (c) tests the retry requirement: a serialization failure means rerunning the whole transaction, including the reads and decisions that selected the writes, because retrying only the failed statement can reuse decisions based on a state that is no longer appropriate, and a retry can itself fail.",
+      "difficulty_reason": "Medium: the task applies learned concepts (Repeatable Read snapshot visibility, committed vs. uncommitted changes, retry scope) to a specific but familiar two-session schedule, requiring application and analysis across 2–3 linked steps rather than recall of a definition. All premises are supplied, and no advanced library or other database system behavior is assumed.",
+      "citation_ids": [
+        "fixture_transactions_en"
+      ],
+      "slot_id": "q1",
+      "difficulty": "medium",
+      "difficulty_design": {
+        "cognitive_process": "apply",
+        "concepts": [
+          "Repeatable Read snapshot visibility",
+          "committed vs. uncommitted changes",
+          "transaction retry scope",
+          "serialization failure"
+        ],
+        "expected_steps": [
+          "A1 = 100 and A2 = 100, justified by the Repeatable Read snapshot tied to the first non-transaction-control statement.",
+          "Committed balance 80 = 100 - 30 + 10, counting B's committed change and A's own change only after A's COMMIT.",
+          "Retry must rerun the whole transaction including the reads and decisions, because retrying only A3 can reuse decisions from a state that is no longer appropriate; a retry can also fail."
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "A two-column timeline diagram for the fixture schedule. Left column labeled 'Session A' shows BEGIN, A1 (SELECT balance id=1), A2 (SELECT balance id=1), A3 (UPDATE balance +10), COMMIT. Right column labeled 'Session B' shows BEGIN, B1 (UPDATE balance -30), COMMIT positioned between A1 and A2. A horizontal dashed line marks 'Repeatable Read snapshot begins at A1'. A small table at the bottom shows initial balances (id=1: 100, id=2: 50) and a final committed balance box for id=1. No answer values are printed in the diagram."
+}

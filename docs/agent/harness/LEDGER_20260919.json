@@ -1,0 +1,143 @@
+{
+  "schema": "harness-experiment-ledger-v1",
+  "rounds": {
+    "H1_20260919": {
+      "groups": {
+        "native": {
+          "calls": 16,
+          "tokens": 72458,
+          "known_duration_ms": 69256,
+          "gate": {
+            "canary_bad": "quality_failed",
+            "canary_corrected": "quality_failed",
+            "cpu_en_hard": "quality_failed",
+            "cpu_zh_hard": "quality_failed",
+            "transactions_zh_medium": "completed"
+          },
+          "calls_per_case": {
+            "canary_bad": 2,
+            "canary_corrected": 1,
+            "cpu_en_hard": 5,
+            "cpu_zh_hard": 5,
+            "transactions_zh_medium": 3
+          }
+        },
+        "deepseek_harness": {
+          "calls": 5,
+          "tokens": 24857,
+          "known_duration_ms": 6957,
+          "gate": {
+            "canary_bad": "provider_error",
+            "canary_corrected": "provider_error",
+            "cpu_en_hard": "provider_error",
+            "cpu_zh_hard": "provider_error",
+            "transactions_zh_medium": "provider_error"
+          },
+          "calls_per_case": {
+            "canary_bad": 1,
+            "canary_corrected": 1,
+            "cpu_en_hard": 1,
+            "cpu_zh_hard": 1,
+            "transactions_zh_medium": 1
+          }
+        }
+      },
+      "manifest_sha256": "2d37591436a8eeed78bdf0e8e8d5d372bb8541385b2394021c61d0ea3b8f9411"
+    },
+    "H2_20260919": {
+      "groups": {
+        "deepseek_harness": {
+          "calls": 30,
+          "tokens": 193176,
+          "known_duration_ms": 104315,
+          "gate": {
+            "canary_bad": "quality_failed",
+            "canary_corrected": "quality_failed",
+            "cpu_en_hard": "protocol_failure",
+            "cpu_zh_hard": "completed",
+            "transactions_zh_medium": "completed"
+          },
+          "calls_per_case": {
+            "canary_bad": 2,
+            "canary_corrected": 2,
+            "cpu_en_hard": 6,
+            "cpu_zh_hard": 8,
+            "transactions_zh_medium": 12
+          }
+        }
+      },
+      "manifest_sha256": "02bddf617110e32f7af25ff7dfe5f9fdf0c35f3b4c7cac68fe522369bcecb48f"
+    },
+    "H3_20260919": {
+      "groups": {
+        "deepseek_harness": {
+          "calls": 8,
+          "tokens": 68649,
+          "known_duration_ms": 31197,
+          "gate": {
+            "cpu_en_hard": "quality_failed"
+          },
+          "calls_per_case": {
+            "cpu_en_hard": 8
+          }
+        }
+      },
+      "manifest_sha256": "e658be2b1e72fd7f07b139e006c0aadacfa7e32c21596c9aa4e671659754c843"
+    },
+    "P1_20260919": {
+      "calls": 1,
+      "tokens": 4832,
+      "classification": "transport diagnostic; no teaching tools executed",
+      "sha256": "371230721c234169cc819509133d3d90e7b00033cc46b2b92350dfe92401c5cf"
+    }
+  },
+  "scope": "This turn only; separate from prior A1/A2",
+  "live_call_limit": 64,
+  "actual_calls": 60,
+  "known_total_tokens": 363972,
+  "tokens_missing_calls": 0,
+  "cost_missing_calls": 60,
+  "known_cost_usd": 0,
+  "response_models": [
+    "deepseek-flash"
+  ],
+  "http_status_counts": {
+    "200": 60
+  },
+  "verification": {
+    "VERIFICATION_20260919.xml": {
+      "tests": "1094",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "6",
+      "time": "80.474"
+    },
+    "VERIFICATION_V2_20260919.xml": {
+      "tests": "209",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "24.836"
+    }
+  },
+  "final_adapter_revision": "harness-acp-20260919-v2",
+  "default_runtime": "native",
+  "service_verification": {
+    "host": "127.0.0.1:8765",
+    "homepage_http": 200,
+    "openapi_http": 200,
+    "unauthenticated_evidence_http": 401,
+    "active_jobs_before_restart": 0
+  },
+  "final_code_sha256": {
+    "app/harness_acp.py": "126723b9566d9d9a1379e472ad6278c374a41f754535fac508b678034a6be2f1",
+    "app/harness_profile.py": "c3f484fa0dad723d901f207c7ec4c4782b0c4f1e085c0ce7c30b679f0f6bd7c4",
+    "app/harness_relay.py": "bd53d653a7a1446e7fc3cdae2705faf266daaea34fbf79a838c69ae6fd2be185",
+    "app/harness_runner.py": "bc96dac6c2c9115c127157b261f10d7e54f8d0f2d762a323bc05e7770bcc92e6",
+    "app/harness_tools.py": "70200956080dbc8e90a7883ad68c8e0cc11047b0b798ecd1905a95a7f85cf56a",
+    "app/generation_agent.py": "92f8125296cacf75964ba6cab5615388fdda2f17212c1019f72b6268ef37e873",
+    "app/config.py": "e81f32330019d8f1e5beebe39abb79e160fc952d407f617b890286725e7739cd",
+    "scripts/harness_correctness_experiment.py": "5eddd02249ede66474a3fcaac3a8285faff0dfb6609b3830e0c2dd564135b11f",
+    "scripts/harness_protocol_probe.py": "1fdf693a1e9ef63bc910401a7d1777fa1fd886d8ea0efe9998369fdaa50f7677"
+  }
+}

@@ -77,7 +77,7 @@ def test_job_evidence_survives_success_insufficient_and_invalid_output(rig, mode
     assert evidence['sources'] and evidence['configuration']['embedding_model']
     assert evidence['request']['topic'] == '检索的作用'
     assert 'request_key' not in evidence['request'] and 'request_key' not in evidence['configuration']
-    assert len(evidence['attempts']) == (2 if mode == 'bad_citation' else 1)
+    assert len(evidence['attempts']) == (3 if mode == 'bad_citation' else 1)
     assert evidence['attempts'][0]['response']['evidence_sufficient'] is (mode != 'insufficient')
     assert evidence['attempts'][-1]['status'] == ('invalid_output' if mode == 'bad_citation' else 'valid')
     assert 'test-key-not-real' not in json.dumps(evidence)
@@ -193,7 +193,7 @@ def test_lesson_repair_states_exact_zero_question_rule_and_stays_bounded(rig, mo
         'material': 'lesson', 'count': 1, 'question_type': 'short_answer'})
     job = done(client, response)
     assert job['status'] == ('succeeded' if repair_succeeds else 'failed')
-    assert len(sent) == 2
+    assert len(sent) == (2 if repair_succeeds else 3)
     repair = json.loads(sent[1]['messages'][-1]['content'].split('\n', 1)[1])
     assert repair['validation'] == {'rule': 'question_count_mismatch', 'expected_questions': 0, 'actual_questions': 1}
     assert repair['required_constraints']['questions'] == '必须为 []，不得包含任何题目。'

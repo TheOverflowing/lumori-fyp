@@ -1,0 +1,96 @@
+........................................................................ [  3%]
+........................................................................ [  7%]
+........................................................................ [ 11%]
+........................................................................ [ 15%]
+........................................................................ [ 18%]
+........................................................................ [ 22%]
+........................................................................ [ 26%]
+........................................................................ [ 30%]
+........................................................................ [ 33%]
+........................................................................ [ 37%]
+........................................................................ [ 41%]
+........................................................................ [ 45%]
+........................................................................ [ 48%]
+........................................................................ [ 52%]
+....................ss.................................................. [ 56%]
+........................................................................ [ 60%]
+..........................ss............................................ [ 63%]
+........................................................................ [ 67%]
+.................s.s..ssss.............................................. [ 71%]
+....sss................................................................. [ 75%]
+........................................................................ [ 78%]
+........................................................................ [ 82%]
+........................................................................ [ 86%]
+........................................................................ [ 90%]
+........................................................................ [ 93%]
+........................................................................ [ 97%]
+...........................F.................                            [100%]
+=================================== FAILURES ===================================
+_____ test_long_text_round_trips_through_generation_review_and_evaluation ______
+
+tmp_path = PosixPath('/private/var/folders/zp/0gw373bn7d14c0_n45qm1vdc0000gn/T/pytest-of-theoverflow/pytest-288/test_long_text_round_trips_thr0')
+
+    def test_long_text_round_trips_through_generation_review_and_evaluation(tmp_path):
+        settings = Settings(data_dir=tmp_path)
+        for capability, path in [('text', '/chat/completions'), ('embedding', '/embeddings')]:
+            setattr(settings, capability, Endpoint('https://fixture.invalid/v1', 'fixture-key', 'fixture-model', path))
+        wire = LongTextWire()
+        app = create_app(settings, lambda config, store: ApiProviders(
+            config, store, httpx.AsyncClient(transport=httpx.MockTransport(wire))))
+    
+        with TestClient(app) as client:
+            from test_workflow import authenticate
+            authenticate(client)
+            name = long_text('Course', 120)
+            response = client.post('/api/courses', json={'name': name})
+            assert response.status_code == 201, response.text
+            course_id = response.json()['id']
+            assert response.json()['name'] == name
+            assert client.get('/api/courses').json()[0]['name'] == name
+    
+            response = client.post('/api/documents', data={'course_id': course_id}, files={
+                'file': ('reference.md', b'Retrieval supplies reference passages for teaching materials.'),
+            })
+            assert response.status_code == 201, response.text
+            finish(client, client.post('/api/documents/' + response.json()['id'] + '/index'))
+    
+            topic = long_text('Explain retrieval with examples and limitations.', 3000)
+>           job = finish(client, client.post('/api/generations', json={
+                'course_id': course_id, 'topic': topic, 'material': 'quiz',
+                'question_type': 'short_answer', 'count': 1, 'language': 'en',
+                'request_key': 'long-text-generation',
+            }))
+
+tests/test_text_limits.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+client = <starlette.testclient.TestClient object at 0x10fc07410>
+response = <Response [202 Accepted]>
+
+    def finish(client, response):
+        assert response.status_code == 202, response.text
+        job_id = response.json()['job_id']
+        for _ in range(200):
+            job = client.get('/api/jobs/' + job_id).json()
+            if job['status'] not in ('queued', 'running'):
+>               assert job['status'] == 'succeeded', job
+E               AssertionError: {'id': '1a581b5d4ea14b409ae915b135ad25b3', 'kind': 'generate', 'status': 'failed', 'result': None, ...}
+E               assert 'failed' == 'succeeded'
+E                 
+E                 - succeeded
+E                 + failed
+
+tests/test_text_limits.py:81: AssertionError
+=============================== warnings summary ===============================
+../../../Users/theoverflow/Downloads/FYP/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/theoverflow/Downloads/FYP/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+../../../Users/theoverflow/Downloads/FYP/.venv/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/theoverflow/Downloads/FYP/.venv/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_text_limits.py::test_long_text_round_trips_through_generation_review_and_evaluation
+1 failed, 1903 passed, 13 skipped, 2 warnings in 156.32s (0:02:36)

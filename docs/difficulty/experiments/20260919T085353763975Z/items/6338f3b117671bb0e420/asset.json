@@ -1,0 +1,67 @@
+{
+  "title": "CPU Scheduling: Response Time, Turnaround Time, and Time-Slice Tradeoffs",
+  "evidence_sufficient": true,
+  "evidence_note": "The supplied fixture defines turnaround time, response time, FCFS, SJF, STCF, Round Robin, MLFQ, and explicit modeling conventions. It is sufficient for one hard short-answer question that requires constrained design evaluation.",
+  "learning_objectives": [
+    "Distinguish response time from turnaround time in a stated scheduling scenario.",
+    "Evaluate Round Robin time-slice choices under a response-time constraint and a switching-overhead budget.",
+    "Justify a scheduler recommendation by referring to the supplied scheduling model and its stated constraints."
+  ],
+  "sections": [
+    {
+      "heading": "Core metrics",
+      "text": "Turnaround time equals completion time minus arrival time. Response time equals the first time a job runs minus its arrival time. A policy can improve one metric without improving the other, so a recommendation must name the objective it is serving.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    },
+    {
+      "heading": "Time-slice tradeoff",
+      "text": "Round Robin runs each selected job for at most one time slice before moving an unfinished job to the back. Shorter slices can improve initial responsiveness but increase context-switch frequency. Larger slices reduce switching frequency but can lengthen waits before a different job first runs. A smaller average response time or a smaller switching fraction alone does not establish that a policy is best for every objective.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    },
+    {
+      "heading": "Modeling conventions",
+      "text": "The fixture assumes one processor, independent jobs, one CPU burst per job, no I/O, and no simultaneous service. Switching time is not CPU service delivered to any job. If switching overhead is included, the question must define when it applies and how arrivals enter the queue. Ties must be resolved by an explicit rule. A design recommendation needs an objective and constraints, such as a maximum response time, a switching budget, or a fairness requirement.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "slot_id": "q1",
+      "difficulty": "hard",
+      "difficulty_design": {
+        "cognitive_process": "evaluate",
+        "concepts": [
+          "Round Robin",
+          "response time",
+          "time slice",
+          "context-switch overhead",
+          "constrained design"
+        ],
+        "expected_steps": [
+          "Compute first-run times for each candidate q.",
+          "Compute maximum response time for each candidate.",
+          "Count context switches for each candidate.",
+          "Identify which candidates meet the maximum response-time constraint.",
+          "Choose the candidate with the fewest context switches among those that meet the constraint.",
+          "Explain how the recommendation changes if the response-time constraint is removed."
+        ]
+      },
+      "kind": "short_answer",
+      "stem": "Using the supplied scheduling model, consider three independent jobs that all arrive at time 0 and each require one CPU burst with no I/O: A requires 8 units, B requires 4 units, and C requires 2 units. The processor is single and never serves two jobs simultaneously. Switching overhead applies only when moving between different jobs and has no initial dispatch charge; arrivals cannot occur while switching. The scheduler is Round Robin with a fixed time slice q. A job that finishes before its slice ends does not use the remaining slice. Ties are resolved alphabetically. You must recommend a time slice q from the options q = 1, q = 2, or q = 4 that keeps the maximum response time at or below 2 units while using the fewest context switches. Show the first-run times and the number of context switches for each candidate, then justify your recommendation. Explain how your recommendation would change if the maximum response-time constraint were removed and the only objective were minimizing context switches.",
+      "options": [],
+      "answer": "For q = 1: order A, B, C, A, B, C, A, B, A, B, A, B, A, A. First-run times: A = 0, B = 1, C = 2. Maximum response time = 2. Context switches: 13. For q = 2: order A, B, C, A, B, A, B, A. First-run times: A = 0, B = 2, C = 4. Maximum response time = 4. Context switches: 7. For q = 4: order A, B, C, A, A. First-run times: A = 0, B = 4, C = 8. Maximum response time = 8. Context switches: 4. Only q = 1 satisfies the maximum response-time constraint of 2 units. Therefore recommend q = 1. If the response-time constraint were removed and the only objective were minimizing context switches, q = 4 would be preferred because it uses the fewest context switches among the candidates. This shows that the time-slice choice depends on the stated objective and constraints.",
+      "explanation": "Compute first-run times by tracking the Round Robin order and the first time each job is selected. Response time is first-run time minus arrival time; since all jobs arrive at 0, it is the first-run time. Count context switches as transitions between different jobs. Compare candidates against the stated constraint and objective, then state how the recommendation changes when the constraint is removed.",
+      "difficulty_reason": "The question requires integrating Round Robin mechanics, response-time calculation, switching-overhead counting, and a constrained design choice. It also asks for a justified recommendation and a conditional change when the constraint is removed, matching the hard rubric requirement to handle situational constraints and argue a design decision.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    }
+  ],
+  "visual_prompt": "A timeline diagram with three horizontal lanes labeled A, B, and C. Each lane shows colored blocks for CPU execution and gaps for waiting. Vertical dashed lines mark time-slice boundaries. A separate small table lists candidate q values and blank columns for first-run time, maximum response time, and context-switch count. No answers are filled in."
+}

@@ -1,0 +1,73 @@
+{
+  "title": "CPU Scheduling: Response Time, Turnaround Time, and Time-Slice Tradeoffs",
+  "evidence_sufficient": true,
+  "evidence_note": "The supplied fixture defines turnaround time, response time, FCFS, SJF, STCF, Round Robin, MLFQ, and explicit scheduling-model conventions. These are sufficient to pose one hard short-answer question that requires applying and evaluating scheduling tradeoffs under stated constraints.",
+  "learning_objectives": [
+    "Distinguish response time from turnaround time and explain why improving one does not guarantee improving the other.",
+    "Apply Round Robin time-slice choices to a concrete workload and compute first-run and completion times.",
+    "Evaluate a scheduling policy against multiple stated objectives and constraints, including response time, switching overhead, and fairness."
+  ],
+  "sections": [
+    {
+      "heading": "Scheduling metrics",
+      "text": "A scheduler chooses which ready job receives the processor. Turnaround time equals completion time minus arrival time. Response time equals the first time a job runs minus its arrival time. These metrics measure different things: early access to a processor does not necessarily imply early completion. A comparison can report each job's first-run and completion times, then compute the requested averages.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    },
+    {
+      "heading": "Policy families",
+      "text": "First-come, first-served runs jobs in arrival order without preempting them. Shortest Job First selects the shortest available job and is non-preemptive. Shortest Time-to-Completion First is preemptive and selects the job with the least remaining processing time. Comparisons involving these shortest-job policies must state how execution lengths are known. Round Robin rotates through a ready queue, running each selected job for at most one time slice before moving an unfinished job to the back. Shorter slices can improve initial responsiveness but increase the frequency of context switches. Larger slices amortize switching costs but can lengthen waits before a different job first runs. Neither a smaller average response time nor a smaller switching fraction alone establishes that a policy is best for every objective.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    },
+    {
+      "heading": "MLFQ and policy parameters",
+      "text": "A multi-level feedback queue uses observed execution behavior instead of requiring exact future job lengths. Jobs in higher-priority queues run before lower-priority jobs; equal-priority jobs can share service by Round Robin. New jobs begin at high priority, and consuming the allowed CPU allotment causes demotion. Accounting for total consumed allotment prevents a job from retaining high priority indefinitely merely by yielding just before each slice ends. Periodic priority boosts can help jobs otherwise left waiting at low priority. Queue levels, slice lengths, allotments, and boost intervals are policy parameters, not universal constants.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    },
+    {
+      "heading": "Model conventions for reproducible timelines",
+      "text": "Unless a question states otherwise, there is one processor, jobs are independent, and each job consists of one CPU burst with no I/O. Arrival times and required CPU service are provided. The processor never serves two jobs simultaneously. Time spent switching is not CPU service delivered to any job. A job that finishes before its slice ends does not use the remaining slice. If a job arrives at exactly a slice boundary, the question must say whether that arrival is enqueued before or after the preempted job. Ties must be resolved by an explicit rule, such as alphabetical job names. A question that includes switching overhead must define when that overhead applies; questions that ignore overhead must say so.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "slot_id": "q1",
+      "difficulty": "hard",
+      "kind": "short_answer",
+      "stem": "Consider three independent CPU-bound jobs on one processor. Each job has a single CPU burst and no I/O. Arrival times and required CPU service are: A arrives at time 0 and needs 6 units; B arrives at time 1 and needs 3 units; C arrives at time 2 and needs 1 unit. Ignore context-switch overhead. Ties are resolved alphabetically. You are choosing between two policies: (1) Round Robin with a time slice of 2 units, where a newly arriving job is enqueued before the preempted job when both occur at the same boundary; and (2) Shortest Time-to-Completion First (STCF), which is preemptive and selects the job with the least remaining processing time. For each policy, give the first-run time and completion time of every job, then compute average response time and average turnaround time. Finally, recommend one policy for a system whose primary objective is minimizing average response time while still completing all jobs, and justify your recommendation using your computed values and the stated constraint. Address whether the policy with the better average response time is necessarily best for every objective.",
+      "options": [],
+      "answer": "Round Robin (slice = 2): A runs 0-2; B arrives at 1 and waits; C arrives at 2. At time 2, A is preempted and C is enqueued before A. Queue order after time 2: C, B, A. C runs 2-3 and finishes (completion 3). B runs 3-5; at time 5 B still needs 1, so A runs 5-7; B runs 7-8 and finishes (completion 8). A runs 8-10 and finishes (completion 10). First-run times: A = 0, B = 3, C = 2. Response times: A = 0, B = 2, C = 0. Average response time = (0 + 2 + 0)/3 = 2/3. Turnaround times: A = 10 - 0 = 10; B = 8 - 1 = 7; C = 3 - 2 = 1. Average turnaround time = (10 + 7 + 1)/3 = 6. STCF: at time 0 only A is available, so A runs 0-1. At time 1, B arrives with remaining 3 while A has remaining 5, so B runs 1-2. At time 2, C arrives with remaining 1, so C runs 2-3 and finishes (completion 3). Then B has remaining 2 and A has remaining 5, so B runs 3-5 and finishes (completion 5). A runs 5-10 and finishes (completion 10). First-run times: A = 0, B = 1, C = 2. Response times: A = 0, B = 0, C = 0. Average response time = 0. Turnaround times: A = 10, B = 4, C = 1. Average turnaround time = (10 + 4 + 1)/3 = 5. Recommendation: STCF, because it gives a lower average response time (0 versus 2/3) and also a lower average turnaround time (5 versus 6) under the stated workload, so it better satisfies the primary objective. However, the better average response time does not by itself establish that a policy is best for every objective: the same fixture notes that neither a smaller average response time nor a smaller switching fraction alone establishes that a policy is best for every objective. For example, a different objective such as fairness, a maximum response-time bound, or switching overhead could favor another policy, and the recommendation depends on the stated workload and requirements.",
+      "explanation": "The key steps are to build a reproducible timeline for each policy, compute first-run and completion times, derive response and turnaround times, and then compare against the stated objective. Round Robin must follow the stated boundary rule: at time 2, C is enqueued before the preempted A. STCF must be preemptive and choose the least remaining time at each decision point. The final judgment must connect the computed averages to the objective and acknowledge that one metric does not settle all objectives.",
+      "difficulty_reason": "The question requires integrating several scheduling concepts under explicit constraints: it asks the student to construct two timelines with different preemption and queueing rules, compute two metrics for each job, compare averages, and justify a recommendation against a stated objective while evaluating whether one metric is sufficient. It is not answerable by restating definitions; the student must apply the model conventions and reason about tradeoffs.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ],
+      "difficulty_design": {
+        "cognitive_process": "evaluate",
+        "concepts": [
+          "response time",
+          "turnaround time",
+          "Round Robin time slice",
+          "STCF preemption",
+          "scheduling objective and constraints"
+        ],
+        "expected_steps": [
+          "Construct the Round Robin timeline using slice 2 and the stated boundary rule, then list first-run and completion times.",
+          "Construct the STCF timeline by repeatedly choosing the job with least remaining time, then list first-run and completion times.",
+          "Compute response time and turnaround time for each job under both policies and report the averages.",
+          "Recommend STCF for the stated average-response-time objective and justify using the computed values.",
+          "Explain that better average response time alone does not prove a policy is best for every objective, citing other possible requirements such as fairness or switching overhead."
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "A clean timeline diagram with two horizontal lanes labeled 'Round Robin, slice = 2' and 'STCF'. The horizontal axis is time from 0 to 10. Each lane shows colored blocks for jobs A, B, and C, with arrival markers at 0, 1, and 2. The Round Robin lane shows A from 0-2, C from 2-3, B from 3-5, A from 5-7, B from 7-8, and A from 8-10. The STCF lane shows A from 0-1, B from 1-2, C from 2-3, B from 3-5, and A from 5-10. A small legend identifies the jobs by color and labels the time axis. No numeric answers, averages, or recommendation text appear in the image."
+}

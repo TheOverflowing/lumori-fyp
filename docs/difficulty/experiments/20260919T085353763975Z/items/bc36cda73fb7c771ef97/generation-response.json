@@ -1,0 +1,42 @@
+{
+  "title": "Database Transactions: Atomicity, Snapshot Visibility, and Retries (Medium Quiz)",
+  "evidence_sufficient": true,
+  "evidence_note": "The reference chunk fixture_transactions_en supplies explicit PostgreSQL semantics for BEGIN/COMMIT/ROLLBACK, Read Committed vs Repeatable Read visibility, serialization failures, and retry policy, which is sufficient for one medium short-answer item applying these concepts to a concrete schedule.",
+  "learning_objectives": [
+    "Explain how BEGIN, COMMIT, and ROLLBACK define atomicity for a group of writes (fixture_transactions_en).",
+    "Distinguish Read Committed visibility from Repeatable Read snapshot visibility for ordinary reads (fixture_transactions_en).",
+    "Justify why a serialization failure requires retrying the whole transaction, including reads and dependent decisions (fixture_transactions_en)."
+  ],
+  "sections": [],
+  "questions": [
+    {
+      "kind": "short_answer",
+      "stem": "Two sessions run this schedule against a table accounts(id, balance) with initial rows (1, 100) and (2, 100). Session A: BEGIN; UPDATE accounts SET balance = balance - 30 WHERE id = 1; UPDATE accounts SET balance = balance + 30 WHERE id = 2; (no COMMIT yet). Session B: BEGIN; SELECT balance FROM accounts WHERE id = 1; (ordinary read, under PostgreSQL Read Committed). Then Session A executes COMMIT, and Session B runs the same SELECT again inside its still-open transaction. (a) State what Session B's first SELECT and second SELECT each are allowed to see, and explain the difference using the isolation rule. (b) Suppose instead Session B runs under Repeatable Read with its first SELECT as the first non-transaction-control statement; state what its second SELECT sees and why. (c) If a transaction in this system aborts with a serialization failure, explain what the application must retry and why retrying only the last failed statement is inadequate.",
+      "options": [],
+      "answer": "(a) Under Read Committed, Session B's first SELECT sees only rows committed before that statement began, so it sees balance = 100 for id = 1; it does not see Session A's unfinished writes. After Session A commits, Session B's second SELECT sees rows committed before that new statement began, so it now sees balance = 70 for id = 1. The change is allowed because Read Committed takes a fresh view per statement. (b) Under Repeatable Read, ordinary queries use the snapshot from the transaction's first non-transaction-control statement, so Session B's second SELECT still sees balance = 100 for id = 1; Session A's concurrent commit does not change that view between successive reads. (c) A serialization failure means the application must retry the complete transaction, including the reads and the application decisions that selected the writes. Retrying only the final failed statement is inadequate because it can reuse decisions made from a state that is no longer appropriate. A retry can itself fail, so a considered retry policy is needed rather than assuming one attempt always succeeds.",
+      "explanation": "The item applies the fixture's stated PostgreSQL semantics to a small schedule: Read Committed gives a per-statement view, Repeatable Read gives a transaction-level snapshot from the first non-transaction-control statement, and a serialization failure requires rerunning the whole transaction because the reads and dependent decisions must be re-evaluated. Note that a stable snapshot does not by itself guarantee serializable outcomes. These are the fixture's modeling assumptions, not measured database results.",
+      "difficulty_reason": "Medium: the student must apply isolation rules to a concrete interleaving and compare two isolation levels, then analyze why a retry must cover the whole transaction rather than a single statement. This requires 2-3 linked reasoning steps (visibility per statement, snapshot stability, retry scope) rather than recalling a definition.",
+      "citation_ids": [
+        "fixture_transactions_en"
+      ],
+      "slot_id": "q1",
+      "difficulty": "medium",
+      "difficulty_design": {
+        "cognitive_process": "apply",
+        "concepts": [
+          "transaction atomicity (BEGIN/COMMIT/ROLLBACK)",
+          "Read Committed per-statement visibility",
+          "Repeatable Read transaction snapshot",
+          "serialization failure and full-transaction retry"
+        ],
+        "expected_steps": [
+          "Identify that Session B's first SELECT under Read Committed sees only the committed balance (100) and not Session A's uncommitted writes.",
+          "State that after Session A commits, Session B's second SELECT under Read Committed sees the newly committed balance (70) because each statement gets a fresh view.",
+          "State that under Repeatable Read the second SELECT still sees 100 because the snapshot is fixed at the first non-transaction-control statement.",
+          "Explain that a serialization failure requires retrying the entire transaction, including reads and dependent decisions, and that retrying only the last statement can reuse decisions from a stale state."
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "A timeline diagram with two vertical lanes labeled Session A and Session B. Session A shows BEGIN, UPDATE debit, UPDATE credit, then COMMIT. Session B shows a first SELECT and a second SELECT, with a vertical dashed marker for Session A's COMMIT between them. Two small result boxes beside Session B's reads show the visible balance under Read Committed (100 then 70) and, in a parallel shaded strip, the Repeatable Read snapshot view (100 then 100). No answer text or retry solution is shown."
+}

@@ -1,0 +1,200 @@
+{
+  "audit_id": "rr-canary-20260919",
+  "audit_date": "2026-09-19",
+  "evidence_type": "Additional AI review with deterministic calculation",
+  "human_review": false,
+  "student_difficulty_calibrated": false,
+  "original_strategy_labels_read": false,
+  "original_qwen_score_read": false,
+  "original_qwen_score_modified": false,
+  "original_experiment_modified": false,
+  "source_asset": "docs/difficulty/experiments/20260919T085353763975Z/items/9c4722009bbb28649377/asset.json",
+  "source_asset_sha256": "2e0706fe28fb04dd82f8053f894b789937c1526fcd9c422fe8740f6e49bcf532",
+  "question_stem_sha256": "074997e80f5659966d1b6fe1482261366da7ac70bced8805b44c98be762c0097",
+  "question_stem": "Consider three independent CPU-bound jobs on one processor. Each job has a single CPU burst and no I/O. Arrival times and required CPU service are: A arrives at time 0 and needs 6 units; B arrives at time 1 and needs 3 units; C arrives at time 2 and needs 1 unit. Ignore context-switch overhead. Ties are resolved alphabetically. You are choosing between two policies: (1) Round Robin with a time slice of 2 units, where a newly arriving job is enqueued before the preempted job when both occur at the same boundary; and (2) Shortest Time-to-Completion First (STCF), which is preemptive and selects the job with the least remaining processing time. For each policy, give the first-run time and completion time of every job, then compute average response time and average turnaround time. Finally, recommend one policy for a system whose primary objective is minimizing average response time while still completing all jobs, and justify your recommendation using your computed values and the stated constraint. Address whether the policy with the better average response time is necessarily best for every objective.",
+  "scope": "Correctness of this single scheduling answer; no new difficulty rating or whole-run accuracy estimate.",
+  "inputs": {
+    "jobs": {
+      "A": {
+        "arrival": 0,
+        "service": 6
+      },
+      "B": {
+        "arrival": 1,
+        "service": 3
+      },
+      "C": {
+        "arrival": 2,
+        "service": 1
+      }
+    },
+    "rr_quantum": 2,
+    "context_switch_overhead": 0,
+    "tie_breaking": "Alphabetical job names",
+    "boundary_rule": "New arrivals enqueue after existing waiting jobs but before the preempted job."
+  },
+  "round_robin": {
+    "timeline": [
+      {
+        "start": 0,
+        "end": 2,
+        "job": "A"
+      },
+      {
+        "start": 2,
+        "end": 4,
+        "job": "B"
+      },
+      {
+        "start": 4,
+        "end": 5,
+        "job": "C"
+      },
+      {
+        "start": 5,
+        "end": 7,
+        "job": "A"
+      },
+      {
+        "start": 7,
+        "end": 8,
+        "job": "B"
+      },
+      {
+        "start": 8,
+        "end": 10,
+        "job": "A"
+      }
+    ],
+    "first_run": {
+      "A": 0,
+      "B": 2,
+      "C": 4
+    },
+    "completion": {
+      "A": 10,
+      "B": 8,
+      "C": 5
+    },
+    "response_time": {
+      "A": 0,
+      "B": 1,
+      "C": 2
+    },
+    "turnaround_time": {
+      "A": 10,
+      "B": 7,
+      "C": 3
+    },
+    "average_response_time": {
+      "exact": "1",
+      "decimal": 1.0
+    },
+    "average_turnaround_time": {
+      "exact": "20/3",
+      "decimal": 6.666666666666667
+    },
+    "cpu_service_delivered": {
+      "A": 6,
+      "B": 3,
+      "C": 1
+    }
+  },
+  "stcf": {
+    "timeline": [
+      {
+        "start": 0,
+        "end": 1,
+        "job": "A"
+      },
+      {
+        "start": 1,
+        "end": 2,
+        "job": "B"
+      },
+      {
+        "start": 2,
+        "end": 3,
+        "job": "C"
+      },
+      {
+        "start": 3,
+        "end": 5,
+        "job": "B"
+      },
+      {
+        "start": 5,
+        "end": 10,
+        "job": "A"
+      }
+    ],
+    "first_run": {
+      "A": 0,
+      "B": 1,
+      "C": 2
+    },
+    "completion": {
+      "A": 10,
+      "B": 5,
+      "C": 3
+    },
+    "response_time": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "turnaround_time": {
+      "A": 10,
+      "B": 4,
+      "C": 1
+    },
+    "average_response_time": {
+      "exact": "0",
+      "decimal": 0.0
+    },
+    "average_turnaround_time": {
+      "exact": "5",
+      "decimal": 5.0
+    },
+    "cpu_service_delivered": {
+      "A": 6,
+      "B": 3,
+      "C": 1
+    }
+  },
+  "findings": [
+    {
+      "kind": "queue_order_error",
+      "original": "At t=2: C, B, A",
+      "correct": "At t=2: B, C, A",
+      "reason": "B has waited since t=1. C arriving at t=2 precedes preempted A, but cannot overtake B."
+    },
+    {
+      "kind": "rr_average_response_time",
+      "original": "2/3",
+      "correct": "1"
+    },
+    {
+      "kind": "rr_average_turnaround_time",
+      "original": "6",
+      "correct": "20/3"
+    },
+    {
+      "kind": "stcf_calculation",
+      "result": "The original first-run/completion times and averages agree with this calculation."
+    },
+    {
+      "kind": "recommendation",
+      "result": "STCF still minimizes average response time among the two specified policies for this workload."
+    },
+    {
+      "kind": "visual_prompt",
+      "result": "The original visual_prompt repeats the incorrect RR timeline."
+    }
+  ],
+  "limitations": [
+    "An AI reviewer translated the natural-language problem into these fixed scheduler inputs and interpreted the discrepancy.",
+    "The calculations establish arithmetic for these rules and jobs; they do not calibrate educational difficulty.",
+    "This additional audit is separate from the immutable original Qwen score and original experiment denominator."
+  ]
+}

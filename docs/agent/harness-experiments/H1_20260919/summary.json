@@ -1,0 +1,73 @@
+{
+  "planned_tasks": 10,
+  "recorded_tasks": 10,
+  "by_runtime": {
+    "native": {
+      "planned_tasks": 5,
+      "recorded_tasks": 5,
+      "status_counts": {
+        "failed": 4,
+        "succeeded": 1
+      },
+      "actual_calls": 16,
+      "provider_succeeded": 16,
+      "known_total_tokens": 72458,
+      "tokens_missing_calls": 0,
+      "known_cost_usd": 0,
+      "cost_missing_calls": 16,
+      "gate_outcomes": {
+        "canary_bad": "failed",
+        "canary_corrected": "failed",
+        "cpu_en_hard": "failed",
+        "cpu_zh_hard": "failed",
+        "transactions_zh_medium": "succeeded"
+      },
+      "agent_outcomes": {
+        "canary_bad": "quality_failed",
+        "canary_corrected": "quality_failed",
+        "cpu_en_hard": "quality_failed",
+        "cpu_zh_hard": "quality_failed",
+        "transactions_zh_medium": "completed"
+      }
+    },
+    "deepseek_harness": {
+      "planned_tasks": 5,
+      "recorded_tasks": 5,
+      "status_counts": {
+        "failed": 5
+      },
+      "actual_calls": 5,
+      "provider_succeeded": 0,
+      "known_total_tokens": 24857,
+      "tokens_missing_calls": 0,
+      "known_cost_usd": 0,
+      "cost_missing_calls": 5,
+      "gate_outcomes": {
+        "canary_bad": "failed",
+        "canary_corrected": "failed",
+        "cpu_en_hard": "failed",
+        "cpu_zh_hard": "failed",
+        "transactions_zh_medium": "failed"
+      },
+      "agent_outcomes": {
+        "canary_bad": "provider_error",
+        "canary_corrected": "provider_error",
+        "cpu_en_hard": "provider_error",
+        "cpu_zh_hard": "provider_error",
+        "transactions_zh_medium": "provider_error"
+      }
+    }
+  },
+  "limitations": [
+    "Development smoke: one run per selected case/runtime, not statistical superiority evidence.",
+    "Same current v3 author/solve/review prompts and gates; runtimes differ as complete execution strategies, including wrappers, tool availability and stopping behavior. Effects cannot be attributed to the loop alone.",
+    "Frozen reference snapshots bypass retrieval and do not measure RAG.",
+    "Canary authors are injected AI-reviewed regression fixtures, not live author calls or human gold labels.",
+    "Same model family can make correlated generation and review errors.",
+    "Gate success is not independently established correctness or student difficulty.",
+    "Failed, interrupted and rejected responses remain in the denominator and audit.",
+    "Missing token/cost fields remain unknown; reported totals cover known usage only.",
+    "Runtime order is interleaved by case but not randomized; provider drift and stochasticity remain."
+  ],
+  "actual_calls": 21
+}

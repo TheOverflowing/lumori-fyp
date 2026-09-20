@@ -1,0 +1,167 @@
+# 事务题辅助事实核查
+
+2026-09-19。隐藏条件标签的回顾性 AI 辅助检查，共17题。核查者曾参与背景fixture编写，因此不是独立盲审、人工/教师金标或独立模型投票。未读取mapping、旧评审与原实验结果；未调用模型API，也未运行真实PostgreSQL实例。这里不提供难度分档、维度分或组分。
+
+## 资料边界与故障处理
+
+普通读快照、自己的修改可见、原子性与完整重试均在所给资料内。RR对快照后被并发事务更新的同一行的写入拒绝规则没有写入fixture；外部官方文档只用于发现客观错误及资料缺口，不能替考生补条件。
+
+同一失败事务中重发最后一条写语句不是完整重试；应重新开启事务并重做读、决策和写。是否需要显式ROLLBACK取决于故障后事务是否仍打开，不能因参考答案没有写ROLLBACK就机械判错。
+
+官方核对：
+
+- RR_WRITE_CONFLICT：[PostgreSQL 17 官方文档](https://www.postgresql.org/docs/17/transaction-iso.html#XACT-REPEATABLE-READ)。PostgreSQL17 RR 不允许更新在本事务快照之后被另一事务改动并提交的同一行；会报序列化失败。此具体规则不在给定fixture中。
+- RETRY_SCOPE：[PostgreSQL 17 官方文档](https://www.postgresql.org/docs/17/mvcc-serialization-failure-handling.html)。序列化失败重试须包含整个事务和决定SQL及其参数的应用逻辑，不保证重试一次成功。该内容已在fixture中。
+- FAILED_TRANSACTION_BOUNDARY：[PostgreSQL 17 官方文档](https://www.postgresql.org/docs/17/sql-rollback.html)。完整重试必须重新开始事务；若失败事务仍未结束，应先终止它。不能在同一失败执行中重发末句。若失败的COMMIT已结束事务，不应要求无条件再执行一次ROLLBACK。
+
+## 逐题结果
+
+### Q001 · correct_with_minor_caveat
+
+RR 的第二次普通 SELECT 为 100；相同位置的 RC 第二次 SELECT 为 150。基于旧视图决定写入不保证采用最新状态；若发生序列化失败，重试完整事务。
+
+资料可推导性：读取结果和完整重试要求均由资料直接支持。题目没有要求计算并发写入结果，因此不需要补充 RR 写冲突机制。
+
+- minor / scope_of_failure_consequence：这里 A 是只读事务，不能把结尾对未来“依据读取写入”的应用建议理解为本题 A 本身会发生序列化失败；参考答案没有明确声称本题一定失败，主结论正确。
+
+### Q005 · correct_with_minor_caveat
+
+第二次普通 SELECT 仍为 100；题干给定失败后应结束失败执行，在新事务中重做读、决策和写入；不能保证一次重试成功。
+
+资料可推导性：快照与重试范围均在资料中。资料未说明序列化错误一定在哪条 SQL 报出。
+
+- minor / failure_timing_simplification：“若提交时失败”可作为重试问题的条件，但不要把它推广为 RR 同行写冲突一定延迟至 COMMIT 才检测。未给具体写语句，不能据此建立可重放的失败时间线。
+
+### Q007 · correct_with_minor_caveat
+
+只重试写语句可能沿用旧决策；重试应包含重新读取、重新决策、写入和提交，不保证一次成功。
+
+资料可推导性：核心答案由资料直接支持，未要求推导具体余额。
+
+- minor / failure_statement_wording：题干先称“提交时”失败，随后称“最后一条失败的写入语句”，没有区分失败的是 COMMIT 还是 UPDATE/INSERT。宜统一为“事务执行发生序列化失败”；不改变完整重试的答案。
+
+### Q009 · correct
+
+RC 两次读取分别为 100、70；若 B 改为 RR，两次都是 100。失败重试要覆盖完整事务和选择写入的应用决策。
+
+资料可推导性：所有小问可由材料的未提交不可见、语句快照、首条非事务控制语句快照和完整重试规则推出。
+
+### Q010 · correct_with_minor_caveat
+
+RC 读取 100、70；RR 读取 100、100；改为回滚分支时 A=100、B=100，已提交总额为 200。
+
+资料可推导性：各读取结果与回滚后的状态有资料依据。原子性不自动保证程序写出的业务不变量。
+
+- minor / invariant_scope：原时间线只提交扣 A 的 30，没有给 B 入账，故原提交分支的已提交总额为 170；参考答案最后“不变量保持”应仅指第(3)问的回滚分支。
+- minor / atomicity_wording：题内不存在入账语句，“原子性保证扣款与入账要么都提交”须限定为两个操作确实被放在同一事务时。当前回滚结论正确，但措辞不应暗示数据库会自动补齐入账。
+
+### Q013 · correct
+
+RC 的第二条查询读取 B=200；RR 读取 B=100。给定序列化失败时重试整个事务，不只重发末句。
+
+资料可推导性：三个子问均由资料直接支持；Serializable 失败是条件假设，不要求从这个简短只读时间线证明一定失败。
+
+### Q018 · substantial_error_and_inconsistent_stem
+
+若按明确交错条件：U 在 T 的第一条普通 SELECT 开始前已把 A=200 提交，T 首次快照应包含 200；不是 100。题干同时预先宣称首次读到 100，无法同时满足这些前提。重试整个事务和同事务转账原子性的后两点基本正确。
+
+资料可推导性：只需题内资料就可发现快照时点错误和题干矛盾，无需外部机制。
+
+- major / contradictory_premises：题干“先 SELECT 读到100”与“U在T第一次SELECT之前提交200”冲突；没有其他写入或更早快照来协调。
+- major / answer_reverses_timeline：参考答案将 U 的提交说成发生在快照建立之后，恰好颠倒了题干顺序。BEGIN 不是资料所述的快照建立点。
+
+### Q019 · substantial_error_and_missing_source_rule
+
+A1=100、A2=100。实际 PostgreSQL RR 下，A3 不能直接把 B 已更新并提交的同一行再加10后成功提交；无显式完整重试时，只有 B 的减30已提交，余额为70。参考答案80不成立。完整重试后若成功才可能得到80，那是题干未列出的新执行。
+
+资料可推导性：读取结果和失败后完整重试由资料支持；RR 对快照后被其他事务更新的同一行的写冲突规则未在给定资料中说明，所以小问(b)不能只靠该资料严谨推出真实执行结果。
+
+- major / incorrect_final_state：将 RR 的过期快照后同行更新按两个正常提交相加，错误得到80。
+- major / unstated_write_conflict_rule：题目声称只用资料，却要求决定 RR 的同行 UPDATE 能否成功；给定资料只明确普通读取快照和一般重试要求。
+- major / commit_not_success_guarantee：时间线写出 COMMIT 命令不代表事务成功提交；不能忽略此前语句的序列化失败。
+
+### Q020 · substantial_ambiguity_and_overbroad_answer
+
+首次 SELECT=5；若后续 SELECT 位于本事务任何写入之前，它仍读5。若本事务已成功将该库存减1，普通读取会看到自身修改，不能一概回答仍为5。若并发同行更新在 T 尝试更新前已经提交，真实 RR 会先发生写冲突，不能按题干当然进入成功更新后的查询和提交。重试完整事务这部分正确。
+
+资料可推导性：“能看到自己此前修改”已写在资料首段，因此后续查询时点缺失及答案忽略自身修改可在资料内发现。RR 写冲突的具体拒绝规则是外部补充，不得替题目补齐。
+
+- major / unspecified_followup_read_position：题干没有给“后续 SELECT”在本事务 UPDATE 之前、之后还是失败之后的位置，影响答案。
+- major / own_writes_exception_ignored：参考答案声称所有后续普通查询都读5，忽略资料明确的本事务先前写入可见。
+- moderate / failure_schedule_not_defined：写入、并发提交和故障时点未完整排列；“提交时失败”不能替代明确的可执行同行写冲突时间线。
+- minor / serializable_explanation_not_demonstration：一般性说明 RR 快照不保证串行化有资料依据；但这里并未构造一个已经成功提交且不可串行化的并发结果，不能用单个库存由5变4直接证明这一点。
+
+### Q027 · correct_values_with_local_explanation_error
+
+RC：S1 statement3读 A=70，statement4读 B=130；RR：statement4读 B=100。失败应完整重试。
+
+资料可推导性：题内包含本事务先前写入可见及快照规则，全部数值和完整重试范围有依据。
+
+- moderate / own_uncommitted_write_mislabeled：参考答案在 A=70 后补充“the row was committed before the statement began”，容易把 S1 自己未提交的70说成已提交。70可见的原因是本事务自己的修改，不是这次修改已提交；解释段写得更准确。
+
+### Q030 · correct_with_minor_caveat
+
+R1=R2=100；正常完成给定 RR 时间线后 A=150、B=110。并发修改的是 A，本事务更新的是未被另一事务修改的 B，所以不存在 Q019 那种同行写冲突。若另外给定某次序列化失败，则重试整个事务。
+
+资料可推导性：最终简单算术与给定提交步骤可以由材料和题内已列写操作支持。不能从(c)的“假设失败”反推这份无额外变更的时间线实际必然或通常产生失败。
+
+- minor / overgeneralized_update_explanation：答案称 RR 的更新“relative to the current committed row”，在本题 B 没有被并发修改时不影响110；该措辞不能推广成 RR 总能更新最新已提交同行版本。
+- minor / hypothetical_failure_scope：“同一时间线后来发生序列化失败”作为一般重试条件可回答，但材料没有展示产生该错误的额外条件，不能声称已验证此时间线会触发失败。
+
+### Q035 · correct_on_original_branch_with_ambiguity
+
+(a)原 RC 分支 step6=70；(b)改 RR 后 step6=100；(c)如果回到原 RC 分支，最终 A=50、B=100、合计150，业务不变量失败但原子性可仍成立。若(c)承接(b)的 RR 修改，则不可答50：S1后续同行UPDATE会失败，无重试时A=70、B=100。
+
+资料可推导性：原 RC 分支结果与原子性/业务不变量区别可由资料及已给算术推导；RR 分支最终状态需要资料未覆盖的同行写冲突规则。
+
+- moderate / branch_scope_ambiguity：(b)把S1隔离级别改为RR后，(c)没有写“回到原Read Committed情形”，因此最终状态所依赖的隔离级别未明确。
+- minor / wording：“两步结束后”不是明确对应题内8步的结束点，建议写“两事务执行结束后，在原RC情形下”。
+
+### Q036 · correct_with_minor_caveat
+
+第二次普通 SELECT=100，因为两次查询之间只有其他事务修改。给定之后写入失败时，应重试完整读—决策—写流程。
+
+资料可推导性：读取结果和完整重试均由资料支持，不需要计算失败写入的最终余额。
+
+- minor / failure_timing_simplification：“提交时被拒绝”是题目给出的失败条件，不应当作同行写冲突检测时点的准确说明。若写入正是被另一事务改过的账户，实际 RR 的 UPDATE 阶段已经可能拒绝。
+
+### Q038 · answer_requires_unstated_no_own_write_assumption
+
+在两次都是普通查询且T1未修改该账户的约定下，第二次读100，完整重试结论正确。题干“若干其他语句”未限制其内容，参考答案把读取必为100当成无条件结论过强。
+
+资料可推导性：资料明确事务能看到自己的修改；需要排除其他语句影响目标账户，并明确第二次为普通查询，才能用稳定外部快照直接推100。
+
+- moderate / unspecified_intervening_statements：应明确“其他语句不修改这个账户，第二次仍为普通SELECT”。不能只凭RR名称忽略本事务写入、故障或读方式。该小问按常见意图可解，但严格题设不足以覆盖未说明语句的影响。
+
+### Q039 · substantial_error
+
+按已给流程，T的第一次普通SELECT在T2提交后开始，首次快照包含新值；第二次在无自身修改的情形下也保持这个新值。重试范围部分正确。
+
+资料可推导性：资料已明确快照从首条非事务控制语句建立，足以判定答案错误；不需要外部知识。
+
+- major / answer_reverses_timeline：题干明确T2在首次读取之前提交；答案却说T在T2提交前“已完成首次读取”，直接与题干相反。
+- major / begin_vs_snapshot：将事务已BEGIN误当成快照已冻结，导致两次读取都被错误判为旧值。
+
+### Q041 · correct_with_wording_caveat
+
+S2两次普通SELECT依次看到100、70；所列S1只有扣款，不能视为完整转账，必须把对应入账纳入同一事务单元。只在原失败事务中重发末句的重试计划不可接受。
+
+资料可推导性：全部要求可由题内未提交不可见、RC新语句视图、原子性和完整重试规则回答。具体失败后连接/事务状态转换不在背景中，但不是判断该计划错误所必需。
+
+- minor / blocked_wording：解释的“blocked from seeing”宜理解为不可见，不能读成普通SELECT必须等待S1提交；参考答案数值并未依赖等待。
+
+### Q042 · correct
+
+重试完整事务：重新读取A、重新决定是否转账、执行写入并提交；只重发失败语句会沿用旧决策，不保证一次重试成功。
+
+资料可推导性：答案基本直接对应所给重试说明；无需判断具体并发状态或补充外部隔离规则。
+
+## 输入留痕
+
+完整结构化记录在 `transactions_checks.json`；input_sha256记录原题包、sources与评分协议，selected_packets_sha256只记录选中的17个匿名事务题。
+
+- `docs/difficulty/codex-review/20260919/packets.json`：`5c100131405b74bcd852cc1ef0360aa06894f314739f68c18710dbb1923d1ddf`
+
+- `docs/difficulty/codex-review/20260919/sources.json`：`7a9a2aacd322a51763eb85bd24c03d800e72ad073ae0a30dbbd055a043ff0989`
+
+- `docs/difficulty/CODEX_REVIEW_PROTOCOL_V1.md`：`fc2338286fcb21d8f65055bba577dc1467e3da2a14fcd2970d8db06c22a579c4`

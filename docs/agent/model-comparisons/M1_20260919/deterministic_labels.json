@@ -1,0 +1,130 @@
+{
+  "R01": {
+    "answer_correct": true,
+    "explanation_correct": true,
+    "fully_correct": true,
+    "derivation": {
+      "remaining_P1_at_3": 5,
+      "selected_at_3": "P3"
+    },
+    "provenance": "Deterministic CPU execution plus AI-authored semantic fixture mapping; not human gold."
+  },
+  "R02": {
+    "answer_correct": true,
+    "explanation_correct": false,
+    "fully_correct": false,
+    "derivation": {
+      "remaining_P1_at_3": 5,
+      "selected_at_3": "P3"
+    },
+    "provenance": "Deterministic CPU execution plus AI-authored semantic fixture mapping; not human gold."
+  },
+  "R03": {
+    "answer_correct": true,
+    "explanation_correct": true,
+    "fully_correct": true,
+    "derivation": {
+      "B_response": 2,
+      "inclusive_limit_met": true
+    },
+    "provenance": "Deterministic CPU execution plus AI-authored semantic fixture mapping; not human gold."
+  },
+  "R04": {
+    "answer_correct": false,
+    "explanation_correct": false,
+    "fully_correct": false,
+    "derivation": {
+      "B_response": 2,
+      "inclusive_limit_met": true
+    },
+    "provenance": "Deterministic CPU execution plus AI-authored semantic fixture mapping; not human gold."
+  },
+  "R05": {
+    "answer_correct": true,
+    "explanation_correct": true,
+    "fully_correct": true,
+    "derivation": {
+      "required_boundary": "before",
+      "required_B_first_start": 2
+    },
+    "provenance": "Deterministic CPU execution plus AI-authored semantic fixture mapping; not human gold."
+  },
+  "R06": {
+    "answer_correct": false,
+    "explanation_correct": false,
+    "fully_correct": false,
+    "derivation": {
+      "required_boundary": "after",
+      "required_B_first_start": 4,
+      "required_execution": {
+        "input": {
+          "policy": "rr",
+          "processes": [
+            {
+              "id": "A",
+              "arrival": 0,
+              "burst": 4
+            },
+            {
+              "id": "B",
+              "arrival": 2,
+              "burst": 1
+            }
+          ],
+          "quantum": 2,
+          "switch_cost": 0,
+          "boundary": "after",
+          "during_switch": "tail",
+          "early_finish_free": false
+        },
+        "result": {
+          "tool": "cpu_schedule_v1",
+          "policy": "rr",
+          "unit": "abstract_time_units",
+          "timeline": [
+            {
+              "kind": "run",
+              "process_id": "A",
+              "start": 0,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "process_id": "B",
+              "start": 4,
+              "end": 5
+            }
+          ],
+          "per_process": {
+            "A": {
+              "first_start": 0,
+              "response": 0,
+              "completion": 4,
+              "turnaround": 4
+            },
+            "B": {
+              "first_start": 4,
+              "response": 2,
+              "completion": 5,
+              "turnaround": 3
+            }
+          },
+          "averages": {
+            "response": {
+              "numerator": 1,
+              "denominator": 1
+            },
+            "turnaround": {
+              "numerator": 7,
+              "denominator": 2
+            }
+          },
+          "switch_count": 1,
+          "overhead": 0,
+          "makespan": 5
+        }
+      }
+    },
+    "provenance": "Deterministic CPU execution plus AI-authored semantic fixture mapping; not human gold."
+  }
+}

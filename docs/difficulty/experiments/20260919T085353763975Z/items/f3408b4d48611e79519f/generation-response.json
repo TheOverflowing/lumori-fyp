@@ -1,0 +1,42 @@
+{
+  "title": "数据库事务：原子性、快照隔离语义与重试（中等难度练习）",
+  "evidence_sufficient": true,
+  "evidence_note": "资料片段 fixture_transactions_zh 完整给出了 PostgreSQL 中 BEGIN/COMMIT/ROLLBACK 的原子性语义、Read Committed 与 Repeatable Read 的可见性规则、Serializable 的序列化异常处理，以及重试整个事务（含读取与决策逻辑）的要求，足以支撑一道中等难度的应用题。",
+  "learning_objectives": [
+    "能依据资料区分未提交写入与已提交状态，说明原子性在转账场景中的作用",
+    "能根据 Read Committed 与 Repeatable Read 的规则判断同一事务内两次读取的可见性差异",
+    "能说明序列化失败后为何必须重试整个事务而非仅重试失败语句"
+  ],
+  "sections": [],
+  "questions": [
+    {
+      "slot_id": "q1",
+      "difficulty": "medium",
+      "kind": "short_answer",
+      "stem": "两个会话在 PostgreSQL 默认隔离级别（Read Committed）下并发操作，初始表 accounts 内容为：A 余额 100，B 余额 100。\n\n会话 S1：\nBEGIN;\nSELECT balance FROM accounts WHERE name='A';   -- 语句1\n（此时读到 A=100）\nSELECT balance FROM accounts WHERE name='B';   -- 语句2\n\n会话 S2 在 S1 的语句1与语句2之间执行并提交：\nBEGIN;\nUPDATE accounts SET balance=balance-100 WHERE name='A';\nUPDATE accounts SET balance=balance+100 WHERE name='B';\nCOMMIT;\n\n请回答：\n(1) S1 的语句2 读到 B 的余额是多少？请依据 Read Committed 的可见性规则说明理由。\n(2) 如果 S1 改用 Repeatable Read，语句2 读到 B 的余额会是多少？请说明快照规则如何导致这一差异。\n(3) 若 S1 在 Serializable 下因序列化异常被拒绝，应用应如何重试？请说明重试范围并给出理由。",
+      "options": [],
+      "answer": "(1) 语句2 读到 B=200。Read Committed 下普通 SELECT 看到语句开始前已经提交的数据，S2 在语句2开始前已提交，因此 S1 的语句2 能看到 S2 把 B 从 100 改为 200 的结果。\n(2) 语句2 读到 B=100。Repeatable Read 让普通查询使用本事务第一条非事务控制语句对应的快照，S1 的语句1 建立快照时 S2 尚未提交，因此后续查询不会因 S2 的提交而改变视图。\n(3) 应重试整个事务，包括重新读取数据以及据此选择写入操作的应用逻辑；不能只重试最后一条失败语句，否则可能继续使用失效的决策。重试本身也可能再次失败，不能承诺一次重试必定成功。",
+      "explanation": "本题把 Read Committed 与 Repeatable Read 的可见性规则放到同一段具体交错中比较：Read Committed 以语句开始时刻为界，所以后一条 SELECT 能看到 S2 新提交的结果；Repeatable Read 以事务第一条非事务控制语句的快照为界，所以视图保持不变。第(3)问要求把“序列化失败后重试整个事务”的规则应用到该情境，强调重试必须覆盖依赖读取结果的决策逻辑，而不是只重发失败语句。",
+      "difficulty_reason": "题目给出具体表、具体语句顺序和具体交错时刻，要求把 Read Committed 与 Repeatable Read 的可见性规则分别应用到同一情境并比较差异，再分析序列化失败后的重试范围，属于应用与分析，而非直接复述定义。",
+      "difficulty_design": {
+        "cognitive_process": "analyze",
+        "concepts": [
+          "原子性与已提交状态",
+          "Read Committed 的语句级可见性",
+          "Repeatable Read 的事务级快照",
+          "Serializable 的序列化异常",
+          "重试整个事务"
+        ],
+        "expected_steps": [
+          "依据 Read Committed 规则判断语句2 能看到 S2 已提交的修改，得出 B=200",
+          "依据 Repeatable Read 快照规则判断语句2 仍使用事务起始快照，得出 B=100",
+          "指出序列化失败后必须重试整个事务，包含读取与依赖读取的决策逻辑，并说明只重试失败语句的风险"
+        ]
+      },
+      "citation_ids": [
+        "fixture_transactions_zh"
+      ]
+    }
+  ],
+  "visual_prompt": "时间轴示意图：横向为时间，两条泳道分别标注 S1 与 S2。S1 泳道依次标出 BEGIN、语句1（读 A=100）、语句2（读 B）、COMMIT；S2 泳道在 S1 语句1与语句2之间标出 BEGIN、扣款 A、入账 B、COMMIT。在语句1处画一条竖虚线标注“Read Committed：语句开始时刻”与“Repeatable Read：事务快照建立点”，在语句2处画箭头分别指向两种隔离级别下 B 的读取结果位置，仅标注规则名称与时刻，不写出具体数值答案。"
+}

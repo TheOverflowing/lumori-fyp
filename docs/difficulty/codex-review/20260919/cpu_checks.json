@@ -1,0 +1,3123 @@
+{
+  "review_kind": "Condition-masked retrospective AI-assisted factual and numerical check",
+  "independent_human_review": false,
+  "independent_model_vote": false,
+  "prior_context_known": "Same conversation contains earlier canary analysis; Q016 is recognized.",
+  "final_difficulty_or_group_scores_assigned": false,
+  "original_or_previous_scores_read_or_modified": false,
+  "cpu_packets_sha256": "89616d36e73b70aa1227b0c5f6ffcc35346df19263be5225829eb407fac7b66e",
+  "cpu_sources_sha256": "30ad926c1f347f77798d375875247159d32cfa67a937c8a79ea2afad27d16c7d",
+  "protocol_sha256": "fc2338286fcb21d8f65055bba577dc1467e3da2a14fcd2970d8db06c22a579c4",
+  "method": "AI transcription of each stem; deterministic FIFO RR/STCF simulation, exact fractions, service/arrival/time-conservation assertions. Missing rules produce explicitly conditional variants.",
+  "checks": [
+    {
+      "blind_id": "Q002",
+      "source_key": "fixture_cpu_scheduling_zh",
+      "question_sha256": "edcf2838e10dd05d6e6fafe876ca29e938c4852664e9f97dd0e0771d6a39e9ea",
+      "finding": "前两问的时间线和周转总量正确；第三问混用无开销响应时间与有开销占比，并把总服务量10误当作5。",
+      "answerability": "两种计算情形明确；第三问应对带开销系统检验两个约束，不能用第一问的响应值。",
+      "details": "q=2且开销1时响应为0/2/4，平均2；开销5、有效服务10，占比5/15=1/3。两项约束均失败，而非只有开销失败。增大片长或MLFQ的泛化建议不构成满足约束的证明。",
+      "calculations": {
+        "q2_zero_cost": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 2
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 2,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 4,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 6,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 9,
+              "end": 10
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 2,
+            "C": 4
+          },
+          "completion": {
+            "A": 10,
+            "B": 9,
+            "C": 6
+          },
+          "response": {
+            "A": 0,
+            "B": 1,
+            "C": 2
+          },
+          "turnaround": {
+            "A": 10,
+            "B": 8,
+            "C": 4
+          },
+          "average_response": {
+            "exact": "1",
+            "decimal": 1.0
+          },
+          "average_turnaround": {
+            "exact": "22/3",
+            "decimal": 7.333333333333333
+          },
+          "total_turnaround": 22,
+          "maximum_response": 2,
+          "switch_time": 0,
+          "makespan": 10,
+          "overhead_fraction": {
+            "exact": "0",
+            "decimal": 0.0
+          },
+          "delivered_service": {
+            "A": 5,
+            "B": 3,
+            "C": 2
+          },
+          "q": 2,
+          "switch_cost": 0,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 5,
+          "charged_switches": 0
+        },
+        "q2_cost1": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 2
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 3,
+              "end": 5
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "C",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 6,
+              "end": 8
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "A",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 9,
+              "end": 11
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 11,
+              "end": 12
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 12,
+              "end": 13
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 13,
+              "end": 14
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 14,
+              "end": 15
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 3,
+            "C": 6
+          },
+          "completion": {
+            "A": 15,
+            "B": 13,
+            "C": 8
+          },
+          "response": {
+            "A": 0,
+            "B": 2,
+            "C": 4
+          },
+          "turnaround": {
+            "A": 15,
+            "B": 12,
+            "C": 6
+          },
+          "average_response": {
+            "exact": "2",
+            "decimal": 2.0
+          },
+          "average_turnaround": {
+            "exact": "11",
+            "decimal": 11.0
+          },
+          "total_turnaround": 33,
+          "maximum_response": 4,
+          "switch_time": 5,
+          "makespan": 15,
+          "overhead_fraction": {
+            "exact": "1/3",
+            "decimal": 0.3333333333333333
+          },
+          "delivered_service": {
+            "A": 5,
+            "B": 3,
+            "C": 2
+          },
+          "q": 2,
+          "switch_cost": 1,
+          "boundary_arrivals": "before",
+          "during_switch": "before_preempted",
+          "early_finish_switch_free": false,
+          "context_switches": 5,
+          "charged_switches": 5
+        }
+      }
+    },
+    {
+      "blind_id": "Q003",
+      "source_key": "fixture_cpu_scheduling_zh",
+      "question_sha256": "2580cb8ddb1c7a6ebf49d115a6cd7d11a0df1ec4812ae0ae1722efd94f5e6083",
+      "finding": "多个实质错误：q=2答案没有正确处理C在t=2到达，A少分配CPU；q=1答案也使A少获1单位服务；约束判断把首次运行时间当响应时间。",
+      "answerability": "没有明确片尾同时到达与被抢占任务的相对顺序；切换期间规则不能在s=0时唯一补足片尾规则。输出两种条件计算，不选一个冒充唯一答案。",
+      "details": "新到优先时q=2响应0/1/2、q=1响应0/0/1，两者均满足最大响应≤2；被抢占优先时q=2响应0/1/4不满足、q=1响应0/1/2满足。两种解释均与原答案的服务量和部分约束结论不符。",
+      "calculations": {
+        "q1_before": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 1
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 1,
+              "end": 2
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 3,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 4,
+              "end": 5
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 6,
+              "end": 7
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 7,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 9,
+              "end": 10
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 1,
+            "C": 3
+          },
+          "completion": {
+            "A": 10,
+            "B": 8,
+            "C": 7
+          },
+          "response": {
+            "A": 0,
+            "B": 0,
+            "C": 1
+          },
+          "turnaround": {
+            "A": 10,
+            "B": 7,
+            "C": 5
+          },
+          "average_response": {
+            "exact": "1/3",
+            "decimal": 0.3333333333333333
+          },
+          "average_turnaround": {
+            "exact": "22/3",
+            "decimal": 7.333333333333333
+          },
+          "total_turnaround": 22,
+          "maximum_response": 1,
+          "switch_time": 0,
+          "makespan": 10,
+          "overhead_fraction": {
+            "exact": "0",
+            "decimal": 0.0
+          },
+          "delivered_service": {
+            "A": 5,
+            "B": 3,
+            "C": 2
+          },
+          "q": 1,
+          "switch_cost": 0,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 8,
+          "charged_switches": 0
+        },
+        "q1_after": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 1
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 1,
+              "end": 2
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 3,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 4,
+              "end": 5
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 6,
+              "end": 7
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 7,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 9,
+              "end": 10
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 2,
+            "C": 4
+          },
+          "completion": {
+            "A": 10,
+            "B": 9,
+            "C": 8
+          },
+          "response": {
+            "A": 0,
+            "B": 1,
+            "C": 2
+          },
+          "turnaround": {
+            "A": 10,
+            "B": 8,
+            "C": 6
+          },
+          "average_response": {
+            "exact": "1",
+            "decimal": 1.0
+          },
+          "average_turnaround": {
+            "exact": "8",
+            "decimal": 8.0
+          },
+          "total_turnaround": 24,
+          "maximum_response": 2,
+          "switch_time": 0,
+          "makespan": 10,
+          "overhead_fraction": {
+            "exact": "0",
+            "decimal": 0.0
+          },
+          "delivered_service": {
+            "A": 5,
+            "B": 3,
+            "C": 2
+          },
+          "q": 1,
+          "switch_cost": 0,
+          "boundary_arrivals": "after",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 8,
+          "charged_switches": 0
+        },
+        "q2_before": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 2
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 2,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 4,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 6,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 9,
+              "end": 10
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 2,
+            "C": 4
+          },
+          "completion": {
+            "A": 10,
+            "B": 9,
+            "C": 6
+          },
+          "response": {
+            "A": 0,
+            "B": 1,
+            "C": 2
+          },
+          "turnaround": {
+            "A": 10,
+            "B": 8,
+            "C": 4
+          },
+          "average_response": {
+            "exact": "1",
+            "decimal": 1.0
+          },
+          "average_turnaround": {
+            "exact": "22/3",
+            "decimal": 7.333333333333333
+          },
+          "total_turnaround": 22,
+          "maximum_response": 2,
+          "switch_time": 0,
+          "makespan": 10,
+          "overhead_fraction": {
+            "exact": "0",
+            "decimal": 0.0
+          },
+          "delivered_service": {
+            "A": 5,
+            "B": 3,
+            "C": 2
+          },
+          "q": 2,
+          "switch_cost": 0,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 5,
+          "charged_switches": 0
+        },
+        "q2_after": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 2
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 2,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 4,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 6,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 9,
+              "end": 10
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 2,
+            "C": 6
+          },
+          "completion": {
+            "A": 10,
+            "B": 9,
+            "C": 8
+          },
+          "response": {
+            "A": 0,
+            "B": 1,
+            "C": 4
+          },
+          "turnaround": {
+            "A": 10,
+            "B": 8,
+            "C": 6
+          },
+          "average_response": {
+            "exact": "5/3",
+            "decimal": 1.6666666666666667
+          },
+          "average_turnaround": {
+            "exact": "8",
+            "decimal": 8.0
+          },
+          "total_turnaround": 24,
+          "maximum_response": 4,
+          "switch_time": 0,
+          "makespan": 10,
+          "overhead_fraction": {
+            "exact": "0",
+            "decimal": 0.0
+          },
+          "delivered_service": {
+            "A": 5,
+            "B": 3,
+            "C": 2
+          },
+          "q": 2,
+          "switch_cost": 0,
+          "boundary_arrivals": "after",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 5,
+          "charged_switches": 0
+        }
+      }
+    },
+    {
+      "blind_id": "Q004",
+      "source_key": "fixture_cpu_scheduling_en",
+      "question_sha256": "a6c0406d498bfff8b8ffa5e0ba17312855094f3414aa635c8868eb87909218ee",
+      "finding": "参考答案把C错误排在已经等待的A之前。B在t=2开始切换时A已排队，C在t=4才到达，必须排在A后。",
+      "answerability": "数值任务基本可判定；当前q=1/q=2轨迹没有需额外处理的切换内部新到达事件。最终双目标没有给开销阈值，故不应唯一断言最优设计。",
+      "details": "q=2应为A0–2、切换2–3、B3–5、切换5–6、A6–8、切换8–9、C9–11、切换11–12、B12–14、切换14–15、A15–19。平均响应2，平均周转38/3；原答案1及35/3错误。q=1最大响应3，小于q=2的5，但切换次数从5增至10。",
+      "calculations": {
+        "q1": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 1
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 1,
+              "end": 2
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 3,
+              "end": 4
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 4,
+              "end": 5
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "C",
+              "start": 6,
+              "end": 7
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 7,
+              "end": 8
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "B",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 9,
+              "end": 10
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 10,
+              "end": 11
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 11,
+              "end": 12
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "C",
+              "start": 12,
+              "end": 13
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 13,
+              "end": 14
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "B",
+              "start": 14,
+              "end": 15
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 15,
+              "end": 16
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 16,
+              "end": 17
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 17,
+              "end": 18
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 18,
+              "end": 19
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 19,
+              "end": 20
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 20,
+              "end": 21
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 21,
+              "end": 22
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 22,
+              "end": 23
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 23,
+              "end": 24
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 3,
+            "C": 7
+          },
+          "completion": {
+            "A": 24,
+            "B": 20,
+            "C": 14
+          },
+          "response": {
+            "A": 0,
+            "B": 1,
+            "C": 3
+          },
+          "turnaround": {
+            "A": 24,
+            "B": 18,
+            "C": 10
+          },
+          "average_response": {
+            "exact": "4/3",
+            "decimal": 1.3333333333333333
+          },
+          "average_turnaround": {
+            "exact": "52/3",
+            "decimal": 17.333333333333332
+          },
+          "total_turnaround": 52,
+          "maximum_response": 3,
+          "switch_time": 10,
+          "makespan": 24,
+          "overhead_fraction": {
+            "exact": "5/12",
+            "decimal": 0.4166666666666667
+          },
+          "delivered_service": {
+            "A": 8,
+            "B": 4,
+            "C": 2
+          },
+          "q": 1,
+          "switch_cost": 1,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 10,
+          "charged_switches": 10
+        },
+        "q2": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 2
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 3,
+              "end": 5
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 6,
+              "end": 8
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "C",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 9,
+              "end": 11
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "B",
+              "start": 11,
+              "end": 12
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 12,
+              "end": 14
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 14,
+              "end": 15
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 15,
+              "end": 17
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 17,
+              "end": 19
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 3,
+            "C": 9
+          },
+          "completion": {
+            "A": 19,
+            "B": 14,
+            "C": 11
+          },
+          "response": {
+            "A": 0,
+            "B": 1,
+            "C": 5
+          },
+          "turnaround": {
+            "A": 19,
+            "B": 12,
+            "C": 7
+          },
+          "average_response": {
+            "exact": "2",
+            "decimal": 2.0
+          },
+          "average_turnaround": {
+            "exact": "38/3",
+            "decimal": 12.666666666666666
+          },
+          "total_turnaround": 38,
+          "maximum_response": 5,
+          "switch_time": 5,
+          "makespan": 19,
+          "overhead_fraction": {
+            "exact": "5/19",
+            "decimal": 0.2631578947368421
+          },
+          "delivered_service": {
+            "A": 8,
+            "B": 4,
+            "C": 2
+          },
+          "q": 2,
+          "switch_cost": 1,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 5,
+          "charged_switches": 5
+        }
+      }
+    },
+    {
+      "blind_id": "Q016",
+      "source_key": "fixture_cpu_scheduling_en",
+      "question_sha256": "74d1b2c9ca92b506a823b90f16c2b8349668068c5b8143719dbe9e661777448c",
+      "finding": "RR错误地让C超过已等待的B；STCF时间线和计算正确。",
+      "answerability": "题干条件完整。该题与同会话此前见过的错误案例相同；本核查属条件遮盖回顾性辅助核查，不能称为独立盲评。",
+      "details": "RR应为A0–2、B2–4、C4–5、A5–7、B7–8、A8–10；平均响应1、平均周转20/3。STCF平均响应0、平均周转5。推荐STCF的相对结论仍成立。",
+      "calculations": {
+        "rr_q2": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 2
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 2,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 4,
+              "end": 5
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 5,
+              "end": 7
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 7,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 8,
+              "end": 10
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 2,
+            "C": 4
+          },
+          "completion": {
+            "A": 10,
+            "B": 8,
+            "C": 5
+          },
+          "response": {
+            "A": 0,
+            "B": 1,
+            "C": 2
+          },
+          "turnaround": {
+            "A": 10,
+            "B": 7,
+            "C": 3
+          },
+          "average_response": {
+            "exact": "1",
+            "decimal": 1.0
+          },
+          "average_turnaround": {
+            "exact": "20/3",
+            "decimal": 6.666666666666667
+          },
+          "total_turnaround": 20,
+          "maximum_response": 2,
+          "switch_time": 0,
+          "makespan": 10,
+          "overhead_fraction": {
+            "exact": "0",
+            "decimal": 0.0
+          },
+          "delivered_service": {
+            "A": 6,
+            "B": 3,
+            "C": 1
+          },
+          "q": 2,
+          "switch_cost": 0,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 5,
+          "charged_switches": 0
+        },
+        "stcf": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 1
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 1,
+              "end": 2
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 3,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 4,
+              "end": 5
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 6,
+              "end": 7
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 7,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 9,
+              "end": 10
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 1,
+            "C": 2
+          },
+          "completion": {
+            "A": 10,
+            "B": 5,
+            "C": 3
+          },
+          "response": {
+            "A": 0,
+            "B": 0,
+            "C": 0
+          },
+          "turnaround": {
+            "A": 10,
+            "B": 4,
+            "C": 1
+          },
+          "average_response": {
+            "exact": "0",
+            "decimal": 0.0
+          },
+          "average_turnaround": {
+            "exact": "5",
+            "decimal": 5.0
+          },
+          "total_turnaround": 15,
+          "maximum_response": 0,
+          "switch_time": 0,
+          "makespan": 10,
+          "overhead_fraction": {
+            "exact": "0",
+            "decimal": 0.0
+          },
+          "delivered_service": {
+            "A": 6,
+            "B": 3,
+            "C": 1
+          }
+        }
+      }
+    },
+    {
+      "blind_id": "Q021",
+      "source_key": "fixture_cpu_scheduling_zh",
+      "question_sha256": "c0da1642505ac4ea74ee889aa0ebc2c17b40757fef4cce899c818c3975028fa7",
+      "finding": "两组答案均违反CPU服务量：q=1给A分配4而非3；q=2给B分配1而非2；q=1还让C插到既有等待A前。",
+      "answerability": "“多个任务可用时按到达早者优先”若用于每次派发会与RR队列轮转冲突。这里给出保留RR FIFO、到达顺序仅用于入队的条件计算，需澄清该措辞。",
+      "details": "标准RR下q=1为A0–1 B1–2 A2–3 C3–4 B4–5 A5–6，响应0/0/1、周转6/4/2；q=2为A0–2 B2–4 C4–5 A5–6，响应0/1/2、周转6/3/3。两者平均周转均4，并非原答案所称q=2更优；切换次数5与3。",
+      "calculations": {
+        "q1_fifo_rr": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 1
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 1,
+              "end": 2
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 3,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 4,
+              "end": 5
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 5,
+              "end": 6
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 1,
+            "C": 3
+          },
+          "completion": {
+            "A": 6,
+            "B": 5,
+            "C": 4
+          },
+          "response": {
+            "A": 0,
+            "B": 0,
+            "C": 1
+          },
+          "turnaround": {
+            "A": 6,
+            "B": 4,
+            "C": 2
+          },
+          "average_response": {
+            "exact": "1/3",
+            "decimal": 0.3333333333333333
+          },
+          "average_turnaround": {
+            "exact": "4",
+            "decimal": 4.0
+          },
+          "total_turnaround": 12,
+          "maximum_response": 1,
+          "switch_time": 0,
+          "makespan": 6,
+          "overhead_fraction": {
+            "exact": "0",
+            "decimal": 0.0
+          },
+          "delivered_service": {
+            "A": 3,
+            "B": 2,
+            "C": 1
+          },
+          "q": 1,
+          "switch_cost": 0,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 5,
+          "charged_switches": 0
+        },
+        "q2_fifo_rr": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 2
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 2,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 4,
+              "end": 5
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 5,
+              "end": 6
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 2,
+            "C": 4
+          },
+          "completion": {
+            "A": 6,
+            "B": 4,
+            "C": 5
+          },
+          "response": {
+            "A": 0,
+            "B": 1,
+            "C": 2
+          },
+          "turnaround": {
+            "A": 6,
+            "B": 3,
+            "C": 3
+          },
+          "average_response": {
+            "exact": "1",
+            "decimal": 1.0
+          },
+          "average_turnaround": {
+            "exact": "4",
+            "decimal": 4.0
+          },
+          "total_turnaround": 12,
+          "maximum_response": 2,
+          "switch_time": 0,
+          "makespan": 6,
+          "overhead_fraction": {
+            "exact": "0",
+            "decimal": 0.0
+          },
+          "delivered_service": {
+            "A": 3,
+            "B": 2,
+            "C": 1
+          },
+          "q": 2,
+          "switch_cost": 0,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 3,
+          "charged_switches": 0
+        }
+      }
+    },
+    {
+      "blind_id": "Q023",
+      "source_key": "fixture_cpu_scheduling_en",
+      "question_sha256": "8467b787f3025918aac075b0e0143575b83a94bb3d9708bf4c5338273d525897",
+      "finding": "切换开销大小未给，且未明确忽略；固定响应时刻和可行性不可直接得出。即使条件性令开销为0，三个切换计数也错误，所列轮转序列还违反各任务服务量。",
+      "answerability": "关键数值条件缺失。令每次切换开销为s≥0，不能把s=0作为题设事实。",
+      "details": "q=1/2/4首次运行分别为(0,1+s,2+2s)/(0,2+s,4+2s)/(0,4+s,8+2s)；不同任务间切换次数分别10/5/3，而非13/7/4。原q=1序列给A7单位、B5单位，而要求A8/B4；q=2多一次B，q=4多一次A。s=0时仅q=1满足最大响应≤2；任何s>0时三个候选均不满足。移除响应约束后q=4切换最少。",
+      "calculations": {
+        "q1_conditional_zero_cost": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 1
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 1,
+              "end": 2
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 3,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 4,
+              "end": 5
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 6,
+              "end": 7
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 7,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 9,
+              "end": 10
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 10,
+              "end": 11
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 11,
+              "end": 12
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 12,
+              "end": 13
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 13,
+              "end": 14
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 1,
+            "C": 2
+          },
+          "completion": {
+            "A": 14,
+            "B": 10,
+            "C": 6
+          },
+          "response": {
+            "A": 0,
+            "B": 1,
+            "C": 2
+          },
+          "turnaround": {
+            "A": 14,
+            "B": 10,
+            "C": 6
+          },
+          "average_response": {
+            "exact": "1",
+            "decimal": 1.0
+          },
+          "average_turnaround": {
+            "exact": "10",
+            "decimal": 10.0
+          },
+          "total_turnaround": 30,
+          "maximum_response": 2,
+          "switch_time": 0,
+          "makespan": 14,
+          "overhead_fraction": {
+            "exact": "0",
+            "decimal": 0.0
+          },
+          "delivered_service": {
+            "A": 8,
+            "B": 4,
+            "C": 2
+          },
+          "q": 1,
+          "switch_cost": 0,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 10,
+          "charged_switches": 0
+        },
+        "q2_conditional_zero_cost": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 2
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 2,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 4,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 6,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 8,
+              "end": 10
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 10,
+              "end": 12
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 12,
+              "end": 14
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 2,
+            "C": 4
+          },
+          "completion": {
+            "A": 14,
+            "B": 10,
+            "C": 6
+          },
+          "response": {
+            "A": 0,
+            "B": 2,
+            "C": 4
+          },
+          "turnaround": {
+            "A": 14,
+            "B": 10,
+            "C": 6
+          },
+          "average_response": {
+            "exact": "2",
+            "decimal": 2.0
+          },
+          "average_turnaround": {
+            "exact": "10",
+            "decimal": 10.0
+          },
+          "total_turnaround": 30,
+          "maximum_response": 4,
+          "switch_time": 0,
+          "makespan": 14,
+          "overhead_fraction": {
+            "exact": "0",
+            "decimal": 0.0
+          },
+          "delivered_service": {
+            "A": 8,
+            "B": 4,
+            "C": 2
+          },
+          "q": 2,
+          "switch_cost": 0,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 5,
+          "charged_switches": 0
+        },
+        "q4_conditional_zero_cost": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 4,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 8,
+              "end": 10
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 10,
+              "end": 14
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 4,
+            "C": 8
+          },
+          "completion": {
+            "A": 14,
+            "B": 8,
+            "C": 10
+          },
+          "response": {
+            "A": 0,
+            "B": 4,
+            "C": 8
+          },
+          "turnaround": {
+            "A": 14,
+            "B": 8,
+            "C": 10
+          },
+          "average_response": {
+            "exact": "4",
+            "decimal": 4.0
+          },
+          "average_turnaround": {
+            "exact": "32/3",
+            "decimal": 10.666666666666666
+          },
+          "total_turnaround": 32,
+          "maximum_response": 8,
+          "switch_time": 0,
+          "makespan": 14,
+          "overhead_fraction": {
+            "exact": "0",
+            "decimal": 0.0
+          },
+          "delivered_service": {
+            "A": 8,
+            "B": 4,
+            "C": 2
+          },
+          "q": 4,
+          "switch_cost": 0,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 3,
+          "charged_switches": 0
+        }
+      }
+    },
+    {
+      "blind_id": "Q025",
+      "source_key": "fixture_cpu_scheduling_en",
+      "question_sha256": "b9cfb77cea043e28b6b99b909b979fbbcc7a09b71a44c1c73a6891d2b0a3b5dd",
+      "finding": "答案忽略题干“提前完成后的转换免费”的明确例外，仍逐次计费；R2最后B→A、R4的B→C与C→A均不该收费。",
+      "answerability": "把具体提前完成条款作为一般切换收费规则的例外，可以唯一计算；原答案末尾重复例外却未执行。",
+      "details": "R2完成A/B/C=15/13/8，平均响应2、平均周转11，付费切换4；R4首次0/5/8，完成12/8/10，平均响应10/3、平均周转9，付费切换1（任务转换仍有3次）。按主要目标仍选R2，但原指标均有实质错误。",
+      "calculations": {
+        "q2_early_finish_free": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 2
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 3,
+              "end": 5
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "C",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 6,
+              "end": 8
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "A",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 9,
+              "end": 11
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 11,
+              "end": 12
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 12,
+              "end": 13
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 13,
+              "end": 15
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 3,
+            "C": 6
+          },
+          "completion": {
+            "A": 15,
+            "B": 13,
+            "C": 8
+          },
+          "response": {
+            "A": 0,
+            "B": 2,
+            "C": 4
+          },
+          "turnaround": {
+            "A": 15,
+            "B": 12,
+            "C": 6
+          },
+          "average_response": {
+            "exact": "2",
+            "decimal": 2.0
+          },
+          "average_turnaround": {
+            "exact": "11",
+            "decimal": 11.0
+          },
+          "total_turnaround": 33,
+          "maximum_response": 4,
+          "switch_time": 4,
+          "makespan": 15,
+          "overhead_fraction": {
+            "exact": "4/15",
+            "decimal": 0.26666666666666666
+          },
+          "delivered_service": {
+            "A": 6,
+            "B": 3,
+            "C": 2
+          },
+          "q": 2,
+          "switch_cost": 1,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": true,
+          "context_switches": 5,
+          "charged_switches": 4
+        },
+        "q4_early_finish_free": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 4
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 4,
+              "end": 5
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 5,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 8,
+              "end": 10
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 10,
+              "end": 12
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 5,
+            "C": 8
+          },
+          "completion": {
+            "A": 12,
+            "B": 8,
+            "C": 10
+          },
+          "response": {
+            "A": 0,
+            "B": 4,
+            "C": 6
+          },
+          "turnaround": {
+            "A": 12,
+            "B": 7,
+            "C": 8
+          },
+          "average_response": {
+            "exact": "10/3",
+            "decimal": 3.3333333333333335
+          },
+          "average_turnaround": {
+            "exact": "9",
+            "decimal": 9.0
+          },
+          "total_turnaround": 27,
+          "maximum_response": 6,
+          "switch_time": 1,
+          "makespan": 12,
+          "overhead_fraction": {
+            "exact": "1/12",
+            "decimal": 0.08333333333333333
+          },
+          "delivered_service": {
+            "A": 6,
+            "B": 3,
+            "C": 2
+          },
+          "q": 4,
+          "switch_cost": 1,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": true,
+          "context_switches": 3,
+          "charged_switches": 1
+        }
+      }
+    },
+    {
+      "blind_id": "Q031",
+      "source_key": "fixture_cpu_scheduling_en",
+      "question_sha256": "8a869205bb78b3773cad728fc6d99628729693705c2bcb8db967253dac910754",
+      "finding": "答案同时遗漏arrival减项、给B超额CPU、最后同一A续跑仍计切换，并给出与时间线不一致的切换数。",
+      "answerability": "未直接规定片尾到达者与被抢占者的先后；一般alphabetical tie规则未说明是否针对这类入队事件。列出前后两种解释，不据此假定唯一时间线。",
+      "details": "新到先入队时q=2平均响应2、平均周转31/3；q=1平均响应5/3、平均周转34/3。被抢占先入队时q=2平均响应3、平均周转34/3；q=1平均响应7/3、平均周转12。两种情况下q=1都改善响应却恶化平均周转；原答案称周转也改善不成立。",
+      "calculations": {
+        "q1_before": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 1
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 1,
+              "end": 2
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 3,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 4,
+              "end": 5
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "C",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 6,
+              "end": 7
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "B",
+              "start": 7,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 9,
+              "end": 10
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 10,
+              "end": 11
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 11,
+              "end": 12
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 12,
+              "end": 13
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 13,
+              "end": 14
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 14,
+              "end": 15
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 15,
+              "end": 16
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 16,
+              "end": 17
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 2,
+            "C": 6
+          },
+          "completion": {
+            "A": 17,
+            "B": 13,
+            "C": 7
+          },
+          "response": {
+            "A": 0,
+            "B": 1,
+            "C": 4
+          },
+          "turnaround": {
+            "A": 17,
+            "B": 12,
+            "C": 5
+          },
+          "average_response": {
+            "exact": "5/3",
+            "decimal": 1.6666666666666667
+          },
+          "average_turnaround": {
+            "exact": "34/3",
+            "decimal": 11.333333333333334
+          },
+          "total_turnaround": 34,
+          "maximum_response": 4,
+          "switch_time": 7,
+          "makespan": 17,
+          "overhead_fraction": {
+            "exact": "7/17",
+            "decimal": 0.4117647058823529
+          },
+          "delivered_service": {
+            "A": 6,
+            "B": 3,
+            "C": 1
+          },
+          "q": 1,
+          "switch_cost": 1,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 7,
+          "charged_switches": 7
+        },
+        "q1_after": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 1
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 1,
+              "end": 2
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 3,
+              "end": 4
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 4,
+              "end": 5
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "C",
+              "start": 6,
+              "end": 7
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 7,
+              "end": 8
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "B",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 9,
+              "end": 10
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 10,
+              "end": 11
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 11,
+              "end": 12
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 12,
+              "end": 13
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 13,
+              "end": 14
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 14,
+              "end": 15
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 15,
+              "end": 16
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 16,
+              "end": 17
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 3,
+            "C": 7
+          },
+          "completion": {
+            "A": 17,
+            "B": 14,
+            "C": 8
+          },
+          "response": {
+            "A": 0,
+            "B": 2,
+            "C": 5
+          },
+          "turnaround": {
+            "A": 17,
+            "B": 13,
+            "C": 6
+          },
+          "average_response": {
+            "exact": "7/3",
+            "decimal": 2.3333333333333335
+          },
+          "average_turnaround": {
+            "exact": "12",
+            "decimal": 12.0
+          },
+          "total_turnaround": 36,
+          "maximum_response": 5,
+          "switch_time": 7,
+          "makespan": 17,
+          "overhead_fraction": {
+            "exact": "7/17",
+            "decimal": 0.4117647058823529
+          },
+          "delivered_service": {
+            "A": 6,
+            "B": 3,
+            "C": 1
+          },
+          "q": 1,
+          "switch_cost": 1,
+          "boundary_arrivals": "after",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 7,
+          "charged_switches": 7
+        },
+        "q2_before": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 2
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 3,
+              "end": 5
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "C",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 6,
+              "end": 7
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "A",
+              "start": 7,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 8,
+              "end": 10
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 10,
+              "end": 11
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 11,
+              "end": 12
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 12,
+              "end": 13
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 13,
+              "end": 15
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 3,
+            "C": 6
+          },
+          "completion": {
+            "A": 15,
+            "B": 12,
+            "C": 7
+          },
+          "response": {
+            "A": 0,
+            "B": 2,
+            "C": 4
+          },
+          "turnaround": {
+            "A": 15,
+            "B": 11,
+            "C": 5
+          },
+          "average_response": {
+            "exact": "2",
+            "decimal": 2.0
+          },
+          "average_turnaround": {
+            "exact": "31/3",
+            "decimal": 10.333333333333334
+          },
+          "total_turnaround": 31,
+          "maximum_response": 4,
+          "switch_time": 5,
+          "makespan": 15,
+          "overhead_fraction": {
+            "exact": "1/3",
+            "decimal": 0.3333333333333333
+          },
+          "delivered_service": {
+            "A": 6,
+            "B": 3,
+            "C": 1
+          },
+          "q": 2,
+          "switch_cost": 1,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 5,
+          "charged_switches": 5
+        },
+        "q2_after": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 2
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 3,
+              "end": 5
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 6,
+              "end": 8
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "C",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 9,
+              "end": 10
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "B",
+              "start": 10,
+              "end": 11
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 11,
+              "end": 12
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 12,
+              "end": 13
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 13,
+              "end": 15
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 3,
+            "C": 9
+          },
+          "completion": {
+            "A": 15,
+            "B": 12,
+            "C": 10
+          },
+          "response": {
+            "A": 0,
+            "B": 2,
+            "C": 7
+          },
+          "turnaround": {
+            "A": 15,
+            "B": 11,
+            "C": 8
+          },
+          "average_response": {
+            "exact": "3",
+            "decimal": 3.0
+          },
+          "average_turnaround": {
+            "exact": "34/3",
+            "decimal": 11.333333333333334
+          },
+          "total_turnaround": 34,
+          "maximum_response": 7,
+          "switch_time": 5,
+          "makespan": 15,
+          "overhead_fraction": {
+            "exact": "1/3",
+            "decimal": 0.3333333333333333
+          },
+          "delivered_service": {
+            "A": 6,
+            "B": 3,
+            "C": 1
+          },
+          "q": 2,
+          "switch_cost": 1,
+          "boundary_arrivals": "after",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 5,
+          "charged_switches": 5
+        }
+      }
+    },
+    {
+      "blind_id": "Q032",
+      "source_key": "fixture_cpu_scheduling_zh",
+      "question_sha256": "249a5ba7d931fbfa6b373492be1f9b97490562e57433e386f9615af474af1869",
+      "finding": "q=1在只有A可运行时凭空计切换，且给出的完成时刻与服务+开销守恒不符；q=3让切换结束才到达的C超过此前已排队A，导致把不可行方案误判可行。q=6计算正确。",
+      "answerability": "切换结束到达的C应进入已有FIFO队尾；题干只对“片尾到达”规定新到先于被抢占者，不能把规则扩展到已经在队列等待的A。MLFQ泛化建议不能保证一个数值响应上限。",
+      "details": "q=1首次0/3/7、完成22/16/20、响应0/1/3、开销10；q=3首次0/4/12、完成11/7/15、响应0/2/8、开销3；q=6响应0/5/7、开销2。因此三个给定候选均不能同时满足响应≤4和开销≤4，并非q=3可行。",
+      "calculations": {
+        "q1": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 1
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 1,
+              "end": 2
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 3,
+              "end": 4
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 4,
+              "end": 5
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "C",
+              "start": 6,
+              "end": 7
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 7,
+              "end": 8
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "B",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 9,
+              "end": 10
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 10,
+              "end": 11
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 11,
+              "end": 12
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "C",
+              "start": 12,
+              "end": 13
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 13,
+              "end": 14
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "B",
+              "start": 14,
+              "end": 15
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 15,
+              "end": 16
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 16,
+              "end": 17
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 17,
+              "end": 18
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "C",
+              "start": 18,
+              "end": 19
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 19,
+              "end": 20
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "A",
+              "start": 20,
+              "end": 21
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 21,
+              "end": 22
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 3,
+            "C": 7
+          },
+          "completion": {
+            "A": 22,
+            "B": 16,
+            "C": 20
+          },
+          "response": {
+            "A": 0,
+            "B": 1,
+            "C": 3
+          },
+          "turnaround": {
+            "A": 22,
+            "B": 14,
+            "C": 16
+          },
+          "average_response": {
+            "exact": "4/3",
+            "decimal": 1.3333333333333333
+          },
+          "average_turnaround": {
+            "exact": "52/3",
+            "decimal": 17.333333333333332
+          },
+          "total_turnaround": 52,
+          "maximum_response": 3,
+          "switch_time": 10,
+          "makespan": 22,
+          "overhead_fraction": {
+            "exact": "5/11",
+            "decimal": 0.45454545454545453
+          },
+          "delivered_service": {
+            "A": 6,
+            "B": 3,
+            "C": 3
+          },
+          "q": 1,
+          "switch_cost": 1,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 10,
+          "charged_switches": 10
+        },
+        "q3": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 3
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 3,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 4,
+              "end": 7
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 7,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 8,
+              "end": 11
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "C",
+              "start": 11,
+              "end": 12
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 12,
+              "end": 15
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 4,
+            "C": 12
+          },
+          "completion": {
+            "A": 11,
+            "B": 7,
+            "C": 15
+          },
+          "response": {
+            "A": 0,
+            "B": 2,
+            "C": 8
+          },
+          "turnaround": {
+            "A": 11,
+            "B": 5,
+            "C": 11
+          },
+          "average_response": {
+            "exact": "10/3",
+            "decimal": 3.3333333333333335
+          },
+          "average_turnaround": {
+            "exact": "9",
+            "decimal": 9.0
+          },
+          "total_turnaround": 27,
+          "maximum_response": 8,
+          "switch_time": 3,
+          "makespan": 15,
+          "overhead_fraction": {
+            "exact": "1/5",
+            "decimal": 0.2
+          },
+          "delivered_service": {
+            "A": 6,
+            "B": 3,
+            "C": 3
+          },
+          "q": 3,
+          "switch_cost": 1,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 3,
+          "charged_switches": 3
+        },
+        "q6": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 6
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 6,
+              "end": 7
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 7,
+              "end": 10
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "C",
+              "start": 10,
+              "end": 11
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 11,
+              "end": 14
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 7,
+            "C": 11
+          },
+          "completion": {
+            "A": 6,
+            "B": 10,
+            "C": 14
+          },
+          "response": {
+            "A": 0,
+            "B": 5,
+            "C": 7
+          },
+          "turnaround": {
+            "A": 6,
+            "B": 8,
+            "C": 10
+          },
+          "average_response": {
+            "exact": "4",
+            "decimal": 4.0
+          },
+          "average_turnaround": {
+            "exact": "8",
+            "decimal": 8.0
+          },
+          "total_turnaround": 24,
+          "maximum_response": 7,
+          "switch_time": 2,
+          "makespan": 14,
+          "overhead_fraction": {
+            "exact": "1/7",
+            "decimal": 0.14285714285714285
+          },
+          "delivered_service": {
+            "A": 6,
+            "B": 3,
+            "C": 3
+          },
+          "q": 6,
+          "switch_cost": 1,
+          "boundary_arrivals": "before",
+          "during_switch": "tail",
+          "early_finish_switch_free": false,
+          "context_switches": 2,
+          "charged_switches": 2
+        }
+      }
+    },
+    {
+      "blind_id": "Q040",
+      "source_key": "fixture_cpu_scheduling_zh",
+      "question_sha256": "106d9d32a40148640d53f636d8721a58d3bd136db34da201243d5dfca7d24509",
+      "finding": "q=1在C完成后错把B排到A前，导致后续完成时刻、平均周转、切换总数和占比错误；q=3结果正确。",
+      "answerability": "计算采用题设切换期间新到任务插在被抢占者前，并在切换结束派发前处理该时刻到达。该事件顺序需在模拟证据中明确。两个平均值同时最小没有权重，但可判定两个候选均违反开销硬约束。",
+      "details": "q=1为A0–1、切换1–2、B2–3、切换3–4、C4–5、切换5–6、A6–7、切换7–8、B8–9、切换9–10、A10–11、切换11–12、B12–13、切换13–14、A14–17。平均响应1、平均周转32/3、7次切换，占比7/17。q=3平均响应3、平均周转26/3、开销3/13。两者均超过20%。",
+      "calculations": {
+        "q1": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 1
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 1,
+              "end": 2
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 2,
+              "end": 3
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "C",
+              "start": 3,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 4,
+              "end": 5
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "A",
+              "start": 5,
+              "end": 6
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 6,
+              "end": 7
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 7,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 9,
+              "end": 10
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 10,
+              "end": 11
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 11,
+              "end": 12
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 12,
+              "end": 13
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "A",
+              "start": 13,
+              "end": 14
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 14,
+              "end": 15
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 15,
+              "end": 16
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 16,
+              "end": 17
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 2,
+            "C": 4
+          },
+          "completion": {
+            "A": 17,
+            "B": 13,
+            "C": 5
+          },
+          "response": {
+            "A": 0,
+            "B": 1,
+            "C": 2
+          },
+          "turnaround": {
+            "A": 17,
+            "B": 12,
+            "C": 3
+          },
+          "average_response": {
+            "exact": "1",
+            "decimal": 1.0
+          },
+          "average_turnaround": {
+            "exact": "32/3",
+            "decimal": 10.666666666666666
+          },
+          "total_turnaround": 32,
+          "maximum_response": 2,
+          "switch_time": 7,
+          "makespan": 17,
+          "overhead_fraction": {
+            "exact": "7/17",
+            "decimal": 0.4117647058823529
+          },
+          "delivered_service": {
+            "A": 6,
+            "B": 3,
+            "C": 1
+          },
+          "q": 1,
+          "switch_cost": 1,
+          "boundary_arrivals": "before",
+          "during_switch": "before_preempted",
+          "early_finish_switch_free": false,
+          "context_switches": 7,
+          "charged_switches": 7
+        },
+        "q3": {
+          "timeline": [
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 0,
+              "end": 3
+            },
+            {
+              "kind": "switch",
+              "from": "A",
+              "to": "B",
+              "start": 3,
+              "end": 4
+            },
+            {
+              "kind": "run",
+              "job": "B",
+              "start": 4,
+              "end": 7
+            },
+            {
+              "kind": "switch",
+              "from": "B",
+              "to": "C",
+              "start": 7,
+              "end": 8
+            },
+            {
+              "kind": "run",
+              "job": "C",
+              "start": 8,
+              "end": 9
+            },
+            {
+              "kind": "switch",
+              "from": "C",
+              "to": "A",
+              "start": 9,
+              "end": 10
+            },
+            {
+              "kind": "run",
+              "job": "A",
+              "start": 10,
+              "end": 13
+            }
+          ],
+          "first_run": {
+            "A": 0,
+            "B": 4,
+            "C": 8
+          },
+          "completion": {
+            "A": 13,
+            "B": 7,
+            "C": 9
+          },
+          "response": {
+            "A": 0,
+            "B": 3,
+            "C": 6
+          },
+          "turnaround": {
+            "A": 13,
+            "B": 6,
+            "C": 7
+          },
+          "average_response": {
+            "exact": "3",
+            "decimal": 3.0
+          },
+          "average_turnaround": {
+            "exact": "26/3",
+            "decimal": 8.666666666666666
+          },
+          "total_turnaround": 26,
+          "maximum_response": 6,
+          "switch_time": 3,
+          "makespan": 13,
+          "overhead_fraction": {
+            "exact": "3/13",
+            "decimal": 0.23076923076923078
+          },
+          "delivered_service": {
+            "A": 6,
+            "B": 3,
+            "C": 1
+          },
+          "q": 3,
+          "switch_cost": 1,
+          "boundary_arrivals": "before",
+          "during_switch": "before_preempted",
+          "early_finish_switch_free": false,
+          "context_switches": 3,
+          "charged_switches": 3
+        }
+      }
+    }
+  ]
+}

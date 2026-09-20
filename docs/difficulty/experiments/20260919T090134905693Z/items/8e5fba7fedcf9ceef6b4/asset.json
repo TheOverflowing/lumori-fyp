@@ -1,0 +1,55 @@
+{
+  "title": "数据库事务：原子性、快照隔离语义与重试（练习）",
+  "evidence_sufficient": true,
+  "evidence_note": "资料片段 fixture_transactions_zh 覆盖原子性、Read Committed 与 Repeatable Read 的可见性差异，以及序列化失败后的重试要求，足以支持一道 medium 简答题。",
+  "learning_objectives": [
+    "解释事务原子性如何阻止只提交部分修改",
+    "区分 Read Committed 与 Repeatable Read 下同一事务连续查询的可见性",
+    "说明序列化失败后为何需要重试整个事务而非仅重试失败语句"
+  ],
+  "sections": [
+    {
+      "heading": "原子性与可见性回顾",
+      "text": "事务把多个操作组成一个单元：BEGIN 开始显式事务，COMMIT 提交成功修改，ROLLBACK 取消未提交修改；其他事务不会把该单元尚未完成的修改当成已提交结果（fixture_transactions_zh）。转账的扣款与入账说明原子性：失败不能只留下其中一笔已提交。隔离级别则规定并发事务观察状态的方式：Read Committed 下普通 SELECT 看到语句开始前已提交的数据以及本事务此前的修改，后续 SELECT 可以看到其他事务新提交的结果；Repeatable Read 让普通查询使用本事务第一条非事务控制语句对应的快照，连续查询不因其他事务提交而改变视图（fixture_transactions_zh）。",
+      "citation_ids": [
+        "fixture_transactions_zh"
+      ]
+    },
+    {
+      "heading": "重试与快照的边界",
+      "text": "稳定快照不代表并发事务的全部结果一定等价于逐个执行；Serializable 会增加对序列化异常的检查，必要时拒绝某次执行（fixture_transactions_zh）。出现序列化失败时，应重试整个事务，包括读取数据和据此选择写入操作的应用逻辑；仅重试最后一条失败语句可能继续使用失效的决策，而且重试本身也可能再次失败（fixture_transactions_zh）。分析时先判断每次读取允许看到什么，再讨论事务最终是否提交；评价重试方案要检查是否重新执行了依赖读取结果的决策（fixture_transactions_zh）。",
+      "citation_ids": [
+        "fixture_transactions_zh"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "slot_id": "q1",
+      "difficulty": "medium",
+      "difficulty_design": {
+        "cognitive_process": "apply",
+        "concepts": [
+          "Repeatable Read 快照",
+          "序列化异常",
+          "重试整个事务"
+        ],
+        "expected_steps": [
+          "指出 T1 第二次普通 SELECT 在 Repeatable Read 下仍看到 100，并引用快照语义",
+          "说明序列化失败后应重试整个事务，包含重新读取和重新决策",
+          "说明只重试最后一条失败语句会继续使用失效决策，且重试可能再次失败"
+        ]
+      },
+      "kind": "short_answer",
+      "stem": "某 PostgreSQL 应用在 Repeatable Read 隔离级别下运行事务 T1。T1 先执行一次普通 SELECT 得到账户余额为 100，随后另一事务 T2 把该余额改为 150 并成功提交；T1 之后又执行一次相同的普通 SELECT，然后基于第二次查询结果决定写入。请回答：(1) T1 第二次普通 SELECT 看到的值应为多少，并说明依据；(2) 若 T1 在提交时因序列化异常被拒绝，应用按资料要求应如何重试，为什么不能只重试最后一条失败语句？",
+      "options": [],
+      "answer": "(1) 第二次普通 SELECT 仍看到 100。依据：Repeatable Read 下普通查询使用本事务第一条非事务控制语句对应的快照，连续查询不会因其他事务的提交而改变这一视图（fixture_transactions_zh）。(2) 应重试整个事务，包括重新执行读取数据以及据此选择写入操作的应用逻辑；因为仅重试最后一条失败语句可能继续使用已经失效的决策（fixture_transactions_zh），重试本身也可能再次失败，不能承诺一次成功。",
+      "explanation": "Repeatable Read 的稳定快照使 T1 的两次普通 SELECT 保持同一视图，因此 T2 提交的 150 不会出现在 T1 的第二次查询中。序列化异常意味着该次执行被拒绝，应用必须重做依赖读取结果的决策，而不是只重发最后一条语句。",
+      "difficulty_reason": "本题把快照可见性与重试要求应用到具体交错情境，需要先判断读取可见性，再分析重试范围，属于 apply/analyze 层级，符合 medium 的 2–3 个关联评分步骤。",
+      "citation_ids": [
+        "fixture_transactions_zh"
+      ]
+    }
+  ],
+  "visual_prompt": "画一条时间轴：T1 开始并第一次普通 SELECT（余额 100），T2 修改为 150 并 COMMIT，T1 第二次普通 SELECT 仍显示 100；在 T1 提交处标注“序列化异常被拒绝”，旁边用箭头表示“重试整个事务（重新读取并重新决策）”，不显示正确答案文字。"
+}

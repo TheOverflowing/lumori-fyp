@@ -1,0 +1,41 @@
+{
+  "title": "数据库事务：原子性、快照隔离语义与重试（练习）",
+  "evidence_sufficient": true,
+  "evidence_note": "参考片段 fixture_transactions_zh 覆盖了原子性、Read Committed 与 Repeatable Read 的快照语义、Serializable 的序列化异常检查，以及重试整个事务的要求，足以生成一道 medium 简答题。",
+  "learning_objectives": [
+    "能把原子性应用到具体转账情境，区分未提交写入与已提交状态。",
+    "能比较 Read Committed 与 Repeatable Read 下同一事务连续查询的可见性差异。",
+    "能分析重试方案是否重新执行了依赖读取结果的决策。"
+  ],
+  "sections": [],
+  "questions": [
+    {
+      "kind": "short_answer",
+      "stem": "某应用在 PostgreSQL 的 Repeatable Read 隔离级别下运行一个事务 T：T 首先执行普通 SELECT 读取账户 A 的余额为 100，据此决定向账户 B 转入 30，并执行相应写入，最后提交。与此同时，另一个事务 U 在 T 开始后、T 的第一次 SELECT 之前已经把 A 的余额改为 200 并提交。请回答：(1) T 的第一次 SELECT 会看到 A 的余额是多少？为什么？(2) 如果 T 因序列化异常而失败，应用只重试最后一条失败的写入语句，而不重新读取 A 的余额，可能产生什么问题？(3) 结合原子性，说明 T 的扣款与入账为什么必须作为一个单元提交或回滚。",
+      "options": [],
+      "answer": "(1) T 的第一次 SELECT 看到 100。因为 Repeatable Read 下普通查询使用本事务第一条非事务控制语句对应的快照，U 虽然已经提交，但该提交发生在快照建立之后，所以 T 的连续查询不会因 U 的提交而改变视图。(2) 只重试最后一条失败语句可能继续使用失效的决策：T 原本基于余额 100 决定转 30，而 U 已把余额改为 200；不重新读取 A 的余额就重试写入，可能在不正确的旧决策上继续执行。正确做法是重试整个事务，包括读取数据和据此选择写入操作的应用逻辑。(3) 原子性要求扣款与入账要么都提交、要么都回滚，不能只留下其中一笔已提交；否则会出现资金凭空消失或凭空出现的状态。",
+      "explanation": "本题要求在具体交错情境中应用快照隔离和重试原则。Repeatable Read 的稳定快照来自本事务第一条非事务控制语句；重试必须覆盖依赖读取结果的决策逻辑；原子性则保证转账的两笔修改不可分割。",
+      "difficulty_reason": "题目把 Repeatable Read 快照语义、序列化失败重试范围与原子性三个概念应用到同一转账情境，需要比较可见性并分析重试方案，符合 medium 档的应用与分析要求。",
+      "citation_ids": [
+        "fixture_transactions_zh"
+      ],
+      "slot_id": "q1",
+      "difficulty": "medium",
+      "difficulty_design": {
+        "cognitive_process": "analyze",
+        "concepts": [
+          "原子性",
+          "Repeatable Read 快照",
+          "序列化异常重试",
+          "事务边界"
+        ],
+        "expected_steps": [
+          "判断 T 第一次 SELECT 看到 100，并说明 Repeatable Read 使用本事务第一条非事务控制语句对应的快照。",
+          "指出只重试最后一条失败语句会继续使用基于旧余额的失效决策，应重试整个事务。",
+          "说明原子性要求扣款与入账作为一个单元提交或回滚，不能只留下一笔。"
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "画一个时间轴示意图：左侧是事务 T 的语句序列（BEGIN、第一次 SELECT 读到 A=100、决定转 30、写入、COMMIT），右侧是事务 U 的提交点（把 A 改为 200 并提交）。用竖线标出 T 的快照建立时刻在 U 提交之前，并用括号把 T 的扣款与入账括在一起标注“原子单元：一起提交或一起回滚”。图中不标注答案文字。"
+}

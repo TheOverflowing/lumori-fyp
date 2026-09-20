@@ -1,0 +1,75 @@
+{
+  "title": "CPU Scheduling: Response Time, Turnaround Time, and Time-Slice Tradeoffs",
+  "evidence_sufficient": true,
+  "evidence_note": "The reference chunk provides explicit definitions of response time and turnaround time, describes FCFS, SJF, STCF, Round Robin, and MLFQ, states tradeoffs for time-slice length, and supplies a scheduling model with conventions for overhead, arrivals, ties, and workload assumptions. These are sufficient to design one hard short-answer question that requires applying and evaluating scheduling choices under constraints.",
+  "learning_objectives": [
+    "Distinguish response time from turnaround time and explain why early first execution does not guarantee early completion.",
+    "Apply Round Robin time-slice tradeoffs to a concrete workload with switching overhead.",
+    "Evaluate a scheduling policy choice against multiple stated objectives and constraints using cited scheduling concepts."
+  ],
+  "sections": [
+    {
+      "heading": "Metrics: Response Time vs. Turnaround Time",
+      "text": "Turnaround time equals completion time minus arrival time. Response time equals the first time a job runs minus its arrival time. These measure different things: a job can start early but finish late, or start late but finish quickly once it runs. When comparing policies, report both metrics separately rather than assuming one implies the other.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    },
+    {
+      "heading": "Round Robin and Time-Slice Tradeoffs",
+      "text": "Round Robin rotates through a ready queue, running each selected job for at most one time slice before moving an unfinished job to the back. Shorter slices can improve initial responsiveness but increase context-switch frequency. Larger slices amortize switching costs but can lengthen waits before a different job first runs. Neither a smaller average response time nor a smaller switching fraction alone establishes that a policy is best for every objective.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    },
+    {
+      "heading": "Scheduling Model and Conventions",
+      "text": "Unless stated otherwise, there is one processor, jobs are independent, each job has one CPU burst with no I/O, and arrival times and required CPU service are provided. The processor never serves two jobs simultaneously. Time spent switching is not CPU service delivered to any job. A job that finishes before its slice ends does not use the remaining slice. If a job arrives exactly at a slice boundary, the question must say whether it is enqueued before or after the preempted job. Ties must be resolved by an explicit rule. If switching overhead is included, the question must define when it applies and whether arrivals can occur during switching.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    },
+    {
+      "heading": "Choosing a Policy Requires an Objective and Constraints",
+      "text": "A design recommendation needs an objective and constraints, such as a maximum response time, a switching budget, or a fairness requirement. A policy can satisfy one constraint while losing on another metric. Choosing a scheduler should follow the stated workload and requirements. Hypothetical burst lengths and budgets introduced in an exercise are not measured workload traces.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "kind": "short_answer",
+      "stem": "Consider a single-processor system with three independent CPU-bound jobs, each consisting of one CPU burst with no I/O. Arrival times and required CPU service are:\n\n- Job A: arrives at time 0, requires 6 units of CPU service.\n- Job B: arrives at time 1, requires 3 units of CPU service.\n- Job C: arrives at time 2, requires 2 units of CPU service.\n\nYou must choose between two policies:\n\n- Policy R2: Round Robin with a time slice of 2 units.\n- Policy R4: Round Robin with a time slice of 4 units.\n\nFor both policies, assume switching overhead is 1 unit and applies only when the processor moves between different jobs; there is no initial dispatch charge. Arrivals can occur during switching and enter the ready queue immediately. If a job finishes before its slice ends, the next job starts immediately with no switching overhead for that transition. If a job arrives exactly at a slice boundary, it is enqueued before the preempted job. Resolve ties by alphabetical job name.\n\nYour task: Compute each job's first-run time and completion time under both policies, then compute the average response time and average turnaround time for each policy. Finally, recommend one policy for a workload where the primary objective is minimizing average response time and the secondary objective is minimizing switching overhead. Justify your recommendation by referencing the computed metrics and the constraints. State any assumption you need to make about how switching overhead interacts with the scheduling model.",
+      "options": [],
+      "answer": "A correct answer should include the following computations and reasoning.\n\nPolicy R2 (time slice = 2, switching overhead = 1 between different jobs):\n\nTimeline:\n- t=0: A runs (slice 0-2). A remaining = 4.\n- t=2: switch to B (overhead 1). B first runs at t=3.\n- t=3-5: B runs (slice 3-5). B remaining = 1.\n- t=5: switch to C (overhead 1). C first runs at t=6.\n- t=6-8: C runs (slice 6-8). C finishes at t=8.\n- t=8: switch to A (overhead 1). A runs at t=9.\n- t=9-11: A runs (slice 9-11). A remaining = 2.\n- t=11: switch to B (overhead 1). B runs at t=12.\n- t=12-13: B runs (slice 12-13). B finishes at t=13.\n- t=13: switch to A (overhead 1). A runs at t=14.\n- t=14-16: A runs (slice 14-16). A finishes at t=16.\n\nFirst-run times: A=0, B=3, C=6.\nCompletion times: A=16, B=13, C=8.\nResponse times: A=0-0=0, B=3-1=2, C=6-2=4. Average response time = (0+2+4)/3 = 2.\nTurnaround times: A=16-0=16, B=13-1=12, C=8-2=6. Average turnaround time = (16+12+6)/3 = 34/3 ≈ 11.33.\n\nPolicy R4 (time slice = 4, switching overhead = 1 between different jobs):\n\nTimeline:\n- t=0: A runs (slice 0-4). A remaining = 2.\n- t=4: switch to B (overhead 1). B first runs at t=5.\n- t=5-8: B runs (slice 5-8). B finishes at t=8.\n- t=8: switch to C (overhead 1). C first runs at t=9.\n- t=9-11: C runs (slice 9-11). C finishes at t=11.\n- t=11: switch to A (overhead 1). A runs at t=12.\n- t=12-14: A runs (slice 12-14). A finishes at t=14.\n\nFirst-run times: A=0, B=5, C=9.\nCompletion times: A=14, B=8, C=11.\nResponse times: A=0-0=0, B=5-1=4, C=9-2=7. Average response time = (0+4+7)/3 = 11/3 ≈ 3.67.\nTurnaround times: A=14-0=14, B=8-1=7, C=11-2=9. Average turnaround time = (14+7+9)/3 = 30/3 = 10.\n\nRecommendation: Policy R2 is preferable for the primary objective of minimizing average response time, because its average response time (2) is lower than Policy R4's (3.67). However, Policy R4 has lower average turnaround time (10 vs. 11.33) and fewer context switches (3 switches vs. 5 switches in R2), so it better satisfies the secondary objective of minimizing switching overhead. A complete recommendation should acknowledge this tradeoff and state which objective is prioritized. If the primary objective is strictly average response time, choose R2; if switching overhead is weighted more heavily, R4 may be preferred despite worse response time.\n\nAssumption: Switching overhead is charged only when the processor moves between different jobs, and arrivals during switching enter the ready queue immediately. If a job finishes before its slice ends, no switching overhead is charged for that transition.",
+      "explanation": "This question requires integrating several scheduling concepts: Round Robin time-slice effects, response time vs. turnaround time, switching overhead, and multi-objective policy evaluation. Students must compute timelines under two policies, derive both metrics, and then justify a recommendation under stated constraints. The answer cannot be obtained by recalling a definition; it requires applying the scheduling model, analyzing tradeoffs, and evaluating which policy best meets the stated objectives.",
+      "difficulty_reason": "The task is hard because it combines multiple concepts (Round Robin, time-slice tradeoffs, response time, turnaround time, switching overhead) in a concrete constrained scenario. Students must construct timelines, compute metrics, compare policies, and provide a reasoned recommendation that acknowledges conflicting objectives. The difficulty comes from knowledge integration and multi-step reasoning under constraints, not from recalling isolated facts.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ],
+      "slot_id": "q1",
+      "difficulty": "hard",
+      "difficulty_design": {
+        "cognitive_process": "evaluate",
+        "concepts": [
+          "Round Robin scheduling",
+          "response time",
+          "turnaround time",
+          "time-slice tradeoffs",
+          "switching overhead",
+          "multi-objective policy evaluation"
+        ],
+        "expected_steps": [
+          "Construct timelines for both policies using the stated model, including switching overhead and arrival rules.",
+          "Compute first-run times and completion times for each job under both policies.",
+          "Compute average response time and average turnaround time for each policy.",
+          "Compare the policies against the primary and secondary objectives.",
+          "Recommend a policy and justify it with computed metrics and stated constraints.",
+          "State any assumption about switching overhead or arrival handling."
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "A timeline diagram showing two horizontal tracks, one for Policy R2 and one for Policy R4. Each track displays colored blocks representing CPU service for jobs A, B, and C, with small gaps representing switching overhead. Time markers along the bottom show arrival times, first-run times, and completion times. A side panel lists the definitions of response time and turnaround time, and a small table compares the two policies on average response time, average turnaround time, and number of context switches. The diagram should not include the final recommendation."
+}

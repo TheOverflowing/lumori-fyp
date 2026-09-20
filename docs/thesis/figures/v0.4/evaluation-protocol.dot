@@ -1,0 +1,17 @@
+digraph G { graph [bgcolor="white", pad="0.25", nodesep="0.38", ranksep="0.5", fontname="Helvetica", fontsize=13]; node [shape=box, style="filled", fillcolor="#F5F7F9", color="#384651", fontname="Helvetica", fontsize=12, margin="0.14,0.10"]; edge [color="#384651", fontname="Helvetica", fontsize=10, arrowsize=0.7];
+
+rankdir=LR;
+freeze [label="Freeze corpus + policy"];
+group [label="Group related needs
+separate development / test"];
+arms [label="Paired retrieval arms"];
+rank [label="Hit@k / MRR@k"];
+audit [label="Semantic audit
+intent / answer leakage"];
+ledger [label="Calls / failures / costs"];
+claim [label="Bounded conclusions
+retain negative results"];
+freeze -> group -> arms; arms -> rank; arms -> audit; arms -> ledger;
+rank -> claim; audit -> claim; ledger -> claim;
+
+}

@@ -1,0 +1,18 @@
+digraph G { graph [bgcolor="white", pad="0.25", nodesep="0.38", ranksep="0.5", fontname="Helvetica", fontsize=13]; node [shape=box, style="filled", fillcolor="#F5F7F9", color="#384651", fontname="Helvetica", fontsize=12, margin="0.14,0.10"]; edge [color="#384651", fontname="Helvetica", fontsize=10, arrowsize=0.7];
+
+rankdir=LR;
+q [label="Original query"];
+rewrite [label="Optional rewrite",style="filled,dashed"];
+original [label="Original-query retrieval"];
+second [label="Rewritten-query retrieval",style="filled,dashed"];
+merge [label="RRF60 fusion",style="filled,dashed"];
+rerank [label="Rerank"];
+context [label="Bounded evidence"];
+index [label="Owned course index",shape=cylinder];
+q -> original; q -> rewrite [style=dashed]; rewrite -> second [style=dashed];
+index -> original; index -> second [style=dashed];
+original -> rerank [label="fusion off / fallback"];
+original -> merge [style=dashed]; second -> merge [style=dashed];
+merge -> rerank [style=dashed]; rerank -> context;
+
+}

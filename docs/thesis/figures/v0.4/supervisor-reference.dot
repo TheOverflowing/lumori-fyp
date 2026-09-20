@@ -1,0 +1,29 @@
+digraph G { graph [bgcolor="white", pad="0.25", nodesep="0.38", ranksep="0.5", fontname="Helvetica", fontsize=13]; node [shape=box, style="filled", fillcolor="#F5F7F9", color="#384651", fontname="Helvetica", fontsize=12, margin="0.14,0.10"]; edge [color="#384651", fontname="Helvetica", fontsize=10, arrowsize=0.7];
+
+rankdir=TB;
+subgraph cluster_host {label="HOST CONTROLLER"; style=dashed; color="#82909A";
+slots [label="Slots + targets + evidence"];
+plan [label="Main agent
+plan briefs", fillcolor="#E9EEF2"];
+valid [label="Valid plan?", shape=diamond]; stop [label="Stop + record"];
+dispatch [label="Freeze plan
+serial dispatch"];
+all [label="All slots
+accepted?", shape=diamond];
+assembly [label="Deterministic assembly"];
+slots -> plan -> valid; valid -> stop [label="no"]; valid -> dispatch [label="yes"];
+all -> dispatch [label="no", constraint=false]; all -> assembly [label="yes"];
+}
+subgraph cluster_worker {label="ISOLATED SUBAGENT q_i"; style=dashed; color="#82909A";
+author [label="Author"]; solver [label="Blind solver"]; review [label="Reviewer"];
+accept [label="Accept?",shape=diamond]; budget [label="Repair budget?",shape=diamond];
+checkpoint [label="Accepted checkpoint"]; fail [label="Retain failure"];
+{rank=same;author;solver;review;accept;}
+author -> solver -> review -> accept;
+accept -> checkpoint [label="yes"]; accept -> budget [label="no"];
+budget -> author [label="yes: feedback",constraint=false]; budget -> fail [label="no"];
+}
+dispatch -> author [label="brief + source IDs"]; checkpoint -> all;
+assembly -> draft [label="complete set"]; draft [label="Versioned draft"];
+
+}

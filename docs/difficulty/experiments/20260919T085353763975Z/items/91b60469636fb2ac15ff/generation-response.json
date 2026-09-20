@@ -1,0 +1,40 @@
+{
+  "title": "数据库事务：原子性、快照隔离语义与重试（练习）",
+  "evidence_sufficient": true,
+  "evidence_note": "参考片段 fixture_transactions_zh 覆盖了原子性、Read Committed 与 Repeatable Read 的可见性差异、Serializable 的序列化异常、以及重试整个事务的要求，足以支持一道中等难度的应用分析题。",
+  "learning_objectives": [
+    "能区分未提交修改与已提交状态，说明原子性在转账类场景中的作用",
+    "能根据隔离级别判断事务内连续读取的可见性",
+    "能分析重试方案是否重新执行了依赖读取结果的决策"
+  ],
+  "sections": [],
+  "questions": [
+    {
+      "slot_id": "q1",
+      "difficulty": "medium",
+      "kind": "short_answer",
+      "stem": "某应用在 PostgreSQL 的 Repeatable Read 隔离级别下运行事务 T，逻辑为：先读取账户 A 的余额，再根据该余额决定向 B 写入的金额，最后提交。并发事务 T2 在 T 开始后、T 第一次读取 A 之前提交了对 A 的修改。请回答：（1）T 中连续两次普通 SELECT 读取 A，会看到 T2 提交后的新值吗？请依据快照语义说明。（2）如果 T 在提交时因序列化异常被拒绝，应用只重试最后一条失败的写入语句是否合适？请说明理由，并指出正确的重试范围。",
+      "options": [],
+      "answer": "（1）不会。Repeatable Read 下普通查询使用本事务第一条非事务控制语句对应的快照，T 在 T2 提交前已开始并完成首次读取，因此后续 SELECT 仍看到该快照中的旧值，不会因 T2 提交而改变视图（fixture_transactions_zh）。（2）不合适。序列化失败时应重试整个事务，包括读取 A 余额并据此选择写入金额的应用逻辑；只重试最后一条写入语句可能继续使用已经失效的决策（fixture_transactions_zh）。正确做法是从事务开始处重新执行读取与决策，再重新提交；重试本身也可能再次失败，不能承诺一次重试必然成功（fixture_transactions_zh）。",
+      "explanation": "本题考查把快照隔离语义和重试范围应用到具体交错情境。第（1）问的关键是区分 Read Committed 与 Repeatable Read：前者后续 SELECT 可看到新提交结果，后者使用本事务第一条非事务控制语句的快照，因此连续读取保持稳定（fixture_transactions_zh）。第（2）问的关键是识别“读取—决策—写入”的依赖链，重试必须覆盖整条链，而不是只覆盖最后一条语句（fixture_transactions_zh）。",
+      "difficulty_reason": "题目要求把快照语义应用到给定的并发交错中判断可见性，并分析重试方案是否覆盖依赖读取结果的决策，属于应用与分析，符合 medium 的 2–3 个关联评分步骤，不是复述定义。",
+      "citation_ids": [
+        "fixture_transactions_zh"
+      ],
+      "difficulty_design": {
+        "cognitive_process": "analyze",
+        "concepts": [
+          "Repeatable Read 快照语义",
+          "序列化异常",
+          "事务重试范围"
+        ],
+        "expected_steps": [
+          "依据 Repeatable Read 快照说明连续读取不会因 T2 提交而改变",
+          "识别“读取余额—决定写入金额”的依赖链",
+          "说明序列化失败需重试整个事务而非仅重试最后一条语句"
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "画一条时间轴：T 开始并首次读取 A 余额，随后 T2 提交对 A 的修改；在 T 的后续 SELECT 处标注“仍读快照旧值”。下方用箭头标出 T 的“读取 A → 决策写入金额 → 提交”，并在提交失败处画一条回到事务起点的重试箭头，覆盖整条链。"
+}

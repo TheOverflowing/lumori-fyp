@@ -1,0 +1,17 @@
+digraph G { graph [bgcolor="white", pad="0.25", nodesep="0.38", ranksep="0.5", fontname="Helvetica", fontsize=13]; node [shape=box, style="filled", fillcolor="#F5F7F9", color="#384651", fontname="Helvetica", fontsize=12, margin="0.14,0.10"]; edge [color="#384651", fontname="Helvetica", fontsize=10, arrowsize=0.7];
+
+rankdir=LR;
+login [label="Register / log in"];
+session [label="Opaque session"];
+auth [label="Authenticate"];
+scope [label="Owner + course scope"];
+mutation [label="CSRF check
+for mutations"];
+objects [label="Sources / vectors
+jobs / versions"];
+reject [label="Reject request"];
+login -> session -> auth; auth -> scope [label="valid"]; auth -> reject [label="invalid"];
+scope -> objects [label="owned reads"]; scope -> mutation -> objects;
+scope -> reject [label="not owned"]; mutation -> reject [label="invalid token"];
+
+}

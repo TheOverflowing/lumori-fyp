@@ -1,0 +1,587 @@
+[
+  {
+    "blind_id": "c02a9498226d66ea5d55",
+    "assessment_input": {
+      "learner_profile": "计算机本科生，已学习所给资料、基本程序控制结构与本课程入门概念；可查阅本题资料，不假定进阶课程、特定语言库或其他数据库的知识。",
+      "rubric_version": "difficulty-rubric-v1",
+      "rubric": {
+        "easy": {
+          "description": "直接记忆或解释资料中的一个明确知识点；条件完整，无需选择复杂策略。",
+          "cognitive_processes": [
+            "remember",
+            "understand"
+          ],
+          "expected_steps": {
+            "min": 1,
+            "max": 2
+          },
+          "requirement": "评分要点为 1–2 个简短关键步骤；答案能由资料直接支持。"
+        },
+        "medium": {
+          "description": "把已学概念应用到具体情境，或比较、分析相关概念及其关系。",
+          "cognitive_processes": [
+            "apply",
+            "analyze"
+          ],
+          "expected_steps": {
+            "min": 2,
+            "max": 3
+          },
+          "requirement": "评分要点为 2–3 个相互关联的步骤，需要应用或分析，不能只是改写定义。"
+        },
+        "hard": {
+          "description": "在资料范围内综合概念，处理情境约束，进行有依据的分析、评价或设计。",
+          "cognitive_processes": [
+            "analyze",
+            "evaluate",
+            "create"
+          ],
+          "expected_steps": {
+            "min": 3,
+            "max": 6
+          },
+          "requirement": "评分要点为 3–6 个关键步骤；题干必须要求处理具体情境约束并论证判断或设计。困难来自知识整合与推理，不能只靠复述、冷门术语、冗长措辞或资料以外的知识。"
+        }
+      },
+      "rubric_note": "以上为相对于 learner_profile 的操作性出题标准。认知过程和评分步骤是设计约束，不能单独证明实际难度；不得把 Bloom 层级或步骤数量等同于实测难度。expected_steps 只写面向学生和教师的简短评分要点，不输出隐藏思维链。",
+      "question": {
+        "stem": "某应用在 PostgreSQL 中使用 Repeatable Read 隔离级别执行一个事务：先读取账户 A 的余额，再根据该余额决定是否向账户 B 写入一笔转账。若提交时发生序列化失败，应用应如何重试？请说明重试范围，并解释为什么不能只重试最后一条失败语句。",
+        "options": [],
+        "answer": "应重试整个事务，包括重新读取账户 A 的余额以及根据该余额重新决定是否写入转账。不能只重试最后一条失败语句，因为原决策可能基于已经失效的读取结果；只重试写入会继续使用旧决策，无法保证正确性。重试本身也可能再次失败，不能承诺一次重试必然成功。",
+        "explanation": "序列化失败意味着当前事务的执行不能安全提交。重试范围必须覆盖读取数据和据此选择写入操作的应用逻辑，否则可能继续使用失效的决策。"
+      },
+      "reference_chunks": [
+        {
+          "id": "fixture_transactions_zh",
+          "text": "数据库事务将多个操作组成一个单元。在 PostgreSQL 中，BEGIN 开始显式事务，COMMIT 提交成功修改，ROLLBACK 取消未提交修改。其他事务不会把这个单元尚未完成的修改当成已经提交的结果。转账的扣款与入账说明了原子性的作用：失败不能只留下其中一笔已提交。事务也能看到自己此前执行的修改。\n\n隔离级别规定并发事务观察状态的方式。PostgreSQL 的 Read Committed 下，普通 SELECT 看到语句开始前已经提交的数据，以及本事务此前的修改；同一事务后续 SELECT 可以看到其他事务新提交的结果。Repeatable Read 则让普通查询使用本事务第一条非事务控制语句对应的快照，连续查询不会因其他事务的提交而改变这一视图。但稳定快照不代表并发事务的全部结果一定等价于逐个执行。Serializable 增加对序列化异常的检查，必要时拒绝某次执行，而不是允许它提交。\n\n应用必须处理事务失败。出现序列化失败时，应重试整个事务，包括读取数据和据此选择写入操作的应用逻辑；仅重试最后一条失败语句可能继续使用失效的决策。重试本身也可能再次失败，不能承诺重试一次就一定成功。选择隔离语义并不意味着所有并发交错都能自动完成。\n\n以下是本教学练习自定的建模约定，不是原文引用或实测工作量：两个具名会话分别按顺序执行语句；交错表明确标出语句开始与提交时刻；默认使用普通查询，若涉及加锁读取须特别说明。题目提供初始表内容与所有相关修改，不隐含触发器、其他约束、后台事务或外部副作用；若需要这些特性，必须说明规则。\n\n分析可见性时，先判断每次读取允许看到什么，再讨论事务最终是否提交；分析原子性时，区分未提交写入与已提交状态。评价重试方案时，要检查是否重新执行了依赖读取结果的决策，并说明目标是正确性、可用性还是两者兼顾。不能把其他数据库的行为默认套到本资料的 PostgreSQL 语义。\n\n所有难度使用同一知识范围。题目可以自拟小表和简短交错，但须明确事务边界与隔离级别。“安全”“一致”等词应落实为具体不变量，如保持明确给出的总量或禁止特定并发结果。题内数值属于练习输入，不是实验观测值。"
+        }
+      ],
+      "schema": {
+        "additionalProperties": false,
+        "description": "One blinded AI judgement; boolean strings are rejected, not coerced.",
+        "properties": {
+          "assessed_difficulty": {
+            "enum": [
+              "easy",
+              "medium",
+              "hard",
+              "uncertain"
+            ],
+            "title": "Assessed Difficulty",
+            "type": "string"
+          },
+          "correctness": {
+            "title": "Correctness",
+            "type": "boolean"
+          },
+          "grounded": {
+            "title": "Grounded",
+            "type": "boolean"
+          },
+          "answerable": {
+            "title": "Answerable",
+            "type": "boolean"
+          },
+          "ambiguity_free": {
+            "title": "Ambiguity Free",
+            "type": "boolean"
+          },
+          "rationale": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          },
+          "confidence": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          }
+        },
+        "required": [
+          "assessed_difficulty",
+          "correctness",
+          "grounded",
+          "answerable",
+          "ambiguity_free",
+          "rationale",
+          "confidence"
+        ],
+        "title": "DifficultyJudgeResult",
+        "type": "object"
+      }
+    }
+  },
+  {
+    "blind_id": "9cbf575b8b82168c4e20",
+    "assessment_input": {
+      "learner_profile": "计算机本科生，已学习所给资料、基本程序控制结构与本课程入门概念；可查阅本题资料，不假定进阶课程、特定语言库或其他数据库的知识。",
+      "rubric_version": "difficulty-rubric-v1",
+      "rubric": {
+        "easy": {
+          "description": "直接记忆或解释资料中的一个明确知识点；条件完整，无需选择复杂策略。",
+          "cognitive_processes": [
+            "remember",
+            "understand"
+          ],
+          "expected_steps": {
+            "min": 1,
+            "max": 2
+          },
+          "requirement": "评分要点为 1–2 个简短关键步骤；答案能由资料直接支持。"
+        },
+        "medium": {
+          "description": "把已学概念应用到具体情境，或比较、分析相关概念及其关系。",
+          "cognitive_processes": [
+            "apply",
+            "analyze"
+          ],
+          "expected_steps": {
+            "min": 2,
+            "max": 3
+          },
+          "requirement": "评分要点为 2–3 个相互关联的步骤，需要应用或分析，不能只是改写定义。"
+        },
+        "hard": {
+          "description": "在资料范围内综合概念，处理情境约束，进行有依据的分析、评价或设计。",
+          "cognitive_processes": [
+            "analyze",
+            "evaluate",
+            "create"
+          ],
+          "expected_steps": {
+            "min": 3,
+            "max": 6
+          },
+          "requirement": "评分要点为 3–6 个关键步骤；题干必须要求处理具体情境约束并论证判断或设计。困难来自知识整合与推理，不能只靠复述、冷门术语、冗长措辞或资料以外的知识。"
+        }
+      },
+      "rubric_note": "以上为相对于 learner_profile 的操作性出题标准。认知过程和评分步骤是设计约束，不能单独证明实际难度；不得把 Bloom 层级或步骤数量等同于实测难度。expected_steps 只写面向学生和教师的简短评分要点，不输出隐藏思维链。",
+      "question": {
+        "stem": "某 PostgreSQL 应用在 Repeatable Read 隔离级别下运行事务 T。T 先执行一次普通 SELECT 读取账户余额，然后根据该余额决定写入一条调整记录，提交时遇到序列化失败。应用当前的错误处理只重新执行最后一条失败的写入语句。请分析：只重试最后一条失败语句是否可能使 T 的决策基于失效的读取结果；并说明按照资料应如何重试整个事务，以及为什么不能承诺重试一次就一定成功。",
+        "options": [],
+        "answer": "可能。Repeatable Read 让普通查询使用本事务第一条非事务控制语句对应的快照，因此 T 第一次普通 SELECT 看到的余额在 T 的后续普通查询中不会因其他事务提交而改变；但提交时仍可能因序列化异常被拒绝。如果只重新执行最后一条失败的写入语句，应用逻辑中“根据读取余额决定写入什么”的决策没有被重新执行，可能继续使用已经失效的读取结果。按照资料，应重试整个事务，包括读取数据和据此选择写入操作的应用逻辑，使决策在新的事务中基于新的快照重新做出。重试本身也可能再次失败，因为新的执行仍可能遇到序列化异常，所以不能承诺重试一次就一定成功。",
+        "explanation": "先判断 Repeatable Read 下普通查询的快照行为，再说明序列化失败后只重试最后一条语句会保留失效决策，最后给出重试整个事务的要求及其不确定性。"
+      },
+      "reference_chunks": [
+        {
+          "id": "fixture_transactions_zh",
+          "text": "数据库事务将多个操作组成一个单元。在 PostgreSQL 中，BEGIN 开始显式事务，COMMIT 提交成功修改，ROLLBACK 取消未提交修改。其他事务不会把这个单元尚未完成的修改当成已经提交的结果。转账的扣款与入账说明了原子性的作用：失败不能只留下其中一笔已提交。事务也能看到自己此前执行的修改。\n\n隔离级别规定并发事务观察状态的方式。PostgreSQL 的 Read Committed 下，普通 SELECT 看到语句开始前已经提交的数据，以及本事务此前的修改；同一事务后续 SELECT 可以看到其他事务新提交的结果。Repeatable Read 则让普通查询使用本事务第一条非事务控制语句对应的快照，连续查询不会因其他事务的提交而改变这一视图。但稳定快照不代表并发事务的全部结果一定等价于逐个执行。Serializable 增加对序列化异常的检查，必要时拒绝某次执行，而不是允许它提交。\n\n应用必须处理事务失败。出现序列化失败时，应重试整个事务，包括读取数据和据此选择写入操作的应用逻辑；仅重试最后一条失败语句可能继续使用失效的决策。重试本身也可能再次失败，不能承诺重试一次就一定成功。选择隔离语义并不意味着所有并发交错都能自动完成。\n\n以下是本教学练习自定的建模约定，不是原文引用或实测工作量：两个具名会话分别按顺序执行语句；交错表明确标出语句开始与提交时刻；默认使用普通查询，若涉及加锁读取须特别说明。题目提供初始表内容与所有相关修改，不隐含触发器、其他约束、后台事务或外部副作用；若需要这些特性，必须说明规则。\n\n分析可见性时，先判断每次读取允许看到什么，再讨论事务最终是否提交；分析原子性时，区分未提交写入与已提交状态。评价重试方案时，要检查是否重新执行了依赖读取结果的决策，并说明目标是正确性、可用性还是两者兼顾。不能把其他数据库的行为默认套到本资料的 PostgreSQL 语义。\n\n所有难度使用同一知识范围。题目可以自拟小表和简短交错，但须明确事务边界与隔离级别。“安全”“一致”等词应落实为具体不变量，如保持明确给出的总量或禁止特定并发结果。题内数值属于练习输入，不是实验观测值。"
+        }
+      ],
+      "schema": {
+        "additionalProperties": false,
+        "description": "One blinded AI judgement; boolean strings are rejected, not coerced.",
+        "properties": {
+          "assessed_difficulty": {
+            "enum": [
+              "easy",
+              "medium",
+              "hard",
+              "uncertain"
+            ],
+            "title": "Assessed Difficulty",
+            "type": "string"
+          },
+          "correctness": {
+            "title": "Correctness",
+            "type": "boolean"
+          },
+          "grounded": {
+            "title": "Grounded",
+            "type": "boolean"
+          },
+          "answerable": {
+            "title": "Answerable",
+            "type": "boolean"
+          },
+          "ambiguity_free": {
+            "title": "Ambiguity Free",
+            "type": "boolean"
+          },
+          "rationale": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          },
+          "confidence": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          }
+        },
+        "required": [
+          "assessed_difficulty",
+          "correctness",
+          "grounded",
+          "answerable",
+          "ambiguity_free",
+          "rationale",
+          "confidence"
+        ],
+        "title": "DifficultyJudgeResult",
+        "type": "object"
+      }
+    }
+  },
+  {
+    "blind_id": "f3408b4d48611e79519f",
+    "assessment_input": {
+      "learner_profile": "计算机本科生，已学习所给资料、基本程序控制结构与本课程入门概念；可查阅本题资料，不假定进阶课程、特定语言库或其他数据库的知识。",
+      "rubric_version": "difficulty-rubric-v1",
+      "rubric": {
+        "easy": {
+          "description": "直接记忆或解释资料中的一个明确知识点；条件完整，无需选择复杂策略。",
+          "cognitive_processes": [
+            "remember",
+            "understand"
+          ],
+          "expected_steps": {
+            "min": 1,
+            "max": 2
+          },
+          "requirement": "评分要点为 1–2 个简短关键步骤；答案能由资料直接支持。"
+        },
+        "medium": {
+          "description": "把已学概念应用到具体情境，或比较、分析相关概念及其关系。",
+          "cognitive_processes": [
+            "apply",
+            "analyze"
+          ],
+          "expected_steps": {
+            "min": 2,
+            "max": 3
+          },
+          "requirement": "评分要点为 2–3 个相互关联的步骤，需要应用或分析，不能只是改写定义。"
+        },
+        "hard": {
+          "description": "在资料范围内综合概念，处理情境约束，进行有依据的分析、评价或设计。",
+          "cognitive_processes": [
+            "analyze",
+            "evaluate",
+            "create"
+          ],
+          "expected_steps": {
+            "min": 3,
+            "max": 6
+          },
+          "requirement": "评分要点为 3–6 个关键步骤；题干必须要求处理具体情境约束并论证判断或设计。困难来自知识整合与推理，不能只靠复述、冷门术语、冗长措辞或资料以外的知识。"
+        }
+      },
+      "rubric_note": "以上为相对于 learner_profile 的操作性出题标准。认知过程和评分步骤是设计约束，不能单独证明实际难度；不得把 Bloom 层级或步骤数量等同于实测难度。expected_steps 只写面向学生和教师的简短评分要点，不输出隐藏思维链。",
+      "question": {
+        "stem": "某应用在 PostgreSQL 的 Repeatable Read 隔离级别下运行事务 T。T 先执行一条普通 SELECT，读到账户 A 的余额为 100；随后另一事务把 A 的余额改为 80 并提交；T 再次执行同样的普通 SELECT。请回答：(1) T 第二次读取看到的值是多少，依据是什么；(2) 如果 T 在第二次读取后打算根据该值写入一笔扣款，而提交时因序列化异常被拒绝，应用应当重试什么、为什么不能只重试最后一条失败语句。请结合资料中的快照与重试语义说明。",
+        "options": [],
+        "answer": "参考答案：(1) T 第二次普通 SELECT 仍看到 100。依据是 Repeatable Read 下普通查询使用本事务第一条非事务控制语句对应的快照，连续查询不会因其他事务的提交而改变这一视图，所以另一事务提交的 80 对 T 不可见。(2) 应用应当重试整个事务，包括重新执行读取 A 余额的查询以及据此选择写入操作的应用逻辑。因为仅重试最后一条失败语句会继续使用基于旧快照（100）做出的决策，而该决策在并发修改后可能已经失效；重试整个事务才能基于新快照重新读取并重新决定写入。重试本身也可能再次失败，不能承诺一次成功。",
+        "explanation": "先按 Repeatable Read 的快照规则判断第二次读取的可见性，再根据资料中“重试整个事务，包括读取数据和据此选择写入操作的应用逻辑”的要求，说明只重试失败语句会沿用失效决策。"
+      },
+      "reference_chunks": [
+        {
+          "id": "fixture_transactions_zh",
+          "text": "数据库事务将多个操作组成一个单元。在 PostgreSQL 中，BEGIN 开始显式事务，COMMIT 提交成功修改，ROLLBACK 取消未提交修改。其他事务不会把这个单元尚未完成的修改当成已经提交的结果。转账的扣款与入账说明了原子性的作用：失败不能只留下其中一笔已提交。事务也能看到自己此前执行的修改。\n\n隔离级别规定并发事务观察状态的方式。PostgreSQL 的 Read Committed 下，普通 SELECT 看到语句开始前已经提交的数据，以及本事务此前的修改；同一事务后续 SELECT 可以看到其他事务新提交的结果。Repeatable Read 则让普通查询使用本事务第一条非事务控制语句对应的快照，连续查询不会因其他事务的提交而改变这一视图。但稳定快照不代表并发事务的全部结果一定等价于逐个执行。Serializable 增加对序列化异常的检查，必要时拒绝某次执行，而不是允许它提交。\n\n应用必须处理事务失败。出现序列化失败时，应重试整个事务，包括读取数据和据此选择写入操作的应用逻辑；仅重试最后一条失败语句可能继续使用失效的决策。重试本身也可能再次失败，不能承诺重试一次就一定成功。选择隔离语义并不意味着所有并发交错都能自动完成。\n\n以下是本教学练习自定的建模约定，不是原文引用或实测工作量：两个具名会话分别按顺序执行语句；交错表明确标出语句开始与提交时刻；默认使用普通查询，若涉及加锁读取须特别说明。题目提供初始表内容与所有相关修改，不隐含触发器、其他约束、后台事务或外部副作用；若需要这些特性，必须说明规则。\n\n分析可见性时，先判断每次读取允许看到什么，再讨论事务最终是否提交；分析原子性时，区分未提交写入与已提交状态。评价重试方案时，要检查是否重新执行了依赖读取结果的决策，并说明目标是正确性、可用性还是两者兼顾。不能把其他数据库的行为默认套到本资料的 PostgreSQL 语义。\n\n所有难度使用同一知识范围。题目可以自拟小表和简短交错，但须明确事务边界与隔离级别。“安全”“一致”等词应落实为具体不变量，如保持明确给出的总量或禁止特定并发结果。题内数值属于练习输入，不是实验观测值。"
+        }
+      ],
+      "schema": {
+        "additionalProperties": false,
+        "description": "One blinded AI judgement; boolean strings are rejected, not coerced.",
+        "properties": {
+          "assessed_difficulty": {
+            "enum": [
+              "easy",
+              "medium",
+              "hard",
+              "uncertain"
+            ],
+            "title": "Assessed Difficulty",
+            "type": "string"
+          },
+          "correctness": {
+            "title": "Correctness",
+            "type": "boolean"
+          },
+          "grounded": {
+            "title": "Grounded",
+            "type": "boolean"
+          },
+          "answerable": {
+            "title": "Answerable",
+            "type": "boolean"
+          },
+          "ambiguity_free": {
+            "title": "Ambiguity Free",
+            "type": "boolean"
+          },
+          "rationale": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          },
+          "confidence": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          }
+        },
+        "required": [
+          "assessed_difficulty",
+          "correctness",
+          "grounded",
+          "answerable",
+          "ambiguity_free",
+          "rationale",
+          "confidence"
+        ],
+        "title": "DifficultyJudgeResult",
+        "type": "object"
+      }
+    }
+  },
+  {
+    "blind_id": "8e5fba7fedcf9ceef6b4",
+    "assessment_input": {
+      "learner_profile": "计算机本科生，已学习所给资料、基本程序控制结构与本课程入门概念；可查阅本题资料，不假定进阶课程、特定语言库或其他数据库的知识。",
+      "rubric_version": "difficulty-rubric-v1",
+      "rubric": {
+        "easy": {
+          "description": "直接记忆或解释资料中的一个明确知识点；条件完整，无需选择复杂策略。",
+          "cognitive_processes": [
+            "remember",
+            "understand"
+          ],
+          "expected_steps": {
+            "min": 1,
+            "max": 2
+          },
+          "requirement": "评分要点为 1–2 个简短关键步骤；答案能由资料直接支持。"
+        },
+        "medium": {
+          "description": "把已学概念应用到具体情境，或比较、分析相关概念及其关系。",
+          "cognitive_processes": [
+            "apply",
+            "analyze"
+          ],
+          "expected_steps": {
+            "min": 2,
+            "max": 3
+          },
+          "requirement": "评分要点为 2–3 个相互关联的步骤，需要应用或分析，不能只是改写定义。"
+        },
+        "hard": {
+          "description": "在资料范围内综合概念，处理情境约束，进行有依据的分析、评价或设计。",
+          "cognitive_processes": [
+            "analyze",
+            "evaluate",
+            "create"
+          ],
+          "expected_steps": {
+            "min": 3,
+            "max": 6
+          },
+          "requirement": "评分要点为 3–6 个关键步骤；题干必须要求处理具体情境约束并论证判断或设计。困难来自知识整合与推理，不能只靠复述、冷门术语、冗长措辞或资料以外的知识。"
+        }
+      },
+      "rubric_note": "以上为相对于 learner_profile 的操作性出题标准。认知过程和评分步骤是设计约束，不能单独证明实际难度；不得把 Bloom 层级或步骤数量等同于实测难度。expected_steps 只写面向学生和教师的简短评分要点，不输出隐藏思维链。",
+      "question": {
+        "stem": "某 PostgreSQL 应用在 Repeatable Read 隔离级别下运行事务 T1。T1 先执行一次普通 SELECT 得到账户余额为 100，随后另一事务 T2 把该余额改为 150 并成功提交；T1 之后又执行一次相同的普通 SELECT，然后基于第二次查询结果决定写入。请回答：(1) T1 第二次普通 SELECT 看到的值应为多少，并说明依据；(2) 若 T1 在提交时因序列化异常被拒绝，应用按资料要求应如何重试，为什么不能只重试最后一条失败语句？",
+        "options": [],
+        "answer": "(1) 第二次普通 SELECT 仍看到 100。依据：Repeatable Read 下普通查询使用本事务第一条非事务控制语句对应的快照，连续查询不会因其他事务的提交而改变这一视图（fixture_transactions_zh）。(2) 应重试整个事务，包括重新执行读取数据以及据此选择写入操作的应用逻辑；因为仅重试最后一条失败语句可能继续使用已经失效的决策（fixture_transactions_zh），重试本身也可能再次失败，不能承诺一次成功。",
+        "explanation": "Repeatable Read 的稳定快照使 T1 的两次普通 SELECT 保持同一视图，因此 T2 提交的 150 不会出现在 T1 的第二次查询中。序列化异常意味着该次执行被拒绝，应用必须重做依赖读取结果的决策，而不是只重发最后一条语句。"
+      },
+      "reference_chunks": [
+        {
+          "id": "fixture_transactions_zh",
+          "text": "数据库事务将多个操作组成一个单元。在 PostgreSQL 中，BEGIN 开始显式事务，COMMIT 提交成功修改，ROLLBACK 取消未提交修改。其他事务不会把这个单元尚未完成的修改当成已经提交的结果。转账的扣款与入账说明了原子性的作用：失败不能只留下其中一笔已提交。事务也能看到自己此前执行的修改。\n\n隔离级别规定并发事务观察状态的方式。PostgreSQL 的 Read Committed 下，普通 SELECT 看到语句开始前已经提交的数据，以及本事务此前的修改；同一事务后续 SELECT 可以看到其他事务新提交的结果。Repeatable Read 则让普通查询使用本事务第一条非事务控制语句对应的快照，连续查询不会因其他事务的提交而改变这一视图。但稳定快照不代表并发事务的全部结果一定等价于逐个执行。Serializable 增加对序列化异常的检查，必要时拒绝某次执行，而不是允许它提交。\n\n应用必须处理事务失败。出现序列化失败时，应重试整个事务，包括读取数据和据此选择写入操作的应用逻辑；仅重试最后一条失败语句可能继续使用失效的决策。重试本身也可能再次失败，不能承诺重试一次就一定成功。选择隔离语义并不意味着所有并发交错都能自动完成。\n\n以下是本教学练习自定的建模约定，不是原文引用或实测工作量：两个具名会话分别按顺序执行语句；交错表明确标出语句开始与提交时刻；默认使用普通查询，若涉及加锁读取须特别说明。题目提供初始表内容与所有相关修改，不隐含触发器、其他约束、后台事务或外部副作用；若需要这些特性，必须说明规则。\n\n分析可见性时，先判断每次读取允许看到什么，再讨论事务最终是否提交；分析原子性时，区分未提交写入与已提交状态。评价重试方案时，要检查是否重新执行了依赖读取结果的决策，并说明目标是正确性、可用性还是两者兼顾。不能把其他数据库的行为默认套到本资料的 PostgreSQL 语义。\n\n所有难度使用同一知识范围。题目可以自拟小表和简短交错，但须明确事务边界与隔离级别。“安全”“一致”等词应落实为具体不变量，如保持明确给出的总量或禁止特定并发结果。题内数值属于练习输入，不是实验观测值。"
+        }
+      ],
+      "schema": {
+        "additionalProperties": false,
+        "description": "One blinded AI judgement; boolean strings are rejected, not coerced.",
+        "properties": {
+          "assessed_difficulty": {
+            "enum": [
+              "easy",
+              "medium",
+              "hard",
+              "uncertain"
+            ],
+            "title": "Assessed Difficulty",
+            "type": "string"
+          },
+          "correctness": {
+            "title": "Correctness",
+            "type": "boolean"
+          },
+          "grounded": {
+            "title": "Grounded",
+            "type": "boolean"
+          },
+          "answerable": {
+            "title": "Answerable",
+            "type": "boolean"
+          },
+          "ambiguity_free": {
+            "title": "Ambiguity Free",
+            "type": "boolean"
+          },
+          "rationale": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          },
+          "confidence": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          }
+        },
+        "required": [
+          "assessed_difficulty",
+          "correctness",
+          "grounded",
+          "answerable",
+          "ambiguity_free",
+          "rationale",
+          "confidence"
+        ],
+        "title": "DifficultyJudgeResult",
+        "type": "object"
+      }
+    }
+  },
+  {
+    "blind_id": "91b60469636fb2ac15ff",
+    "assessment_input": {
+      "learner_profile": "计算机本科生，已学习所给资料、基本程序控制结构与本课程入门概念；可查阅本题资料，不假定进阶课程、特定语言库或其他数据库的知识。",
+      "rubric_version": "difficulty-rubric-v1",
+      "rubric": {
+        "easy": {
+          "description": "直接记忆或解释资料中的一个明确知识点；条件完整，无需选择复杂策略。",
+          "cognitive_processes": [
+            "remember",
+            "understand"
+          ],
+          "expected_steps": {
+            "min": 1,
+            "max": 2
+          },
+          "requirement": "评分要点为 1–2 个简短关键步骤；答案能由资料直接支持。"
+        },
+        "medium": {
+          "description": "把已学概念应用到具体情境，或比较、分析相关概念及其关系。",
+          "cognitive_processes": [
+            "apply",
+            "analyze"
+          ],
+          "expected_steps": {
+            "min": 2,
+            "max": 3
+          },
+          "requirement": "评分要点为 2–3 个相互关联的步骤，需要应用或分析，不能只是改写定义。"
+        },
+        "hard": {
+          "description": "在资料范围内综合概念，处理情境约束，进行有依据的分析、评价或设计。",
+          "cognitive_processes": [
+            "analyze",
+            "evaluate",
+            "create"
+          ],
+          "expected_steps": {
+            "min": 3,
+            "max": 6
+          },
+          "requirement": "评分要点为 3–6 个关键步骤；题干必须要求处理具体情境约束并论证判断或设计。困难来自知识整合与推理，不能只靠复述、冷门术语、冗长措辞或资料以外的知识。"
+        }
+      },
+      "rubric_note": "以上为相对于 learner_profile 的操作性出题标准。认知过程和评分步骤是设计约束，不能单独证明实际难度；不得把 Bloom 层级或步骤数量等同于实测难度。expected_steps 只写面向学生和教师的简短评分要点，不输出隐藏思维链。",
+      "question": {
+        "stem": "某应用在 PostgreSQL 中使用 Repeatable Read 事务 T 完成一次“先读后写”的库存扣减：T 先执行普通 SELECT 读出库存为 5，据此判断“库存足够”并执行 UPDATE 将库存减 1 后提交。与 T 并发的另一事务已在 T 的第一条非事务控制语句之后提交了一次库存修改，使实际库存变为 4。T 提交时数据库报告序列化失败。请分析：(1) T 中第一次 SELECT 与后续 SELECT 在 Repeatable Read 下分别能看到什么，为什么稳定快照不等于并发结果一定等价于逐个执行；(2) 应用应如何重试，只重试最后失败的 UPDATE 是否可行，并说明理由。",
+        "options": [],
+        "answer": "参考答案：(1) 在 Repeatable Read 下，T 的普通查询使用本事务第一条非事务控制语句对应的快照，因此 T 中第一次 SELECT 与后续普通 SELECT 看到的是同一快照中的库存视图（本例读出 5），不会因另一事务在快照之后提交的修改而改变；但稳定快照不代表并发事务的全部结果一定等价于逐个执行，因为 T 基于旧快照做出的“库存足够”判断可能与并发已提交的修改冲突，Serializable 语义下这种冲突会以序列化异常的形式被拒绝，而不是允许提交。(2) 应用应重试整个事务，包括重新执行读取库存并据此判断是否扣减的应用逻辑，而不是只重试最后失败的 UPDATE；因为仅重试最后一条语句会继续使用基于旧快照的失效决策（仍按库存 5 判断），可能再次失败或产生错误结果。重试本身也可能再次失败，不能承诺重试一次就一定成功。",
+        "explanation": "本题要求把 Repeatable Read 的快照可见性规则应用到具体“先读后写”情境，并据此判断重试范围。资料指出 Repeatable Read 下普通查询使用本事务第一条非事务控制语句对应的快照，连续查询不会因其他事务提交而改变视图；同时指出稳定快照不代表并发结果等价于逐个执行，Serializable 会拒绝必要时的那次执行。资料还明确：出现序列化失败时应重试整个事务，包括读取数据和据此选择写入操作的应用逻辑，仅重试最后一条失败语句可能继续使用失效的决策。"
+      },
+      "reference_chunks": [
+        {
+          "id": "fixture_transactions_zh",
+          "text": "数据库事务将多个操作组成一个单元。在 PostgreSQL 中，BEGIN 开始显式事务，COMMIT 提交成功修改，ROLLBACK 取消未提交修改。其他事务不会把这个单元尚未完成的修改当成已经提交的结果。转账的扣款与入账说明了原子性的作用：失败不能只留下其中一笔已提交。事务也能看到自己此前执行的修改。\n\n隔离级别规定并发事务观察状态的方式。PostgreSQL 的 Read Committed 下，普通 SELECT 看到语句开始前已经提交的数据，以及本事务此前的修改；同一事务后续 SELECT 可以看到其他事务新提交的结果。Repeatable Read 则让普通查询使用本事务第一条非事务控制语句对应的快照，连续查询不会因其他事务的提交而改变这一视图。但稳定快照不代表并发事务的全部结果一定等价于逐个执行。Serializable 增加对序列化异常的检查，必要时拒绝某次执行，而不是允许它提交。\n\n应用必须处理事务失败。出现序列化失败时，应重试整个事务，包括读取数据和据此选择写入操作的应用逻辑；仅重试最后一条失败语句可能继续使用失效的决策。重试本身也可能再次失败，不能承诺重试一次就一定成功。选择隔离语义并不意味着所有并发交错都能自动完成。\n\n以下是本教学练习自定的建模约定，不是原文引用或实测工作量：两个具名会话分别按顺序执行语句；交错表明确标出语句开始与提交时刻；默认使用普通查询，若涉及加锁读取须特别说明。题目提供初始表内容与所有相关修改，不隐含触发器、其他约束、后台事务或外部副作用；若需要这些特性，必须说明规则。\n\n分析可见性时，先判断每次读取允许看到什么，再讨论事务最终是否提交；分析原子性时，区分未提交写入与已提交状态。评价重试方案时，要检查是否重新执行了依赖读取结果的决策，并说明目标是正确性、可用性还是两者兼顾。不能把其他数据库的行为默认套到本资料的 PostgreSQL 语义。\n\n所有难度使用同一知识范围。题目可以自拟小表和简短交错，但须明确事务边界与隔离级别。“安全”“一致”等词应落实为具体不变量，如保持明确给出的总量或禁止特定并发结果。题内数值属于练习输入，不是实验观测值。"
+        }
+      ],
+      "schema": {
+        "additionalProperties": false,
+        "description": "One blinded AI judgement; boolean strings are rejected, not coerced.",
+        "properties": {
+          "assessed_difficulty": {
+            "enum": [
+              "easy",
+              "medium",
+              "hard",
+              "uncertain"
+            ],
+            "title": "Assessed Difficulty",
+            "type": "string"
+          },
+          "correctness": {
+            "title": "Correctness",
+            "type": "boolean"
+          },
+          "grounded": {
+            "title": "Grounded",
+            "type": "boolean"
+          },
+          "answerable": {
+            "title": "Answerable",
+            "type": "boolean"
+          },
+          "ambiguity_free": {
+            "title": "Ambiguity Free",
+            "type": "boolean"
+          },
+          "rationale": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          },
+          "confidence": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          }
+        },
+        "required": [
+          "assessed_difficulty",
+          "correctness",
+          "grounded",
+          "answerable",
+          "ambiguity_free",
+          "rationale",
+          "confidence"
+        ],
+        "title": "DifficultyJudgeResult",
+        "type": "object"
+      }
+    }
+  }
+]

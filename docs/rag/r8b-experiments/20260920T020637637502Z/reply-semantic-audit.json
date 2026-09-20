@@ -1,0 +1,72 @@
+{
+  "metadata": {
+    "schema_version": "r8b-reply-semantic-audit-v1",
+    "date": "2026-09-20",
+    "auditor": "Codex AI independent subtask",
+    "label_status": "ai_assisted_provisional_not_human_annotation",
+    "input_file": "reply-support-audit-inputs.json",
+    "input_sha256": "2c76b13ab14b399739f717137bf2ede4dbac06f99093433c27b6dbc6ec2bc2f6",
+    "scope": "All two supplied simulated-user reply records. This stage read only the designated reply audit projection: visible user query, actual clarification question, actual reply and its quotes, status, and intent profile. No retrieval rankings, scores, gold evidence, canonical question, or other model outputs were read for this stage.",
+    "blinding_limitations": "The auditor previously reviewed R8B input construction, and visible record IDs disclose topics. This is not fully blind or independent human adjudication. Retrieval results remained unseen.",
+    "method": "AI semantic comparison of the asked question, profile and reply, supplemented by deterministic exact-substring checks of all support quotes. Exact quote matches do not establish entailment or compliance with the only-answer-what-was-asked rule.",
+    "denominator_policy": "Do not remove either record or modify frozen inputs, actual outputs, main experiment denominators, or retrieval results. These labels diagnose observed interactions and are not new model results.",
+    "unknown_evaluation_limit": "Both observed replies use unknown=false. There are no unknown=true outputs in this projection, so unknown-response quality or an unknown-handling success rate cannot be estimated."
+  },
+  "counts": {
+    "supplied_replies": 2,
+    "audited_replies": 2,
+    "api_succeeded": 2,
+    "all_support_quotes_exact_substrings": 2,
+    "total_support_quotes": 4,
+    "exact_matching_support_quotes": 4,
+    "entire_answer_entailed_by_profile": 1,
+    "fully_protocol_adherent": 0,
+    "unasked_intent_detail_disclosed": 1,
+    "unsupported_intent_assertion": 1,
+    "requested_algorithm_answer_disclosed": 0,
+    "observed_unknown_true": 0,
+    "observed_unknown_false": 2
+  },
+  "rows": [
+    {
+      "key": "avl-rotation-case-zh-colloquial-underspecified:reply",
+      "verdict": "profile_supported_but_overdisclosing",
+      "all_support_quotes_exact_substrings": true,
+      "quote_checks": [
+        {"quote": "失衡节点的平衡因子已算出为 +2", "exact_substring": true},
+        {"quote": "其左孩子的平衡因子已算出为 -1", "exact_substring": true},
+        {"quote": "平衡因子采用左子树高度减去右子树高度的定义", "exact_substring": true}
+      ],
+      "entire_answer_entailed_by_profile": true,
+      "answers_asked_question": true,
+      "only_answers_asked_question": false,
+      "requested_algorithm_answer_disclosed": false,
+      "fully_protocol_adherent": false,
+      "unknown_flag_assessment": "unknown=false is appropriate for the asked balance magnitude and direction: the profile supplies factor +2 and the left-minus-right convention.",
+      "specific_defect": "The clarification asks which node is unbalanced and whether it is left-heavy or right-heavy. The reply additionally volunteers that its left child has factor -1. That child state was not requested by this clarification.",
+      "semantic_support": "Factor +2 under the supplied sign convention entails left-heavy; the child's -1 is also explicitly present. However, presence and entailment do not authorize disclosing an unasked hidden constraint.",
+      "consequence_without_retrieval_claim": "The volunteered child factor distinguishes left-left from left-right cases and could supply the resolver with information the clarification did not elicit. No conclusion about actual downstream retrieval gain is made in this audit.",
+      "illustrative_compliant_response_not_used_in_run": "失衡的是平衡因子为 +2 的那个节点；这里按左子树高度减右子树高度计算，所以它是左重。",
+      "confidence": "high"
+    },
+    {
+      "key": "graph-cover-components-zh-colloquial-underspecified:reply",
+      "verdict": "unsupported_intent_assertion",
+      "all_support_quotes_exact_substrings": true,
+      "quote_checks": [
+        {"quote": "任务要求访问整张图的每一个顶点，不只是原起点可达的那些", "exact_substring": true}
+      ],
+      "entire_answer_entailed_by_profile": false,
+      "answers_asked_question": "superficially_selects_an_option_but_does_not_preserve_profile_intent",
+      "only_answers_asked_question": false,
+      "requested_algorithm_answer_disclosed": false,
+      "fully_protocol_adherent": false,
+      "unknown_flag_assessment": "unknown=false alone is not the central error: a corrective answer rejecting the false alternatives could be supported. But selecting the connectivity-testing intent is not supported. If the simulator must select only one offered option and cannot correct the premise, it should return unknown instead of inventing that intent.",
+      "specific_defect": "The question offers component coverage versus deciding whether the whole graph is connected. The profile's goal is to visit every vertex, and the profile already states that the graph is disconnected. The reply falsely adopts the second option, '想判断整个图是否连通'.",
+      "semantic_support": "The exact quote supports whole-graph traversal coverage, not a goal of testing connectivity. The known disconnected state further undermines the adopted question. The causal link '因为' does not make these tasks equivalent.",
+      "consequence_without_retrieval_claim": "The reply converts the user's intended next-step traversal task into connectivity determination, potentially changing the resolver's target. This is an observed semantic defect regardless of any retrieval result.",
+      "illustrative_compliant_response_not_used_in_run": "这两个都不是。我已经知道图是非连通的；任务是访问整张图的每一个顶点，我想知道接下来怎样继续。",
+      "confidence": "high"
+    }
+  ]
+}

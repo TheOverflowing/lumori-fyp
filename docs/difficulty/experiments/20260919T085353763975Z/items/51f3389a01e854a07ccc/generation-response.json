@@ -1,0 +1,40 @@
+{
+  "title": "Database Transactions: Atomicity, Snapshot Visibility, and Retries — Medium Quiz",
+  "evidence_sufficient": true,
+  "evidence_note": "The supplied fixture (fixture_transactions_en) provides explicit PostgreSQL semantics for BEGIN/COMMIT/ROLLBACK, Read Committed vs Repeatable Read snapshot visibility, Serializable rejection, retry requirements, and the fixture's modeling conventions, which is sufficient for one medium short-answer item.",
+  "learning_objectives": [
+    "Apply the distinction between uncommitted writes and committed state changes when reasoning about atomicity (fixture_transactions_en).",
+    "Analyze how Read Committed and Repeatable Read snapshots affect what successive ordinary SELECTs in one transaction may observe (fixture_transactions_en).",
+    "Explain why a retry after a serialization failure must rerun the whole transaction including the reads and decisions that selected the writes (fixture_transactions_en)."
+  ],
+  "sections": [],
+  "questions": [
+    {
+      "kind": "short_answer",
+      "stem": "Two sessions run the schedule below against a table `accounts(name, balance)` whose initial rows are exactly: ('A', 100), ('B', 100). Each session executes its statements in the listed order, and the interleaving is given by the step numbers. All reads are ordinary reads (not locking reads). There are no hidden triggers, constraints, background transactions, or external side effects.\n\n1. Session 1: BEGIN (isolation level Repeatable Read).\n2. Session 2: BEGIN (isolation level Repeatable Read).\n3. Session 1: SELECT balance FROM accounts WHERE name = 'A';  -- read R1\n4. Session 2: UPDATE accounts SET balance = balance + 50 WHERE name = 'A';\n5. Session 2: COMMIT;\n6. Session 1: SELECT balance FROM accounts WHERE name = 'A';  -- read R2\n7. Session 1: UPDATE accounts SET balance = balance + 10 WHERE name = 'B';\n8. Session 1: COMMIT;\n\nUsing only the PostgreSQL semantics stated in the notes (fixture_transactions_en):\n(a) State the value returned by R1 and the value returned by R2, and justify each value by referring to the snapshot rule for Repeatable Read.\n(b) State the final committed balance of 'A' and of 'B', and explain how the update in step 7 relates to the snapshot observed by Session 1.\n(c) Suppose a later run of this same schedule is rejected with a serialization failure. Explain what the application must retry, and why retrying only the final failed statement would be incorrect.",
+      "options": [],
+      "answer": "(a) R1 returns 100 and R2 returns 100. Under PostgreSQL Repeatable Read, ordinary queries use a snapshot associated with the transaction's first non-transaction-control statement (step 3 for Session 1), so Session 2's commit of the +50 update in steps 4–5 does not change Session 1's view between R1 and R2 (fixture_transactions_en).\n\n(b) Final committed balance of 'A' is 150 and of 'B' is 110. Session 2's update committed at step 5, so 'A' becomes 150. Session 1's step 7 update writes +10 to 'B' relative to the current committed row and commits at step 8, giving 'B' = 110; the stable Repeatable Read snapshot governs what Session 1's ordinary reads observe, and it does not prevent Session 1's own write from being applied and committed (fixture_transactions_en).\n\n(c) The application must retry the complete transaction, including the reads and the application decisions that selected the writes. A serialization failure means the required guarantee could not be maintained and the execution may be rejected rather than committed (fixture_transactions_en). Retrying only the final failed statement would reuse decisions made from a state that is no longer appropriate, so the retried work would not correspond to a fresh, consistent set of reads and decisions (fixture_transactions_en). The retry itself can also fail, so a considered retry policy is needed rather than assuming one attempt always succeeds (fixture_transactions_en).",
+      "explanation": "This item applies the notes' snapshot and retry rules to a concrete two-session schedule. Part (a) tests the Repeatable Read snapshot rule: Session 1's view is fixed by its first non-transaction-control statement, so R2 still shows 100 even though Session 2 committed +50. Part (b) separates snapshot visibility from committed state changes: 'A' is 150 because Session 2 committed, and 'B' is 110 because Session 1's own write is applied and committed. Part (c) tests the retry requirement: because a serialization failure may reject the execution, the whole transaction — reads, decisions, and writes — must be rerun, not just the last statement.",
+      "difficulty_reason": "Medium: the item gives complete conditions (initial rows, isolation levels, statement order, interleaving, and no hidden effects) and requires applying the notes' snapshot and retry concepts to a concrete schedule and comparing what each read may see versus what is committed, rather than restating definitions.",
+      "citation_ids": [
+        "fixture_transactions_en"
+      ],
+      "slot_id": "q1",
+      "difficulty": "medium",
+      "difficulty_design": {
+        "cognitive_process": "apply",
+        "concepts": [
+          "PostgreSQL Repeatable Read snapshot visibility",
+          "ordinary read vs. committed state change",
+          "transaction retry after serialization failure"
+        ],
+        "expected_steps": [
+          "Identify that Session 1's Repeatable Read snapshot is fixed by its first non-transaction-control statement, so R1 and R2 both return 100 despite Session 2's commit.",
+          "Determine final committed values: 'A' = 150 from Session 2's committed update, and 'B' = 110 from Session 1's own write committed at step 8.",
+          "Explain that a serialization failure requires retrying the complete transaction, including the reads and decisions that selected the writes, not only the final failed statement."
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "A two-column timeline diagram for two database sessions. The left column is Session 1 (Repeatable Read) and the right column is Session 2 (Repeatable Read), with numbered steps 1–8 in vertical order. Session 1 shows BEGIN, read R1, read R2, update B, COMMIT; Session 2 shows BEGIN, update A, COMMIT. A horizontal shaded band across Session 1's reads is labeled 'Repeatable Read snapshot fixed at step 3', and a vertical marker at step 5 is labeled 'Session 2 commits +50 to A'. Small table icons show accounts A and B with initial balances 100 and 100, and final committed balances 150 and 110. No answer text or retry explanation appears in the image."
+}

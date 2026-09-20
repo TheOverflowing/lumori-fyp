@@ -1,0 +1,179 @@
+{
+  "schema": "model-correctness-diagnostic-v1",
+  "created_at": "2026-09-19T11:22:51.825539+00:00",
+  "live": true,
+  "transport": "direct_chat_completion_not_harness",
+  "plan": [
+    {
+      "case_id": "R01",
+      "condition": "deepseek_off",
+      "task_id": "deepseek_off__R01"
+    },
+    {
+      "case_id": "R01",
+      "condition": "deepseek_high",
+      "task_id": "deepseek_high__R01"
+    },
+    {
+      "case_id": "R01",
+      "condition": "gemini_high",
+      "task_id": "gemini_high__R01"
+    },
+    {
+      "case_id": "R02",
+      "condition": "deepseek_high",
+      "task_id": "deepseek_high__R02"
+    },
+    {
+      "case_id": "R02",
+      "condition": "gemini_high",
+      "task_id": "gemini_high__R02"
+    },
+    {
+      "case_id": "R02",
+      "condition": "deepseek_off",
+      "task_id": "deepseek_off__R02"
+    },
+    {
+      "case_id": "R03",
+      "condition": "gemini_high",
+      "task_id": "gemini_high__R03"
+    },
+    {
+      "case_id": "R03",
+      "condition": "deepseek_off",
+      "task_id": "deepseek_off__R03"
+    },
+    {
+      "case_id": "R03",
+      "condition": "deepseek_high",
+      "task_id": "deepseek_high__R03"
+    },
+    {
+      "case_id": "R04",
+      "condition": "deepseek_off",
+      "task_id": "deepseek_off__R04"
+    },
+    {
+      "case_id": "R04",
+      "condition": "deepseek_high",
+      "task_id": "deepseek_high__R04"
+    },
+    {
+      "case_id": "R04",
+      "condition": "gemini_high",
+      "task_id": "gemini_high__R04"
+    },
+    {
+      "case_id": "R05",
+      "condition": "deepseek_high",
+      "task_id": "deepseek_high__R05"
+    },
+    {
+      "case_id": "R05",
+      "condition": "gemini_high",
+      "task_id": "gemini_high__R05"
+    },
+    {
+      "case_id": "R05",
+      "condition": "deepseek_off",
+      "task_id": "deepseek_off__R05"
+    },
+    {
+      "case_id": "R06",
+      "condition": "gemini_high",
+      "task_id": "gemini_high__R06"
+    },
+    {
+      "case_id": "R06",
+      "condition": "deepseek_off",
+      "task_id": "deepseek_off__R06"
+    },
+    {
+      "case_id": "R06",
+      "condition": "deepseek_high",
+      "task_id": "deepseek_high__R06"
+    }
+  ],
+  "call_cap": 18,
+  "max_output_tokens": 8192,
+  "requested_gemini_model": "google/gemini-3.8-flash",
+  "no_retries": true,
+  "response_format": {
+    "type": "json_object"
+  },
+  "output_validation": "strict_local_schema_no_repair",
+  "cases_sha256": "4e5935505975606c837dbc1c6fdcbdf7d4fcdde0cba2a23a1f37ad2845832d76",
+  "labels_sha256": "20ba4ef7ca2bb407be32a8659cbb206f68ee8a792b28b7a466d37f5ee6962dd1",
+  "messages_sha256": {
+    "R01": "75ae872e5bc9ab65e31a5897dd374b7d45c33209b355378aa47d692cd2ae1a68",
+    "R02": "d463eec66e0c511575783395cd3b7b0f2c5ad521815ce221cf6161f7916fa18d",
+    "R03": "3e9c4e0d62550e516fe4b8c673a421f8a4a17029fa4d5023476124ec1546da93",
+    "R04": "ac679e5f5237007c8a488ecb6b6770a7caca5b627ea23f410ab8f1332b8fc674",
+    "R05": "5523e8729b121cd951f84877a446ad9e45238ebab5d45abefa2e31168dd73464",
+    "R06": "ce55b15fa124fb6b4aec975c6a4d9c05236ecca521734a0993906f66ee1375b8"
+  },
+  "code_sha256": {
+    "scripts/model_correctness_comparison.py": "bc046fe349c52ca1560e97a4c5adcd9f29feca50fc8b69513c4b1848efa87665",
+    "app/answer_tools.py": "f2d2695cc3a1e30d20f1ab996565e163c1ddd57cf7c5f40341ddbbad272c1ddb",
+    "app/providers.py": "8bef82cb2a88625bffe007f966d0197a482b3f66a3b24a5022c7925c55dd58e5",
+    "app/config.py": "230e43600b6d092c6b5e5b126b9844c4ac1f5a252e9e8860fd5ced636f9dcce2",
+    "app/store.py": "5e43f3b4ae1cfb9838aae0f90f51b261cbb53becb49c1a796598f72f6b41144e",
+    "scripts/difficulty_experiment.py": "dc8c9567a4b1d43f54ec9b475af0e43d2a47ea8b36055c1f3e9a91422ab4d843"
+  },
+  "limitations": [
+    "Six development regression cases, one response per case/configuration; not a representative or statistical model ranking.",
+    "This is direct chat review with identical messages and frozen tool evidence, not a Harness or end-to-end generation experiment.",
+    "Numerical labels are computed locally; natural-language candidate mappings are AI-authored and reviewed, not independent human gold.",
+    "The three case families and bilingual variants are not balanced independent language test sets.",
+    "DeepSeek disabled/high and Gemini high are configuration comparisons; similarly named effort and equal max_tokens do not establish equal compute.",
+    "Reasoning consumes output budget differently across providers; length/empty/schema failures remain in the planned denominator.",
+    "Prompts include tool evidence but no target labels; frozen labelled inputs are archived separately.",
+    "Model decisions are not learner difficulty measurements or general factual accuracy estimates.",
+    "Reported cost/tokens cover known provider usage only; missing cost is unknown, not zero cost.",
+    "Case order is fixed and configuration order rotates; model/provider changes and stochasticity remain uncontrolled."
+  ],
+  "references": [
+    "https://api-docs.deepseek.com/guides/thinking_mode/",
+    "https://openrouter.ai/docs/guides/best-practices/reasoning-tokens",
+    "https://ai.google.dev/gemini-api/docs/thinking",
+    "https://openrouter.ai/docs/api/reference/parameters",
+    "https://openrouter.ai/docs/guides/routing/provider-selection"
+  ],
+  "conditions": {
+    "deepseek_off": {
+      "model": "deepseek-flash",
+      "endpoint_signature": "135d1baf7e282b6975b8",
+      "request_parameters": {
+        "max_tokens": 8192,
+        "thinking": {
+          "type": "disabled"
+        }
+      }
+    },
+    "deepseek_high": {
+      "model": "deepseek-flash",
+      "endpoint_signature": "85a031bc346e9b0f42d7",
+      "request_parameters": {
+        "max_tokens": 8192,
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "high"
+      }
+    },
+    "gemini_high": {
+      "model": "google/gemini-3.8-flash",
+      "endpoint_signature": "d53f64aac79d46832aa5",
+      "request_parameters": {
+        "max_tokens": 8192,
+        "reasoning": {
+          "effort": "high"
+        },
+        "provider": {
+          "require_parameters": true
+        }
+      }
+    }
+  }
+}

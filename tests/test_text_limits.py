@@ -112,6 +112,7 @@ def test_long_text_round_trips_through_generation_review_and_evaluation(tmp_path
         job = finish(client, client.post('/api/generations', json={
             'course_id': course_id, 'topic': topic, 'material': 'quiz',
             'question_type': 'short_answer', 'count': 1, 'language': 'en',
+            'include_explanations': True,
             'request_key': 'long-text-generation',
         }))
         content_id = job['result']['content_id']
@@ -119,7 +120,9 @@ def test_long_text_round_trips_through_generation_review_and_evaluation(tmp_path
         assert wire.generation_request['topic'] == topic
         content = client.get('/api/contents/' + content_id).json()
         assert content['config']['topic'] == topic
-        assert content['asset'] == wire.asset
+        # Legacy assets receive the explicit shared-material default without
+        # changing any authored text or adding question-local material bundles.
+        assert content['asset'] == wire.asset | {'section_scope': 'shared'}
         assert client.get('/api/contents', params={'course_id': course_id}).json()[0]['title'] == wire.asset['title']
 
         edited = content['asset']
@@ -145,7 +148,7 @@ def test_long_text_round_trips_through_generation_review_and_evaluation(tmp_path
 
 
 @pytest.mark.parametrize('changes', [
-    {'topic': ''}, {'topic': 'x'}, {'count': 0}, {'count': 11},
+    {'topic': ''}, {'topic': 'x'}, {'count': 0}, {'count': 51},
     {'document_ids': ['document'] * 21}, {'request_key': 'x' * 101},
 ])
 def test_generation_keeps_required_and_operational_constraints(changes):

@@ -1,0 +1,132 @@
+{
+  "cpu_scheduling_en_hard": {
+    "id": "cpu_scheduling_en_hard",
+    "topic_id": "cpu_scheduling",
+    "split": "dev",
+    "pilot": true,
+    "language": "en",
+    "target_difficulty": "hard",
+    "question_type": "short_answer",
+    "topic": "CPU scheduling: response time, turnaround time, and time-slice tradeoffs",
+    "learner_profile": "An undergraduate computer science student who has studied the supplied notes, basic program control flow, and introductory course concepts; the notes are available during the task. Do not assume advanced courses, a particular language library, or another database system's behavior.",
+    "sources": [
+      {
+        "id": "fixture_cpu_scheduling_en",
+        "text": "A scheduler chooses which ready job receives the processor. Turnaround time equals completion time minus arrival time. Response time equals the first time a job runs minus its arrival time. These metrics measure different things: early access to a processor does not necessarily imply early completion. First-come, first-served runs jobs in arrival order without preempting them. Shortest Job First selects the shortest available job and is non-preemptive. Shortest Time-to-Completion First is preemptive and selects the job with the least remaining processing time. Comparisons involving these shortest-job policies must state how execution lengths are known.\n\nRound Robin rotates through a ready queue, running each selected job for at most one time slice before moving an unfinished job to the back. Shorter slices can improve initial responsiveness but increase the frequency of context switches. Larger slices amortize switching costs but can lengthen waits before a different job first runs. Neither a smaller average response time nor a smaller switching fraction alone establishes that a policy is best for every objective.\n\nA multi-level feedback queue, or MLFQ, uses observed execution behavior instead of requiring exact future job lengths. Jobs in higher-priority queues run before lower-priority jobs; equal-priority jobs can share service by Round Robin. New jobs begin at high priority, and consuming the allowed CPU allotment causes demotion. Accounting for total consumed allotment prevents a job from retaining high priority indefinitely merely by yielding just before each slice ends. Periodic priority boosts can help jobs otherwise left waiting at low priority. Queue levels, slice lengths, allotments, and boost intervals are policy parameters, not universal constants.\n\nThis fixture adds an explicit scheduling model for exercises. It is authored example scaffolding rather than text copied from a textbook. Unless a question states otherwise, there is one processor, jobs are independent, and each job consists of one CPU burst with no I/O. Arrival times and required CPU service are provided. The processor never serves two jobs simultaneously. Time spent switching is not CPU service delivered to any job. A job that finishes before its slice ends does not use the remaining slice. If a job arrives at exactly a slice boundary, the question must say whether that arrival is enqueued before or after the preempted job. Ties must be resolved by an explicit rule, such as alphabetical job names.\n\nA question that includes switching overhead must define when that overhead applies: for example, only when moving between different jobs, with no initial dispatch charge. It must also state whether arrivals can occur while switching and how they enter the queue. Questions that ignore overhead must say so. These conventions make a timeline reproducible and prevent a numeric answer from depending on unstated simulator behavior.\n\nA comparison can report each job's first-run and completion times, then compute the requested averages. A design recommendation also needs an objective and constraints, such as a maximum response time, a switching budget, or a fairness requirement. A policy can satisfy one constraint while losing on another metric. Choosing a scheduler should therefore follow the stated workload and requirements. Hypothetical burst lengths and budgets introduced in an exercise are not measured workload traces, and labels assigned by the generator are not empirical student difficulty measurements.",
+        "document_name": "AI-curated study fixture: CPU scheduling: response time, turnaround time, and time-slice tradeoffs",
+        "page": null,
+        "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+        "document_id": "fixture-doc-6364e41e1555945e17f1ad71"
+      }
+    ],
+    "provenance": {
+      "kind": "ai_curated_educational_fixture",
+      "author_type": "AI assistant",
+      "original_source_excerpt": false,
+      "human_authored_question": false,
+      "human_difficulty_annotation": false,
+      "human_translation_verified": false,
+      "factual_review_status": "pending_independent_review",
+      "source_references": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+          "title": "OSTEP chapter 7: Scheduling: Introduction"
+        },
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched-mlfq.pdf",
+          "title": "OSTEP chapter 8: Scheduling: The Multi-Level Feedback Queue"
+        }
+      ],
+      "context_sha256": "bafa663389798c35be94e3c21273bd9c8529e8951874584c6f433c0b10187fd7",
+      "note": "Newly written bilingual study notes grounded in the references and explicit hypothetical exercise conventions. Not original course text, a human translation, a question, a gold difficulty label, or empirical learner data. URLs identify background references; page is null because these are curated notes, not page-aligned excerpts."
+    }
+  },
+  "cpu_scheduling_zh_hard": {
+    "id": "cpu_scheduling_zh_hard",
+    "topic_id": "cpu_scheduling",
+    "split": "dev",
+    "pilot": true,
+    "language": "zh",
+    "target_difficulty": "hard",
+    "question_type": "short_answer",
+    "topic": "CPU调度：响应时间、周转时间与时间片权衡",
+    "learner_profile": "计算机本科生，已学习所给资料、基本程序控制结构与本课程入门概念；可查阅本题资料，不假定进阶课程、特定语言库或其他数据库的知识。",
+    "sources": [
+      {
+        "id": "fixture_cpu_scheduling_zh",
+        "text": "调度器决定哪个就绪任务获得 CPU。周转时间等于完成时刻减到达时刻，响应时间等于首次运行时刻减到达时刻；更早开始不一定意味着更早结束。先来先服务按到达顺序非抢占运行。最短任务优先 SJF 选择当前可用任务中运行时间最短的，并且不抢占；最短剩余时间优先 STCF 允许抢占，总是选择剩余服务时间最短的任务。使用这类策略比较时，要说明如何知道所需运行时间。\n\n轮转调度 RR 让就绪队列中的任务轮流运行，每次最多一个时间片，尚未完成的任务回到队尾。较小时间片可改善首次响应，却增加切换频率；较大时间片可分摊切换开销，却可能延长其他任务首次运行前的等待。平均响应更小或切换占比更低，都不能单独证明某策略适合所有目标。\n\n多级反馈队列 MLFQ 根据已经观察到的执行行为调整优先级，不要求预知准确运行时间。高优先级任务先于低优先级任务执行，同级可轮转；新任务从高优先级开始，用完 CPU 配额后降级。按累计使用量计算配额，可防止任务通过每次在时间片结束前主动让出 CPU 来永久保留高优先级。周期性提升优先级可帮助长期等待的低优先级任务。队列层数、片长、配额和提升间隔都是策略参数。\n\n本练习另行规定一套明确模型，属于自拟教学条件：默认单处理器、独立任务、每个任务只有一个 CPU burst 且无 I/O；题目提供到达时间与服务量。切换消耗的时间不算给任何任务的 CPU 服务。提前完成的任务不消耗剩余时间片。任务恰在片尾到达时，要说明新到任务与被抢占任务谁先入队，平局也要指定顺序。\n\n如果计算切换开销，应写明何时计费，例如只在切换到另一个任务时计费且首次派发免费，并说明切换期间到达任务如何入队；忽略开销时也须明确。可先记录每个任务首次运行与结束时刻，再计算所需指标。设计建议还需要具体目标与约束，如响应上限、开销预算或公平性。一个方案可能满足一个约束，却在另一个指标上更差。题内任务长度和预算是自拟输入，不是实测工作量，生成器标注也不是学生实测难度。",
+        "document_name": "AI-curated study fixture: CPU调度：响应时间、周转时间与时间片权衡",
+        "page": null,
+        "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+        "document_id": "fixture-doc-7a67f5eb3c801fb3205d643d"
+      }
+    ],
+    "provenance": {
+      "kind": "ai_curated_educational_fixture",
+      "author_type": "AI assistant",
+      "original_source_excerpt": false,
+      "human_authored_question": false,
+      "human_difficulty_annotation": false,
+      "human_translation_verified": false,
+      "factual_review_status": "pending_independent_review",
+      "source_references": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+          "title": "OSTEP chapter 7: Scheduling: Introduction"
+        },
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched-mlfq.pdf",
+          "title": "OSTEP chapter 8: Scheduling: The Multi-Level Feedback Queue"
+        }
+      ],
+      "context_sha256": "398b2c4541cabd6941194203c9b0789637a5ca7e5cc70f534bb7ffbf02b0c368",
+      "note": "Newly written bilingual study notes grounded in the references and explicit hypothetical exercise conventions. Not original course text, a human translation, a question, a gold difficulty label, or empirical learner data. URLs identify background references; page is null because these are curated notes, not page-aligned excerpts."
+    }
+  },
+  "transactions_zh_medium": {
+    "id": "transactions_zh_medium",
+    "topic_id": "transactions",
+    "split": "dev",
+    "pilot": true,
+    "language": "zh",
+    "target_difficulty": "medium",
+    "question_type": "short_answer",
+    "topic": "数据库事务：原子性、快照隔离语义与重试",
+    "learner_profile": "计算机本科生，已学习所给资料、基本程序控制结构与本课程入门概念；可查阅本题资料，不假定进阶课程、特定语言库或其他数据库的知识。",
+    "sources": [
+      {
+        "id": "fixture_transactions_zh",
+        "text": "数据库事务将多个操作组成一个单元。在 PostgreSQL 中，BEGIN 开始显式事务，COMMIT 提交成功修改，ROLLBACK 取消未提交修改。其他事务不会把这个单元尚未完成的修改当成已经提交的结果。转账的扣款与入账说明了原子性的作用：失败不能只留下其中一笔已提交。事务也能看到自己此前执行的修改。\n\n隔离级别规定并发事务观察状态的方式。PostgreSQL 的 Read Committed 下，普通 SELECT 看到语句开始前已经提交的数据，以及本事务此前的修改；同一事务后续 SELECT 可以看到其他事务新提交的结果。Repeatable Read 则让普通查询使用本事务第一条非事务控制语句对应的快照，连续查询不会因其他事务的提交而改变这一视图。但稳定快照不代表并发事务的全部结果一定等价于逐个执行。Serializable 增加对序列化异常的检查，必要时拒绝某次执行，而不是允许它提交。\n\n应用必须处理事务失败。出现序列化失败时，应重试整个事务，包括读取数据和据此选择写入操作的应用逻辑；仅重试最后一条失败语句可能继续使用失效的决策。重试本身也可能再次失败，不能承诺重试一次就一定成功。选择隔离语义并不意味着所有并发交错都能自动完成。\n\n以下是本教学练习自定的建模约定，不是原文引用或实测工作量：两个具名会话分别按顺序执行语句；交错表明确标出语句开始与提交时刻；默认使用普通查询，若涉及加锁读取须特别说明。题目提供初始表内容与所有相关修改，不隐含触发器、其他约束、后台事务或外部副作用；若需要这些特性，必须说明规则。\n\n分析可见性时，先判断每次读取允许看到什么，再讨论事务最终是否提交；分析原子性时，区分未提交写入与已提交状态。评价重试方案时，要检查是否重新执行了依赖读取结果的决策，并说明目标是正确性、可用性还是两者兼顾。不能把其他数据库的行为默认套到本资料的 PostgreSQL 语义。\n\n所有难度使用同一知识范围。题目可以自拟小表和简短交错，但须明确事务边界与隔离级别。“安全”“一致”等词应落实为具体不变量，如保持明确给出的总量或禁止特定并发结果。题内数值属于练习输入，不是实验观测值。",
+        "document_name": "AI-curated study fixture: 数据库事务：原子性、快照隔离语义与重试",
+        "page": null,
+        "url": "https://www.postgresql.org/docs/17/tutorial-transactions.html",
+        "document_id": "fixture-doc-678db1ab100124458aacea82"
+      }
+    ],
+    "provenance": {
+      "kind": "ai_curated_educational_fixture",
+      "author_type": "AI assistant",
+      "original_source_excerpt": false,
+      "human_authored_question": false,
+      "human_difficulty_annotation": false,
+      "human_translation_verified": false,
+      "factual_review_status": "pending_independent_review",
+      "source_references": [
+        {
+          "url": "https://www.postgresql.org/docs/17/tutorial-transactions.html",
+          "title": "PostgreSQL 17: Transactions"
+        },
+        {
+          "url": "https://www.postgresql.org/docs/17/transaction-iso.html",
+          "title": "PostgreSQL 17: Transaction Isolation"
+        },
+        {
+          "url": "https://www.postgresql.org/docs/17/mvcc-serialization-failure-handling.html",
+          "title": "PostgreSQL 17: Serialization Failure Handling"
+        }
+      ],
+      "context_sha256": "c48771cb4ab5008393f63ebee04515d8876ebd828d62a7ebf47242d6332902ec",
+      "note": "Newly written bilingual study notes grounded in the references and explicit hypothetical exercise conventions. Not original course text, a human translation, a question, a gold difficulty label, or empirical learner data. URLs identify background references; page is null because these are curated notes, not page-aligned excerpts."
+    }
+  }
+}

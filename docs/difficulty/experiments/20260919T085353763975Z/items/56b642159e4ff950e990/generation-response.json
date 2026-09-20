@@ -1,0 +1,70 @@
+{
+  "title": "Database Transactions: Atomicity, Snapshot Visibility, and Retries",
+  "evidence_sufficient": true,
+  "evidence_note": "The reference chunk fixture_transactions_en supplies explicit PostgreSQL transaction semantics, Read Committed and Repeatable Read visibility rules, Serializable checking, and retry requirements, enough for one medium short-answer question.",
+  "learning_objectives": [
+    "Explain how BEGIN, COMMIT, and ROLLBACK define a transaction boundary and support all-or-nothing changes.",
+    "Compare what an ordinary SELECT may observe under PostgreSQL Read Committed and Repeatable Read.",
+    "Apply snapshot visibility rules to a concrete interleaving of two sessions.",
+    "Explain why a serialization failure requires retrying the complete transaction, including reads and decisions."
+  ],
+  "sections": [
+    {
+      "heading": "Transaction boundaries and atomicity",
+      "text": "A database transaction groups operations into one unit. In PostgreSQL, BEGIN starts an explicit transaction, COMMIT makes its successful changes permanent, and ROLLBACK cancels its uncommitted changes. Other transactions do not observe the group's unfinished changes as if they had already committed. A transfer involving a debit and a credit illustrates why treating two writes as a unit matters: a failed operation should not leave just one of the intended writes committed. Transactions also provide a boundary within which a session sees its own preceding writes.",
+      "citation_ids": [
+        "fixture_transactions_en"
+      ]
+    },
+    {
+      "heading": "Isolation and snapshot visibility",
+      "text": "Isolation determines how overlapping transactions observe database state. Under PostgreSQL Read Committed, an ordinary SELECT sees rows committed before that statement began, along with the transaction's own earlier changes. A later SELECT in the same transaction can therefore observe another transaction's newly committed changes. Under PostgreSQL Repeatable Read, ordinary queries use a snapshot associated with the transaction's first non-transaction-control statement, so concurrent commits do not change that view between successive reads. A stable snapshot does not establish that every collection of concurrent transactions has an outcome equivalent to running them one after another. PostgreSQL Serializable adds checking for serialization anomalies; an execution may be rejected rather than committed when the required guarantee cannot be maintained.",
+      "citation_ids": [
+        "fixture_transactions_en"
+      ]
+    },
+    {
+      "heading": "Retry behavior after serialization failure",
+      "text": "The application must be prepared for transaction failure. A serialization failure means retrying the complete transaction, including the reads and application decisions that selected the writes. Retrying only the final failed statement can reuse decisions made from a state that is no longer appropriate. A retry can also fail; applications need a considered retry policy rather than assuming one attempt always succeeds. The requirement to retry follows from the chosen concurrency behavior, not from a promise that all interleavings will transparently complete.",
+      "citation_ids": [
+        "fixture_transactions_en"
+      ]
+    },
+    {
+      "heading": "Modeling conventions used in exercises",
+      "text": "The following conventions belong to this educational fixture. They are explicit modeling assumptions for generated exercises, not quotations or claims about a measured database workload. Two named sessions each execute statements in their stated order. An interleaving lists when each statement begins and when each transaction commits. An ordinary read is distinguished from a write or a locking read; unless otherwise specified, questions use ordinary reads. Initial table values and every relevant change are supplied in the question. There are no hidden triggers, constraints, background transactions, or external side effects. If a question requires one of those features, it must explain the relevant rule in its own premises. For visibility analysis, record what each read is allowed to see before considering whether the transaction eventually commits. For all-or-nothing analysis, distinguish an uncommitted write from a committed state change. For a proposed retry design, check whether it reruns the decisions that depend on database reads and whether its stated objective concerns correctness, availability, or both. These are different evaluation criteria. A task must not silently substitute the behavior of another database system for the PostgreSQL semantics stated here.",
+      "citation_ids": [
+        "fixture_transactions_en"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "kind": "short_answer",
+      "stem": "Two sessions run against a table accounts(id, balance) with initial rows (1, 100) and (2, 200). Session A runs under PostgreSQL Repeatable Read. Session B runs under PostgreSQL Read Committed. The schedule is: (1) A begins; (2) A performs its first ordinary SELECT of account 1 and sees balance 100; (3) B begins; (4) B updates account 1 to balance 150 and commits; (5) A performs a second ordinary SELECT of account 1; (6) A commits. Using only the supplied PostgreSQL semantics, state what A's second SELECT is allowed to see and explain why. Then compare this with what a Read Committed transaction in the same position would see, and state one consequence of this difference for an application that decides its writes from its reads.",
+      "options": [],
+      "answer": "A's second ordinary SELECT under Repeatable Read must still see balance 100, because ordinary queries use the snapshot associated with A's first non-transaction-control statement, and B's concurrent commit does not change that view between successive reads. A Read Committed transaction in the same position would see balance 150 on its second ordinary SELECT, because each ordinary SELECT sees rows committed before that statement began. The application consequence is that a transaction whose decisions depend on its reads may be making decisions from an older snapshot under Repeatable Read, so it cannot assume its reads reflect the latest committed state; it should be prepared for concurrency behavior such as serialization failure and retry the complete transaction when required.",
+      "explanation": "The key is to apply the stated snapshot rule rather than a general intuition. Repeatable Read fixes the ordinary-read view at the first non-transaction-control statement, so step 5 cannot see B's commit. Read Committed takes a fresh statement-level view, so step 5 would see balance 150. The application consequence follows from the notes: decisions based on reads may be based on a state that is no longer current, and the application must be prepared for transaction failure and complete retry.",
+      "difficulty_reason": "The question requires applying two different isolation rules to a concrete interleaving and analyzing the consequence for application decisions. It is not a definition recall task; the student must compare the two visibility outcomes and connect them to retry behavior.",
+      "citation_ids": [
+        "fixture_transactions_en"
+      ],
+      "slot_id": "q1",
+      "difficulty": "medium",
+      "difficulty_design": {
+        "cognitive_process": "apply",
+        "concepts": [
+          "PostgreSQL Repeatable Read snapshot",
+          "PostgreSQL Read Committed statement-level visibility",
+          "transaction retry after serialization failure"
+        ],
+        "expected_steps": [
+          "Identify that A's second ordinary SELECT under Repeatable Read uses the snapshot from A's first non-transaction-control statement, so it must see balance 100.",
+          "Explain that a Read Committed transaction would see balance 150 because each ordinary SELECT sees rows committed before that statement began.",
+          "State an application consequence: decisions based on reads may use an older snapshot, and the application must be prepared for transaction failure and complete retry when required."
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "A two-column timeline diagram for two database sessions. Left column labeled Session A (Repeatable Read) shows: BEGIN, first ordinary SELECT sees balance 100, second ordinary SELECT, COMMIT. Right column labeled Session B (Read Committed) shows: BEGIN, UPDATE account 1 to 150, COMMIT. Arrows show B's commit occurring between A's two SELECTs. A callout near A's second SELECT says 'Repeatable Read snapshot from first non-transaction-control statement'. A separate callout compares with 'Read Committed: each ordinary SELECT sees rows committed before that statement began'. No answer is written on the diagram."
+}

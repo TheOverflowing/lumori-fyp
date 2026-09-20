@@ -1,0 +1,45 @@
+{
+  "title": "CPU Scheduling: Response Time, Turnaround Time, and Time-Slice Tradeoffs",
+  "evidence_sufficient": true,
+  "evidence_note": "The supplied fixture (fixture_cpu_scheduling_en) defines turnaround time, response time, FCFS, SJF, STCF, Round Robin time slices, switching overhead, and MLFQ parameters, and supplies explicit modeling conventions (single processor, one CPU burst per job, tie-breaking, overhead applicability). This is enough to pose one hard short-answer design/analysis question with a reproducible timeline.",
+  "learning_objectives": [
+    "Distinguish response time from turnaround time and explain why early first access does not imply early completion (fixture_cpu_scheduling_en).",
+    "Apply Round Robin with a stated time slice and switching overhead to compute first-run and completion times (fixture_cpu_scheduling_en).",
+    "Evaluate a scheduling design against an explicit objective and constraints, arguing tradeoffs between slice length, responsiveness, and switching cost (fixture_cpu_scheduling_en)."
+  ],
+  "sections": [],
+  "questions": [
+    {
+      "kind": "short_answer",
+      "stem": "Model: one processor; jobs are independent, each a single CPU burst with no I/O; the processor never serves two jobs at once. Jobs (name, arrival time, required CPU service): A(0, 6), B(1, 3), C(2, 1). Use Round Robin with a time slice of 2 time units. Switching overhead is charged only when the processor moves between two different jobs, costs 1 time unit, and no initial dispatch charge applies; arrivals during switching enter the ready queue in arrival order. If a job finishes before its slice ends, it does not use the remaining slice. Ties are broken alphabetically. Overhead time delivers no CPU service to any job.\n\n(a) Build the timeline and report each job's first-run time and completion time, then compute the average response time and average turnaround time.\n(b) A designer wants to reduce the average response time and proposes shortening the time slice to 1 time unit. Using the same jobs, arrivals, and overhead rule, compute the new average response time and average turnaround time, and state whether the proposal meets its stated objective.\n(c) Recommend a slice length for this workload and objective, and justify your recommendation with reference to the tradeoff between initial responsiveness and switching frequency, naming at least one constraint a recommendation must respect.",
+      "options": [],
+      "answer": "(a) Slice = 2, overhead = 1 per switch between different jobs, no initial dispatch charge. Timeline: A runs 0-2 (first run A=0); switch 2-3; B runs 3-5 (first run B=3); switch 5-6; C runs 6-7 and finishes (first run C=6, completion C=7); switch 7-8; A runs 8-10; switch 10-11; B runs 11-13 and finishes (completion B=13); switch 13-14; A runs 14-16 and finishes (completion A=16). First-run times: A=0, B=3, C=6. Completion times: A=16, B=13, C=7. Average response time = (0+3+6)/3 = 3. Average turnaround time = (16+13+7)/3 = 36/3 = 12.\n\n(b) Slice = 1, same overhead rule. Timeline: A 0-1 (A first run 0); switch 1-2; B 2-3 (B first run 2); switch 3-4; C 4-5 and finishes (C first run 4, completion C=5); switch 5-6; A 6-7; switch 7-8; B 8-9; switch 9-10; A 10-11; switch 11-12; B 12-13 and finishes (completion B=13); switch 13-14; A 14-15; switch 15-16; A 16-17 and finishes (completion A=17). First-run times: A=0, B=2, C=4. Completion times: A=17, B=13, C=5. Average response time = (0+2+4)/3 = 2, which is lower than 3, so the stated objective (reducing average response time) is met. Average turnaround time = (17+13+5)/3 = 35/3 ≈ 11.67, slightly better here, but the gain is small because more switches occur.\n\n(c) A defensible recommendation states the objective and constraints, e.g., \"choose the slice to lower average response time while keeping switching overhead within a stated budget.\" For this workload, slice = 1 gives the lower average response time (2 vs 3) but requires more switches (8 vs 4), so it spends more time on overhead; slice = 2 amortizes switching better and still gives reasonable first access. A recommendation is only justified relative to the stated objective and constraints (maximum response time, switching budget, or fairness), because a policy can satisfy one constraint while losing on another metric; shorter slices can improve initial responsiveness but increase context-switch frequency, and larger slices amortize switching costs but can lengthen waits before a different job first runs.",
+      "explanation": "Turnaround time is completion minus arrival; response time is first run minus arrival, so a job can start early yet finish late (fixture_cpu_scheduling_en). The timelines above follow the fixture's modeling conventions: one processor, one burst per job, no service during switching, no initial dispatch charge, overhead only between different jobs, arrivals during switching enqueued in arrival order, and alphabetical tie-breaking. The comparison shows the stated objective (average response time) improving with a shorter slice while switching frequency rises, so the recommendation must name the objective and the constraint it respects.",
+      "difficulty_reason": "The item integrates several fixture concepts (Round Robin rotation, slice length, switching overhead, response vs. turnaround time) inside a concrete constrained scenario, requires constructing two timelines under an explicit overhead rule, and asks for a justified recommendation tied to an objective and constraint. Difficulty comes from coordinating the constraints and arguing the tradeoff, not from recalling a definition.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ],
+      "slot_id": "q1",
+      "difficulty": "hard",
+      "difficulty_design": {
+        "cognitive_process": "evaluate",
+        "concepts": [
+          "Round Robin time slice",
+          "response time",
+          "turnaround time",
+          "context-switch overhead",
+          "scheduling objective and constraints"
+        ],
+        "expected_steps": [
+          "Construct the slice = 2 timeline under the stated overhead rule and report each job's first-run and completion times.",
+          "Compute average response time and average turnaround time for slice = 2.",
+          "Construct the slice = 1 timeline under the same rule and compute the new averages.",
+          "State whether the proposal meets its stated objective, using the computed averages.",
+          "Recommend a slice length and justify it by weighing initial responsiveness against switching frequency.",
+          "Name at least one constraint (e.g., maximum response time, switching budget, fairness) that the recommendation must respect."
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "A horizontal timeline diagram with one row per job (A, B, C). Colored blocks mark CPU service intervals, and hatched gray blocks mark switching overhead between different jobs. Vertical dashed lines mark arrival times 0, 1, and 2. Small markers labeled 'first run' and 'completion' sit on each job's row. A caption states the model assumptions: one processor, one CPU burst per job, no service during switching, no initial dispatch charge. No numeric answers are printed in the figure."
+}

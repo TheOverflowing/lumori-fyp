@@ -83,12 +83,13 @@ class DifficultyWire:
         asset = {'title': '课程检索', 'evidence_sufficient': self.mode != 'insufficient',
                  'sections': [], 'questions': []}
         if asset['evidence_sufficient']:
-            asset['sections'] = [{'heading': '索引兼容性', 'text': SOURCE['text'], 'citation_ids': refs}]
+            if instruction['request'].get('include_explanations') or instruction['request']['material'] == 'lesson':
+                asset['sections'] = [{'heading': '索引兼容性', 'text': SOURCE['text'], 'citation_ids': refs}]
             asset['questions'] = [question(slot, i, refs)
                 for i, slot in enumerate(instruction['difficulty_plan'], 1)]
         if asset['questions']:
             first = asset['questions'][0]
-            if self.mode == 'false_hard' or self.mode == 'repair_once' and len(self.generations) == 1:
+            if self.mode == 'false_hard' or self.mode == 'repair_once' and len(self.generations) == 1 or self.mode == 'repair_twice' and len(self.generations) < 3:
                 first['stem'] = '1. ' + STEMS['easy']
             if self.mode == 'wrong_label': first['difficulty'] = 'easy'
             if self.mode == 'wrong_slot': first['slot_id'] = 'q2'
@@ -118,6 +119,7 @@ def run_case(tmp_path):
         providers = ApiProviders(settings, store, httpx.AsyncClient(transport=httpx.MockTransport(wire)))
         pipeline = Pipeline(settings, store, providers)
         payload = dict(course_id='course-1', topic='检索与索引恢复', difficulty='hard', count=3,
+                       include_explanations=True,
                        question_type='short_answer', request_key=f'difficulty-{counter}') | overrides
         req = GenerateRequest(**payload)
         job, _ = store.job(req.request_key, 'generate', req.model_dump())
@@ -169,7 +171,8 @@ def test_assessor_does_not_receive_author_target_or_design(run_case):
     assert len(sent['messages']) == 2
     instruction = json.loads(sent['messages'][1]['content'])
     assert set(instruction) == {'task', 'learner_profile', 'rubric_version', 'rubric',
-                                 'rubric_note', 'questions', 'reference_chunks', 'schema'}
+                                'rubric_note', 'questions', 'reference_chunks', 'schema',
+                                'student_visible_context'}
     assert instruction['learner_profile'] == '已掌握本课程定义的学习者'
     assert set(instruction['rubric']) == {'easy', 'medium', 'hard'}
     assert all(set(q) == {'slot_id', 'kind', 'stem', 'options', 'answer', 'explanation'}
@@ -178,16 +181,22 @@ def test_assessor_does_not_receive_author_target_or_design(run_case):
     assert 'difficulty_plan' not in dumps(sent) and 'difficulty_design' not in dumps(sent)
 
 
-def test_false_hard_label_is_rejected_with_one_repair_limit(run_case):
+def test_missed_target_after_three_rounds_keeps_reviewed_content_with_disclosure(run_case):
     job, evidence, content, wire = run_case(mode='false_hard')
-    assert job['status'] == 'failed' and '独立难度复核' in job['error']
-    assert content is None
-    assert len(wire.generations) == len(wire.assessments) == 2
-    assert len(evidence['attempts']) == 2
+    assert job['status'] == 'succeeded' and content
+    assert len(wire.generations) == len(wire.assessments) == 3
+    assert len(evidence['attempts']) == 3
+    decision = content['config']['difficulty_acceptance']
+    assert decision['status'] == 'adjusted' and decision['strict_passed'] is False
+    assert decision['acceptance_reason'] == 'any_level'
+    assert decision['rounds'] == decision['accepted_attempt'] == 3
+    assert decision['items'][0]['target_difficulty'] == 'hard'
+    assert decision['items'][0]['assessed_difficulty'] == 'easy'
+    assert content['asset']['questions'][0]['difficulty'] == 'hard'
     for attempt in evidence['attempts']:
         assert attempt['response']['questions'][0]['difficulty'] == 'hard'
         assert attempt['assessment']['response']['items'][0]['assessed_difficulty'] == 'easy'
-        assert attempt['assessment']['status'] == 'failed'
+        assert attempt['assessment']['status'] in ('failed', 'adjusted')
         assert attempt['validation']['rule'] == 'difficulty_assessment_failed'
     repair = wire.generations[1]['messages'][-1]['content']
     assert 'PRIVATE_ASSESSMENT_REASON' not in repair and 'PRIVATE_AUTHOR_REASON' not in repair
@@ -209,7 +218,8 @@ def test_repair_regenerates_then_independently_rechecks(run_case):
 def test_uncertain_unsupported_or_ambiguous_judgement_fails_closed(run_case, mode, reason):
     job, evidence, content, wire = run_case(mode=mode)
     assert job['status'] == 'failed' and content is None
-    assert len(wire.generations) == len(wire.assessments) == 2
+    assert len(wire.generations) == len(wire.assessments) == 3
+    assert len(evidence['attempts']) == 3
     assert reason in evidence['attempts'][-1]['validation']['items'][0]['reasons']
 
 
@@ -233,7 +243,8 @@ def test_malformed_or_failed_assessment_never_retries_generation(run_case, mode)
 def test_structural_difficulty_failure_is_bounded_before_judgement(run_case, mode, rule):
     job, evidence, content, wire = run_case(mode=mode)
     assert job['status'] == 'failed' and content is None
-    assert len(wire.generations) == 2 and wire.assessments == []
+    assert len(wire.generations) == 3 and wire.assessments == []
+    assert len(evidence['attempts']) == 3
     assert all(attempt['validation']['rule'] == rule for attempt in evidence['attempts'])
 
 
@@ -258,7 +269,7 @@ def test_legacy_assets_remain_readable_but_new_generation_requires_metadata():
         'sections': [{'heading': '资料', 'text': SOURCE['text'], 'citation_ids': ['chunk-1']}],
         'questions': [q]})
     request = GenerateRequest(course_id='course-1', topic='课程资料', count=1,
-                              difficulty='easy', request_key='legacy-fixture')
+                              difficulty='easy', request_key='legacy-fixture', include_explanations=True)
     validate_asset(asset, request, [SOURCE])
     with pytest.raises(AssetRuleError):
         validate_asset(asset, request, [SOURCE], enforce_difficulty=True)

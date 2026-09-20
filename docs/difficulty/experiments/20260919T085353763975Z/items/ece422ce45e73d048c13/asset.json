@@ -1,0 +1,65 @@
+{
+  "title": "Binary Search: Interval Conventions, Boundary Updates, and Applicability",
+  "evidence_sufficient": true,
+  "evidence_note": "The supplied fixture (fixture_binary_search_en) explicitly covers closed and half-open interval conventions, midpoint computation, boundary updates, termination conditions, complexity, and applicability constraints, which is sufficient for one easy multiple-choice question.",
+  "learning_objectives": [
+    "Explain how a closed search interval [left, right] represents the positions still eligible to hold the target.",
+    "Identify the correct boundary update and termination condition consistent with the closed-interval convention."
+  ],
+  "sections": [
+    {
+      "heading": "Closed interval and eligibility",
+      "text": "Binary search uses the ordering of a sequence to discard positions that cannot hold the target. In the closed convention, the search interval [left, right] contains every position still eligible to hold the target; initially left is zero and right is n minus one (fixture_binary_search_en).",
+      "citation_ids": [
+        "fixture_binary_search_en"
+      ]
+    },
+    {
+      "heading": "Midpoint and boundary updates",
+      "text": "At each iteration, mid = left + floor((right - left) / 2). If the middle value is smaller than the target, all positions through mid are too small, so set left = mid + 1. If it is larger, positions from mid onward are too large, so set right = mid - 1 (fixture_binary_search_en).",
+      "citation_ids": [
+        "fixture_binary_search_en"
+      ]
+    },
+    {
+      "heading": "Termination and absent target",
+      "text": "The loop runs while left <= right; an empty interval means the target is absent. The interval convention determines the termination condition, and mixing a closed-interval test with a half-open right boundary can inspect a position outside the array (fixture_binary_search_en).",
+      "citation_ids": [
+        "fixture_binary_search_en"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "slot_id": "q1",
+      "difficulty": "easy",
+      "difficulty_design": {
+        "cognitive_process": "remember",
+        "concepts": [
+          "closed search interval",
+          "boundary update",
+          "loop termination condition"
+        ],
+        "expected_steps": [
+          "Recall that the closed interval stays nonempty while left <= right.",
+          "Recall that a larger middle value sets right = mid - 1."
+        ]
+      },
+      "kind": "mcq",
+      "stem": "Using the closed-interval convention [left, right] described in the notes, which statement correctly pairs the loop condition with the update applied when the middle value is larger than the target? (fixture_binary_search_en)",
+      "options": [
+        "Loop while left <= right; set right = mid - 1",
+        "Loop while left < right; set right = mid",
+        "Loop while left <= right; set left = mid + 1",
+        "Loop while left < right; set right = mid - 1"
+      ],
+      "answer": "A",
+      "explanation": "In the closed convention the interval [left, right] is nonempty while left <= right, and when the middle value is larger than the target, positions from mid onward are too large, so right = mid - 1 (fixture_binary_search_en).",
+      "difficulty_reason": "This is an easy item: it asks the student to recognize a single explicitly stated fact from the notes, with complete conditions and no strategy selection required.",
+      "citation_ids": [
+        "fixture_binary_search_en"
+      ]
+    }
+  ],
+  "visual_prompt": "A horizontal array of sorted cells with left and right markers showing the closed interval [left, right], a mid marker, and an arrow indicating that when the middle value is larger than the target, right moves to mid - 1."
+}

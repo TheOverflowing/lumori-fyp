@@ -1,0 +1,307 @@
+{
+  "review_schema": "h2-posthoc-codex-candidate-review-v1",
+  "created_at_utc": "2026-09-19T10:44:20.171086+00:00",
+  "scope": "docs/agent/harness-experiments/H2_20260919",
+  "reviewer": "Codex in the existing development conversation",
+  "independence_note": "Post-hoc AI review, not human gold or fully blinded independent evaluation. This session helped design/integrate the system and saw prior results; candidate answers and system gate outputs were read. No additional model API was called for this review.",
+  "preregistration": "This 0/50/100 diagnostic rubric was applied after H2 results and does not replace frozen H2 outcomes or preregistered metrics.",
+  "scoring_rubric": {
+    "correctness": {
+      "100": "Answer, explanation, conditions and necessary subparts correct with no material defect found.",
+      "50": "Substantial correct work, but material factual/explanation/condition/coverage defect remains; not publish-ready.",
+      "0": "Core answer materially wrong or not answerable under stated premises.",
+      "NA": "Technical failure left no usable question; retained separately in request/delivery denominator."
+    },
+    "difficulty_match": {
+      "100": "Clearly matches target operational rubric for stated learner.",
+      "50": "Borderline match or comparison/constraints/scaffolding make the claimed level uncertain.",
+      "0": "Clearly another level.",
+      "NA": "No usable question to assess."
+    }
+  },
+  "counts": {
+    "planned_cases": 5,
+    "canary_cases": 2,
+    "live_generation_cases": 3,
+    "live_generation_candidate_attempts": 4,
+    "reviewed_live_generation_attempts": 4,
+    "total_candidate_attempts_including_canaries": 6,
+    "live_generation_delivered_drafts": 2,
+    "technical_no_question_NA": 0,
+    "provider_calls_in_frozen_run": 30,
+    "review_model_API_calls": 0
+  },
+  "case_scores": [
+    {
+      "case": "cpu_en_hard",
+      "system_delivered": false,
+      "attempt_count": 1,
+      "reviewed_attempt_count": 1,
+      "last_candidate_correctness_score": 50,
+      "last_candidate_difficulty_match_score": 50,
+      "all_attempt_mean_correctness": 50.0,
+      "all_attempt_mean_difficulty_match": 50.0,
+      "score_NA": false
+    },
+    {
+      "case": "cpu_zh_hard",
+      "system_delivered": true,
+      "attempt_count": 1,
+      "reviewed_attempt_count": 1,
+      "last_candidate_correctness_score": 50,
+      "last_candidate_difficulty_match_score": 50,
+      "all_attempt_mean_correctness": 50.0,
+      "all_attempt_mean_difficulty_match": 50.0,
+      "score_NA": false
+    },
+    {
+      "case": "transactions_zh_medium",
+      "system_delivered": true,
+      "attempt_count": 2,
+      "reviewed_attempt_count": 2,
+      "last_candidate_correctness_score": 50,
+      "last_candidate_difficulty_match_score": 100,
+      "all_attempt_mean_correctness": 50.0,
+      "all_attempt_mean_difficulty_match": 100.0,
+      "score_NA": false
+    }
+  ],
+  "candidate_attempts": [
+    {
+      "case": "cpu_en_hard",
+      "attempt": 1,
+      "system_attempt_status": "protocol_failure",
+      "system_job_status": "failed",
+      "system_agent_status": "protocol_failure",
+      "question_available": true,
+      "correctness_score": 50,
+      "difficulty_match_score": 50,
+      "assessed_difficulty": "medium_hard_borderline",
+      "correctness_reasons": [
+        "RR3/STCF intervals and requested per-job/average metrics match independent manual reconstruction.",
+        "At t=10 the free transition is C→A after C finishes early, not A→A / same-process continuation as the answer and visual prompt repeatedly claim.",
+        "STCF improves both named numerical objectives and satisfies the switching budget; the demanded sacrificed metric is not established. The answer substitutes undefined short-term fairness and says A is delayed although A completes at 12 under STCF versus 13 under RR3."
+      ],
+      "difficulty_reasons": [
+        "Several scheduling/overhead conventions must be combined, so this is above recall.",
+        "The budget is non-discriminating (both policies feasible), STCF has zero overhead by construction and dominates both numerical objectives. The stem also supplies C completion=10 and B final start=14. Thus the claimed hard evaluation demand is partly scaffolded and largely routine application."
+      ],
+      "condition_binding": [
+        "RR early_finish_free=true is explicitly given and applicable.",
+        "STCF keep-running-on-equal wording differs from the tool alphabetic tie contract, but no equal-remaining decision occurs for these exact inputs; it does not change the reconstructed answer."
+      ],
+      "gate_assessment": "Final review JSON contains extra tool_requests; strict Review schema fails. This is protocol failure, not evidence that the correctness gate found the prose errors.",
+      "source_file": "docs/agent/harness-experiments/H2_20260919/deepseek_harness__cpu_en_hard.json",
+      "source_sha256": "c98bb834526af430e9f8e4de1e36d8e42f7de0cf8ab2551b37cb96ae8c1e8b9d",
+      "author_asset_sha256": "83886d0d7a1948a11cacd9bab0b412c8c7304be2567435be8e7df47f060946ca",
+      "evidence_path": "evidence.agent.slots[0].attempts[0].author.response"
+    },
+    {
+      "case": "cpu_zh_hard",
+      "attempt": 1,
+      "system_attempt_status": "passed",
+      "system_job_status": "succeeded",
+      "system_agent_status": "completed",
+      "question_available": true,
+      "correctness_score": 50,
+      "difficulty_match_score": 50,
+      "assessed_difficulty": "medium_hard_borderline",
+      "correctness_reasons": [
+        "RR q2 and STCF timelines and metrics are numerically correct.",
+        "Answer part(3) incorrectly says at t=3 P1 has 3 units left and should run before P3, contradicting its own timeline. P1 actually ran only 0–1 and has 5 left; P3 has 4 and runs at 3.",
+        "Part(4) changes both quantum and switch cost, so it does not isolate a quantum effect. Under the literal change from q2,cost0 to q3,cost1, overhead rises 0→4 and makespan 12→16. In this non-idling workload, queue waiting is not an additional makespan term beyond service+overhead.",
+        "If the intended comparator instead holds switch cost at 1, q2 gives overhead5/makespan17 and q3 gives overhead4/makespan16; the claimed uncertainty should not replace analysis of this fixed workload."
+      ],
+      "difficulty_reasons": [
+        "Building and comparing two schedules is a substantial application exercise.",
+        "The last supposedly evaluative part has an ambiguous comparator and changes two parameters; under the literal reading its conclusion follows from adding positive overhead to a 12-unit no-idle baseline. This is not a clean, discriminating hard design constraint."
+      ],
+      "condition_binding": [
+        "For q3,cost1, the stem charges transitions to another job and provides no early-finish waiver, so recheck uses early_finish_free=false.",
+        "All jobs arrive before the first costed switch; missing during-switch insertion convention does not affect this particular q3 recomputation.",
+        "The live tools covered q2 and STCF only, not q3."
+      ],
+      "gate_assessment": "Published experiment draft passed all review booleans despite a contradicted STCF explanation and an unverified q3 claim. This is a prose/condition-coverage false acceptance.",
+      "source_file": "docs/agent/harness-experiments/H2_20260919/deepseek_harness__cpu_zh_hard.json",
+      "source_sha256": "5d137a2cf8e7dd420fb9aad504f1cf051be0f16d38d1fac9b90d03059b18b8a9",
+      "author_asset_sha256": "58735069e71850d7f74e4cbcf52a68b74480a969dbf748b1aa909c3013fcfb34",
+      "evidence_path": "evidence.agent.slots[0].attempts[0].author.response"
+    },
+    {
+      "case": "transactions_zh_medium",
+      "attempt": 1,
+      "system_attempt_status": "rejected",
+      "system_job_status": "succeeded",
+      "system_agent_status": "completed",
+      "question_available": true,
+      "correctness_score": 50,
+      "difficulty_match_score": 100,
+      "assessed_difficulty": "medium",
+      "correctness_reasons": [
+        "RC reads 100 then60 and RC final values60/0 are correct; whole-transaction retry and no single-retry guarantee are correct.",
+        "The RR question insists on an unchanged schedule through B updating the row modified by A after B snapshot. Actual PostgreSQL RR rejects that update rather than allowing the scenario to complete unchanged.",
+        "The author answer only makes a conditional general claim about stable snapshots; it does not explicitly assert the impossible RR commit. Its omission and contextual explanation nevertheless leave the concrete scenario misleading. The solver, separately, explicitly invents a committed RR overwrite."
+      ],
+      "difficulty_reasons": [
+        "Three linked applications: read visibility in a supplied interleaving, fixed snapshot contrast, and direct evaluation of the stated retry rule. No new transaction design or competing concrete constraints are required.",
+        "The additional PostgreSQL write-conflict rule absent from the frozen notes is a grounding gap, not a legitimate way to make the intended exercise hard."
+      ],
+      "condition_binding": [
+        "No locking SELECT does not disable PostgreSQL update conflict rules.",
+        "The frozen reference states general snapshot/retry semantics but omits the specific concurrent-row-update rule needed by this scenario."
+      ],
+      "gate_assessment": "Rejected only because solver labels hard. Post-hoc assessment considers medium reasonable; this may be a false difficulty rejection, not established correctness detection.",
+      "source_file": "docs/agent/harness-experiments/H2_20260919/deepseek_harness__transactions_zh_medium.json",
+      "source_sha256": "3ec87eaa2801b866c7629924c3eabedf41aca1a4b6d496cc4a4ffe0aa10f2749",
+      "author_asset_sha256": "f6e811b21b6d3d6087a678c21ff916c4c8c404ad8de3c54ac0ac86803f847453",
+      "evidence_path": "evidence.agent.slots[0].attempts[0].author.response"
+    },
+    {
+      "case": "transactions_zh_medium",
+      "attempt": 2,
+      "system_attempt_status": "passed",
+      "system_job_status": "succeeded",
+      "system_agent_status": "completed",
+      "question_available": true,
+      "correctness_score": 50,
+      "difficulty_match_score": 100,
+      "assessed_difficulty": "medium",
+      "correctness_reasons": [
+        "RC values and full-transaction retry rules remain correct.",
+        "Answer part(2) now explicitly says B updates乙=0 and commits under RR, yielding an impossible committed anomaly. B snapshot is atT4, A changes乙 and commitsT6, so B UPDATE atT8 must fail with a concurrent-update serialization error.",
+        "Without successful retry, committed values remain甲=60,乙=140 after A, not甲=60,乙=0. RR does allow some serialization anomalies, but that general fact does not authorize this same-row overwrite."
+      ],
+      "difficulty_reasons": [
+        "The repaired stem retains essentially the same interleaving and the same three conceptual questions as attempt1; it is still a direct application/analysis task relative to the supplied notes.",
+        "Solver changed hard→medium after repair without a clear reduction in actual demands; this is one-run judge variability, not proof of successful difficulty optimization."
+      ],
+      "condition_binding": [
+        "The answer treats a property of RR in general as evidence for a specific history whose write-write conflict prevents the claimed commit."
+      ],
+      "gate_assessment": "Review passed and a draft was produced despite the specific PostgreSQL semantic error. No database execution tool was used; cpu tool correctness is irrelevant here.",
+      "source_file": "docs/agent/harness-experiments/H2_20260919/deepseek_harness__transactions_zh_medium.json",
+      "source_sha256": "3ec87eaa2801b866c7629924c3eabedf41aca1a4b6d496cc4a4ffe0aa10f2749",
+      "author_asset_sha256": "efae8456644a8576a32a4c76a56d70de7131abbb674edda7d38b2536cdf31298",
+      "evidence_path": "evidence.agent.slots[0].attempts[1].author.response"
+    }
+  ],
+  "canaries": [
+    {
+      "case": "canary_bad",
+      "attempt": 1,
+      "mode": "injected_author_fixture",
+      "author_answer_correct": false,
+      "answer_gate": "not_reached",
+      "answer_gate_success_credit": false,
+      "observed_rejection": [
+        "difficulty_mismatch"
+      ],
+      "observed_solver_difficulty": "medium",
+      "posthoc_difficulty_assessment": "medium-leaning; hard label is not human gold. Two routine schedules plus a single dominating average-response choice and generic caveat provide only weak evidence of a hard constraint-tradeoff task.",
+      "difficulty_gate_assessment": "A medium-based rejection is defensible under this post-hoc reading. It does not test whether the answer gate distinguishes the injected wrong answer from the corrected answer.",
+      "correctness_evidence": "Bad RR places C ahead of B already waiting since t=1. Correct queue at t=2 is B,C,A; RR response mean1 and turnaround20/3, not2/3 and6. STCF portion is correct.",
+      "source_file": "docs/agent/harness-experiments/H2_20260919/deepseek_harness__canary_bad.json",
+      "source_sha256": "dc53513a8128296669fa2c4dd8bf45f936abeab20e6c4d6719e9ba5db4e17ea4"
+    },
+    {
+      "case": "canary_corrected",
+      "attempt": 1,
+      "mode": "injected_author_fixture",
+      "author_answer_correct": true,
+      "answer_gate": "not_reached",
+      "answer_gate_success_credit": false,
+      "observed_rejection": [
+        "difficulty_mismatch"
+      ],
+      "observed_solver_difficulty": "medium",
+      "posthoc_difficulty_assessment": "medium-leaning; hard label is not human gold. Two routine schedules plus a single dominating average-response choice and generic caveat provide only weak evidence of a hard constraint-tradeoff task.",
+      "difficulty_gate_assessment": "A medium-based rejection is defensible under this post-hoc reading. It does not test whether the answer gate distinguishes the injected wrong answer from the corrected answer.",
+      "correctness_evidence": "Corrected RR/STCF timelines and means match the manual reconstruction: RR response1/TAT20/3; STCF response0/TAT5.",
+      "source_file": "docs/agent/harness-experiments/H2_20260919/deepseek_harness__canary_corrected.json",
+      "source_sha256": "eb01e338cdb2fa3b354720de01c890ba65c5e292e3544e3a544ca0eea1474688"
+    }
+  ],
+  "descriptive_aggregates": {
+    "all_4_generated_attempts_mean_correctness": 50,
+    "all_4_generated_attempts_mean_difficulty_match": 75,
+    "all_3_last_candidates_mean_correctness": 50,
+    "all_3_last_candidates_mean_difficulty_match": 66.66666666666667,
+    "delivered_drafts_with_correctness_100": 0,
+    "delivered_draft_denominator": 2,
+    "strict_end_to_end_delivered_and_fully_correct": 0,
+    "strict_end_to_end_requested_case_denominator": 3,
+    "warning": "Descriptive diagnostics only; no significance or superiority claim."
+  },
+  "official_sources": [
+    {
+      "url": "https://www.postgresql.org/docs/17/transaction-iso.html#XACT-REPEATABLE-READ",
+      "title": "PostgreSQL17 §13.2.2 Repeatable Read Isolation Level",
+      "accessed": "2026-09-19",
+      "claim": "A repeatable-read transaction cannot update rows changed by another transaction after its snapshot; concurrent-update serialization failure prevents the asserted RR commit."
+    },
+    {
+      "url": "https://www.postgresql.org/docs/17/mvcc-serialization-failure-handling.html",
+      "title": "PostgreSQL17 §13.5 Serialization Failure Handling",
+      "accessed": "2026-09-19",
+      "claim": "Retry complete transaction including decision logic; repeated failures possible."
+    }
+  ],
+  "numerical_check_file": "docs/agent/harness/H2_NUMERICAL_RECHECK_20260919.json",
+  "frozen_code_hash_checks": {
+    "app/generation_agent.py": true,
+    "app/answer_tools.py": true,
+    "app/config.py": true,
+    "app/store.py": true,
+    "app/providers.py": true,
+    "app/pipeline.py": true,
+    "app/models.py": true,
+    "app/difficulty.py": true,
+    "scripts/harness_correctness_experiment.py": true,
+    "scripts/agent_correctness_experiment.py": true,
+    "scripts/difficulty_experiment.py": true,
+    "scripts/difficulty_prompts.py": true,
+    "app/harness_acp.py": true,
+    "app/harness_profile.py": true,
+    "app/harness_relay.py": true,
+    "app/harness_runner.py": true,
+    "app/harness_tools.py": true
+  },
+  "raw_input_hashes": [
+    {
+      "path": "docs/agent/harness-experiments/H2_20260919/deepseek_harness__canary_bad.json",
+      "sha256": "dc53513a8128296669fa2c4dd8bf45f936abeab20e6c4d6719e9ba5db4e17ea4"
+    },
+    {
+      "path": "docs/agent/harness-experiments/H2_20260919/deepseek_harness__canary_corrected.json",
+      "sha256": "eb01e338cdb2fa3b354720de01c890ba65c5e292e3544e3a544ca0eea1474688"
+    },
+    {
+      "path": "docs/agent/harness-experiments/H2_20260919/deepseek_harness__cpu_en_hard.json",
+      "sha256": "c98bb834526af430e9f8e4de1e36d8e42f7de0cf8ab2551b37cb96ae8c1e8b9d"
+    },
+    {
+      "path": "docs/agent/harness-experiments/H2_20260919/deepseek_harness__cpu_zh_hard.json",
+      "sha256": "5d137a2cf8e7dd420fb9aad504f1cf051be0f16d38d1fac9b90d03059b18b8a9"
+    },
+    {
+      "path": "docs/agent/harness-experiments/H2_20260919/deepseek_harness__transactions_zh_medium.json",
+      "sha256": "3ec87eaa2801b866c7629924c3eabedf41aca1a4b6d496cc4a4ffe0aa10f2749"
+    },
+    {
+      "path": "docs/agent/harness-experiments/H2_20260919/frozen_cases.json",
+      "sha256": "16f4576b19fd7ae7c38fd823524e94886f0e08035dbb74b997a564d75b5e82d8"
+    },
+    {
+      "path": "docs/agent/harness-experiments/H2_20260919/manifest.json",
+      "sha256": "02bddf617110e32f7af25ff7dfe5f9fdf0c35f3b4c7cac68fe522369bcecb48f"
+    },
+    {
+      "path": "docs/agent/harness-experiments/H2_20260919/results.json",
+      "sha256": "216660d573ff1d3c4b62f567aa7610da4799f696b7a9da92ad7f9b525833f6da"
+    },
+    {
+      "path": "docs/agent/harness-experiments/H2_20260919/summary.json",
+      "sha256": "27bfe26f7f30ab0786b5def647b1c4edd54867665120c7276ef73dac54decdce"
+    }
+  ]
+}

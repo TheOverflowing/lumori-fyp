@@ -1,0 +1,41 @@
+{
+  "title": "CPU Scheduling: Response Time, Turnaround Time, and Time-Slice Tradeoffs",
+  "evidence_sufficient": true,
+  "evidence_note": "The supplied fixture (fixture_cpu_scheduling_en) defines turnaround time, response time, FCFS, SJF, STCF, Round Robin, MLFQ, and an explicit scheduling model with conventions for ties, switching overhead, and slice boundaries. This is enough for one hard short-answer design question.",
+  "learning_objectives": [
+    "Distinguish response time from turnaround time and explain why early first access does not imply early completion.",
+    "Apply the supplied scheduling model conventions (one processor, single CPU burst, explicit tie rule, stated switching overhead) to build a reproducible timeline.",
+    "Evaluate Round Robin time-slice choices against both a response-time objective and a switching budget.",
+    "Justify a scheduler recommendation by referencing the stated objective and constraints rather than a single metric."
+  ],
+  "sections": [
+    {
+      "heading": "Two different timing metrics",
+      "text": "The scheduler picks which ready job gets the processor. Turnaround time is completion time minus arrival time; response time is the first time a job runs minus its arrival time. These measure different things, so a job that starts early can still finish late (fixture_cpu_scheduling_en).",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    },
+    {
+      "heading": "Policies in the notes",
+      "text": "First-come, first-served runs jobs in arrival order and does not preempt. Shortest Job First picks the shortest available job and is non-preemptive. Shortest Time-to-Completion First is preemptive and picks the least remaining processing time; comparisons of shortest-job policies must state how execution lengths are known. Round Robin rotates the ready queue, running each job for at most one time slice before an unfinished job goes to the back. Shorter slices can improve initial responsiveness but raise context-switch frequency; larger slices amortize switching but can lengthen the wait before a different job first runs. MLFQ uses observed behavior instead of exact future lengths, demotes jobs that consume their allotment, and can use periodic priority boosts (fixture_cpu_scheduling_en).",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    },
+    {
+      "heading": "Model conventions you must follow",
+      "text": "Unless a question says otherwise: one processor, independent jobs, one CPU burst each with no I/O, given arrival times and CPU service, no two jobs served at once, switching time is not service delivered to any job, and a job that finishes early does not use the rest of its slice. If a job arrives exactly at a slice boundary, the question must state whether it is enqueued before or after the preempted job. Ties need an explicit rule such as alphabetical order. Questions with switching overhead must define when it applies and how arrivals during switching enter the queue; questions ignoring overhead must say so (fixture_cpu_scheduling_en).",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    },
+    {
+      "heading": "What a recommendation needs",
+      "text": "A comparison can report each job's first-run and completion times and then compute the requested averages. A design recommendation also needs an objective and constraints, such as a maximum response time, a switching budget, or a fairness requirement, because a policy can satisfy one constraint while losing on another metric (fixture_cpu_scheduling_en).",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    }
+  ]
+}

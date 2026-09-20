@@ -3,6 +3,7 @@ import json
 
 import pytest
 
+from app.job_progress import EVENT_FIELDS, MAX_EVENTS
 from test_workflow import done, request, rig
 
 
@@ -89,7 +90,29 @@ def test_job_metadata_resolves_index_generation_and_failed_media_without_payload
         assert row['course_id'] == course and row['content_id'] == expected[row['id']]
         detail = client.get('/api/jobs/' + row['id']).json()
         assert detail['course_id'] == course and detail['content_id'] == expected[row['id']]
-        assert set(detail) == set(row) | {'result', 'updated_at'}
+        assert set(detail) == set(row) | {'result', 'updated_at', 'timeline'}
+        timeline = detail['timeline']
+        assert set(timeline) == {'version', 'recorded', 'stages', 'active_stage', 'activity',
+            'completed', 'total', 'unit', 'updated_at', 'elapsed_ms', 'timing_complete',
+            'events', 'events_truncated'}
+        assert timeline['version'] == 'job-progress-v1'
+        expected_stages = {'index': [], 'generate': ['retrieval', 'writing', 'saving'],
+                           'media': ['audio', 'saving']}[row['kind']]
+        assert timeline['recorded'] is bool(expected_stages)
+        assert [stage['id'] for stage in timeline['stages']] == expected_stages
+        for stage in timeline['stages']:
+            assert set(stage) == {'id', 'kind', 'status', 'started_at', 'finished_at', 'elapsed_ms', 'timing_complete'}
+            assert stage['kind'] == stage['id']
+            assert stage['status'] in {'pending', 'active', 'completed', 'failed', 'blocked'}
+            assert stage['elapsed_ms'] is None or type(stage['elapsed_ms']) is int and stage['elapsed_ms'] >= 0
+        assert len(timeline['events']) <= MAX_EVENTS == 120
+        for event in timeline['events']:
+            assert set(event) == {'id', 'stage', 'code', 'at', 'data'}
+            assert event['stage'] in expected_stages and event['code'] in EVENT_FIELDS
+            assert set(event['data']) == set(EVENT_FIELDS[event['code']])
+            for key, allowed in EVENT_FIELDS[event['code']].items():
+                value = event['data'][key]
+                assert (type(value) is int and 0 <= value <= 10**7) if allowed == 'integer' else value in allowed
         public = json.dumps([row, detail])
         for private in ('payload', 'request_key', 'private-media-request-key', 'metadata-generation', 'test-key-not-real'):
             assert private not in public

@@ -1,0 +1,1399 @@
+{
+  "scope": "H2 frozen candidates; post-hoc numerical diagnostics; no model APIs",
+  "frozen_tool_sha256": "f2d2695cc3a1e30d20f1ab996565e163c1ddd57cf7c5f40341ddbbad272c1ddb",
+  "cases": [
+    {
+      "label": "canary_rr",
+      "method": "Independently hand-derived intervals; service/arrival/contiguity/metrics checked in Python, then exact equality checked against the frozen H2 deterministic tool. Not an independent simulator or human gold label.",
+      "input": {
+        "processes": [
+          {
+            "id": "A",
+            "arrival": 0,
+            "burst": 6
+          },
+          {
+            "id": "B",
+            "arrival": 1,
+            "burst": 3
+          },
+          {
+            "id": "C",
+            "arrival": 2,
+            "burst": 1
+          }
+        ],
+        "policy": "rr",
+        "quantum": 2,
+        "switch_cost": 0,
+        "boundary": "before",
+        "during_switch": "tail",
+        "early_finish_free": false
+      },
+      "manual_timeline": [
+        {
+          "kind": "run",
+          "process_id": "A",
+          "start": 0,
+          "end": 2
+        },
+        {
+          "kind": "run",
+          "process_id": "B",
+          "start": 2,
+          "end": 4
+        },
+        {
+          "kind": "run",
+          "process_id": "C",
+          "start": 4,
+          "end": 5
+        },
+        {
+          "kind": "run",
+          "process_id": "A",
+          "start": 5,
+          "end": 7
+        },
+        {
+          "kind": "run",
+          "process_id": "B",
+          "start": 7,
+          "end": 8
+        },
+        {
+          "kind": "run",
+          "process_id": "A",
+          "start": 8,
+          "end": 10
+        }
+      ],
+      "manual_per_process": {
+        "A": {
+          "first_start": 0,
+          "completion": 10,
+          "response": 0,
+          "turnaround": 10
+        },
+        "B": {
+          "first_start": 2,
+          "completion": 8,
+          "response": 1,
+          "turnaround": 7
+        },
+        "C": {
+          "first_start": 4,
+          "completion": 5,
+          "response": 2,
+          "turnaround": 3
+        }
+      },
+      "frozen_tool_result": {
+        "tool": "cpu_schedule_v1",
+        "policy": "rr",
+        "unit": "abstract_time_units",
+        "timeline": [
+          {
+            "kind": "run",
+            "process_id": "A",
+            "start": 0,
+            "end": 2
+          },
+          {
+            "kind": "run",
+            "process_id": "B",
+            "start": 2,
+            "end": 4
+          },
+          {
+            "kind": "run",
+            "process_id": "C",
+            "start": 4,
+            "end": 5
+          },
+          {
+            "kind": "run",
+            "process_id": "A",
+            "start": 5,
+            "end": 7
+          },
+          {
+            "kind": "run",
+            "process_id": "B",
+            "start": 7,
+            "end": 8
+          },
+          {
+            "kind": "run",
+            "process_id": "A",
+            "start": 8,
+            "end": 10
+          }
+        ],
+        "per_process": {
+          "A": {
+            "first_start": 0,
+            "response": 0,
+            "completion": 10,
+            "turnaround": 10
+          },
+          "B": {
+            "first_start": 2,
+            "response": 1,
+            "completion": 8,
+            "turnaround": 7
+          },
+          "C": {
+            "first_start": 4,
+            "response": 2,
+            "completion": 5,
+            "turnaround": 3
+          }
+        },
+        "averages": {
+          "response": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "turnaround": {
+            "numerator": 20,
+            "denominator": 3
+          }
+        },
+        "switch_count": 5,
+        "overhead": 0,
+        "makespan": 10
+      },
+      "exact_match": true
+    },
+    {
+      "label": "canary_stcf",
+      "method": "Independently hand-derived intervals; service/arrival/contiguity/metrics checked in Python, then exact equality checked against the frozen H2 deterministic tool. Not an independent simulator or human gold label.",
+      "input": {
+        "processes": [
+          {
+            "id": "A",
+            "arrival": 0,
+            "burst": 6
+          },
+          {
+            "id": "B",
+            "arrival": 1,
+            "burst": 3
+          },
+          {
+            "id": "C",
+            "arrival": 2,
+            "burst": 1
+          }
+        ],
+        "policy": "stcf"
+      },
+      "manual_timeline": [
+        {
+          "kind": "run",
+          "process_id": "A",
+          "start": 0,
+          "end": 1
+        },
+        {
+          "kind": "run",
+          "process_id": "B",
+          "start": 1,
+          "end": 2
+        },
+        {
+          "kind": "run",
+          "process_id": "C",
+          "start": 2,
+          "end": 3
+        },
+        {
+          "kind": "run",
+          "process_id": "B",
+          "start": 3,
+          "end": 5
+        },
+        {
+          "kind": "run",
+          "process_id": "A",
+          "start": 5,
+          "end": 10
+        }
+      ],
+      "manual_per_process": {
+        "A": {
+          "first_start": 0,
+          "completion": 10,
+          "response": 0,
+          "turnaround": 10
+        },
+        "B": {
+          "first_start": 1,
+          "completion": 5,
+          "response": 0,
+          "turnaround": 4
+        },
+        "C": {
+          "first_start": 2,
+          "completion": 3,
+          "response": 0,
+          "turnaround": 1
+        }
+      },
+      "frozen_tool_result": {
+        "tool": "cpu_schedule_v1",
+        "policy": "stcf",
+        "unit": "abstract_time_units",
+        "timeline": [
+          {
+            "kind": "run",
+            "process_id": "A",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "kind": "run",
+            "process_id": "B",
+            "start": 1,
+            "end": 2
+          },
+          {
+            "kind": "run",
+            "process_id": "C",
+            "start": 2,
+            "end": 3
+          },
+          {
+            "kind": "run",
+            "process_id": "B",
+            "start": 3,
+            "end": 5
+          },
+          {
+            "kind": "run",
+            "process_id": "A",
+            "start": 5,
+            "end": 10
+          }
+        ],
+        "per_process": {
+          "A": {
+            "first_start": 0,
+            "response": 0,
+            "completion": 10,
+            "turnaround": 10
+          },
+          "B": {
+            "first_start": 1,
+            "response": 0,
+            "completion": 5,
+            "turnaround": 4
+          },
+          "C": {
+            "first_start": 2,
+            "response": 0,
+            "completion": 3,
+            "turnaround": 1
+          }
+        },
+        "averages": {
+          "response": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "turnaround": {
+            "numerator": 5,
+            "denominator": 1
+          }
+        },
+        "switch_count": 4,
+        "overhead": 0,
+        "makespan": 10
+      },
+      "exact_match": true
+    },
+    {
+      "label": "cpu_en_rr3",
+      "method": "Independently hand-derived intervals; service/arrival/contiguity/metrics checked in Python, then exact equality checked against the frozen H2 deterministic tool. Not an independent simulator or human gold label.",
+      "input": {
+        "processes": [
+          {
+            "id": "A",
+            "arrival": 0,
+            "burst": 6
+          },
+          {
+            "id": "B",
+            "arrival": 1,
+            "burst": 4
+          },
+          {
+            "id": "C",
+            "arrival": 2,
+            "burst": 2
+          }
+        ],
+        "policy": "rr",
+        "quantum": 3,
+        "switch_cost": 1,
+        "boundary": "before",
+        "during_switch": "tail",
+        "early_finish_free": true
+      },
+      "manual_timeline": [
+        {
+          "kind": "run",
+          "process_id": "A",
+          "start": 0,
+          "end": 3
+        },
+        {
+          "kind": "switch",
+          "from_process_id": "A",
+          "to_process_id": "B",
+          "start": 3,
+          "end": 4
+        },
+        {
+          "kind": "run",
+          "process_id": "B",
+          "start": 4,
+          "end": 7
+        },
+        {
+          "kind": "switch",
+          "from_process_id": "B",
+          "to_process_id": "C",
+          "start": 7,
+          "end": 8
+        },
+        {
+          "kind": "run",
+          "process_id": "C",
+          "start": 8,
+          "end": 10
+        },
+        {
+          "kind": "run",
+          "process_id": "A",
+          "start": 10,
+          "end": 13
+        },
+        {
+          "kind": "switch",
+          "from_process_id": "A",
+          "to_process_id": "B",
+          "start": 13,
+          "end": 14
+        },
+        {
+          "kind": "run",
+          "process_id": "B",
+          "start": 14,
+          "end": 15
+        }
+      ],
+      "manual_per_process": {
+        "A": {
+          "first_start": 0,
+          "completion": 13,
+          "response": 0,
+          "turnaround": 13
+        },
+        "B": {
+          "first_start": 4,
+          "completion": 15,
+          "response": 3,
+          "turnaround": 14
+        },
+        "C": {
+          "first_start": 8,
+          "completion": 10,
+          "response": 6,
+          "turnaround": 8
+        }
+      },
+      "frozen_tool_result": {
+        "tool": "cpu_schedule_v1",
+        "policy": "rr",
+        "unit": "abstract_time_units",
+        "timeline": [
+          {
+            "kind": "run",
+            "process_id": "A",
+            "start": 0,
+            "end": 3
+          },
+          {
+            "kind": "switch",
+            "from_process_id": "A",
+            "to_process_id": "B",
+            "start": 3,
+            "end": 4
+          },
+          {
+            "kind": "run",
+            "process_id": "B",
+            "start": 4,
+            "end": 7
+          },
+          {
+            "kind": "switch",
+            "from_process_id": "B",
+            "to_process_id": "C",
+            "start": 7,
+            "end": 8
+          },
+          {
+            "kind": "run",
+            "process_id": "C",
+            "start": 8,
+            "end": 10
+          },
+          {
+            "kind": "run",
+            "process_id": "A",
+            "start": 10,
+            "end": 13
+          },
+          {
+            "kind": "switch",
+            "from_process_id": "A",
+            "to_process_id": "B",
+            "start": 13,
+            "end": 14
+          },
+          {
+            "kind": "run",
+            "process_id": "B",
+            "start": 14,
+            "end": 15
+          }
+        ],
+        "per_process": {
+          "A": {
+            "first_start": 0,
+            "response": 0,
+            "completion": 13,
+            "turnaround": 13
+          },
+          "B": {
+            "first_start": 4,
+            "response": 3,
+            "completion": 15,
+            "turnaround": 14
+          },
+          "C": {
+            "first_start": 8,
+            "response": 6,
+            "completion": 10,
+            "turnaround": 8
+          }
+        },
+        "averages": {
+          "response": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "turnaround": {
+            "numerator": 35,
+            "denominator": 3
+          }
+        },
+        "switch_count": 4,
+        "overhead": 3,
+        "makespan": 15
+      },
+      "exact_match": true
+    },
+    {
+      "label": "cpu_en_stcf",
+      "method": "Independently hand-derived intervals; service/arrival/contiguity/metrics checked in Python, then exact equality checked against the frozen H2 deterministic tool. Not an independent simulator or human gold label.",
+      "input": {
+        "processes": [
+          {
+            "id": "A",
+            "arrival": 0,
+            "burst": 6
+          },
+          {
+            "id": "B",
+            "arrival": 1,
+            "burst": 4
+          },
+          {
+            "id": "C",
+            "arrival": 2,
+            "burst": 2
+          }
+        ],
+        "policy": "stcf"
+      },
+      "manual_timeline": [
+        {
+          "kind": "run",
+          "process_id": "A",
+          "start": 0,
+          "end": 1
+        },
+        {
+          "kind": "run",
+          "process_id": "B",
+          "start": 1,
+          "end": 2
+        },
+        {
+          "kind": "run",
+          "process_id": "C",
+          "start": 2,
+          "end": 4
+        },
+        {
+          "kind": "run",
+          "process_id": "B",
+          "start": 4,
+          "end": 7
+        },
+        {
+          "kind": "run",
+          "process_id": "A",
+          "start": 7,
+          "end": 12
+        }
+      ],
+      "manual_per_process": {
+        "A": {
+          "first_start": 0,
+          "completion": 12,
+          "response": 0,
+          "turnaround": 12
+        },
+        "B": {
+          "first_start": 1,
+          "completion": 7,
+          "response": 0,
+          "turnaround": 6
+        },
+        "C": {
+          "first_start": 2,
+          "completion": 4,
+          "response": 0,
+          "turnaround": 2
+        }
+      },
+      "frozen_tool_result": {
+        "tool": "cpu_schedule_v1",
+        "policy": "stcf",
+        "unit": "abstract_time_units",
+        "timeline": [
+          {
+            "kind": "run",
+            "process_id": "A",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "kind": "run",
+            "process_id": "B",
+            "start": 1,
+            "end": 2
+          },
+          {
+            "kind": "run",
+            "process_id": "C",
+            "start": 2,
+            "end": 4
+          },
+          {
+            "kind": "run",
+            "process_id": "B",
+            "start": 4,
+            "end": 7
+          },
+          {
+            "kind": "run",
+            "process_id": "A",
+            "start": 7,
+            "end": 12
+          }
+        ],
+        "per_process": {
+          "A": {
+            "first_start": 0,
+            "response": 0,
+            "completion": 12,
+            "turnaround": 12
+          },
+          "B": {
+            "first_start": 1,
+            "response": 0,
+            "completion": 7,
+            "turnaround": 6
+          },
+          "C": {
+            "first_start": 2,
+            "response": 0,
+            "completion": 4,
+            "turnaround": 2
+          }
+        },
+        "averages": {
+          "response": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "turnaround": {
+            "numerator": 20,
+            "denominator": 3
+          }
+        },
+        "switch_count": 4,
+        "overhead": 0,
+        "makespan": 12
+      },
+      "exact_match": true
+    },
+    {
+      "label": "cpu_zh_rr2",
+      "method": "Independently hand-derived intervals; service/arrival/contiguity/metrics checked in Python, then exact equality checked against the frozen H2 deterministic tool. Not an independent simulator or human gold label.",
+      "input": {
+        "processes": [
+          {
+            "id": "P1",
+            "arrival": 0,
+            "burst": 6
+          },
+          {
+            "id": "P2",
+            "arrival": 1,
+            "burst": 2
+          },
+          {
+            "id": "P3",
+            "arrival": 2,
+            "burst": 4
+          }
+        ],
+        "policy": "rr",
+        "quantum": 2,
+        "switch_cost": 0,
+        "boundary": "before",
+        "during_switch": "tail",
+        "early_finish_free": false
+      },
+      "manual_timeline": [
+        {
+          "kind": "run",
+          "process_id": "P1",
+          "start": 0,
+          "end": 2
+        },
+        {
+          "kind": "run",
+          "process_id": "P2",
+          "start": 2,
+          "end": 4
+        },
+        {
+          "kind": "run",
+          "process_id": "P3",
+          "start": 4,
+          "end": 6
+        },
+        {
+          "kind": "run",
+          "process_id": "P1",
+          "start": 6,
+          "end": 8
+        },
+        {
+          "kind": "run",
+          "process_id": "P3",
+          "start": 8,
+          "end": 10
+        },
+        {
+          "kind": "run",
+          "process_id": "P1",
+          "start": 10,
+          "end": 12
+        }
+      ],
+      "manual_per_process": {
+        "P1": {
+          "first_start": 0,
+          "completion": 12,
+          "response": 0,
+          "turnaround": 12
+        },
+        "P2": {
+          "first_start": 2,
+          "completion": 4,
+          "response": 1,
+          "turnaround": 3
+        },
+        "P3": {
+          "first_start": 4,
+          "completion": 10,
+          "response": 2,
+          "turnaround": 8
+        }
+      },
+      "frozen_tool_result": {
+        "tool": "cpu_schedule_v1",
+        "policy": "rr",
+        "unit": "abstract_time_units",
+        "timeline": [
+          {
+            "kind": "run",
+            "process_id": "P1",
+            "start": 0,
+            "end": 2
+          },
+          {
+            "kind": "run",
+            "process_id": "P2",
+            "start": 2,
+            "end": 4
+          },
+          {
+            "kind": "run",
+            "process_id": "P3",
+            "start": 4,
+            "end": 6
+          },
+          {
+            "kind": "run",
+            "process_id": "P1",
+            "start": 6,
+            "end": 8
+          },
+          {
+            "kind": "run",
+            "process_id": "P3",
+            "start": 8,
+            "end": 10
+          },
+          {
+            "kind": "run",
+            "process_id": "P1",
+            "start": 10,
+            "end": 12
+          }
+        ],
+        "per_process": {
+          "P1": {
+            "first_start": 0,
+            "response": 0,
+            "completion": 12,
+            "turnaround": 12
+          },
+          "P2": {
+            "first_start": 2,
+            "response": 1,
+            "completion": 4,
+            "turnaround": 3
+          },
+          "P3": {
+            "first_start": 4,
+            "response": 2,
+            "completion": 10,
+            "turnaround": 8
+          }
+        },
+        "averages": {
+          "response": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "turnaround": {
+            "numerator": 23,
+            "denominator": 3
+          }
+        },
+        "switch_count": 5,
+        "overhead": 0,
+        "makespan": 12
+      },
+      "exact_match": true
+    },
+    {
+      "label": "cpu_zh_stcf",
+      "method": "Independently hand-derived intervals; service/arrival/contiguity/metrics checked in Python, then exact equality checked against the frozen H2 deterministic tool. Not an independent simulator or human gold label.",
+      "input": {
+        "processes": [
+          {
+            "id": "P1",
+            "arrival": 0,
+            "burst": 6
+          },
+          {
+            "id": "P2",
+            "arrival": 1,
+            "burst": 2
+          },
+          {
+            "id": "P3",
+            "arrival": 2,
+            "burst": 4
+          }
+        ],
+        "policy": "stcf"
+      },
+      "manual_timeline": [
+        {
+          "kind": "run",
+          "process_id": "P1",
+          "start": 0,
+          "end": 1
+        },
+        {
+          "kind": "run",
+          "process_id": "P2",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "kind": "run",
+          "process_id": "P3",
+          "start": 3,
+          "end": 7
+        },
+        {
+          "kind": "run",
+          "process_id": "P1",
+          "start": 7,
+          "end": 12
+        }
+      ],
+      "manual_per_process": {
+        "P1": {
+          "first_start": 0,
+          "completion": 12,
+          "response": 0,
+          "turnaround": 12
+        },
+        "P2": {
+          "first_start": 1,
+          "completion": 3,
+          "response": 0,
+          "turnaround": 2
+        },
+        "P3": {
+          "first_start": 3,
+          "completion": 7,
+          "response": 1,
+          "turnaround": 5
+        }
+      },
+      "frozen_tool_result": {
+        "tool": "cpu_schedule_v1",
+        "policy": "stcf",
+        "unit": "abstract_time_units",
+        "timeline": [
+          {
+            "kind": "run",
+            "process_id": "P1",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "kind": "run",
+            "process_id": "P2",
+            "start": 1,
+            "end": 3
+          },
+          {
+            "kind": "run",
+            "process_id": "P3",
+            "start": 3,
+            "end": 7
+          },
+          {
+            "kind": "run",
+            "process_id": "P1",
+            "start": 7,
+            "end": 12
+          }
+        ],
+        "per_process": {
+          "P1": {
+            "first_start": 0,
+            "response": 0,
+            "completion": 12,
+            "turnaround": 12
+          },
+          "P2": {
+            "first_start": 1,
+            "response": 0,
+            "completion": 3,
+            "turnaround": 2
+          },
+          "P3": {
+            "first_start": 3,
+            "response": 1,
+            "completion": 7,
+            "turnaround": 5
+          }
+        },
+        "averages": {
+          "response": {
+            "numerator": 1,
+            "denominator": 3
+          },
+          "turnaround": {
+            "numerator": 19,
+            "denominator": 3
+          }
+        },
+        "switch_count": 3,
+        "overhead": 0,
+        "makespan": 12
+      },
+      "exact_match": true
+    },
+    {
+      "label": "cpu_zh_rr3_cost1_literal_condition",
+      "method": "Independently hand-derived intervals; service/arrival/contiguity/metrics checked in Python, then exact equality checked against the frozen H2 deterministic tool. Not an independent simulator or human gold label.",
+      "input": {
+        "processes": [
+          {
+            "id": "P1",
+            "arrival": 0,
+            "burst": 6
+          },
+          {
+            "id": "P2",
+            "arrival": 1,
+            "burst": 2
+          },
+          {
+            "id": "P3",
+            "arrival": 2,
+            "burst": 4
+          }
+        ],
+        "policy": "rr",
+        "quantum": 3,
+        "switch_cost": 1,
+        "boundary": "before",
+        "during_switch": "tail",
+        "early_finish_free": false
+      },
+      "manual_timeline": [
+        {
+          "kind": "run",
+          "process_id": "P1",
+          "start": 0,
+          "end": 3
+        },
+        {
+          "kind": "switch",
+          "from_process_id": "P1",
+          "to_process_id": "P2",
+          "start": 3,
+          "end": 4
+        },
+        {
+          "kind": "run",
+          "process_id": "P2",
+          "start": 4,
+          "end": 6
+        },
+        {
+          "kind": "switch",
+          "from_process_id": "P2",
+          "to_process_id": "P3",
+          "start": 6,
+          "end": 7
+        },
+        {
+          "kind": "run",
+          "process_id": "P3",
+          "start": 7,
+          "end": 10
+        },
+        {
+          "kind": "switch",
+          "from_process_id": "P3",
+          "to_process_id": "P1",
+          "start": 10,
+          "end": 11
+        },
+        {
+          "kind": "run",
+          "process_id": "P1",
+          "start": 11,
+          "end": 14
+        },
+        {
+          "kind": "switch",
+          "from_process_id": "P1",
+          "to_process_id": "P3",
+          "start": 14,
+          "end": 15
+        },
+        {
+          "kind": "run",
+          "process_id": "P3",
+          "start": 15,
+          "end": 16
+        }
+      ],
+      "manual_per_process": {
+        "P1": {
+          "first_start": 0,
+          "completion": 14,
+          "response": 0,
+          "turnaround": 14
+        },
+        "P2": {
+          "first_start": 4,
+          "completion": 6,
+          "response": 3,
+          "turnaround": 5
+        },
+        "P3": {
+          "first_start": 7,
+          "completion": 16,
+          "response": 5,
+          "turnaround": 14
+        }
+      },
+      "frozen_tool_result": {
+        "tool": "cpu_schedule_v1",
+        "policy": "rr",
+        "unit": "abstract_time_units",
+        "timeline": [
+          {
+            "kind": "run",
+            "process_id": "P1",
+            "start": 0,
+            "end": 3
+          },
+          {
+            "kind": "switch",
+            "from_process_id": "P1",
+            "to_process_id": "P2",
+            "start": 3,
+            "end": 4
+          },
+          {
+            "kind": "run",
+            "process_id": "P2",
+            "start": 4,
+            "end": 6
+          },
+          {
+            "kind": "switch",
+            "from_process_id": "P2",
+            "to_process_id": "P3",
+            "start": 6,
+            "end": 7
+          },
+          {
+            "kind": "run",
+            "process_id": "P3",
+            "start": 7,
+            "end": 10
+          },
+          {
+            "kind": "switch",
+            "from_process_id": "P3",
+            "to_process_id": "P1",
+            "start": 10,
+            "end": 11
+          },
+          {
+            "kind": "run",
+            "process_id": "P1",
+            "start": 11,
+            "end": 14
+          },
+          {
+            "kind": "switch",
+            "from_process_id": "P1",
+            "to_process_id": "P3",
+            "start": 14,
+            "end": 15
+          },
+          {
+            "kind": "run",
+            "process_id": "P3",
+            "start": 15,
+            "end": 16
+          }
+        ],
+        "per_process": {
+          "P1": {
+            "first_start": 0,
+            "response": 0,
+            "completion": 14,
+            "turnaround": 14
+          },
+          "P2": {
+            "first_start": 4,
+            "response": 3,
+            "completion": 6,
+            "turnaround": 5
+          },
+          "P3": {
+            "first_start": 7,
+            "response": 5,
+            "completion": 16,
+            "turnaround": 14
+          }
+        },
+        "averages": {
+          "response": {
+            "numerator": 8,
+            "denominator": 3
+          },
+          "turnaround": {
+            "numerator": 11,
+            "denominator": 1
+          }
+        },
+        "switch_count": 4,
+        "overhead": 4,
+        "makespan": 16
+      },
+      "exact_match": true
+    },
+    {
+      "label": "cpu_zh_rr2_cost1_alternative_same_cost_comparator",
+      "method": "Independently hand-derived intervals; service/arrival/contiguity/metrics checked in Python, then exact equality checked against the frozen H2 deterministic tool. Not an independent simulator or human gold label.",
+      "input": {
+        "processes": [
+          {
+            "id": "P1",
+            "arrival": 0,
+            "burst": 6
+          },
+          {
+            "id": "P2",
+            "arrival": 1,
+            "burst": 2
+          },
+          {
+            "id": "P3",
+            "arrival": 2,
+            "burst": 4
+          }
+        ],
+        "policy": "rr",
+        "quantum": 2,
+        "switch_cost": 1,
+        "boundary": "before",
+        "during_switch": "tail",
+        "early_finish_free": false
+      },
+      "manual_timeline": [
+        {
+          "kind": "run",
+          "process_id": "P1",
+          "start": 0,
+          "end": 2
+        },
+        {
+          "kind": "switch",
+          "from_process_id": "P1",
+          "to_process_id": "P2",
+          "start": 2,
+          "end": 3
+        },
+        {
+          "kind": "run",
+          "process_id": "P2",
+          "start": 3,
+          "end": 5
+        },
+        {
+          "kind": "switch",
+          "from_process_id": "P2",
+          "to_process_id": "P3",
+          "start": 5,
+          "end": 6
+        },
+        {
+          "kind": "run",
+          "process_id": "P3",
+          "start": 6,
+          "end": 8
+        },
+        {
+          "kind": "switch",
+          "from_process_id": "P3",
+          "to_process_id": "P1",
+          "start": 8,
+          "end": 9
+        },
+        {
+          "kind": "run",
+          "process_id": "P1",
+          "start": 9,
+          "end": 11
+        },
+        {
+          "kind": "switch",
+          "from_process_id": "P1",
+          "to_process_id": "P3",
+          "start": 11,
+          "end": 12
+        },
+        {
+          "kind": "run",
+          "process_id": "P3",
+          "start": 12,
+          "end": 14
+        },
+        {
+          "kind": "switch",
+          "from_process_id": "P3",
+          "to_process_id": "P1",
+          "start": 14,
+          "end": 15
+        },
+        {
+          "kind": "run",
+          "process_id": "P1",
+          "start": 15,
+          "end": 17
+        }
+      ],
+      "manual_per_process": {
+        "P1": {
+          "first_start": 0,
+          "completion": 17,
+          "response": 0,
+          "turnaround": 17
+        },
+        "P2": {
+          "first_start": 3,
+          "completion": 5,
+          "response": 2,
+          "turnaround": 4
+        },
+        "P3": {
+          "first_start": 6,
+          "completion": 14,
+          "response": 4,
+          "turnaround": 12
+        }
+      },
+      "frozen_tool_result": {
+        "tool": "cpu_schedule_v1",
+        "policy": "rr",
+        "unit": "abstract_time_units",
+        "timeline": [
+          {
+            "kind": "run",
+            "process_id": "P1",
+            "start": 0,
+            "end": 2
+          },
+          {
+            "kind": "switch",
+            "from_process_id": "P1",
+            "to_process_id": "P2",
+            "start": 2,
+            "end": 3
+          },
+          {
+            "kind": "run",
+            "process_id": "P2",
+            "start": 3,
+            "end": 5
+          },
+          {
+            "kind": "switch",
+            "from_process_id": "P2",
+            "to_process_id": "P3",
+            "start": 5,
+            "end": 6
+          },
+          {
+            "kind": "run",
+            "process_id": "P3",
+            "start": 6,
+            "end": 8
+          },
+          {
+            "kind": "switch",
+            "from_process_id": "P3",
+            "to_process_id": "P1",
+            "start": 8,
+            "end": 9
+          },
+          {
+            "kind": "run",
+            "process_id": "P1",
+            "start": 9,
+            "end": 11
+          },
+          {
+            "kind": "switch",
+            "from_process_id": "P1",
+            "to_process_id": "P3",
+            "start": 11,
+            "end": 12
+          },
+          {
+            "kind": "run",
+            "process_id": "P3",
+            "start": 12,
+            "end": 14
+          },
+          {
+            "kind": "switch",
+            "from_process_id": "P3",
+            "to_process_id": "P1",
+            "start": 14,
+            "end": 15
+          },
+          {
+            "kind": "run",
+            "process_id": "P1",
+            "start": 15,
+            "end": 17
+          }
+        ],
+        "per_process": {
+          "P1": {
+            "first_start": 0,
+            "response": 0,
+            "completion": 17,
+            "turnaround": 17
+          },
+          "P2": {
+            "first_start": 3,
+            "response": 2,
+            "completion": 5,
+            "turnaround": 4
+          },
+          "P3": {
+            "first_start": 6,
+            "response": 4,
+            "completion": 14,
+            "turnaround": 12
+          }
+        },
+        "averages": {
+          "response": {
+            "numerator": 2,
+            "denominator": 1
+          },
+          "turnaround": {
+            "numerator": 11,
+            "denominator": 1
+          }
+        },
+        "switch_count": 5,
+        "overhead": 5,
+        "makespan": 17
+      },
+      "exact_match": true
+    }
+  ]
+}

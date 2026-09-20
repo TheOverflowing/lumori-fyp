@@ -1,0 +1,89 @@
+{
+  "protocol_version": "difficulty-prompt-screening-v1",
+  "prompt_version": "difficulty-experiment-v2",
+  "judge_version": "difficulty-experiment-blind-judge-v1",
+  "started_at": "2026-09-19T09:01:34.958443+00:00",
+  "selection": "pilot",
+  "dataset_sha256": "a4435ec58c0a4b9393209f010b49806ea72df50871af875c3e1fe9f54e8abd1f",
+  "selected_cases_sha256": "ed52dec367d3e127552a15f2940f8e7143e1657718ae205b5e25961375ac0465",
+  "generation_model": "deepseek-flash",
+  "judge_model": "qwen/qwen3-235b-a22b-2507",
+  "generation_endpoint_signature": "378e09b92e0fe9bb63cf",
+  "judge_endpoint_signature": "ec72120ee7b4e54fb879",
+  "generation_parameters": {
+    "temperature": 0.6,
+    "max_tokens": 4096,
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "judge_parameters": {
+    "temperature": 0,
+    "max_tokens": 2048
+  },
+  "strategies": {
+    "baseline": {
+      "label": "当前生成提示基线",
+      "family": "production_prompt",
+      "reference_urls": [],
+      "note": "education-v3 生成 system/量表；schema 显式补足已有跨字段要求，六策略共同修正。冻结资料、单题、单次调用，不代表完整生产检索、复核及重试流程。"
+    },
+    "rubric_axes": {
+      "label": "难度维度约束",
+      "family": "operational_rubric",
+      "reference_urls": [],
+      "note": "本项目提出的知识整合、迁移、支架和约束维度；未作人工或学生难度校准。"
+    },
+    "backward_design": {
+      "label": "评分要点先行",
+      "family": "answer_plan",
+      "reference_urls": [
+        "https://aclanthology.org/2024.findings-acl.280/"
+      ],
+      "note": "借鉴 PFQS 的答案计划思想，在现有字段内单次生成；不是论文复现或额外规划调用。"
+    },
+    "contrastive": {
+      "label": "三档对照示例",
+      "family": "contrast_enhancement",
+      "reference_urls": [
+        "https://aclanthology.org/2025.findings-emnlp.151/"
+      ],
+      "note": "借鉴 CrossQG 的难度对照思想，未实施跨题过滤；示例为 AI 拟写且未经人工校准，不是论文复现。"
+    },
+    "scaffold_control": {
+      "label": "支架与迁移控制",
+      "family": "task_scaffolding",
+      "reference_urls": [],
+      "note": "本项目设计，通过支持程度、策略选择和迁移距离调节任务；不是已验证难度模型。"
+    },
+    "verify_before_emit": {
+      "label": "输出前自检",
+      "family": "single_call_self_check",
+      "reference_urls": [
+        "https://arxiv.org/abs/2303.17651"
+      ],
+      "note": "受 Self-Refine 自反馈思想启发，仅同一次生成内自检；无迭代反馈调用，不是独立验证或论文复现。"
+    }
+  },
+  "planned_slots": 6,
+  "max_calls": 12,
+  "concurrency": 2,
+  "repeats": 1,
+  "seed": 20260919,
+  "retrieval": "Frozen context; no retrieval or indexing calls",
+  "generation_retries": 0,
+  "judge_retries": 0,
+  "human_labels": false,
+  "student_calibrated": false,
+  "production_policy_changed": false,
+  "limitations": [
+    "Small development screening; no held-out superiority claim.",
+    "Independent-model AI judge is not a teacher or empirical student difficulty.",
+    "All requested slots, including failures, remain in the denominator.",
+    "A single-call backward-design instruction is not a two-stage PFQS reproduction.",
+    "No automatic prompt search or agent repair is run in this first screening."
+  ],
+  "status": "complete",
+  "finished_at": "2026-09-19T09:02:09.733643+00:00",
+  "actual_calls": 11
+}

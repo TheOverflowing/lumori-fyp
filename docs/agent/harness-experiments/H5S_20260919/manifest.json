@@ -1,0 +1,83 @@
+{
+  "schema": "harness-correctness-experiment-v1",
+  "created_at": "2026-09-19T11:50:44.373642+00:00",
+  "live": true,
+  "call_cap": 12,
+  "plan": [
+    {
+      "id": "cpu_en_hard",
+      "case_id": "cpu_scheduling_en_hard",
+      "mode": "injected_spec",
+      "runtime": "deepseek_harness",
+      "task_id": "deepseek_harness__cpu_en_hard"
+    },
+    {
+      "id": "cpu_zh_hard",
+      "case_id": "cpu_scheduling_zh_hard",
+      "mode": "injected_spec",
+      "runtime": "deepseek_harness",
+      "task_id": "deepseek_harness__cpu_zh_hard"
+    }
+  ],
+  "agent_prompt_revision": "20260919-tool-first-v3",
+  "dataset_sha256": "ed1b397bc4e61a5ddd19a8ed4991e219c28c79cf83356e804ef6a9212c353d5b",
+  "harness_quality_revision": "20260919-correctness-first-v1",
+  "question_spec": "cpu_schedule_v1",
+  "frozen_cases_sha256": "fd9034329284ff80b9501944246a2c1c41a0ea4e93046466702c827fd0f45d81",
+  "harness_max_requests": 4,
+  "harness_max_output_tokens": 8192,
+  "native_max_tokens": 8192,
+  "shared_thinking": {
+    "type": "enabled"
+  },
+  "reasoning_effort": "high",
+  "response_format": "json_object",
+  "schema_repairs": 1,
+  "author_mode": "frozen_spec_replay",
+  "spec_replay_sha256": "501a27c149ffc29e591342461f0e5ae0d5c3b248ad2afeb5776f42a72d8375ac",
+  "agent_max_calls": 12,
+  "agent_max_repairs_live_author": 1,
+  "agent_max_repairs_injected_author": 0,
+  "limitations": [
+    "Development smoke: one run per selected case/runtime, not statistical superiority evidence.",
+    "Default mode uses current v3 role prompts. The optional CPU specification mode changes author prompts/schema and deterministically renders the question and answer; it is a combined strategy, not a same-prompt comparison. Runtimes also differ in wrappers, tools and stopping behavior, so effects cannot be attributed to the loop alone.",
+    "Frozen reference snapshots bypass retrieval and do not measure RAG.",
+    "Canary authors are injected AI-reviewed regression fixtures, not live author calls or human gold labels.",
+    "Same model family can make correlated generation and review errors.",
+    "Gate success is not independently established correctness or student difficulty.",
+    "Failed, interrupted and rejected responses remain in the denominator and audit.",
+    "Missing token/cost fields remain unknown; reported totals cover known usage only.",
+    "Runtime order is interleaved by case but not randomized; provider drift and stochasticity remain."
+  ],
+  "code_sha256": {
+    "app/generation_agent.py": "ec796dceb8aebd73458ca32008ace031b800cbbc8df920f0c83f65dbbe9a72a0",
+    "app/answer_tools.py": "f2d2695cc3a1e30d20f1ab996565e163c1ddd57cf7c5f40341ddbbad272c1ddb",
+    "app/cpu_problem_spec.py": "3e542ccfc90063f606667f8c73a01561171a5f239fcfc96e161471fa3d2cee00",
+    "app/config.py": "aa1474e25ab819d579bfda37a8f2702a2ac6deedaca1ef75a40676c6bfc8dbb3",
+    "app/store.py": "5e43f3b4ae1cfb9838aae0f90f51b261cbb53becb49c1a796598f72f6b41144e",
+    "app/providers.py": "8bef82cb2a88625bffe007f966d0197a482b3f66a3b24a5022c7925c55dd58e5",
+    "app/pipeline.py": "cf0634f031a691c8fe668340f972afc73bc41137cbb3bb4da21e353bcce4bf69",
+    "app/models.py": "76cb94ab0641887a9b57a53da2a01c3608d3db89c6bbe930912ec54542d4675b",
+    "app/difficulty.py": "9afec11bbec2d435565a0d1b07686187fdea49ff2ccff689c3a29cd74c42675c",
+    "scripts/harness_correctness_experiment.py": "ae081443bf9b78e40cbda0cb99356dd39ba9d5a60dd1843a9a0fe14e8a046441",
+    "scripts/agent_correctness_experiment.py": "6e5d4d4e43ed8e9a8e182666ad463bd39789792ea2f36b0a60d17663c90eecc1",
+    "scripts/difficulty_experiment.py": "dc8c9567a4b1d43f54ec9b475af0e43d2a47ea8b36055c1f3e9a91422ab4d843",
+    "scripts/difficulty_prompts.py": "4d27f9c2fa9e612cb58c023ebf437f8d1e53985c2360856395e2c19557faab54",
+    "app/harness_acp.py": "126723b9566d9d9a1379e472ad6278c374a41f754535fac508b678034a6be2f1",
+    "app/harness_profile.py": "1ec2483635f799bfca0005b9abfdc681d33da78dcd94e3c0ecf2e4cf2ae40edd",
+    "app/harness_relay.py": "6407f0280cda23ac95965e756271dac00bb10e9dcf4093b288f6d3c5cdf944c9",
+    "app/harness_runner.py": "8da1334cdf19e795153408e0ea3932c3ad016c55dbf959f95ab2fa345be6739a",
+    "app/harness_tools.py": "70200956080dbc8e90a7883ad68c8e0cc11047b0b798ecd1905a95a7f85cf56a"
+  },
+  "provider": {
+    "model": "deepseek-flash",
+    "endpoint_signature": "85a031bc346e9b0f42d7",
+    "public_parameters": {
+      "max_tokens": 8192,
+      "thinking": {
+        "type": "enabled"
+      },
+      "reasoning_effort": "high"
+    }
+  }
+}

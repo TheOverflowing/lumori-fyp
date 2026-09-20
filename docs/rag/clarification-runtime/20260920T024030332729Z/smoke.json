@@ -1,0 +1,431 @@
+{
+  "scope": "Six hand-selected public-input runtime smoke cases; no retrieval, generation or learner outcomes.",
+  "prompt_version": "query-clarification-v2-20260920",
+  "model": "deepseek-flash",
+  "cases": [
+    {
+      "id": "zh_clear",
+      "language": "zh",
+      "topic": "想学一下那个像排队买饭，谁先来谁先走的数据结构，帮我讲明白入队和出队。",
+      "expected_for_smoke_only": "ready"
+    },
+    {
+      "id": "en_clear",
+      "language": "en",
+      "topic": "Explain the data thing that behaves like a pile of plates: I add on top and take the last plate off first.",
+      "expected_for_smoke_only": "ready"
+    },
+    {
+      "id": "zh_general",
+      "language": "zh",
+      "topic": "请讲解二分查找，并举例说明。",
+      "expected_for_smoke_only": "ready"
+    },
+    {
+      "id": "zh_instance",
+      "language": "zh",
+      "topic": "我正在做二分查找，这一步下一次应该留哪一半呀？",
+      "expected_for_smoke_only": "clarification_required"
+    },
+    {
+      "id": "zh_avl",
+      "language": "zh",
+      "topic": "这个 AVL 树有个点歪了，先往哪边拧才能扶正呀？",
+      "expected_for_smoke_only": "clarification_required"
+    },
+    {
+      "id": "en_components",
+      "language": "en",
+      "topic": "My undirected graph has separate pieces. I visited everything reachable from my starting point, but other vertices remain. Is my traversal task finished or should I continue?",
+      "expected_for_smoke_only": "clarification_required"
+    }
+  ],
+  "code_sha256": {
+    "app/query_clarification.py": "130630376ae15ab842fe710c26d2a19e1a589325c8443b00d2b2470382081ce5",
+    "app/generation_preparation.py": "cd0dc147e4bd8f0a58363145092b5e293c54b48832d5406a43a46b8be1bd458c",
+    "app/providers.py": "8bef82cb2a88625bffe007f966d0197a482b3f66a3b24a5022c7925c55dd58e5",
+    "app/models.py": "345f8c0c1efa784414668dc6d05958d3bb050b12df5e331bd51f8362bea0c4f5"
+  },
+  "outputs": [
+    {
+      "id": "zh_clear",
+      "response": {
+        "preparation_id": "af96555b13984bb2bf87718dbdec9da1",
+        "status": "ready",
+        "question": "",
+        "options": [],
+        "expires_at": 1789872930
+      },
+      "evidence": {
+        "schema_version": "query-preparation-v1",
+        "request": {
+          "course_id": "public-course",
+          "topic": "想学一下那个像排队买饭，谁先来谁先走的数据结构，帮我讲明白入队和出队。",
+          "material": "lesson",
+          "difficulty": "medium",
+          "difficulty_distribution": null,
+          "learner_profile": "Computer science undergraduate",
+          "question_type": "mixed",
+          "count": 3,
+          "language": "zh",
+          "document_ids": [],
+          "request_key": "smoke-zh_clear",
+          "preparation_id": null,
+          "clarification_action": null,
+          "clarification_answer": ""
+        },
+        "decision": {
+          "status": "ready",
+          "question": "",
+          "options": [],
+          "reason": "主题已明确为队列（先来先服务）的入队与出队，属于可正常展开的入门讲解范围，无需追问。",
+          "anchor_quote": "",
+          "missing_information": "",
+          "preparation_id": "af96555b13984bb2bf87718dbdec9da1",
+          "expires_at": 1789872930,
+          "request_fingerprint": "eaf16014b8870b85cef0085a7afa7bf6932fd7104b360a23ca6e529ab0bb6e67",
+          "prompt_version": "query-clarification-v2-20260920"
+        },
+        "failure": null,
+        "limitations": [
+          "Model decision, not semantic correctness or learner validation."
+        ]
+      }
+    },
+    {
+      "id": "en_clear",
+      "response": {
+        "preparation_id": "54d22a41673345e8aa70eeb37f263a17",
+        "status": "ready",
+        "question": "",
+        "options": [],
+        "expires_at": 1789872931
+      },
+      "evidence": {
+        "schema_version": "query-preparation-v1",
+        "request": {
+          "course_id": "public-course",
+          "topic": "Explain the data thing that behaves like a pile of plates: I add on top and take the last plate off first.",
+          "material": "lesson",
+          "difficulty": "medium",
+          "difficulty_distribution": null,
+          "learner_profile": "Computer science undergraduate",
+          "question_type": "mixed",
+          "count": 3,
+          "language": "en",
+          "document_ids": [],
+          "request_key": "smoke-en_clear",
+          "preparation_id": null,
+          "clarification_action": null,
+          "clarification_answer": ""
+        },
+        "decision": {
+          "status": "ready",
+          "question": "",
+          "options": [],
+          "reason": "The topic uses a clear everyday analogy (plates added and removed from the top) for a well-defined data structure—a stack with LIFO behavior. This supports a general lesson without needing a specific instance, implementation, or narrower subtopic.",
+          "anchor_quote": "",
+          "missing_information": "",
+          "preparation_id": "54d22a41673345e8aa70eeb37f263a17",
+          "expires_at": 1789872931,
+          "request_fingerprint": "0986d55b7268b4be50131db55f926a2c1e3952ffc18a0f7cc9e8102b6cc68bff",
+          "prompt_version": "query-clarification-v2-20260920"
+        },
+        "failure": null,
+        "limitations": [
+          "Model decision, not semantic correctness or learner validation."
+        ]
+      }
+    },
+    {
+      "id": "zh_general",
+      "response": {
+        "preparation_id": "d58f13053cd14069a679977f0e93eb1f",
+        "status": "ready",
+        "question": "",
+        "options": [],
+        "expires_at": 1789872932
+      },
+      "evidence": {
+        "schema_version": "query-preparation-v1",
+        "request": {
+          "course_id": "public-course",
+          "topic": "请讲解二分查找，并举例说明。",
+          "material": "lesson",
+          "difficulty": "medium",
+          "difficulty_distribution": null,
+          "learner_profile": "Computer science undergraduate",
+          "question_type": "mixed",
+          "count": 3,
+          "language": "zh",
+          "document_ids": [],
+          "request_key": "smoke-zh_general",
+          "preparation_id": null,
+          "clarification_action": null,
+          "clarification_answer": ""
+        },
+        "decision": {
+          "status": "ready",
+          "question": "",
+          "options": [],
+          "reason": "该请求为对二分查找的讲解与举例，属于范围明确的常见教学主题，可正常展开。",
+          "anchor_quote": "",
+          "missing_information": "",
+          "preparation_id": "d58f13053cd14069a679977f0e93eb1f",
+          "expires_at": 1789872932,
+          "request_fingerprint": "6b1c45b2ce9b8677d89b95095d6dc12a6b1184f4484df04dd1bf2b31594daa66",
+          "prompt_version": "query-clarification-v2-20260920"
+        },
+        "failure": null,
+        "limitations": [
+          "Model decision, not semantic correctness or learner validation."
+        ]
+      }
+    },
+    {
+      "id": "zh_instance",
+      "response": {
+        "preparation_id": "430d6c60184b4b168519e8c04cd81eb2",
+        "status": "clarification_required",
+        "question": "你当前比较的是哪个元素与目标值，以及比较结果是什么（相等、小于还是大于）？如果方便，请给出当前区间的左右边界、中间位置的下标和这些位置上的具体数值。",
+        "options": [],
+        "expires_at": 1789872932
+      },
+      "evidence": {
+        "schema_version": "query-preparation-v1",
+        "request": {
+          "course_id": "public-course",
+          "topic": "我正在做二分查找，这一步下一次应该留哪一半呀？",
+          "material": "lesson",
+          "difficulty": "medium",
+          "difficulty_distribution": null,
+          "learner_profile": "Computer science undergraduate",
+          "question_type": "mixed",
+          "count": 3,
+          "language": "zh",
+          "document_ids": [],
+          "request_key": "smoke-zh_instance",
+          "preparation_id": null,
+          "clarification_action": null,
+          "clarification_answer": ""
+        },
+        "decision": {
+          "status": "clarification_required",
+          "question": "你当前比较的是哪个元素与目标值，以及比较结果是什么（相等、小于还是大于）？如果方便，请给出当前区间的左右边界、中间位置的下标和这些位置上的具体数值。",
+          "options": [],
+          "reason": "要判断下一步保留哪一半，必须知道本次比较的具体结果和当前搜索区间的状态；缺少这些实例信息时无法确定应保留哪一半。",
+          "anchor_quote": "这一步下一次应该留哪一半呀？",
+          "missing_information": "缺少当前二分查找步骤的具体状态：当前区间的左右边界、中间位置下标、中间元素值、目标值以及本次比较结果（相等/小于/大于）。",
+          "preparation_id": "430d6c60184b4b168519e8c04cd81eb2",
+          "expires_at": 1789872932,
+          "request_fingerprint": "837c5d31ea788c0646e02dad5f9e411b0657b69976c87aa464fe275e33ca8de6",
+          "prompt_version": "query-clarification-v2-20260920"
+        },
+        "failure": null,
+        "limitations": [
+          "Model decision, not semantic correctness or learner validation."
+        ]
+      }
+    },
+    {
+      "id": "zh_avl",
+      "response": {
+        "preparation_id": "54d35c76d5e34a29a4f8cdd58414e91c",
+        "status": "clarification_required",
+        "question": "请描述这个 AVL 树节点当前的实际结构：插入或删除的键在哪里、哪些祖先节点失衡（平衡因子是多少），以及相关节点的左右子树高度？",
+        "options": [],
+        "expires_at": 1789872934
+      },
+      "evidence": {
+        "schema_version": "query-preparation-v1",
+        "request": {
+          "course_id": "public-course",
+          "topic": "这个 AVL 树有个点歪了，先往哪边拧才能扶正呀？",
+          "material": "lesson",
+          "difficulty": "medium",
+          "difficulty_distribution": null,
+          "learner_profile": "Computer science undergraduate",
+          "question_type": "mixed",
+          "count": 3,
+          "language": "zh",
+          "document_ids": [],
+          "request_key": "smoke-zh_avl",
+          "preparation_id": null,
+          "clarification_action": null,
+          "clarification_answer": ""
+        },
+        "decision": {
+          "status": "clarification_required",
+          "question": "请描述这个 AVL 树节点当前的实际结构：插入或删除的键在哪里、哪些祖先节点失衡（平衡因子是多少），以及相关节点的左右子树高度？",
+          "options": [],
+          "reason": "用户问的是针对某个具体“歪了”的 AVL 树的旋转方向，但该树的节点值、插入/删除位置和失衡节点均未给出，无法确定应执行哪种旋转。",
+          "anchor_quote": "这个 AVL 树有个点歪了",
+          "missing_information": "缺少该 AVL 树的具体当前状态：发生插入或删除的键与位置、从该位置到根路径上哪些节点的平衡因子变为 +2/-2，以及这些失衡节点的左右子树高度。这些信息决定所需的是 LL、RR、LR 还是 RL 旋转。",
+          "preparation_id": "54d35c76d5e34a29a4f8cdd58414e91c",
+          "expires_at": 1789872934,
+          "request_fingerprint": "976b198fcf3ab26c26c8b3ad31ac8155ce7aa25efc9366d22fb3e86277ee221f",
+          "prompt_version": "query-clarification-v2-20260920"
+        },
+        "failure": null,
+        "limitations": [
+          "Model decision, not semantic correctness or learner validation."
+        ]
+      }
+    },
+    {
+      "id": "en_components",
+      "response": {
+        "preparation_id": "8282eb63dbd34f678d56f9b0972f55ed",
+        "status": "ready",
+        "question": "",
+        "options": [],
+        "expires_at": 1789872935
+      },
+      "evidence": {
+        "schema_version": "query-preparation-v1",
+        "request": {
+          "course_id": "public-course",
+          "topic": "My undirected graph has separate pieces. I visited everything reachable from my starting point, but other vertices remain. Is my traversal task finished or should I continue?",
+          "material": "lesson",
+          "difficulty": "medium",
+          "difficulty_distribution": null,
+          "learner_profile": "Computer science undergraduate",
+          "question_type": "mixed",
+          "count": 3,
+          "language": "en",
+          "document_ids": [],
+          "request_key": "smoke-en_components",
+          "preparation_id": null,
+          "clarification_action": null,
+          "clarification_answer": ""
+        },
+        "decision": {
+          "status": "ready",
+          "question": "",
+          "options": [],
+          "reason": "The topic is a self-contained conceptual question about whether a traversal is complete when reachable vertices are exhausted. The answer (traversal is finished relative to the starting point, but not all graph vertices are visited) can be explained without additional instance details.",
+          "anchor_quote": "",
+          "missing_information": "",
+          "preparation_id": "8282eb63dbd34f678d56f9b0972f55ed",
+          "expires_at": 1789872935,
+          "request_fingerprint": "138c8d5f3292c09aeb492e5bb104a990f52e923b703644d2b79c1649dcda7330",
+          "prompt_version": "query-clarification-v2-20260920"
+        },
+        "failure": null,
+        "limitations": [
+          "Model decision, not semantic correctness or learner validation."
+        ]
+      }
+    }
+  ],
+  "calls": [
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 836,
+        "completion_tokens": 56,
+        "total_tokens": 892,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 580
+      },
+      "http_status": 200,
+      "response_model": "deepseek-flash",
+      "duration_ms": 824
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 832,
+        "completion_tokens": 76,
+        "total_tokens": 908,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 192
+      },
+      "http_status": 200,
+      "response_model": "deepseek-flash",
+      "duration_ms": 921
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 818,
+        "completion_tokens": 48,
+        "total_tokens": 866,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 178
+      },
+      "http_status": 200,
+      "response_model": "deepseek-flash",
+      "duration_ms": 660
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 822,
+        "completion_tokens": 147,
+        "total_tokens": 969,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 182
+      },
+      "http_status": 200,
+      "response_model": "deepseek-flash",
+      "duration_ms": 1347
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 829,
+        "completion_tokens": 174,
+        "total_tokens": 1003,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 189
+      },
+      "http_status": 200,
+      "response_model": "deepseek-flash",
+      "duration_ms": 1421
+    },
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 841,
+        "completion_tokens": 76,
+        "total_tokens": 917,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 201
+      },
+      "http_status": 200,
+      "response_model": "deepseek-flash",
+      "duration_ms": 941
+    }
+  ]
+}

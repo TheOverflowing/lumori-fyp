@@ -1,0 +1,41 @@
+{
+  "title": "数据库事务：快照隔离语义与重试（中等难度练习）",
+  "evidence_sufficient": true,
+  "evidence_note": "资料片段 fixture_transactions_zh 覆盖了事务边界、原子性、Read Committed 与 Repeatable Read 的可见性差异、Serializable 的序列化异常以及重试整个事务的必要性，足以支撑一道 medium 难度的应用题。",
+  "learning_objectives": [
+    "能依据给定隔离级别判断同一事务中连续普通查询的可见性变化。",
+    "能把原子性要求落实为具体的提交/回滚不变量。",
+    "能分析重试方案是否重新执行了依赖读取结果的决策。"
+  ],
+  "sections": [],
+  "questions": [
+    {
+      "kind": "short_answer",
+      "stem": "某表 accounts(name, balance) 初始为 ('A', 100) 和 ('B', 100)，总量不变量为 200。两个会话使用 PostgreSQL 默认的 Read Committed 隔离级别，按以下顺序交错执行（默认普通查询，无加锁读取）：\n\n1) 会话 S1：BEGIN；\n2) S1：SELECT balance FROM accounts WHERE name='A'； 得到 100\n3) 会话 S2：BEGIN；\n4) S2：UPDATE accounts SET balance=balance-30 WHERE name='A'；\n5) S2：COMMIT；\n6) S1：SELECT balance FROM accounts WHERE name='A'；\n7) S1：UPDATE accounts SET balance=balance-20 WHERE name='A'；\n8) S1：COMMIT；\n\n请回答：(a) 第 6 步 S1 的查询会看到 A 的余额是多少？请依据 Read Committed 的可见性规则说明理由。(b) 若把 S1 的隔离级别改为 Repeatable Read，第 6 步结果会变成多少？说明与 (a) 的差异来源。(c) 两步结束后 A 的最终余额是多少，总量不变量是否被保持？请结合原子性说明。",
+      "options": [],
+      "answer": "(a) 第 6 步看到 70。Read Committed 下普通 SELECT 看到语句开始前已经提交的数据以及本事务此前的修改；S2 在第 5 步已提交 balance=100-30=70，所以 S1 的第 6 步能读到 70。(b) 改为 Repeatable Read 后第 6 步仍看到 100。Repeatable Read 让普通查询使用本事务第一条非事务控制语句对应的快照，S1 的第一条非事务控制语句是第 2 步的 SELECT，其快照中 A 为 100，后续 S2 的提交不会改变这一视图。(c) A 的最终余额为 70-20=50，B 仍为 100，总量为 150，不等于不变量 200，因此总量不变量未被保持。原子性只保证 S1 的扣款与提交作为单元要么全部生效要么全部回滚，它不阻止两个各自成功提交的事务叠加扣款；本例中 S1 与 S2 都成功提交，所以原子性成立而总量不变量仍被破坏。",
+      "explanation": "本题考查把隔离级别规则应用到具体交错上：先判断每次读取允许看到什么，再讨论事务是否提交以及不变量是否保持。Read Committed 的普通 SELECT 以语句开始前已提交数据为基准，所以能读到 S2 已提交的 70；Repeatable Read 以事务第一条非事务控制语句的快照为基准，所以仍读 100。最终余额由两次已提交的扣款叠加得到 50，说明原子性只约束单个事务单元的提交/回滚，并不自动维护跨事务的业务不变量。",
+      "difficulty_reason": "本题要求把 Read Committed 与 Repeatable Read 的可见性规则应用到给定的具体交错情境，并区分原子性成立与业务不变量被破坏这两个不同层面，属于应用与分析，符合 medium 档的 2–3 个相互关联步骤要求，而非直接复述定义。",
+      "citation_ids": [
+        "fixture_transactions_zh"
+      ],
+      "slot_id": "q1",
+      "difficulty": "medium",
+      "difficulty_design": {
+        "cognitive_process": "apply",
+        "concepts": [
+          "Read Committed 的语句级可见性",
+          "Repeatable Read 的快照可见性",
+          "事务原子性与提交",
+          "跨事务不变量"
+        ],
+        "expected_steps": [
+          "依据 Read Committed 规则判断第 6 步读到 S2 已提交的 70，并说明理由。",
+          "依据 Repeatable Read 的快照规则判断第 6 步仍读到 100，并指出与 (a) 的差异来源。",
+          "计算最终余额 50，指出总量不变量 200 未被保持，并说明原子性只约束单个事务单元、不自动维护跨事务不变量。"
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "一张两列会话交错时间线图：左列 S1 依次为 BEGIN、SELECT A（100）、SELECT A（?）、UPDATE A-20、COMMIT；右列 S2 依次为 BEGIN、UPDATE A-30、COMMIT，位置在 S1 两次 SELECT 之间。图中用水平虚线标出 S2 的 COMMIT 时刻，并在 S1 第二次 SELECT 处留出空白框供填写可见值，不显示答案。"
+}

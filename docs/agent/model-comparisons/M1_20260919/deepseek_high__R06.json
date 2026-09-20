@@ -1,0 +1,47 @@
+{
+  "case_id": "R06",
+  "condition": "deepseek_high",
+  "task_id": "deepseek_high__R06",
+  "prompt_sha256": "ce55b15fa124fb6b4aec975c6a4d9c05236ecca521734a0993906f66ee1375b8",
+  "calls": [
+    {
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 908,
+        "completion_tokens": 1642,
+        "total_tokens": 2550,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1481
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 908
+      },
+      "created_at": "2026-09-19T11:23:47.992173+00:00",
+      "duration_ms": 7301,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    }
+  ],
+  "review": {
+    "answer_correct": false,
+    "explanation_correct": false,
+    "issues": [
+      "At t=2, A's quantum expires and A has remaining 2. The stated rule requeues A first and then enqueues B, so the ready queue becomes [A, B]. Therefore A runs again from 2 to 4, and B first runs at t=4, not t=2.",
+      "The tool input boundary=\"before\" is not consistent with the question's ordering rule; with boundary=\"before\", B is effectively ordered ahead of the requeued A, producing B.first_start=2.",
+      "The explanation incorrectly claims boundary=\"before\" matches the question's queue rule, so its reliance on the tool result is invalid."
+    ],
+    "confidence": "high"
+  },
+  "job_id": "02f5cd5511fe41609758cef54bfd20b9",
+  "final_response": {
+    "content": "{\"answer_correct\": false, \"explanation_correct\": false, \"issues\": [\"At t=2, A's quantum expires and A has remaining 2. The stated rule requeues A first and then enqueues B, so the ready queue becomes [A, B]. Therefore A runs again from 2 to 4, and B first runs at t=4, not t=2.\", \"The tool input boundary=\\\"before\\\" is not consistent with the question's ordering rule; with boundary=\\\"before\\\", B is effectively ordered ahead of the requeued A, producing B.first_start=2.\", \"The explanation incorrectly claims boundary=\\\"before\\\" matches the question's queue rule, so its reliance on the tool result is invalid.\"], \"confidence\": \"high\"}",
+    "content_archive_truncated": false,
+    "finish_reason": "stop"
+  },
+  "status": "valid"
+}

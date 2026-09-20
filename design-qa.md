@@ -98,3 +98,12 @@ Result: passed for the requested fixes.
 - Automated checks: 106 Python tests and 33 Node tests passed; changed JavaScript syntax checks passed. Existing dependency deprecation warnings only. No live generation, approval, or course-data edits were performed.
 - Accepted captures: `output/ui-review/input-light-mobile.jpg`, `output/ui-review/input-dark-mobile.jpg` (390×844), and `output/ui-review/input-live-final.jpg` (actual in-app panel). The earlier `input-light-desktop.jpg` is an intermediate focus capture before the final select alignment correction.
 - The existing creation preview was empty before reload and was updated in place. OS accessibility preference emulation and live-provider output quality were not tested for this presentation change.
+
+## English control copy — 2026-09-19
+
+- Replaced browser-owned file-picker text with localized page copy while preserving the native file input, keyboard focus, file selection, and multipart upload. Empty state, picker title, and selected filename update without replacing the input.
+- English language toggles now show ZH with the English tooltip “Switch to Chinese.” Other marked tooltip and interface strings were checked for translation coverage.
+- Native required/email/number/length/format validation now follows the app locale. Stored difficulty-validation keys also update when the locale changes; editing a valid value clears owned native errors without overwriting unrelated business validation.
+- Added five focused regression tests for native validity, business errors, file-selection preservation, and missing translations. All 60 frontend tests passed; changed entry/module syntax checks passed.
+- Isolated browser QA: English required-login and empty-file validation bubbles displayed English; a test Markdown file remained selected across English → Chinese → English switches in another tab and then imported successfully. The source list showed the parsed file. No browser console errors were captured. Production account/course data was not modified.
+- Scope: application interface text is localized. Authored course content and filenames remain original. The operating system's file browsing window follows the operating system language.

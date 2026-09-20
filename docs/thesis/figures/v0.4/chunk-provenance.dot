@@ -1,0 +1,18 @@
+digraph G { graph [bgcolor="white", pad="0.25", nodesep="0.38", ranksep="0.5", fontname="Helvetica", fontsize=13]; node [shape=box, style="filled", fillcolor="#F5F7F9", color="#384651", fontname="Helvetica", fontsize=12, margin="0.14,0.10"]; edge [color="#384651", fontname="Helvetica", fontsize=10, arrowsize=0.7];
+
+rankdir=TB;
+page [label="Parsed page text"];
+units [label="Structural units
+headings / paragraphs / protected blocks"];
+fits [label="Within budget?",shape=diamond];
+split [label="Finer boundaries
+sentence / line / word / fallback"];
+chunks [label="Exact source slices"];
+meta [label="Page + heading path
+character bounds + chunk hash"];
+embed [label="Title context + chunk text
+compatible embedding"];
+page -> units -> fits; fits -> chunks [label="yes"]; fits -> split [label="no"];
+split -> fits [label="recheck",constraint=false]; chunks -> meta -> embed;
+
+}

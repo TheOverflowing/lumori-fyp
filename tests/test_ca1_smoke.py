@@ -45,8 +45,9 @@ class DemoWire:
                      'evidence_note': '' if sufficient else 'The supplied course has no measurement for that material.',
                      'learning_objectives': [], 'sections': [], 'questions': [], 'visual_prompt': ''}
             if sufficient:
-                asset['sections'] = [{'heading': 'Fixture explanation',
-                                      'text': 'Retrieval supplies passages for review.', 'citation_ids': refs}]
+                if instruction['request'].get('include_explanations') or instruction['request']['material'] == 'lesson':
+                    asset['sections'] = [{'heading': 'Fixture explanation',
+                                          'text': 'Retrieval supplies passages for review.', 'citation_ids': refs}]
                 asset['questions'] = [{
                     'kind': 'short_answer', 'stem': 'What does retrieval supply?', 'options': [],
                     'answer': 'Passages for review.', 'explanation': 'The passages provide inspectable evidence.',

@@ -1,0 +1,42 @@
+{
+  "title": "Database Transactions: Atomicity, Snapshot Visibility, and Retries — Quiz",
+  "evidence_sufficient": true,
+  "evidence_note": "The reference chunk fixture_transactions_en supplies PostgreSQL transaction boundaries, Read Committed and Repeatable Read snapshot behavior, serialization failure/retry expectations, and the fixture's modeling conventions (two named sessions, supplied initial values and changes, no hidden effects). This is sufficient for one medium short-answer item requiring application/analysis.",
+  "learning_objectives": [
+    "Apply PostgreSQL Read Committed snapshot rules to determine what a statement may observe in a two-session interleaving.",
+    "Distinguish an uncommitted write from a committed state change when reasoning about all-or-nothing outcomes.",
+    "Analyze whether a proposed retry design reruns the reads and decisions that depend on database state."
+  ],
+  "sections": [],
+  "questions": [
+    {
+      "kind": "short_answer",
+      "stem": "Consider this educational-fixture schedule. Initial table accounts has row id=1 with balance=100. Session S1 and session S2 each run one explicit transaction, using PostgreSQL Read Committed and ordinary SELECT statements; there are no hidden triggers, constraints, background transactions, or external side effects.\n\nS1: BEGIN; UPDATE accounts SET balance = balance - 30 WHERE id = 1; (S1 has not committed)\nS2: BEGIN; SELECT balance FROM accounts WHERE id = 1; (this statement begins now)\nS1: COMMIT;\nS2: SELECT balance FROM accounts WHERE id = 1; (this statement begins now)\nS2: COMMIT;\n\nThe application's stated invariant is: a committed transfer must never leave the debit applied without the corresponding credit. Suppose the application, upon receiving a serialization failure from the database, plans to retry only the final failed statement inside the same still-open transaction rather than the whole transaction.\n\n(a) For each of S2's two SELECT statements, state the balance value it is allowed to see and identify the rule that determines that value. (b) Using the invariant, analyze whether S2's second SELECT could observe S1's committed debit as if it were a complete transfer, and explain what additional operation would be needed for the transfer to satisfy the invariant. (c) Evaluate the proposed retry plan against the notes' requirement for retrying serialization failures, and state whether it is acceptable.",
+      "options": [],
+      "answer": "(a) S2's first SELECT must see balance=100: under Read Committed, an ordinary SELECT sees rows committed before that statement began, and S1's UPDATE is still uncommitted, so it is not visible. S2's second SELECT must see balance=70: that statement begins after S1's COMMIT, so Read Committed allows it to observe S1's newly committed change. (b) S2's second SELECT may observe balance=70, but that is only the debit side of S1's transaction. The invariant requires that a committed transfer never leave the debit applied without the corresponding credit, so a credit operation (for example, adding the corresponding amount to the destination row) must also be committed as part of the same unit; observing the debit alone does not satisfy the invariant. (c) The plan is not acceptable: a serialization failure means retrying the complete transaction, including the reads and application decisions that selected the writes. Retrying only the final failed statement can reuse decisions made from a state that is no longer appropriate, and a retry can itself fail, so a considered retry policy is needed rather than assuming one attempt always succeeds.",
+      "explanation": "The item applies the Read Committed visibility rule to a two-statement interleaving and then uses the all-or-nothing invariant to analyze the observed state. The first SELECT is blocked from seeing the uncommitted debit; the second SELECT begins after COMMIT and may see it. The invariant is about committed state changes, not about a single visible row value, so the debit alone is not a complete transfer. The retry evaluation follows the notes: serialization failure requires rerunning the whole transaction, including the reads and decisions, not just the last statement.",
+      "difficulty_reason": "The task requires applying the Read Committed snapshot rule to two different statement positions, distinguishing an uncommitted write from a committed state change under an explicit invariant, and evaluating a proposed retry design against the notes' requirement. These are application/analysis steps (2–3 linked steps), not a definition restatement or a single memorized fact.",
+      "citation_ids": [
+        "fixture_transactions_en"
+      ],
+      "slot_id": "q1",
+      "difficulty": "medium",
+      "difficulty_design": {
+        "cognitive_process": "apply",
+        "concepts": [
+          "PostgreSQL Read Committed visibility",
+          "uncommitted write vs. committed state change",
+          "all-or-nothing transfer invariant",
+          "serialization failure retry of the complete transaction"
+        ],
+        "expected_steps": [
+          "State S2's first SELECT sees 100 because S1's UPDATE is uncommitted at that statement's start under Read Committed.",
+          "State S2's second SELECT sees 70 because it begins after S1's COMMIT and Read Committed permits observing newly committed changes.",
+          "Analyze that the visible debit alone does not satisfy the invariant; a committed credit in the same unit is required.",
+          "Evaluate the partial retry plan as unacceptable because serialization failure requires rerunning the whole transaction, including reads and dependent decisions."
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "A timeline diagram with two vertical lanes labeled S1 and S2. S1 shows BEGIN, an uncommitted UPDATE (balance 100 -> 70), then COMMIT. S2 shows BEGIN, a first SELECT whose view is marked 'sees state committed before this statement began', then a second SELECT after S1's COMMIT marked 'may see newly committed change', then COMMIT. A side panel lists the invariant 'committed transfer must not leave debit without credit' and a retry box labeled 'serialization failure -> rerun whole transaction, including reads and decisions'. No numeric answers are shown in the diagram."
+}

@@ -1,0 +1,41 @@
+{
+  "title": "数据库事务：原子性与快照隔离语义的应用分析",
+  "evidence_sufficient": true,
+  "evidence_note": "参考片段 fixture_transactions_zh 提供了 PostgreSQL 事务边界、Read Committed 与 Repeatable Read 可见性规则、Serializable 拒绝执行以及重试语义的完整描述，并给出了建模约定，足以支撑一道 medium 难度的应用题。",
+  "learning_objectives": [
+    "能依据给定隔离级别判断某次普通查询允许看到哪些已提交数据。",
+    "能区分未提交写入与已提交状态，并据此说明原子性是否被破坏。",
+    "能分析重试方案是否重新执行了依赖读取结果的决策。"
+  ],
+  "sections": [],
+  "questions": [
+    {
+      "kind": "short_answer",
+      "stem": "某 PostgreSQL 数据库初始账户表为：账户 A 余额 100，账户 B 余额 100，总量不变式要求 A+B 始终等于 200。两个会话按下列顺序交错执行，默认使用普通查询：\n\n会话1：BEGIN；UPDATE 账户 SET 余额 = 余额 - 30 WHERE 名称 = 'A'；（尚未 COMMIT）\n会话2：BEGIN；SELECT 余额 FROM 账户 WHERE 名称 = 'A'；\n会话1：COMMIT；\n会话2：再次 SELECT 余额 FROM 账户 WHERE 名称 = 'A'；COMMIT；\n\n请回答：(1) 若会话2 的隔离级别是 Read Committed，两次 SELECT 各允许看到 A 的什么余额？(2) 若会话2 的隔离级别是 Repeatable Read，两次 SELECT 各允许看到什么余额？(3) 会话1 在 COMMIT 前若发生失败并 ROLLBACK，会话2 在 Read Committed 下第一次 SELECT 看到的 A 余额会是什么？请结合原子性说明此时总量不变式是否被破坏。",
+      "options": [],
+      "answer": "(1) Read Committed：第一次 SELECT 在会话1 提交前执行，看不到未提交的扣款，允许看到 A=100；第二次 SELECT 在会话1 提交后执行，允许看到新提交结果 A=70。\n(2) Repeatable Read：会话2 的普通查询使用本事务第一条非事务控制语句对应的快照，因此两次 SELECT 都允许看到 A=100，不因会话1 的提交而改变视图。\n(3) 会话1 ROLLBACK 会取消未提交修改，A 回到 100；会话2 第一次 SELECT 本就看不到未提交写入，仍看到 A=100。原子性保证扣款与入账要么都提交要么都不提交，这里只发生扣款且被回滚，A+B 仍为 200，总量不变式未被破坏。",
+      "explanation": "解题时先按隔离级别判断每次读取允许看到的状态：Read Committed 下普通 SELECT 看到语句开始前已提交的数据以及本事务此前的修改，所以提交前后两次读取结果不同；Repeatable Read 下普通查询固定在本事务第一条非事务控制语句的快照上，所以两次读取一致。再区分未提交写入与已提交状态：未提交的扣款对其他事务不可见，ROLLBACK 取消该修改，因此原子性未被破坏，A+B=200 的不变式保持成立。",
+      "difficulty_reason": "本题给出完整的初始数据、事务边界和隔离级别，要求学生在具体交错情境中应用 Read Committed 与 Repeatable Read 的可见性规则并比较两者的读取结果，再结合原子性分析回滚后的状态，属于应用与分析层面的任务，符合 medium 档 2–3 个相互关联步骤的要求，且答案未直接写在题干中。",
+      "citation_ids": [
+        "fixture_transactions_zh"
+      ],
+      "slot_id": "q1",
+      "difficulty": "medium",
+      "difficulty_design": {
+        "cognitive_process": "apply",
+        "concepts": [
+          "Read Committed 可见性",
+          "Repeatable Read 快照",
+          "原子性与回滚",
+          "未提交写入与已提交状态的区分"
+        ],
+        "expected_steps": [
+          "按 Read Committed 规则判断两次 SELECT 分别允许看到的 A 余额（100 与 70）。",
+          "按 Repeatable Read 快照规则判断两次 SELECT 都允许看到 A=100。",
+          "结合 ROLLBACK 取消未提交修改，说明 A+B=200 的总量不变式未被破坏。"
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "一张时间轴示意图：横轴为时间，两条泳道分别为会话1（BEGIN、UPDATE 扣款 30、COMMIT 或 ROLLBACK）和会话2（BEGIN、第一次 SELECT、第二次 SELECT、COMMIT）；在时间轴上标出会话1 提交时刻，并用不同颜色标出 Read Committed 与 Repeatable Read 下会话2 两次 SELECT 各自可见的 A 余额取值，不标注正确答案文字。"
+}

@@ -1,0 +1,66 @@
+{
+  "title": "Binary Search: Interval Conventions, Boundary Updates, and Applicability",
+  "evidence_sufficient": true,
+  "evidence_note": "The supplied fixture (fixture_binary_search_en) covers closed and half-open interval conventions, midpoint computation, boundary updates, termination conditions, complexity, and applicability constraints, which is sufficient for one easy multiple-choice item.",
+  "learning_objectives": [
+    "Explain what a closed search interval [left, right] represents in binary search.",
+    "State the initial values of left and right for a closed interval on an array of length n.",
+    "Identify the loop condition that matches the closed-interval convention."
+  ],
+  "sections": [
+    {
+      "heading": "Closed interval convention",
+      "text": "In binary search, a closed search interval [left, right] contains every position still eligible to hold the target. For an ascending array with distinct values and constant-time indexed access, the search starts with left = 0 and right = n - 1, and the loop runs while left <= right. An empty interval means the target is absent. The midpoint is computed as mid = left + floor((right - left) / 2).",
+      "citation_ids": [
+        "fixture_binary_search_en"
+      ]
+    },
+    {
+      "heading": "Boundary updates",
+      "text": "After comparing the middle value with the target: equality ends the search; if the middle value is smaller than the target, all positions through mid are too small, so set left = mid + 1; if it is larger, positions from mid onward are too large, so set right = mid - 1. The interval convention determines the termination condition, and mixing conventions (for example, pairing the closed-interval test with a half-open right boundary) can inspect a position outside the array.",
+      "citation_ids": [
+        "fixture_binary_search_en"
+      ]
+    },
+    {
+      "heading": "Applicability",
+      "text": "Binary search depends on an ordered search space and cheap access to its middle. Sorting an unsorted array solely for one lookup adds preprocessing work, so a scan can be the better choice for that workload, while a sorted array serving many lookups can amortize preprocessing. Knowing the midpoint index does not make access to that position constant-time in a singly linked list.",
+      "citation_ids": [
+        "fixture_binary_search_en"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "kind": "mcq",
+      "stem": "According to the supplied notes, for a closed search interval [left, right] over an ascending array with distinct values, which loop condition matches this convention?",
+      "options": [
+        "while left < right",
+        "while left <= right",
+        "while left != right",
+        "while left + 1 < right"
+      ],
+      "answer": "B",
+      "explanation": "The notes state that for a closed interval [left, right], the loop runs while left <= right, and an empty interval means the target is absent. The half-open convention [left, right) instead loops while left < right.",
+      "difficulty_reason": "This item asks for a single explicitly stated fact from the notes: the loop condition tied to the closed-interval convention. No application, comparison, or constraint trade-off is required.",
+      "citation_ids": [
+        "fixture_binary_search_en"
+      ],
+      "slot_id": "q1",
+      "difficulty": "easy",
+      "difficulty_design": {
+        "cognitive_process": "remember",
+        "concepts": [
+          "closed search interval",
+          "termination condition",
+          "binary search loop"
+        ],
+        "expected_steps": [
+          "Recall that the closed interval [left, right] remains non-empty while left <= right.",
+          "Select the matching loop condition from the options."
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "A horizontal row of array cells labeled with zero-based indices. A shaded bracket spans from index left to index right, illustrating a closed search interval that includes both endpoints. A second, unshaded bracket shows an empty interval state for comparison."
+}

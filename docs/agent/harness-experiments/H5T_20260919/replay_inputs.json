@@ -1,0 +1,211 @@
+{
+  "deepseek_harness__cpu_en_hard": {
+    "response": {
+      "evidence_sufficient": true,
+      "spec": {
+        "processes": [
+          {
+            "id": "P1",
+            "arrival": 0,
+            "burst": 7
+          },
+          {
+            "id": "P2",
+            "arrival": 2,
+            "burst": 4
+          },
+          {
+            "id": "P3",
+            "arrival": 4,
+            "burst": 9
+          },
+          {
+            "id": "P4",
+            "arrival": 5,
+            "burst": 2
+          }
+        ],
+        "scenarios": [
+          {
+            "id": "S_STCF",
+            "policy": "stcf",
+            "switch_cost": 0
+          },
+          {
+            "id": "S_RR_Q2",
+            "policy": "rr",
+            "quantum": 2,
+            "switch_cost": 0,
+            "boundary": "before",
+            "during_switch": "tail",
+            "early_finish_free": false
+          },
+          {
+            "id": "S_RR_Q5",
+            "policy": "rr",
+            "quantum": 5,
+            "switch_cost": 0,
+            "boundary": "before",
+            "during_switch": "tail",
+            "early_finish_free": false
+          },
+          {
+            "id": "S_RR_Q4_SW1",
+            "policy": "rr",
+            "quantum": 4,
+            "switch_cost": 1,
+            "boundary": "before",
+            "during_switch": "tail",
+            "early_finish_free": false
+          }
+        ],
+        "remaining_queries": [
+          {
+            "scenario_id": "S_RR_Q4_SW1",
+            "process_id": "P3",
+            "time": 14
+          },
+          {
+            "scenario_id": "S_RR_Q2",
+            "process_id": "P4",
+            "time": 9
+          }
+        ],
+        "selection": {
+          "metric": "mean_turnaround",
+          "direction": "min",
+          "constraints": [
+            {
+              "metric": "switch_count",
+              "operator": "le",
+              "threshold": {
+                "numerator": 5,
+                "denominator": 1
+              }
+            },
+            {
+              "metric": "mean_response",
+              "operator": "le",
+              "threshold": {
+                "numerator": 9,
+                "denominator": 2
+              }
+            }
+          ]
+        }
+      },
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ]
+    },
+    "origin": {
+      "kind": "injected_frozen_cpu_spec",
+      "api_call_performed": false,
+      "source_file": "/Users/theoverflow/Downloads/FYP/docs/agent/harness-experiments/H4B_20260919/deepseek_harness__cpu_en_hard.json",
+      "source_sha256": "78386c1deaf679c5f9c31463a9e2ebd33e19c27b9229b1fd7cc4c41171f8cc4b",
+      "spec_sha256": "9b9ef4970f92a5f615e5e4e3a38a02e1e08a6b37db1013d4904f00589ebf8c5e",
+      "compiled_asset_sha256": "5deb084f8e36c1d5624e537b514257be480233a17b45f52fae6e24f40eddd924",
+      "compiled_question_sha256": "a640563c27bdef9d1005a6af58fae47665978ce47b237ad125756c030b84aa45"
+    }
+  },
+  "deepseek_harness__cpu_zh_hard": {
+    "response": {
+      "evidence_sufficient": true,
+      "spec": {
+        "processes": [
+          {
+            "id": "P1",
+            "arrival": 0,
+            "burst": 7
+          },
+          {
+            "id": "P2",
+            "arrival": 2,
+            "burst": 4
+          },
+          {
+            "id": "P3",
+            "arrival": 4,
+            "burst": 9
+          },
+          {
+            "id": "P4",
+            "arrival": 6,
+            "burst": 3
+          }
+        ],
+        "scenarios": [
+          {
+            "id": "S1",
+            "policy": "stcf",
+            "switch_cost": 0
+          },
+          {
+            "id": "S2",
+            "policy": "rr",
+            "quantum": 2,
+            "switch_cost": 1,
+            "boundary": "before",
+            "during_switch": "tail",
+            "early_finish_free": true
+          },
+          {
+            "id": "S3",
+            "policy": "rr",
+            "quantum": 6,
+            "switch_cost": 1,
+            "boundary": "before",
+            "during_switch": "tail",
+            "early_finish_free": true
+          }
+        ],
+        "remaining_queries": [
+          {
+            "scenario_id": "S1",
+            "process_id": "P1",
+            "time": 10
+          },
+          {
+            "scenario_id": "S3",
+            "process_id": "P3",
+            "time": 20
+          }
+        ],
+        "selection": {
+          "metric": "mean_response",
+          "direction": "min",
+          "constraints": [
+            {
+              "metric": "makespan",
+              "operator": "le",
+              "threshold": {
+                "numerator": 26,
+                "denominator": 1
+              }
+            },
+            {
+              "metric": "overhead",
+              "operator": "lt",
+              "threshold": {
+                "numerator": 7,
+                "denominator": 1
+              }
+            }
+          ]
+        }
+      },
+      "citation_ids": [
+        "fixture_cpu_scheduling_zh"
+      ]
+    },
+    "origin": {
+      "kind": "injected_frozen_cpu_spec",
+      "api_call_performed": false,
+      "source_file": "/Users/theoverflow/Downloads/FYP/docs/agent/harness-experiments/H4B_20260919/deepseek_harness__cpu_zh_hard.json",
+      "source_sha256": "dfdb88f51f61587ce6f93fd317fc990923f401e581f04244c14c7c22b46aa2bf",
+      "spec_sha256": "11ad29f6ac9a10e3d2ba38a15079d489a865fdb78827b7be65f0fc80a82a287d",
+      "compiled_asset_sha256": "f7592c045eb43cdb17eb083bc1c15edec87f2ec79d6251d8c6c053b8a4ea50e0",
+      "compiled_question_sha256": "51eb1f2eb3e0a52634f3e5e0c4d2747fd8fd900bf7982e049637f5a89503a809"
+    }
+  }
+}

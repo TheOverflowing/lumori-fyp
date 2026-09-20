@@ -1,0 +1,43 @@
+{
+  "title": "二分查找：区间约定、边界更新与适用条件（基础练习）",
+  "evidence_sufficient": true,
+  "evidence_note": "参考片段 fixture_binary_search_zh 明确给出闭区间 [left, right] 的初始化、中点公式、边界更新与循环条件，足以支持一道 easy 选择题。",
+  "learning_objectives": [
+    "能说出闭区间二分查找的初始化与循环条件",
+    "能根据中间值与目标的大小关系正确更新 left 或 right"
+  ],
+  "sections": [],
+  "questions": [
+    {
+      "kind": "mcq",
+      "stem": "本资料采用闭区间 [left, right] 保存所有仍可能包含目标的位置，数组按升序排列且元素互异。若某轮中 mid 位置的元素小于目标值，按资料应如何更新边界？",
+      "options": [
+        "left = mid + 1",
+        "left = mid",
+        "right = mid - 1",
+        "right = mid"
+      ],
+      "answer": "A",
+      "explanation": "资料规定：闭区间下，若中间值小于目标，将 left 更新为 mid+1，因为 mid 位置的元素已被比较并排除。",
+      "difficulty_reason": "直接考查资料中一个明确的边界更新规则，条件完整，只需记住并理解 mid 已被排除这一点。",
+      "citation_ids": [
+        "fixture_binary_search_zh"
+      ],
+      "slot_id": "q1",
+      "difficulty": "easy",
+      "difficulty_design": {
+        "cognitive_process": "remember",
+        "concepts": [
+          "闭区间 [left, right]",
+          "边界更新",
+          "中间值小于目标"
+        ],
+        "expected_steps": [
+          "识别闭区间约定下 mid 位置已被排除",
+          "按资料将 left 更新为 mid+1"
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "画出升序数组与闭区间 [left, right] 的示意：标出 left、mid、right 三个下标，并用箭头表示当 mid 元素小于目标时，新区间从 mid+1 到 right，mid 位置被划掉表示已排除。"
+}

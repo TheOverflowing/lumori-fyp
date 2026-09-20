@@ -1,0 +1,130 @@
+{
+  "schema": "harness-correctness-experiment-v1",
+  "created_at": "2026-09-19T10:31:55.320059+00:00",
+  "live": true,
+  "call_cap": 64,
+  "plan": [
+    {
+      "id": "canary_bad",
+      "case_id": "cpu_scheduling_en_hard",
+      "mode": "injected_bad",
+      "runtime": "native",
+      "task_id": "native__canary_bad"
+    },
+    {
+      "id": "canary_bad",
+      "case_id": "cpu_scheduling_en_hard",
+      "mode": "injected_bad",
+      "runtime": "deepseek_harness",
+      "task_id": "deepseek_harness__canary_bad"
+    },
+    {
+      "id": "canary_corrected",
+      "case_id": "cpu_scheduling_en_hard",
+      "mode": "injected_corrected",
+      "runtime": "native",
+      "task_id": "native__canary_corrected"
+    },
+    {
+      "id": "canary_corrected",
+      "case_id": "cpu_scheduling_en_hard",
+      "mode": "injected_corrected",
+      "runtime": "deepseek_harness",
+      "task_id": "deepseek_harness__canary_corrected"
+    },
+    {
+      "id": "cpu_en_hard",
+      "case_id": "cpu_scheduling_en_hard",
+      "mode": "live_author",
+      "runtime": "native",
+      "task_id": "native__cpu_en_hard"
+    },
+    {
+      "id": "cpu_en_hard",
+      "case_id": "cpu_scheduling_en_hard",
+      "mode": "live_author",
+      "runtime": "deepseek_harness",
+      "task_id": "deepseek_harness__cpu_en_hard"
+    },
+    {
+      "id": "cpu_zh_hard",
+      "case_id": "cpu_scheduling_zh_hard",
+      "mode": "live_author",
+      "runtime": "native",
+      "task_id": "native__cpu_zh_hard"
+    },
+    {
+      "id": "cpu_zh_hard",
+      "case_id": "cpu_scheduling_zh_hard",
+      "mode": "live_author",
+      "runtime": "deepseek_harness",
+      "task_id": "deepseek_harness__cpu_zh_hard"
+    },
+    {
+      "id": "transactions_zh_medium",
+      "case_id": "transactions_zh_medium",
+      "mode": "live_author",
+      "runtime": "native",
+      "task_id": "native__transactions_zh_medium"
+    },
+    {
+      "id": "transactions_zh_medium",
+      "case_id": "transactions_zh_medium",
+      "mode": "live_author",
+      "runtime": "deepseek_harness",
+      "task_id": "deepseek_harness__transactions_zh_medium"
+    }
+  ],
+  "agent_prompt_revision": "20260919-tool-first-v3",
+  "dataset_sha256": "ed1b397bc4e61a5ddd19a8ed4991e219c28c79cf83356e804ef6a9212c353d5b",
+  "frozen_cases_sha256": "db78a706f94ed1f9db04d738267c6e82558845a746b64dca6a032a31f85fa745",
+  "harness_max_requests": 6,
+  "harness_max_output_tokens": 4096,
+  "native_max_tokens": 4096,
+  "shared_thinking": {
+    "type": "disabled"
+  },
+  "agent_max_calls": 36,
+  "agent_max_repairs_live_author": 1,
+  "agent_max_repairs_injected_author": 0,
+  "limitations": [
+    "Development smoke: one run per selected case/runtime, not statistical superiority evidence.",
+    "Same current v3 author/solve/review prompts and gates; runtimes differ as complete execution strategies, including wrappers, tool availability and stopping behavior. Effects cannot be attributed to the loop alone.",
+    "Frozen reference snapshots bypass retrieval and do not measure RAG.",
+    "Canary authors are injected AI-reviewed regression fixtures, not live author calls or human gold labels.",
+    "Same model family can make correlated generation and review errors.",
+    "Gate success is not independently established correctness or student difficulty.",
+    "Failed, interrupted and rejected responses remain in the denominator and audit.",
+    "Missing token/cost fields remain unknown; reported totals cover known usage only.",
+    "Runtime order is interleaved by case but not randomized; provider drift and stochasticity remain."
+  ],
+  "code_sha256": {
+    "app/generation_agent.py": "92f8125296cacf75964ba6cab5615388fdda2f17212c1019f72b6268ef37e873",
+    "app/answer_tools.py": "f2d2695cc3a1e30d20f1ab996565e163c1ddd57cf7c5f40341ddbbad272c1ddb",
+    "app/config.py": "e81f32330019d8f1e5beebe39abb79e160fc952d407f617b890286725e7739cd",
+    "app/store.py": "5e43f3b4ae1cfb9838aae0f90f51b261cbb53becb49c1a796598f72f6b41144e",
+    "app/providers.py": "8bef82cb2a88625bffe007f966d0197a482b3f66a3b24a5022c7925c55dd58e5",
+    "app/pipeline.py": "cf0634f031a691c8fe668340f972afc73bc41137cbb3bb4da21e353bcce4bf69",
+    "app/models.py": "76cb94ab0641887a9b57a53da2a01c3608d3db89c6bbe930912ec54542d4675b",
+    "app/difficulty.py": "9afec11bbec2d435565a0d1b07686187fdea49ff2ccff689c3a29cd74c42675c",
+    "scripts/harness_correctness_experiment.py": "5eddd02249ede66474a3fcaac3a8285faff0dfb6609b3830e0c2dd564135b11f",
+    "scripts/agent_correctness_experiment.py": "6e5d4d4e43ed8e9a8e182666ad463bd39789792ea2f36b0a60d17663c90eecc1",
+    "scripts/difficulty_experiment.py": "dc8c9567a4b1d43f54ec9b475af0e43d2a47ea8b36055c1f3e9a91422ab4d843",
+    "scripts/difficulty_prompts.py": "4d27f9c2fa9e612cb58c023ebf437f8d1e53985c2360856395e2c19557faab54",
+    "app/harness_acp.py": "549035197ec65aedf6066034cbb0a53e196fb37fd04d161c45024a9c718df507",
+    "app/harness_profile.py": "c3f484fa0dad723d901f207c7ec4c4782b0c4f1e085c0ce7c30b679f0f6bd7c4",
+    "app/harness_relay.py": "02638f99f40ae22b30465dbfbf19b19782ab189c11320051e3e5dbcc80a18cae",
+    "app/harness_runner.py": "aa82f1485a1511a597357342e7ceff83d13f3e1c700083066d373aa10baa9507",
+    "app/harness_tools.py": "70200956080dbc8e90a7883ad68c8e0cc11047b0b798ecd1905a95a7f85cf56a"
+  },
+  "provider": {
+    "model": "deepseek-flash",
+    "endpoint_signature": "aa5165e9a6b8a226dd07",
+    "public_parameters": {
+      "max_tokens": 4096,
+      "thinking": {
+        "type": "disabled"
+      }
+    }
+  }
+}

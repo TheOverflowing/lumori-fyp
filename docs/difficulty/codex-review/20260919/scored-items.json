@@ -1,0 +1,1535 @@
+[
+  {
+    "blind_id": "Q001",
+    "run": "20260919T085353763975Z",
+    "original_id": "56b642159e4ff950e990",
+    "strategy": "contrastive",
+    "case_id": "transactions_en_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_transactions_en",
+    "old_judge": {
+      "assessed_difficulty": "medium",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The question requires applying PostgreSQL's isolation semantics to a specific schedule, comparing Repeatable Read and Read Committed behaviors, and drawing a consequence for application design. This involves 2–3 analytical steps grounded in the provided notes, without requiring external knowledge.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q001",
+      "assessed_difficulty": "medium",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "需把同一提交时序分别应用到RR与RC：第二次读取为100与150。旧快照与完整重试的说明合理；有具体状态对照，尚无实质方案权衡。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q002",
+    "run": "20260919T085353763975Z",
+    "original_id": "c1d1469f6bd4c8fc2d1b",
+    "strategy": "scaffold_control",
+    "case_id": "cpu_scheduling_zh_hard",
+    "target_difficulty": "hard",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_cpu_scheduling_zh",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目要求在自拟教学模型下完成三部分任务：计算忽略与计入切换开销的调度过程、比较总周转时间、判断策略可行性并权衡调整。需整合轮转调度、切换开销处理、响应时间与周转时间计算，并基于约束进行有依据的设计评价。任务涉及至少3个相互关联的分析步骤，必须处理具体情境约束并论证设计取舍，符合hard定义。答案与解释均被参考资料支持，条件完整无歧义。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q002",
+      "assessed_difficulty": "hard",
+      "confidence": "high",
+      "correctness": 2,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "含响应上限和开销预算的联合可行性判断及参数取舍，属于hard。前两问主要时间线正确，但(3)把零开销平均响应1用于有开销场景；有开销平均响应应2，开销比为5/(10+5)=1/3而非50%。不可行结论仍对，数值依据错。",
+      "evidence": [
+        "cpu_checks.json"
+      ]
+    },
+    "score": 85.0,
+    "quality_score": 45.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q003",
+    "run": "20260919T085353763975Z",
+    "original_id": "533a9f9bc8475882c752",
+    "strategy": "backward_design",
+    "case_id": "cpu_scheduling_zh_hard",
+    "target_difficulty": "hard",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_cpu_scheduling_zh",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目要求在具体任务集合下推演RR调度、比较q值影响、论证权衡并判断约束满足性，需整合调度规则、响应时间计算、切换开销影响等多概念，处理片尾到达顺序与首次派发免费等具体约束，涉及至少4个关键推理步骤。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q003",
+      "assessed_difficulty": "hard",
+      "confidence": "medium",
+      "correctness": 1,
+      "grounding": 4,
+      "answerability": 2,
+      "clarity": 2,
+      "rationale": "有响应上限和正切换开销下的取舍，任务意图为hard；但片尾到达与被抢占者入队顺序未规定，数值分支不能唯一确定。答案服务量不足、时间区间自相矛盾，且把首次运行时刻当成响应时间；核心约束判断不可靠。",
+      "evidence": [
+        "cpu_checks.json"
+      ]
+    },
+    "score": 67.5,
+    "quality_score": 27.5,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q004",
+    "run": "20260919T085353763975Z",
+    "original_id": "6fab0cd327c0ba507d6e",
+    "strategy": "baseline",
+    "case_id": "cpu_scheduling_en_hard",
+    "target_difficulty": "hard",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_cpu_scheduling_en",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The question requires constructing a detailed timeline with correct scheduling events, computing multiple metrics per job, calculating averages, and evaluating a design tradeoff under constraints. It involves 4+ key steps: timeline construction, metric computation, average calculation, and reasoned design comparison with explicit constraints. All elements are supported by the fixture, which defines scheduling rules, metrics, and overhead behavior. No ambiguity exists in arrival order, tie-breaking, or overhead application. The task integrates application, analysis, and evaluation within the provided model.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q004",
+      "assessed_difficulty": "hard",
+      "confidence": "medium",
+      "correctness": 2,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "要求比较响应与开销并指出设计约束，属于评价型边界hard。q2时A已在队中等待，C到达不能越过A；正确首次运行A/B/C为0/3/9，结束19/14/11，平均响应2、周转38/3。参考把C先运行，相关数值错误。",
+      "evidence": [
+        "cpu_checks.json"
+      ]
+    },
+    "score": 85.0,
+    "quality_score": 45.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q005",
+    "run": "20260919T090134905693Z",
+    "original_id": "8e5fba7fedcf9ceef6b4",
+    "strategy": "backward_design",
+    "case_id": "transactions_zh_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_transactions_zh",
+    "old_judge": {
+      "assessed_difficulty": "medium",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目要求应用Repeatable Read快照行为和重试逻辑，需结合资料中的隔离级别说明与事务处理规则进行分析。两问分别涉及具体情境下的可见性判断和正确重试策略，需2-3个逻辑步骤，符合medium认知要求。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q005",
+      "assessed_difficulty": "medium",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "先读100、外部随后提交150，RR第二次仍100；失败作为题设条件时，重读及重做决策的完整重试正确。属于熟悉规则的情境应用。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q006",
+    "run": "20260919T085353763975Z",
+    "original_id": "143c2b85391c4e51e5d6",
+    "strategy": "scaffold_control",
+    "case_id": "binary_search_zh_easy",
+    "target_difficulty": "easy",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_binary_search_zh",
+    "old_judge": {
+      "assessed_difficulty": "easy",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目直接考查资料中闭区间二分查找的边界更新规则，条件明确，只需识别中间值小于目标时左边界更新为mid+1。任务为记忆和理解层面，符合easy定义。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q006",
+      "assessed_difficulty": "easy",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "只需识别资料明确写出的闭区间左边界更新；A唯一正确，解释排除了mid及其左侧。",
+      "evidence": [
+        "sources.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q007",
+    "run": "20260919T090134905693Z",
+    "original_id": "9cbf575b8b82168c4e20",
+    "strategy": "rubric_axes",
+    "case_id": "transactions_zh_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_transactions_zh",
+    "old_judge": {
+      "assessed_difficulty": "medium",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目要求分析事务重试行为在特定隔离级别下的正确性，需结合资料中Repeatable Read快照机制和序列化失败处理规则。学生需应用概念到具体情境，判断仅重试写入的缺陷，并说明应重试整个事务及其不确定性。任务涉及2-3个逻辑步骤：理解快照一致性、识别失效决策风险、解释完整重试必要性。答案与解释均由参考资料直接支持。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q007",
+      "assessed_difficulty": "easy",
+      "confidence": "medium",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "未给需要追踪的交错、数值或方案约束；所问错误重试及正确范围可直接复述资料中“重试整个事务及读取决策”的规则。有情境包装，easy/medium有边界性，本次归easy。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 80.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 20,
+    "difficulty_match": false,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q008",
+    "run": "20260919T085353763975Z",
+    "original_id": "16fc843c2a207a10679d",
+    "strategy": "rubric_axes",
+    "case_id": "binary_search_zh_easy",
+    "target_difficulty": "easy",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_binary_search_zh",
+    "old_judge": {
+      "assessed_difficulty": "easy",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目直接考查闭区间二分查找中边界更新规则，答案在资料中有明确定义：中间值小于目标时应更新 left = mid + 1。任务为记忆和理解单一知识点，符合 easy 定义。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q008",
+      "assessed_difficulty": "easy",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "闭区间、中值小于目标的更新是直接资料提取；A正确，其余选项不能正确排除已比较位置。",
+      "evidence": [
+        "sources.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q009",
+    "run": "20260919T085353763975Z",
+    "original_id": "bc36cda73fb7c771ef97",
+    "strategy": "baseline",
+    "case_id": "transactions_en_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_transactions_en",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The question requires applying isolation levels to a transaction schedule, analyzing visibility differences, and explaining retry implications—integrating multiple concepts under specific constraints. Three distinct parts demand analysis and justification, aligning with hard's requirement of 3–6 key steps involving evaluation and design reasoning.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q009",
+      "assessed_difficulty": "medium",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "RC两次读取100、70，RR第二次100，失败后完整重试均正确。有明确提交时间的状态追踪与规则比较，不因三个子问自动升hard。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q010",
+    "run": "20260919T085353763975Z",
+    "original_id": "7416aee402b881cc14cd",
+    "strategy": "scaffold_control",
+    "case_id": "transactions_zh_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_transactions_zh",
+    "old_judge": {
+      "assessed_difficulty": "medium",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目要求基于给定隔离级别分析两次SELECT的可见性及原子性对不变式的影响。任务涉及应用事务隔离与原子性概念到具体交错执行情境，需分步推理Read Committed与Repeatable Read的行为差异，并结合ROLLBACK说明状态一致性。符合medium的认知要求：应用与分析，步骤2–3个，资料充分支持。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q010",
+      "assessed_difficulty": "medium",
+      "confidence": "high",
+      "correctness": 3,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "读取和回滚后的数值均正确；解释“原子性保证扣款与入账要么都提交”套用了题中不存在的入账操作。原子性只覆盖实际纳入该事务的操作；本例回滚后总量200成立。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 92.5,
+    "quality_score": 52.5,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q011",
+    "run": "20260919T085353763975Z",
+    "original_id": "6ac5fe2cc3c9bd99aebb",
+    "strategy": "backward_design",
+    "case_id": "binary_search_zh_easy",
+    "target_difficulty": "easy",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_binary_search_zh",
+    "old_judge": {
+      "assessed_difficulty": "easy",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目直接考查资料中闭区间二分查找的边界更新规则，答案在文本中有明确支持。任务为识别一个步骤：中间值小于目标时更新left。符合easy的认知要求。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q011",
+      "assessed_difficulty": "easy",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "题干已给闭区间约定；更新left=mid+1可从资料直接识别，无需状态追踪或方法选择。",
+      "evidence": [
+        "sources.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q012",
+    "run": "20260919T085353763975Z",
+    "original_id": "370409c5df01e71124c2",
+    "strategy": "baseline",
+    "case_id": "binary_search_zh_easy",
+    "target_difficulty": "easy",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_binary_search_zh",
+    "old_judge": {
+      "assessed_difficulty": "easy",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目直接考查资料中闭区间二分查找的边界更新规则，条件明确，只需识别中间值小于目标时应更新left为mid+1。答案和解释均被资料直接支持，无歧义，任务为记忆和理解层级。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q012",
+      "assessed_difficulty": "easy",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "明确的单规则识别题，A正确且解释与有序数组排除逻辑一致。",
+      "evidence": [
+        "sources.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q013",
+    "run": "20260919T085353763975Z",
+    "original_id": "f3408b4d48611e79519f",
+    "strategy": "contrastive",
+    "case_id": "transactions_zh_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_transactions_zh",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目要求在具体并发交错中分析三种隔离级别的行为差异，并应用重试策略。需整合事务可见性规则、快照机制与异常处理，涉及至少3个关键推理步骤，且必须结合情境约束进行论证。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q013",
+      "assessed_difficulty": "medium",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "S2在两次读取间提交，RC读B=200，RR读B=100；条件性序列化失败的完整重试说明正确。任务是具体交错应用与比较。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q014",
+    "run": "20260919T090134905693Z",
+    "original_id": "7416aee402b881cc14cd",
+    "strategy": "scaffold_control",
+    "case_id": "transactions_zh_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": false,
+    "eligible": false,
+    "source_key": "fixture_transactions_zh",
+    "old_judge": null,
+    "score": 0,
+    "quality_score": 0,
+    "difficulty_credit": 0,
+    "difficulty_match": false,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q015",
+    "run": "20260919T085353763975Z",
+    "original_id": "fc3384c09a8842996449",
+    "strategy": "verify_before_emit",
+    "case_id": "binary_search_en_easy",
+    "target_difficulty": "easy",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_binary_search_en",
+    "old_judge": {
+      "assessed_difficulty": "easy",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The question asks for initial values and loop condition of binary search using a closed interval, directly stated in the reference. The correct answer is explicitly provided in the text.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q015",
+      "assessed_difficulty": "easy",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "初值与循环条件属于同一闭区间约定的直接复述，A唯一正确，不因同时列三个符号而上调难度。",
+      "evidence": [
+        "sources.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q016",
+    "run": "20260919T085353763975Z",
+    "original_id": "9c4722009bbb28649377",
+    "strategy": "verify_before_emit",
+    "case_id": "cpu_scheduling_en_hard",
+    "target_difficulty": "hard",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_cpu_scheduling_en",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The task requires building timelines for two scheduling policies, computing response and turnaround times, comparing averages, and justifying a recommendation with constraints. It involves 4+ key steps: timeline simulation, metric calculation, comparison, and contextual evaluation. All information is provided, ties and arrival rules are specified, and reasoning is supported by the reference. The difficulty arises from integrating multiple concepts under scheduling constraints, not from external knowledge.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q016",
+      "assessed_difficulty": "medium",
+      "confidence": "medium",
+      "correctness": 2,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "任务主要是给定两算法的模拟与比较，所有任务完成是这里自动满足的条件；最小平均响应的选择无需处理实质冲突约束，最后泛论其他目标可直接援引资料，因此评medium。RR队列应B,C,A，平均响应1、周转20/3；原RR数值错，STCF部分正确。",
+      "evidence": [
+        "cpu_checks.json"
+      ]
+    },
+    "score": 65.0,
+    "quality_score": 45.0,
+    "difficulty_credit": 20,
+    "difficulty_match": false,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q017",
+    "run": "20260919T085353763975Z",
+    "original_id": "ece422ce45e73d048c13",
+    "strategy": "scaffold_control",
+    "case_id": "binary_search_en_easy",
+    "target_difficulty": "easy",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_binary_search_en",
+    "old_judge": {
+      "assessed_difficulty": "medium",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The question requires applying the closed-interval binary search logic from the notes to a specific condition (middle value larger than target). It involves understanding loop condition and update rule, based directly on the provided reference. The correct answer is well-supported and unambiguous.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q017",
+      "assessed_difficulty": "easy",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "闭区间循环条件与右边界更新均在资料中明确列出；题干没有需要实际追踪的数组，属于识别规则而非具体情境应用。",
+      "evidence": [
+        "sources.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q018",
+    "run": "20260919T085353763975Z",
+    "original_id": "c02a9498226d66ea5d55",
+    "strategy": "baseline",
+    "case_id": "transactions_zh_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_transactions_zh",
+    "old_judge": {
+      "assessed_difficulty": "medium",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目基于资料中的Repeatable Read快照规则、重试原则和原子性要求，需在具体交错情境中应用概念并分析后果。三个小问分别涉及理解、应用与分析，需2–3个逻辑步骤，符合medium的认知要求。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q018",
+      "assessed_difficulty": "uncertain",
+      "confidence": "high",
+      "correctness": 1,
+      "grounding": 2,
+      "answerability": 1,
+      "clarity": 1,
+      "rationale": "题干同时给出T首次读取100和U在首次读取前已提交200，两者在所述规则下矛盾；答案又把U提交说成在快照之后。若按提交顺序应读200。重试及原子性部分可用，但不能可靠给矛盾任务分档。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 17.5,
+    "quality_score": 17.5,
+    "difficulty_credit": 0,
+    "difficulty_match": false,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q019",
+    "run": "20260919T085353763975Z",
+    "original_id": "f45b59d6fb800058cf2f",
+    "strategy": "rubric_axes",
+    "case_id": "transactions_en_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_transactions_en",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The question requires applying Repeatable Read snapshot rules, distinguishing committed vs uncommitted changes, and explaining retry semantics in Serializable, all within a concrete schedule. It involves 4–5 key reasoning steps: snapshot consistency, visibility, state combination, rollback implications, and retry design rationale. All parts are supported by the reference notes and answerable with provided information.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q019",
+      "assessed_difficulty": "uncertain",
+      "confidence": "high",
+      "correctness": 2,
+      "grounding": 2,
+      "answerability": 2,
+      "clarity": 3,
+      "rationale": "RR下A读取旧快照后，B更新同一行并提交，A3再更新该行会序列化失败；不能把最终余额算80，无重试仅B的70保留。该RR写冲突规则未在题内资料给出，限制了(b)的可答性；(a)与完整重试说明正确。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 32.5,
+    "quality_score": 32.5,
+    "difficulty_credit": 0,
+    "difficulty_match": false,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q020",
+    "run": "20260919T090134905693Z",
+    "original_id": "91b60469636fb2ac15ff",
+    "strategy": "verify_before_emit",
+    "case_id": "transactions_zh_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_transactions_zh",
+    "old_judge": {
+      "assessed_difficulty": "medium",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目要求应用Repeatable Read的快照规则到具体库存扣减情境，并分析重试策略。资料明确支持快照机制、序列化失败原因及重试整个事务的必要性。任务需2–3步：解释可见性、说明为何快照不保证可串行化、判断重试范围。符合apply/analyze层级，未超出学生知识范围。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q020",
+      "assessed_difficulty": "medium",
+      "confidence": "medium",
+      "correctness": 2,
+      "grounding": 3,
+      "answerability": 2,
+      "clarity": 2,
+      "rationale": "第一次读取5正确；“后续SELECT仍5”忽略资料中本事务看见自身写入的例外，且未指定后续读取在UPDATE之前还是之后。若自身UPDATE成功后读应见自己的修改，若已失败则不能继续普通读取。重试原则正确，题干需明确事件顺序。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 72.5,
+    "quality_score": 32.5,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q021",
+    "run": "20260919T085353763975Z",
+    "original_id": "b3a00fbd75f125fd9825",
+    "strategy": "baseline",
+    "case_id": "cpu_scheduling_zh_hard",
+    "target_difficulty": "hard",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_cpu_scheduling_zh",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目要求在具体调度情境下执行多步模拟，计算响应与周转时间，并基于结果进行有依据的权衡分析。任务涉及维护就绪队列、处理到达与抢占顺序、跨时间区间的调度推演，以及结合资料中时间片权衡原则进行综合判断，符合 hard 级别的知识整合与情境约束处理要求。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q021",
+      "assessed_difficulty": "medium",
+      "confidence": "medium",
+      "correctness": 1,
+      "grounding": 4,
+      "answerability": 2,
+      "clarity": 2,
+      "rationale": "主体是两种q的模拟比较和时间片权衡解释，未给需实际求解的额外预算/设计边界，评medium。按原到达时间优先的文字又可能与RR队列先后冲突。答案q1为A分配过多服务，q2给B不足服务，不能据其时刻表作出有效比较。",
+      "evidence": [
+        "cpu_checks.json"
+      ]
+    },
+    "score": 47.5,
+    "quality_score": 27.5,
+    "difficulty_credit": 20,
+    "difficulty_match": false,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q022",
+    "run": "20260919T085353763975Z",
+    "original_id": "1b3a9b933aed2781fc6a",
+    "strategy": "baseline",
+    "case_id": "binary_search_en_easy",
+    "target_difficulty": "easy",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_binary_search_en",
+    "old_judge": {
+      "assessed_difficulty": "easy",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The question asks for a direct application of a rule stated in the reference: when the middle value is smaller than the target, set left = mid + 1. The correct answer is explicitly supported by the text, requires no inference beyond the given rule, and matches the closed-interval convention. All options are distinct, and only one is correct.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q022",
+      "assessed_difficulty": "easy",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "直接识别中值小于目标时的更新规则，A唯一正确，解释有资料支持。",
+      "evidence": [
+        "sources.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q023",
+    "run": "20260919T085353763975Z",
+    "original_id": "6338f3b117671bb0e420",
+    "strategy": "contrastive",
+    "case_id": "cpu_scheduling_en_hard",
+    "target_difficulty": "hard",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_cpu_scheduling_en",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The task requires analyzing Round Robin scheduling under constraints, computing first-run times and context switches for multiple candidates, evaluating against a response-time constraint, and reasoning about trade-offs. It involves 4–5 key steps: simulation of each q, response time calculation, context switch counting, constraint satisfaction check, and objective-based comparison. All information is provided, ties are resolved alphabetically, and switching rules are explicit. The difficulty arises from integrating scheduling concepts and justifying design trade-offs under competing objectives, fitting the 'hard' criteria.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q023",
+      "assessed_difficulty": "hard",
+      "confidence": "medium",
+      "correctness": 1,
+      "grounding": 3,
+      "answerability": 2,
+      "clarity": 2,
+      "rationale": "要求在响应上限下最小化切换次数，任务意图为hard。未给切换耗时且未说忽略，首次运行和可行q不可唯一确定；即使额外假设耗时0，正确不同任务切换次数为10/5/3，原13/7/4还混入多余服务与同任务续跑。",
+      "evidence": [
+        "cpu_checks.json"
+      ]
+    },
+    "score": 65.0,
+    "quality_score": 25.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q024",
+    "run": "20260919T085353763975Z",
+    "original_id": "5d15ec7fa7dedd17ca9c",
+    "strategy": "backward_design",
+    "case_id": "binary_search_en_easy",
+    "target_difficulty": "easy",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_binary_search_en",
+    "old_judge": {
+      "assessed_difficulty": "easy",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The question asks to recall the closed-interval binary search convention directly described in the notes. The correct answer is explicitly stated in the reference text, requiring only recognition and understanding of one clear concept.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q024",
+      "assessed_difficulty": "easy",
+      "confidence": "high",
+      "correctness": 3,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "正确选项A完整匹配闭区间算法，难度仍为识别资料。解释将B和C概称为half-open behavior不准确：B的left=mid和C的left<=right均不是资料给出的正确半开区间算法，应说明它们混用了或破坏了规则。主要选择答案不受影响。",
+      "evidence": [
+        "sources.json"
+      ]
+    },
+    "score": 92.5,
+    "quality_score": 52.5,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q025",
+    "run": "20260919T085353763975Z",
+    "original_id": "42670b4a85c1c70fc0a5",
+    "strategy": "rubric_axes",
+    "case_id": "cpu_scheduling_en_hard",
+    "target_difficulty": "hard",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_cpu_scheduling_en",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The task requires computing timelines under two Round Robin policies with switching overhead, deriving response and turnaround times, comparing tradeoffs, and justifying a recommendation based on stated objectives. It involves 4–6 key steps: timeline simulation, metric calculation, comparison, objective-based evaluation, and assumption statement. All elements are supported by the reference material, which defines scheduling metrics, Round Robin behavior, and modeling conventions. The constraints (arrival times, overhead rules, tie-breaking) are fully specified, making the problem answerable and unambiguous. The difficulty arises from integrating multiple concepts and reasoning about policy tradeoffs, not from external knowledge or terminology.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q025",
+      "assessed_difficulty": "hard",
+      "confidence": "high",
+      "correctness": 2,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "需在响应主目标、开销次目标之间评价两方案；规则虽特殊但提前完成免切换费已明确。答案未遵守这条例外：R2 B结束后不应再加1，R4 B/C提前结束后均应免费。响应/周转/开销比较必须据正确时间线重算。",
+      "evidence": [
+        "cpu_checks.json"
+      ]
+    },
+    "score": 85.0,
+    "quality_score": 45.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q026",
+    "run": "20260919T085353763975Z",
+    "original_id": "c4a6ccdf12a8f46f6371",
+    "strategy": "rubric_axes",
+    "case_id": "binary_search_en_easy",
+    "target_difficulty": "easy",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_binary_search_en",
+    "old_judge": {
+      "assessed_difficulty": "easy",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The question asks for a direct recall of initial boundaries and loop condition from the notes, which are explicitly stated. The correct answer is clearly supported by the reference text.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q026",
+      "assessed_difficulty": "easy",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "初始化与循环条件均可从资料直接取得，A唯一正确；没有迁移或策略选择要求。",
+      "evidence": [
+        "sources.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q027",
+    "run": "20260919T085353763975Z",
+    "original_id": "793a8f72cc8797c7c884",
+    "strategy": "backward_design",
+    "case_id": "transactions_en_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_transactions_en",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The question requires applying isolation level rules to a specific schedule, analyzing visibility under Read Committed and Repeatable Read, and evaluating retry logic for Serializable failures. It involves 4–5 reasoning steps: identifying transaction boundaries, applying snapshot rules per isolation level, explaining visibility differences, and justifying full transaction retry. All information is provided, answers match reference, and no ambiguity exists in expected outcomes.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q027",
+      "assessed_difficulty": "medium",
+      "confidence": "high",
+      "correctness": 3,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "A=70来自S1自己尚未提交的写入，B在RC为130、RR为100，数值正确。但答案又说该行在语句前已提交，容易把新版本可见性与自身写例外混淆；应明确70尚未提交也对自身可见。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 92.5,
+    "quality_score": 52.5,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q028",
+    "run": "20260919T085353763975Z",
+    "original_id": "88d4f8e78a18667091ad",
+    "strategy": "contrastive",
+    "case_id": "binary_search_zh_easy",
+    "target_difficulty": "easy",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_binary_search_zh",
+    "old_judge": {
+      "assessed_difficulty": "easy",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目直接询问资料中明确说明的初始right值，答案n-1在文本中明确给出，仅需记忆或查找即可作答。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q028",
+      "assessed_difficulty": "easy",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "只问闭区间right初值，B=n-1有直接依据，定义清楚。",
+      "evidence": [
+        "sources.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q029",
+    "run": "20260919T085353763975Z",
+    "original_id": "3cb8ab152241f7651342",
+    "strategy": "verify_before_emit",
+    "case_id": "binary_search_zh_easy",
+    "target_difficulty": "easy",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_binary_search_zh",
+    "old_judge": {
+      "assessed_difficulty": "easy",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目直接考查资料中二分查找闭区间更新规则的明确知识点，条件完整，只需识别中间值小于目标时 left = mid + 1 的规定，对应资料原文。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q029",
+      "assessed_difficulty": "easy",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "单一更新规则的直接辨认，A正确；解释足以说明mid已排除。",
+      "evidence": [
+        "sources.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q030",
+    "run": "20260919T085353763975Z",
+    "original_id": "51f3389a01e854a07ccc",
+    "strategy": "scaffold_control",
+    "case_id": "transactions_en_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_transactions_en",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The question requires applying snapshot semantics, analyzing committed state vs. visibility, and evaluating retry logic within a concrete schedule. It involves 4–5 key reasoning steps across three parts: visibility under Repeatable Read, final state determination, and correct retry behavior. All answers are supported by the provided notes. No ambiguity or missing information affects the task.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q030",
+      "assessed_difficulty": "medium",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "R1/R2均100；会话写不同账户且无其他写，最终A=150、B=110。对普通读取快照和自身写入分开说明，重试规则正确；无需设计新的方案。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q031",
+    "run": "20260919T085353763975Z",
+    "original_id": "c1cea4aeff6f817dc77d",
+    "strategy": "backward_design",
+    "case_id": "cpu_scheduling_en_hard",
+    "target_difficulty": "hard",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_cpu_scheduling_en",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The task requires building a timeline under Round Robin with overhead, computing response and turnaround times, analyzing the impact of a shorter time slice, and making a justified recommendation based on tradeoffs. This involves 4+ key steps: timeline construction, metric calculation, comparative analysis, and design justification with constraints. All elements are supported by the reference material and learner profile.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q031",
+      "assessed_difficulty": "medium",
+      "confidence": "medium",
+      "correctness": 1,
+      "grounding": 4,
+      "answerability": 2,
+      "clarity": 2,
+      "rationale": "主要要求用固定规则计算并比较q，未给具体需共同满足的设计预算，判medium；片尾到达与回队的先后未明确，字母平局是否涵盖事件排序也不清。答案给B过量服务、A不足服务，给A到A计费，并未从首次/结束时刻减到达时间，存在多处独立实质错误。",
+      "evidence": [
+        "cpu_checks.json"
+      ]
+    },
+    "score": 47.5,
+    "quality_score": 27.5,
+    "difficulty_credit": 20,
+    "difficulty_match": false,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q032",
+    "run": "20260919T085353763975Z",
+    "original_id": "62e1f652d0bae3266562",
+    "strategy": "contrastive",
+    "case_id": "cpu_scheduling_zh_hard",
+    "target_difficulty": "hard",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_cpu_scheduling_zh",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目要求分步计算三种q下的调度过程与性能指标，需整合自拟模型规则进行多步推演；在双约束下判断可行性属于应用分析；MLFQ设计需基于资料机制进行有依据的参数权衡论证。任务涉及情境处理、多指标整合与设计评价，符合hard定义。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q032",
+      "assessed_difficulty": "hard",
+      "confidence": "high",
+      "correctness": 1,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "响应和总开销双约束加MLFQ调整，属于hard。q1给出的结束时刻与总服务12加开销10矛盾；q3把已等待的A放到了更晚到达的C之后，导致错误宣称q3满足上限。核心可行方案选择不成立，不能靠泛化MLFQ建议弥补。",
+      "evidence": [
+        "cpu_checks.json"
+      ]
+    },
+    "score": 77.5,
+    "quality_score": 37.5,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q033",
+    "run": "20260919T085353763975Z",
+    "original_id": "1478e1ea54768f1ed103",
+    "strategy": "verify_before_emit",
+    "case_id": "cpu_scheduling_zh_hard",
+    "target_difficulty": "hard",
+    "whole_asset_valid": false,
+    "eligible": false,
+    "source_key": "fixture_cpu_scheduling_zh",
+    "old_judge": null,
+    "score": 0,
+    "quality_score": 0,
+    "difficulty_credit": 0,
+    "difficulty_match": false,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q034",
+    "run": "20260919T085353763975Z",
+    "original_id": "e57165e62b512f250b5f",
+    "strategy": "scaffold_control",
+    "case_id": "cpu_scheduling_en_hard",
+    "target_difficulty": "hard",
+    "whole_asset_valid": false,
+    "eligible": false,
+    "source_key": "fixture_cpu_scheduling_en",
+    "old_judge": null,
+    "score": 0,
+    "quality_score": 0,
+    "difficulty_credit": 0,
+    "difficulty_match": false,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q035",
+    "run": "20260919T085353763975Z",
+    "original_id": "8e5fba7fedcf9ceef6b4",
+    "strategy": "backward_design",
+    "case_id": "transactions_zh_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_transactions_zh",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目正确应用Read Committed与Repeatable Read的可见性规则；答案由资料支持，无歧义；需整合隔离级别、可见性、原子性与不变量保持，涉及3个以上关键推理步骤。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q035",
+      "assessed_difficulty": "medium",
+      "confidence": "medium",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 3,
+      "clarity": 3,
+      "rationale": "按题干原始RC场景，(a)70、(c)最终A50/总150正确，(b)局部RR反事实读100也正确。但(c)在(b)之后未明确回到RC，若沿用RR则后续同一行写入会失败；应明确每问适用的隔离级别。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 95.0,
+    "quality_score": 55.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q036",
+    "run": "20260919T090134905693Z",
+    "original_id": "f3408b4d48611e79519f",
+    "strategy": "contrastive",
+    "case_id": "transactions_zh_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_transactions_zh",
+    "old_judge": {
+      "assessed_difficulty": "medium",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目要求应用Repeatable Read的快照规则判断读取结果，并基于重试语义解释为何需重试整个事务。任务涉及具体情境中的概念应用与逻辑分析，需2–3个关联步骤：快照可见性判断、序列化异常处理、重试策略分析。答案和解释均由参考资料直接支持。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q036",
+      "assessed_difficulty": "medium",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "外部提交在首次读取之后，RR第二次100；以题设失败为条件重新执行读取和决策正确。主要是具体快照应用和重试依赖分析。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q037",
+    "run": "20260919T085353763975Z",
+    "original_id": "8b373588de4efca3dc3d",
+    "strategy": "contrastive",
+    "case_id": "binary_search_en_easy",
+    "target_difficulty": "easy",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_binary_search_en",
+    "old_judge": {
+      "assessed_difficulty": "easy",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The question asks to recall a specific condition from the notes for a closed interval in binary search. The correct answer 'while left <= right' is explicitly stated in the reference text. The task requires remembering a defined convention with no ambiguity among options.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q037",
+      "assessed_difficulty": "easy",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "直接辨认闭区间非空条件，B正确；半开区间对照解释准确。",
+      "evidence": [
+        "sources.json"
+      ]
+    },
+    "score": 100.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q038",
+    "run": "20260919T085353763975Z",
+    "original_id": "9cbf575b8b82168c4e20",
+    "strategy": "rubric_axes",
+    "case_id": "transactions_zh_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_transactions_zh",
+    "old_judge": {
+      "assessed_difficulty": "medium",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "问题要求应用Repeatable Read的快照语义和重试策略，需结合资料中的隔离行为与应用逻辑分析，涉及2-3个关联步骤：快照一致性判断、读写依赖分析、重试后果推导。答案和解释均被资料支持。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q038",
+      "assessed_difficulty": "medium",
+      "confidence": "medium",
+      "correctness": 3,
+      "grounding": 4,
+      "answerability": 3,
+      "clarity": 3,
+      "rationale": "在其他语句不修改该账户的通常解释下，第二次100与完整重试正确。但题干写“若干其他语句”未限定范围；资料允许看见自身写入，应补明这些语句不修改A，避免把稳定快照误解为看不见自身修改。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 87.5,
+    "quality_score": 47.5,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q039",
+    "run": "20260919T085353763975Z",
+    "original_id": "91b60469636fb2ac15ff",
+    "strategy": "verify_before_emit",
+    "case_id": "transactions_zh_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_transactions_zh",
+    "old_judge": {
+      "assessed_difficulty": "medium",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目要求应用快照语义解释读取行为，并分析重试范围对决策链的影响。两项任务均需结合资料中的隔离级别定义与事务处理原则，进行情境化应用与逻辑分析，符合 medium 的认知要求。答案与解释均被参考资料支持，条件完整，无歧义。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q039",
+      "assessed_difficulty": "medium",
+      "confidence": "high",
+      "correctness": 2,
+      "grounding": 2,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "T2在T首次读取前已提交，因此新值应进入首次非事务控制语句的快照，两次读取都可见该新值。答案反称T先完成首次读取，颠倒了明确时序；完整重试部分正确。任务本身是可判定的规则应用。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 80.0,
+    "quality_score": 40.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q040",
+    "run": "20260919T085353763975Z",
+    "original_id": "c19bcccc3e154c1124f4",
+    "strategy": "rubric_axes",
+    "case_id": "cpu_scheduling_zh_hard",
+    "target_difficulty": "hard",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_cpu_scheduling_zh",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目要求计算两种时间片下的三个指标，并在多目标冲突下论证权衡与提出调整策略。任务涉及处理具体调度规则（如切换计费、入队顺序）、多步模拟、指标计算与综合评价，需整合RR、开销、响应/周转时间等概念，在约束下进行有依据的设计分析，符合hard的认知要求。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q040",
+      "assessed_difficulty": "hard",
+      "confidence": "high",
+      "correctness": 2,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "明确的双性能目标和20%预算需要约束权衡，属于hard。特殊切换期间到达入队规则应遵守；q1在C结束后应先运行已等待的A，原后半段顺序与完成时刻错误，切换次数叙述也自相矛盾。q3数值正确；两候选均超预算的结论仍成立。",
+      "evidence": [
+        "cpu_checks.json"
+      ]
+    },
+    "score": 85.0,
+    "quality_score": 45.0,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": false
+  },
+  {
+    "blind_id": "Q041",
+    "run": "20260919T085353763975Z",
+    "original_id": "a40e716524e170c426dc",
+    "strategy": "verify_before_emit",
+    "case_id": "transactions_en_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": false,
+    "eligible": true,
+    "source_key": "fixture_transactions_en",
+    "old_judge": {
+      "assessed_difficulty": "hard",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "The question requires applying Read Committed visibility rules, analyzing transaction isolation behavior in a specific schedule, evaluating an invariant over committed state, and assessing a retry strategy against course notes. It involves 4–5 reasoning steps: visibility per SELECT, invariant satisfaction, credit necessity, retry policy correctness, and decision dependency. All elements are supported by reference material. No ambiguity or missing information affects answerability.",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q041",
+      "assessed_difficulty": "medium",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 3,
+      "rationale": "RC前后100/70、缺少同一事务内入账会破坏转账不变量、失败后完整重试均正确。是在具体交错上检验显式不变量与规则；(b)“as if complete transfer”措辞不够精确，但答案已区分可见扣款与完整转账。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 97.5,
+    "quality_score": 57.5,
+    "difficulty_credit": 40,
+    "difficulty_match": true,
+    "strict_pass": true
+  },
+  {
+    "blind_id": "Q042",
+    "run": "20260919T090134905693Z",
+    "original_id": "c02a9498226d66ea5d55",
+    "strategy": "baseline",
+    "case_id": "transactions_zh_medium",
+    "target_difficulty": "medium",
+    "whole_asset_valid": true,
+    "eligible": true,
+    "source_key": "fixture_transactions_zh",
+    "old_judge": {
+      "assessed_difficulty": "medium",
+      "correctness": true,
+      "grounded": true,
+      "answerable": true,
+      "ambiguity_free": true,
+      "rationale": "题目要求应用事务重试逻辑，需结合隔离级别与并发控制概念分析重试范围。答案和解释由参考资料直接支持，任务涉及2-3个关键步骤：识别序列化失败含义、说明重试整个事务的必要性、解释局部重试的风险。符合medium难度认知要求。",
+      "confidence": "high"
+    },
+    "rating": {
+      "blind_id": "Q042",
+      "assessed_difficulty": "easy",
+      "confidence": "high",
+      "correctness": 4,
+      "grounding": 4,
+      "answerability": 4,
+      "clarity": 4,
+      "rationale": "只问序列化失败后的重试范围及原因，资料已直接给出相同规则；没有具体交错、计算或需选择的条件，属于直接解释，不能仅因使用数据库术语认定为medium。",
+      "evidence": [
+        "transactions_checks.json"
+      ]
+    },
+    "score": 80.0,
+    "quality_score": 60.0,
+    "difficulty_credit": 20,
+    "difficulty_match": false,
+    "strict_pass": false
+  }
+]

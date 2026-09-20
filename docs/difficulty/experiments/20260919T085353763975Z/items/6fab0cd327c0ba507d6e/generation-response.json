@@ -1,0 +1,46 @@
+{
+  "title": "CPU Scheduling: Response Time, Turnaround Time, and Time-Slice Tradeoffs — Hard Short-Answer Quiz",
+  "evidence_sufficient": true,
+  "evidence_note": "The supplied fixture defines the scheduling model, metrics, policies, and explicit conventions for overhead and ties, which is sufficient for one hard short-answer question.",
+  "learning_objectives": [
+    "Distinguish response time from turnaround time using first-run and completion times.",
+    "Analyze how Round Robin time-slice length trades off initial responsiveness against context-switch frequency.",
+    "Evaluate a scheduler design against stated objectives and constraints, using the fixture's explicit model conventions."
+  ],
+  "sections": [],
+  "questions": [
+    {
+      "kind": "short_answer",
+      "stem": "Using the fixture's explicit scheduling model, consider a single processor with these independent jobs, each having one CPU burst and no I/O. All times are in milliseconds. Job A arrives at t=0 and needs 8 ms of CPU service. Job B arrives at t=2 and needs 4 ms. Job C arrives at t=4 and needs 2 ms. The scheduler is Round Robin with a time slice of 2 ms. Context-switch overhead is 1 ms and applies only when the processor moves between different jobs; there is no initial dispatch charge. A job that finishes before its slice ends does not use the remaining slice. If a job arrives exactly at a slice boundary, assume it is enqueued before the preempted job. Ties are resolved alphabetically by job name. (a) Draw or describe the timeline from t=0 until all jobs finish, showing each dispatch and switch. (b) Compute each job's first-run time, completion time, response time, and turnaround time. (c) Compute the average response time and average turnaround time. (d) The system designer now says the goal is to minimize the maximum response time while keeping switching overhead low. Based only on this scenario, argue whether a 1 ms slice would be a better or worse choice than the 2 ms slice, and state one constraint or measurement that would be needed before recommending a final design.",
+      "options": [],
+      "answer": "A complete answer must follow the fixture's conventions and show the timeline, per-job metrics, averages, and a reasoned design judgment. A correct timeline for the 2 ms slice is: A runs 0–2 (2 ms service); switch 2–3; B runs 3–5 (2 ms service); switch 5–6; C runs 6–8 (2 ms service, finishes at 8); switch 8–9; A runs 9–11 (2 ms service); switch 11–12; B runs 12–14 (2 ms service, finishes at 14); switch 14–15; A runs 15–19 (4 ms service, finishes at 19). Note that B arrived at t=2, which is exactly a slice boundary, so under the stated rule B is enqueued before preempted A; C arrives at t=4 during B's slice and enters the ready queue. First-run times: A=0, B=3, C=6. Completion times: A=19, B=14, C=8. Response times (first run minus arrival): A=0−0=0 ms; B=3−2=1 ms; C=6−4=2 ms. Turnaround times (completion minus arrival): A=19−0=19 ms; B=14−2=12 ms; C=8−4=4 ms. Average response time = (0+1+2)/3 = 1.0 ms. Average turnaround time = (19+12+4)/3 = 35/3 ≈ 11.67 ms. For part (d), a 1 ms slice would tend to let B and C first run sooner, which can reduce the maximum response time, but it also increases the number of context switches and therefore the switching overhead, which can delay completion and raise turnaround time. So a 1 ms slice is not automatically better for the stated goal; it is a tradeoff. A final recommendation needs an explicit objective and constraints, such as a maximum acceptable response time, a switching-overhead budget, or a fairness requirement, and ideally measured workload traces rather than hypothetical bursts.",
+      "explanation": "The fixture defines response time as first-run time minus arrival time and turnaround time as completion time minus arrival time, and it warns that early access does not necessarily imply early completion. It also states that shorter slices can improve initial responsiveness but increase context-switch frequency, and that neither a smaller average response time nor a smaller switching fraction alone proves a policy is best for every objective. The timeline must respect the stated overhead rule, the no-initial-dispatch-charge convention, the exact-boundary enqueue rule, and the alphabetical tie rule. The design argument must connect the 1 ms versus 2 ms choice to the stated objective and acknowledge that a final recommendation requires a stated objective and constraints.",
+      "difficulty_reason": "This is a hard item because it requires integrating several fixture concepts: Round Robin slice rotation, response time versus turnaround time, context-switch overhead, and explicit model conventions for arrivals and ties. The student must construct a reproducible timeline under constraints, compute per-job and average metrics, and then evaluate a design tradeoff with an argument rather than merely recalling definitions.",
+      "citation_ids": [
+        "fixture_cpu_scheduling_en"
+      ],
+      "slot_id": "q1",
+      "difficulty": "hard",
+      "difficulty_design": {
+        "cognitive_process": "evaluate",
+        "concepts": [
+          "Round Robin time slice",
+          "response time",
+          "turnaround time",
+          "context-switch overhead",
+          "first-run time",
+          "scheduling design tradeoff"
+        ],
+        "expected_steps": [
+          "Construct the Round Robin timeline using the stated 2 ms slice, 1 ms switching overhead, exact-boundary enqueue rule, and alphabetical tie rule.",
+          "Compute each job's first-run time and completion time from the timeline.",
+          "Compute each job's response time and turnaround time using the fixture's definitions.",
+          "Compute the average response time and average turnaround time.",
+          "Argue whether a 1 ms slice would better minimize maximum response time while keeping switching overhead low, noting the tradeoff.",
+          "State a constraint or measurement needed before making a final design recommendation."
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "A horizontal timeline diagram from t=0 to t=19 ms showing alternating CPU service blocks and context-switch blocks for jobs A, B, and C under a 2 ms Round Robin slice. Label each service block with the job name and duration, label each switch block with its 1 ms overhead, and mark arrival times for B at t=2 and C at t=4. Include a small table area for first-run, completion, response, and turnaround times, but do not show the computed answers."
+}

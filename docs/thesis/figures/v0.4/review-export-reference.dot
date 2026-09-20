@@ -1,0 +1,19 @@
+digraph G { graph [bgcolor="white", pad="0.25", nodesep="0.38", ranksep="0.5", fontname="Helvetica", fontsize=13]; node [shape=box, style="filled", fillcolor="#F5F7F9", color="#384651", fontname="Helvetica", fontsize=12, margin="0.14,0.10"]; edge [color="#384651", fontname="Helvetica", fontsize=10, arrowsize=0.7];
+
+rankdir=TB;
+draft [label="Saved version"];
+review [label="Review + evidence"];
+edit [label="Edit content"]; next [label="New version"];
+approve [label="Approve text"];
+rating [label="Version rating
+insert or update"];
+export [label="Export blocks
+source-level references"];
+files [label="PDF / Word / Markdown"];
+future [label="Future media output
+version-bound artifacts",style="filled,dashed"];
+draft -> review; review -> edit -> next; next -> review [constraint=false];
+review -> approve; draft -> rating; draft -> export -> files;
+approve -> future [style=dashed];
+
+}

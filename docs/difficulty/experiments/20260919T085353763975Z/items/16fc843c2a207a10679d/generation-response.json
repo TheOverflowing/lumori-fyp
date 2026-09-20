@@ -1,0 +1,43 @@
+{
+  "title": "二分查找：区间约定、边界更新与适用条件（选择题）",
+  "evidence_sufficient": true,
+  "evidence_note": "依据片段 fixture_binary_search_zh，资料完整给出闭区间 [left, right] 的初始化、中点公式、边界更新与循环条件，足以支持一道 easy 选择题。",
+  "learning_objectives": [
+    "能说出闭区间二分查找中 left、right 的初始取值与循环条件。",
+    "能根据中间值与目标的大小关系写出正确的边界更新方式。"
+  ],
+  "sections": [],
+  "questions": [
+    {
+      "kind": "mcq",
+      "stem": "在资料所述的闭区间 [left, right] 二分查找中（数组升序、元素互异、下标从 0 开始），若某轮中间位置的值小于目标值，应如何更新边界？",
+      "options": [
+        "left = mid + 1",
+        "left = mid",
+        "right = mid - 1",
+        "right = mid"
+      ],
+      "answer": "A",
+      "explanation": "闭区间 [left, right] 中，mid 位置的值小于目标，说明 mid 及其左侧都不可能是目标，因此把 left 更新为 mid+1，新区间仍保持闭区间约定。",
+      "difficulty_reason": "本题只考查资料中一个明确知识点：闭区间约定下中间值小于目标时的边界更新，条件完整，直接识别即可，符合 easy 的 remember/understand 要求。",
+      "citation_ids": [
+        "fixture_binary_search_zh"
+      ],
+      "slot_id": "q1",
+      "difficulty": "easy",
+      "difficulty_design": {
+        "cognitive_process": "remember",
+        "concepts": [
+          "闭区间 [left, right]",
+          "边界更新",
+          "中间值与目标的比较"
+        ],
+        "expected_steps": [
+          "识别闭区间约定下 mid 位置已被比较且可排除。",
+          "写出 left = mid + 1，使区间仍为闭区间且不遗漏候选位置。"
+        ]
+      }
+    }
+  ],
+  "visual_prompt": "画一条升序数组的下标轴，用方括号标出闭区间 [left, right]，并标出中点 mid；在 mid 左侧区域画阴影表示“小于目标时可排除”，箭头指向新的 left = mid + 1，不显示答案文字。"
+}

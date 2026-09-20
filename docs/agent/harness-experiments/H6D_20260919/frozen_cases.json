@@ -1,0 +1,44 @@
+{
+  "cpu_scheduling_en_hard": {
+    "id": "cpu_scheduling_en_hard",
+    "topic_id": "cpu_scheduling",
+    "split": "dev",
+    "pilot": true,
+    "language": "en",
+    "target_difficulty": "hard",
+    "question_type": "short_answer",
+    "topic": "CPU scheduling: response time, turnaround time, and time-slice tradeoffs",
+    "learner_profile": "An undergraduate computer science student who has studied the supplied notes, basic program control flow, and introductory course concepts; the notes are available during the task. Do not assume advanced courses, a particular language library, or another database system's behavior.",
+    "sources": [
+      {
+        "id": "fixture_cpu_scheduling_en",
+        "text": "A scheduler chooses which ready job receives the processor. Turnaround time equals completion time minus arrival time. Response time equals the first time a job runs minus its arrival time. These metrics measure different things: early access to a processor does not necessarily imply early completion. First-come, first-served runs jobs in arrival order without preempting them. Shortest Job First selects the shortest available job and is non-preemptive. Shortest Time-to-Completion First is preemptive and selects the job with the least remaining processing time. Comparisons involving these shortest-job policies must state how execution lengths are known.\n\nRound Robin rotates through a ready queue, running each selected job for at most one time slice before moving an unfinished job to the back. Shorter slices can improve initial responsiveness but increase the frequency of context switches. Larger slices amortize switching costs but can lengthen waits before a different job first runs. Neither a smaller average response time nor a smaller switching fraction alone establishes that a policy is best for every objective.\n\nA multi-level feedback queue, or MLFQ, uses observed execution behavior instead of requiring exact future job lengths. Jobs in higher-priority queues run before lower-priority jobs; equal-priority jobs can share service by Round Robin. New jobs begin at high priority, and consuming the allowed CPU allotment causes demotion. Accounting for total consumed allotment prevents a job from retaining high priority indefinitely merely by yielding just before each slice ends. Periodic priority boosts can help jobs otherwise left waiting at low priority. Queue levels, slice lengths, allotments, and boost intervals are policy parameters, not universal constants.\n\nThis fixture adds an explicit scheduling model for exercises. It is authored example scaffolding rather than text copied from a textbook. Unless a question states otherwise, there is one processor, jobs are independent, and each job consists of one CPU burst with no I/O. Arrival times and required CPU service are provided. The processor never serves two jobs simultaneously. Time spent switching is not CPU service delivered to any job. A job that finishes before its slice ends does not use the remaining slice. If a job arrives at exactly a slice boundary, the question must say whether that arrival is enqueued before or after the preempted job. Ties must be resolved by an explicit rule, such as alphabetical job names.\n\nA question that includes switching overhead must define when that overhead applies: for example, only when moving between different jobs, with no initial dispatch charge. It must also state whether arrivals can occur while switching and how they enter the queue. Questions that ignore overhead must say so. These conventions make a timeline reproducible and prevent a numeric answer from depending on unstated simulator behavior.\n\nA comparison can report each job's first-run and completion times, then compute the requested averages. A design recommendation also needs an objective and constraints, such as a maximum response time, a switching budget, or a fairness requirement. A policy can satisfy one constraint while losing on another metric. Choosing a scheduler should therefore follow the stated workload and requirements. Hypothetical burst lengths and budgets introduced in an exercise are not measured workload traces, and labels assigned by the generator are not empirical student difficulty measurements.",
+        "document_name": "AI-curated study fixture: CPU scheduling: response time, turnaround time, and time-slice tradeoffs",
+        "page": null,
+        "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+        "document_id": "fixture-doc-6364e41e1555945e17f1ad71"
+      }
+    ],
+    "provenance": {
+      "kind": "ai_curated_educational_fixture",
+      "author_type": "AI assistant",
+      "original_source_excerpt": false,
+      "human_authored_question": false,
+      "human_difficulty_annotation": false,
+      "human_translation_verified": false,
+      "factual_review_status": "pending_independent_review",
+      "source_references": [
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf",
+          "title": "OSTEP chapter 7: Scheduling: Introduction"
+        },
+        {
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched-mlfq.pdf",
+          "title": "OSTEP chapter 8: Scheduling: The Multi-Level Feedback Queue"
+        }
+      ],
+      "context_sha256": "bafa663389798c35be94e3c21273bd9c8529e8951874584c6f433c0b10187fd7",
+      "note": "Newly written bilingual study notes grounded in the references and explicit hypothetical exercise conventions. Not original course text, a human translation, a question, a gold difficulty label, or empirical learner data. URLs identify background references; page is null because these are curated notes, not page-aligned excerpts."
+    }
+  }
+}
