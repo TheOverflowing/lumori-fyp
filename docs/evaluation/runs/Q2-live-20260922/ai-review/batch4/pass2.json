@@ -1,0 +1,188 @@
+[
+  {
+    "blind_id": "Q001",
+    "independent_answer": "选第一项：Acknowledgement = 221，NextByteExpected = 221。S1 后下一个缺失字节是 141；S2 乱序到达后仍是 141；S3 补齐 141–160 后推进到 201；S4 后连续收到至 220，故下一期待字节与累积确认号均为 221。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "A is the only option with both final values 221: S2 leaves a gap, S3 fills it, and S4 extends the contiguous range through 220. The explanation computes these states correctly, but misdescribes B and D as intermediate states and says C gives 201 as NextByteExpected even though C gives 221. The actual cited excerpts establish byte numbering, buffering, and NextByteExpected, but do not explicitly establish that the cumulative ACK field equals that next expected byte.",
+    "answer_correctness": "pass",
+    "explanation_correctness": "fail",
+    "citation_support": "partially_supported",
+    "objective_alignment": "pass",
+    "severity": "minor",
+    "evidence_quotes": [
+      {
+        "source_id": "explanation",
+        "quote": "S4 到达 201–220，继续连续；LastByteRcvd=220，NextByteExpected=221。"
+      },
+      {
+        "source_id": "explanation",
+        "quote": "选项 B 的错误在于停留在重排完成之前的状态，未处理 S3、S4 的填补效果。"
+      },
+      {
+        "source_id": "explanation",
+        "quote": "选项 C 混用了乱序阶段与最终状态，201 不是最终的 NextByteExpected。"
+      },
+      {
+        "source_id": "explanation",
+        "quote": "选项 D 只看到 S3 填补后的下一步，忽略了 S4 已连续到达。"
+      },
+      {
+        "source_id": "context_1e4936c4e6a2d7b6afa93d98871b242d",
+        "quote": "if data has arrived in order, NextByteExpected points to the byte after LastByteRcvd"
+      },
+      {
+        "source_id": "context_46d20324bab49880e1c1764165dd9b2b",
+        "quote": "This buffer holds data that arrives out of order, as well as data that is in the correct order"
+      }
+    ]
+  },
+  {
+    "blind_id": "Q002",
+    "independent_answer": "Option A. The ACK reports receipt of a frame; if its ACK is not received in time, the sender retransmits. The alternating 1-bit sequence number lets the receiver recognize retransmitted frame 0 as a duplicate, ignore its data, and acknowledge it again rather than treating it as a new frame.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "A correctly assigns ACK to receipt confirmation, timeout to retransmission, and the alternating bit to duplicate recognition; B, C, and D each assign false roles to timeout or the sequence bit. The cited sources directly cover all three mechanisms and the lost-ACK example.",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "severity": "none",
+    "evidence_quotes": [
+      {
+        "source_id": "context_4f3593644fe850f533212da4f1794563",
+        "quote": "The receipt of an acknowledgment indicates to the sender of the original frame that its frame was successfully delivered."
+      },
+      {
+        "source_id": "context_703113b2752bacbfa42ba12b7de22984",
+        "quote": "If the acknowledgment does not arrive after a certain period of time, the sender times out and retransmits the original frame."
+      },
+      {
+        "source_id": "context_af041bb0b9a114ad48f4a108f447f01d",
+        "quote": "the receiver can determine that it is seeing a second copy of frame 0 rather than the first copy of frame 1 and therefore can ignore it"
+      }
+    ]
+  },
+  {
+    "blind_id": "Q003",
+    "independent_answer": "A switch preserves a thread's execution state: its memory, including its stack, remains in RAM, while swtch saves the outgoing thread's callee-saved CPU registers (ra, sp, s0–s11) in its context and restores the incoming thread's saved registers. Caller-saved registers are handled on the stack under the calling convention. A kernel thread yields by switching to its CPU's scheduler thread; the scheduler chooses another process's kernel thread and switches to it, using the scheduler context stored in that CPU's struct cpu.",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The answer and explanation correctly distinguish thread memory retained in RAM from saved/restored registers, identify the RISC-V register convention, and describe the scheduler thread as the intermediary. The cited excerpts support each point.",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "severity": "none",
+    "evidence_quotes": [
+      {
+        "source_id": "context_fd00925c62506d1a56664d64fd3fd7e7",
+        "quote": "it saves the switched-from thread’s CPU registers, and restores the previously-saved registers of the switched-to thread."
+      },
+      {
+        "source_id": "context_fd00925c62506d1a56664d64fd3fd7e7",
+        "quote": "thread memory need not saved and restored because different threads keep their data in different areas of RAM"
+      },
+      {
+        "source_id": "context_1070d34d22a827ac4deec45bc21d7ebb",
+        "quote": "swtch saves callee-saved registers (ra,sp,s0..s11) but not caller-saved registers."
+      },
+      {
+        "source_id": "context_1c12080941940825f2dc2c86c88ee465",
+        "quote": "the scheduler thread picks a different process’s kernel thread to run, and context-switches to that thread."
+      }
+    ]
+  },
+  {
+    "blind_id": "Q004",
+    "independent_answer": "A 在步骤 2 的 SELECT 看到 k=1：该命令开始时只有初始行已提交。步骤 5 的 SELECT 使用它自己在 B 提交前取得的 Read Committed 命令快照，B 的 k=2 尚未提交，因此仍看到已提交旧版本 k=1。步骤 7 的 SELECT 在步骤 6 的 B COMMIT 之后开始，取得新的命令快照，看到 k=2。步骤 5 与 7 不同，因为同一个 A 事务内的普通 SELECT 各自使用命令开始时的快照。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The three SELECT results are 1, 1, and 2. The second query starts before B commits and the third starts afterward; each Read Committed command receives a fresh snapshot. The single actual citation directly establishes both visibility and successive-query behavior.",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "severity": "none",
+    "evidence_quotes": [
+      {
+        "source_id": "context_80f09f9abd69f4e4cd054fd404a1f718",
+        "quote": "a SELECT query (without a FOR UPDATE/SHARE clause) sees only data committed before the query began; it never sees either uncommitted data or changes committed by concurrent transactions during the query's execution."
+      },
+      {
+        "source_id": "context_80f09f9abd69f4e4cd054fd404a1f718",
+        "quote": "two successive SELECT commands can see different data, even though they are within a single transaction, if other transactions commit changes after the first SELECT starts and before the second SELECT starts."
+      },
+      {
+        "source_id": "context_80f09f9abd69f4e4cd054fd404a1f718",
+        "quote": "Read Committed mode starts each command with a new snapshot that includes all transactions committed up to that instant"
+      }
+    ]
+  },
+  {
+    "blind_id": "Q005",
+    "independent_answer": "(1) 流量控制：AdvertisedWindow=0 表示接收方暂不能接收更多数据，即使 CongestionWindow 很大也不能继续发送新的数据。(2) 拥塞控制：AdvertisedWindow 很大而 CongestionWindow 很小时，网络可承受的在途量成为主要限制。(3) 实际允许的在途未确认数据量不超过 min(AdvertisedWindow, CongestionWindow)；前者避免压垮接收端，后者避免压垮网络，任一窗口较小都必须限制发送。",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The answer identifies the zero advertised window as the receiver-side limit, the small congestion window as the network-side limit, and min(AdvertisedWindow, CongestionWindow) as the in-flight unacknowledged-data cap. All three statements are explicit in the actual citations.",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "severity": "none",
+    "evidence_quotes": [
+      {
+        "source_id": "context_8c0a6af1cc78516ee81069043af7aa35",
+        "quote": "Flow control involves preventing senders from over-running the capacity of receivers. Congestion control involves preventing too much data from being injected into the network"
+      },
+      {
+        "source_id": "context_59e5349b54728369a41447059eecd6d1",
+        "quote": "An advertised window of 0 means that the sending side cannot transmit any data"
+      },
+      {
+        "source_id": "context_a8ca87ed6b3ceef9eba3633d15f00fb3",
+        "quote": "the maximum number of bytes of unacknowledged data allowed is now the minimum of the congestion window and the advertised window."
+      }
+    ]
+  },
+  {
+    "blind_id": "Q006",
+    "independent_answer": "方式 1 的同一把锁会使 push 与遍历互斥。按题面给出的步骤，push 先把 n.next 指向原头节点，再将 list 指向 n；在顺序一致的交错中，遍历得到的旧头或新头都已有有效 next，没有展示出暂时破坏可达链表不变量的状态。方式 2 的普通先读后写没有说明为原子比较并交换，也没有同步遍历；是否出现错误还需明确原子性、内存顺序及要维护的具体不变量。因此第一项最接近一般原则，但没有一项完整准确地解释这个具体执行。",
+    "assessed_difficulty": "hard",
+    "answerability": "fail",
+    "unique_answer": "fail",
+    "concise_rationale": "The shared lock in option A does provide mutual exclusion, but the concrete push initializes n.next before publishing n as list, while the only traversal reads head then head.next. Under the shown order, a traversal of the old or new head cannot reach an unlinked next field. The generated explanation incorrectly assumes head.next has not yet been linked; the cited source discusses a different line-numbered push example and generic races, not this concrete state. The plain read/check then write is not an atomic compare-and-swap and does not synchronize traversal, so B, C, and D are also wrong; no option is wholly defensible.",
+    "answer_correctness": "fail",
+    "explanation_correctness": "fail",
+    "citation_support": "partially_supported",
+    "objective_alignment": "pass",
+    "severity": "major",
+    "evidence_quotes": [
+      {
+        "source_id": "explanation",
+        "quote": "不能阻止遍历读取 head 后、head.next 尚未连好的中间状态。"
+      },
+      {
+        "source_id": "explanation",
+        "quote": "两个 CPU 可能同时看到锁可用并同时获取，说明非原子的检查与设置本身不能保证互斥。"
+      },
+      {
+        "source_id": "context_2479cbe1fd70a4bbb80a83635817429e",
+        "quote": "A lock provides mutual exclusion, ensuring that only one CPU at a time can hold the lock."
+      },
+      {
+        "source_id": "context_7b291db7e9a7eed06ba1c5df6b7667ce",
+        "quote": "The implementation of push violates this invariant temporarily: in line 17, l points to the next list element, but list does not point at l yet (reestablished at line 18)."
+      },
+      {
+        "source_id": "context_721949419795d5384fb58f88476a0eb7",
+        "quote": "What we need is a way to make lines 25 and 26 execute as an atomic (indivisible) step."
+      }
+    ]
+  }
+]

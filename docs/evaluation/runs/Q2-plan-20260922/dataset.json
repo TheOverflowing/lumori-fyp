@@ -1,0 +1,1454 @@
+{
+  "version": "quality-latency-v1",
+  "dataset_id": "q1_undergraduate_cs_bilingual_dev_v1",
+  "created_at": "2026-09-22",
+  "label_status": "ai_prepared_pending_independent_review",
+  "purpose": "Paired bilingual 24-task DEV pilot for real RAG assessment generation quality and latency; not an unseen holdout or human-labeled benchmark.",
+  "generation_field_allowlist": [
+    "course",
+    "language",
+    "difficulty",
+    "question_type",
+    "topic",
+    "learner_profile"
+  ],
+  "review_only_fields": [
+    "source_ids",
+    "expected_evidence",
+    "review_criteria",
+    "grading_expectations"
+  ],
+  "source_language_scope": "English original course/documentation excerpts shared by each EN/ZH need pair; evaluates EN/EN and ZH/EN input/source settings, not Chinese original material parsing or EN/ZH retrieval.",
+  "source_documents": [
+    {
+      "id": "os_context",
+      "course": "operating_systems",
+      "title": "xv6: CPU multiplexing and context switching",
+      "language": "en",
+      "text": "Any operating system is likely to run with more processes than the computer has CPUs, so a plan is needed to time-share the CPUs among the processes. Ideally the sharing would be transparent to user processes. A common approach is to provide each process with the illusion that it has its own virtual CPU by multiplexing the processes onto the hardware CPUs. This chapter explains how xv6 achieves this multiplexing.\n\n8.1 Multiplexing\n\nXv6 multiplexes by switching each CPU from one process to another in two situations. First, xv6 switches when a process makes a system call that blocks (has to wait), for example read or wait. Second, xv6 periodically forces a switch to cope with processes that compute for long periods without blocking. The former are called voluntary switches, the latter involuntary.\n\nImplementing multiplexing poses a few challenges. First, how to switch from one process to another? The basic idea is to save and restore CPU registers, though the fact that this cannot be expressed in C makes it tricky. Second, how to force switches in a way that is transparent to user processes? Xv6 uses the standard technique in which a hardware timer’s interrupts drive context switches. Third, all of the CPUs switch among the same set of processes, so a locking plan is necessary to avoid mistakes such as two CPUs deciding to run the same process at the same time. Fourth, a process’s memory and other resources must be freed when the process exits, but it cannot finish all of this itself. Fifth, each CPU of a multi-core machine must remember which process it is executing so that system calls affect the correct process’s kernel state.\n\n8.2 Context switch overview\n\nThe term “context switch” refers to the steps involved in a CPU leaving off execution of one kernel thread (usually for later resumption), and resuming execution of a different kernel thread; this switching is the heart of multiplexing. Xv6 does not directly context switch from one process’s kernel thread to another process’s kernel thread; instead, a kernel thread gives up the CPU by context-switching to that CPU’s “scheduler thread,” and the scheduler thread picks a different process’s kernel thread to run, and context-switches to that thread.\n\nAt a broader scope, the steps involved in switching from one user process to another are illustrated in Figure 8.1: a trap (system call or interrupt) from the old process’s user space to its kernel thread, a context switch to the current CPU’s scheduler thread, a context switch to a new process’s kernel thread, and a trap return to the user-level process.\n\n8.3 Code: Context switching\n\nThe function swtch() in kernel/swtch.S contains the heart of thread context switching: it saves the switched-from thread’s CPU registers, and restores the previously-saved registers of the switched-to thread. The basic reason this is sufficient is that a thread’s state consist of data in memory (e.g. its stack) plus its CPU registers; thread memory need not saved and restored because different threads keep their data in different areas of RAM; but the CPU has only one set of registers so they must be switched (saved and restored) between threads.\n\nEach thread’s struct proc includes a struct context that holds the thread’s saved registers when it is not running. A CPU’s scheduler thread’s struct context is in that CPU’s struct cpu. When thread X wishes to switch to thread Y, thread X calls swtch(&X’s context, &Y’s context). swtch() saves the current CPU registers in X’s context, then loads the content of Y’s context into the CPU registers, then returns.\n\nWhere does swtch’s ret return to? It returns to the instruction that the ra register points to. In the example in which thread X calls swtch() to switch to Y, when ret executes, ra has just been loaded from Y’s struct context. And the ra in Y’s struct context was originally saved by Y’s call to swtch when Y gave up the CPU in the past. So the ret returns to the instruction after the point at which Y called swtch(); that is, X’s call to swtch() returns as if returning from Y’s original call to swtch(). And sp will be Y’s stack pointer, since swtch loaded sp from Y’s struct context; thus on return, Y will execute on its own stack. swtch() need not directly save or restore the program counter; it’s enough to save and restore ra.\n\nswtch saves callee-saved registers (ra,sp,s0..s11) but not caller-saved registers. The RISC-V calling convention requires that if code needs to preserve the value in a caller-saved register across a function call, the compiler must generate instructions that save the register to the stack before the function call, and restore from the stack when the function returns. So swtch can rely on the function that called it having already saved the caller-saved registers (either that, or the calling function didn’t need the values in the registers).",
+      "text_sha256": "abb22c0b3e34f16ef6eba849f661d59ddca477b69c927694bb84ed5478610c66",
+      "path": "benchmarks/quality_latency_v1/sources/os_context.txt",
+      "url": "https://mit-pdos.github.io/xv6-riscv-book/sched.html",
+      "license": "MIT",
+      "authors": "Russ Cox, Frans Kaashoek, and Robert Morris; Massachusetts Institute of Technology",
+      "license_path": "benchmarks/quality_latency_v1/sources/xv6-license.txt",
+      "provenance": {
+        "kind": "official_openly_licensed_text_excerpt",
+        "repository": "https://github.com/mit-pdos/xv6-riscv-book",
+        "license_revision": "2d689eee47087bea267914123b8b1172583cbb0e",
+        "retrieved_at_utc": "2026-09-22T11:52:18.489256+00:00",
+        "html_snapshots": [
+          {
+            "path": "benchmarks/quality_latency_v1/sources/xv6-sched.html",
+            "url": "https://mit-pdos.github.io/xv6-riscv-book/sched.html",
+            "sha256": "046283d8beafb9cb3aa850b45c92a4bb32e056bb9454836f6e1eda13719a8675",
+            "paragraph_indices": [
+              1,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              14,
+              15
+            ]
+          }
+        ],
+        "transformations": "Selected complete h1-h4/p text blocks; HTML entities decoded; inline text preserved; whitespace normalized. No figures, code blocks, tables, or displayed equations included. Gaps between selected paragraphs are intentional.",
+        "revision_note": "HTML publication snapshot is frozen by SHA-256; license_revision identifies the archived license revision only, not a claim that the live HTML was built from that exact commit."
+      }
+    },
+    {
+      "id": "os_races",
+      "course": "operating_systems",
+      "title": "xv6: Races, critical sections, and atomic lock acquisition",
+      "language": "en",
+      "text": "Most kernels, including xv6, interleave the execution of multiple activities. One source of interleaving is multiprocessor hardware: computers with multiple CPUs executing independently, such as xv6’s RISC-V. These multiple CPUs share physical RAM, and xv6 exploits the sharing to maintain kernel data structures that all CPUs read and write. This sharing raises the possibility of one CPU reading a data structure while another CPU is mid-way through updating it, or even multiple CPUs updating the same data simultaneously; without careful design such parallel access is likely to yield incorrect results or a broken data structure. Even on a uniprocessor, the kernel may switch the CPU among a number of threads, causing their execution to be interleaved. Finally, a device interrupt handler that modifies the same data as some interruptible code could damage the data if the interrupt occurs just as the interrupted code is also modifying the data. The word concurrency refers to situations in which multiple instruction streams are interleaved, due to multiprocessor parallelism, thread switching, or interrupts.\n\nA lock provides mutual exclusion, ensuring that only one CPU at a time can hold the lock. If the programmer associates a lock with each shared data item, and the code always holds the associated lock when using an item, then the item will be used by only one CPU at a time. In this situation, we say that the lock protects the data item. Although a lock is an easy-to-understand concurrency control mechanism, it can limit performance by serializing concurrent operations on the data it protects.\n\n7.1 Races\n\nThe lost update at line 16 is an example of a race. A race is a situation in which a memory location is accessed concurrently, and at least one access is a write. A race is often a sign of a bug, either a lost update (if the accesses are writes) or a read of an incompletely-updated data structure. The outcome of a race depends on the machine code generated by the compiler, the timing of the two CPUs involved, and how their memory operations are ordered by the memory system, which can make race-induced errors difficult to reproduce and debug. For example, adding print statements while debugging push might change the timing of the execution enough to make the race disappear.\n\nThe usual way to avoid races is to use a lock. Locks ensure mutual exclusion, so that only one CPU at a time can execute the sensitive lines of push; this makes the scenario above impossible. The correctly locked version of the above code adds just a few lines (highlighted in yellow):\n\nThe sequence of instructions between acquire and release is often called a critical section. The lock is said to be protecting list.\n\nWhen we say that a lock protects data, we really mean that the lock protects some collection of invariants that apply to the data. Invariants are properties of data structures that are maintained across operations. Typically, an operation’s correct behavior depends on the invariants being true when the operation begins. The operation may temporarily violate the invariants but must reestablish them before finishing. For example, in the linked list case, the invariant is that list points at the first element in the list and that each element’s next field points at the next element. The implementation of push violates this invariant temporarily: in line 17, l points to the next list element, but list does not point at l yet (reestablished at line 18). The race we examined above happened because a second CPU executed code that depended on the list invariants while they were (temporarily) violated. Proper use of a lock ensures that only one CPU at a time can operate on the data structure in the critical section, so that no CPU will execute a data structure operation when the data structure’s invariants do not hold.\n\nYou can think of a lock as serializing concurrent critical sections so that they run one at a time, and thus preserve invariants (assuming the critical sections are correct in isolation). You can also think of critical sections guarded by the same lock as being atomic with respect to each other, so that each sees only the complete set of changes from earlier critical sections, and never sees partially-completed updates.\n\nThough useful for correctness, locks inherently limit performance. For example, if two processes call kfree concurrently, the locks will serialize the two critical sections, so that there is no benefit from running them on different CPUs. We say that multiple processes conflict if they want the same lock at the same time, or that the lock experiences contention. A major challenge in kernel design is avoidance of lock contention in pursuit of parallelism. Xv6 does little of that, but sophisticated kernels organize data structures and algorithms specifically to avoid lock contention. In the list example, a kernel may maintain a separate free list per CPU and only touch another CPU’s free list if the current CPU’s list is empty and it must steal memory from another CPU. Other use cases may require more complicated designs.\n\n7.2 Code: Locks\n\nXv6 has two types of locks: spinlocks and sleep-locks. We’ll start with spinlocks. Xv6 represents a spinlock as a struct spinlock. The important field in the structure is locked, a word that is zero when the lock is available and non-zero when it is held. Were there no concurrency, xv6 could acquire a lock with code like\n\nUnfortunately, this implementation does not guarantee mutual exclusion in the face of concurrency. Two CPUs could simultaneously reach line 25, see that lk->locked is zero, and then both grab the lock by executing line 26. At this point, two different CPUs hold the lock, which violates the mutual exclusion property. What we need is a way to make lines 25 and 26 execute as an atomic (indivisible) step.\n\nBecause locks are widely used, multi-core processors usually provide an instruction that can be used to make lines 25 and 26 atomic. On the RISC-V this instruction is amoswap r, r, a. The amoswap instruction reads the value at memory address a, writes the contents of register r to that address, and puts the value it read into r. That is, it swaps the contents of the register and the addressed memory location. It performs this sequence atomically, using special hardware to prevent any other CPU from using the memory address between the read and the write.\n\nThe C compiler provides a family of “atomic” built-in functions that generate atomic instructions. Xv6’s acquire() uses __atomic_exchange_n(addr, value, ...), which boils down to the amoswap instruction; the function returns the old (swapped) contents of addr. Here’s a good way to write the loop in acquire:\n\nXv6’s acquire uses the above loop (Section 7.6 will explain __ATOMIC_ACQUIRE). Each iteration swaps one into lk->locked and checks the previous value; if the previous value is zero, then we’ve acquired the lock, and the swap will have set lk->locked to one. If the previous value is one, then some other CPU holds the lock, and the fact that we atomically swapped one into lk->locked didn’t change its value.",
+      "text_sha256": "0cf37b5fe1891b4795125b3fd96b06e962c6b397769bc36b74f2a969780722ab",
+      "path": "benchmarks/quality_latency_v1/sources/os_races.txt",
+      "url": "https://mit-pdos.github.io/xv6-riscv-book/lock.html",
+      "license": "MIT",
+      "authors": "Russ Cox, Frans Kaashoek, and Robert Morris; Massachusetts Institute of Technology",
+      "license_path": "benchmarks/quality_latency_v1/sources/xv6-license.txt",
+      "provenance": {
+        "kind": "official_openly_licensed_text_excerpt",
+        "repository": "https://github.com/mit-pdos/xv6-riscv-book",
+        "license_revision": "2d689eee47087bea267914123b8b1172583cbb0e",
+        "retrieved_at_utc": "2026-09-22T11:52:18.489256+00:00",
+        "html_snapshots": [
+          {
+            "path": "benchmarks/quality_latency_v1/sources/xv6-lock.html",
+            "url": "https://mit-pdos.github.io/xv6-riscv-book/lock.html",
+            "sha256": "4c61f9f22690cc3b531f7268f57cc25416173a6e3a08c26633365cdbbe92b291",
+            "paragraph_indices": [
+              1,
+              4,
+              6,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              17,
+              19,
+              20,
+              21,
+              22,
+              23
+            ]
+          }
+        ],
+        "transformations": "Selected complete h1-h4/p text blocks; HTML entities decoded; inline text preserved; whitespace normalized. No figures, code blocks, tables, or displayed equations included. Gaps between selected paragraphs are intentional.",
+        "revision_note": "HTML publication snapshot is frozen by SHA-256; license_revision identifies the archived license revision only, not a claim that the live HTML was built from that exact commit."
+      }
+    },
+    {
+      "id": "os_interrupt_locks",
+      "course": "operating_systems",
+      "title": "xv6: Lock ordering and interrupts",
+      "language": "en",
+      "text": "7.4 Deadlock and lock ordering\n\nSuppose the functions running on CPUs C1 and C2 both have a point at which each needs to hold both lock A and lock B, and they acquire them in different orders:\n\nWith a bit of bad luck, C1 and C2 might both execute their first acquire at exactly the same moment; both can succeed, since they are asking for different locks. But then both C1 and C2 will have to wait in their second calls to acquire(), since both locks are already held by the other CPU. Because both CPUs are waiting for each other, neither will ever release a lock, and both will wait forever. This situation is called deadlock.\n\nThe key problem in the C1/C2 example is that the two CPUs acquired the locks in different orders. If they had both tried to acquire A first, one would have acquired A and then B and then released them both, and then the other CPU could have proceeded. More generally, locking code must follow this rule to avoid deadlock: all code paths that hold multiple locks must acquire locks in the same order. The need for this global lock acquisition order means that locks are effectively part of each function’s specification: callers must invoke functions in a way that causes locks to be acquired in the agreed-on order.\n\nA question that sometimes arises is what should happen if a CPU tries to acquire a lock that the same CPU already holds. One line of reasoning is that this should be allowed: no other CPU can hold the lock, so there’s no need to worry about CPUs interfering with each others’ use of the protected data. Locking systems that allow a CPU to re-acquire a lock it already holds are called a re-entrant or recursive. On the other hand, if a lock is already held, even on the same CPU, that means an operation may have temporarily violated and not yet restored some invariants; to allow a new operation to commence while the invariants don’t hold seems like an invitation to bugs. Xv6 takes this latter view, and forbids a CPU that currently holds a lock from re-acquiring it. Detecting this situation is the purpose of the call to holding in acquire.\n\n7.5 Locks and interrupts\n\nSome xv6 spinlocks protect data that is used by both threads and interrupt handlers. For example, the clockintr timer interrupt handler might increment ticks at about the same time that a kernel thread reads ticks in sys_pause. The lock tickslock serializes the two accesses.\n\nThe interaction of spinlocks and interrupts raises a potential danger. Suppose sys_pause holds tickslock, and its CPU is interrupted by a timer interrupt. clockintr would try to acquire tickslock, see it was held, and wait for it to be released. In this situation, tickslock will never be released: only sys_pause can release it, but sys_pause will not continue running until clockintr returns. So the CPU will deadlock, and any code that needs either lock will also freeze.\n\nTo avoid this situation, if a spinlock is used by an interrupt handler, a CPU must never hold that lock with interrupts enabled. Xv6 is more conservative: when a CPU acquires any lock, xv6 always disables interrupts on that CPU. Interrupts may still occur on other CPUs, so an interrupt’s acquire can wait for a thread to release a spinlock; just not on the same CPU.\n\nXv6 re-enables interrupts when a CPU holds no spinlocks; it must do a little book-keeping to cope with nested critical sections. acquire calls push_off and release calls pop_off to track the nesting level of locks on the current CPU. When that count reaches zero, pop_off restores the interrupt enable state that existed at the start of the outermost critical section. push_off and pop_off tell the CPU to enable and disable interrupts by changing the SIE (Supervisor Interrupt Enable) bit in the sstatus (Supervisor Status) register, using intr_on and rc_sstatus(SSTATUS_SIE); the latter clears the SIE bit.\n\nIt is important that acquire call push_off strictly before setting lk->locked. If the two were reversed, there would be a brief window when the lock was held with interrupts enabled, and an unfortunately timed interrupt would deadlock the system. Similarly, it is important that release call pop_off only after releasing the lock (spinlock.c:73).",
+      "text_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+      "path": "benchmarks/quality_latency_v1/sources/os_interrupt_locks.txt",
+      "url": "https://mit-pdos.github.io/xv6-riscv-book/lock.html",
+      "license": "MIT",
+      "authors": "Russ Cox, Frans Kaashoek, and Robert Morris; Massachusetts Institute of Technology",
+      "license_path": "benchmarks/quality_latency_v1/sources/xv6-license.txt",
+      "provenance": {
+        "kind": "official_openly_licensed_text_excerpt",
+        "repository": "https://github.com/mit-pdos/xv6-riscv-book",
+        "license_revision": "2d689eee47087bea267914123b8b1172583cbb0e",
+        "retrieved_at_utc": "2026-09-22T11:52:18.489256+00:00",
+        "html_snapshots": [
+          {
+            "path": "benchmarks/quality_latency_v1/sources/xv6-lock.html",
+            "url": "https://mit-pdos.github.io/xv6-riscv-book/lock.html",
+            "sha256": "4c61f9f22690cc3b531f7268f57cc25416173a6e3a08c26633365cdbbe92b291",
+            "paragraph_indices": [
+              33,
+              34,
+              35,
+              36,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45
+            ]
+          }
+        ],
+        "transformations": "Selected complete h1-h4/p text blocks; HTML entities decoded; inline text preserved; whitespace normalized. No figures, code blocks, tables, or displayed equations included. Gaps between selected paragraphs are intentional.",
+        "revision_note": "HTML publication snapshot is frozen by SHA-256; license_revision identifies the archived license revision only, not a claim that the live HTML was built from that exact commit."
+      }
+    },
+    {
+      "id": "os_wakeup",
+      "course": "operating_systems",
+      "title": "xv6: Condition synchronization and lost wakeups",
+      "language": "en",
+      "text": "Scheduling and locks help conceal the actions of one thread from another, but we also need abstractions that help threads intentionally interact. For example, the reader of a pipe in xv6 may need to wait for a writing process to produce data; a parent’s call to wait may need to wait for a child to exit; and a process reading the disk needs to wait for the disk hardware to finish the read. The xv6 kernel uses a mechanism called sleep and wakeup in these situations (and many others). Sleep allows a kernel thread to wait for some condition to be true; another thread or an interrupt handler can cause the condition to be true (typically by modifying some variable(s)) and then call wakeup to indicate that threads waiting for the condition should resume. Sleep and wakeup are often called sequence coordination or conditional synchronization mechanisms.\n\n9.1 Overview\n\nA process sleeps in order to wait for a condition to become true, and the chan argument (the wait channel) names the desired condition. sleep_prepare(chan) declares that a process might soon sleep in order to wait for the indicated wait channel; it returns right away. wakeup(chan) is called when the condition named by chan has (or might have) become true; it wakes up all processes that have called sleep_prepare(chan) and then sleep() with the same chan. sleep() returns right away if wakeup(chan) has already been called after the (required) previous call to sleep_prepare(chan); if not, sleep() marks the calling process as SLEEPING (not RUNNABLE) and releases the CPU by context-switching to the scheduler, so that other processes can run. sleep_prepare() and sleep() are called by the same process (typically within a few lines of each other); wakeup() is called by a different process or by an interrupt handler.\n\nThese functions treat chan as an opaque 64-bit value; the only thing they do with it is compare for equality. The usual pattern is for callers to pass the address of some convenient object as the chan argument. The kernel programmer is responsible for choosing wait channel conventions, and for passing the same chan to sleep_prepare() and wakeup() calls that should interact.\n\nKernel code sleeps in order to wait for some condition to become true. For example, the kernel code that reads from a pipe sleeps if the pipe buffer is currently empty; the condition in this case is the pipe buffer becoming non-empty (due to another process writing to the pipe). sleep_prepare() and sleep do not know how to check the condition: only the calling code knows. The usual pattern is for the potentially sleeping process to first acquire a lock that protects the condition; then check the condition; and if it is not true, call sleep_prepare(), release the lock, and call sleep(). Code that later causes the condition to become true calls wakeup.\n\nsleep_prepare(chan) must be called either before checking the condition, or before releasing the lock that protects the condition. The call records the fact that the process may need to sleep on the indicated chan. If another process (or interrupt) calls wakeup(chan) between the calls to sleep_prepare(chan) and sleep(), wakeup() sets a flag in the about-to-sleep process indicating that it shouldn’t actually sleep. If sleep() sees this flag, it returns rather than sleeping.\n\nWhat is the reason for sleep_prepare(chan)? There is the possibility that the condition might become true, and wakeup() called, between when the pipe reader sees that the buffer is empty, and when it calls sleep. Without some cleverness, the wakeup() would not find any sleeping processes, and would not have any effect. Then the process would call sleep() even though the pipe buffer has data to read; and if (as could be the case) the pipe writer never wrote anything more, the reader could incorrectly sleep forever. This undesirable situation is called a lost wake-up. The behavior described in the previous paragraph avoids this problem.\n\nIn the pipe example, as in most sleeping code, there is a lock that protects the condition and prevents wakeup() from being called between when the going-to-sleep process checks the condition and when it calls sleep_prepare(). This lock is often called the condition lock. A process must release the lock before calling sleep() (so that some other process or interrupt handler can modify the condition and call wakeup()), and re-acquire the lock after sleep() returns.\n\nXv6’s sleep_prepare and sleep and wakeup implement the interface used in the example above. The basic idea is to have sleep mark the current process as SLEEPING and then call sched to release the CPU; wakeup looks for processes sleeping on the given wait channel and marks them RUNNABLE.\n\nsleep_prepare(chan) records the wait channel in p->chan and returns. If p->chan is still non-zero when sleep() is called, sleep() changes the calling process to state SLEEPING and calls sched() to let other processes run.\n\nwakeup(chan) handles two situations with respect to some other process that might concurrently be in the process of going to sleep on chan. If that other process has gotten as far as marking itself as SLEEPING, then wakeup will see it in that state and change it to RUNNABLE; its call to sleep() will then return. If the other process has gotten as far as calling sleep_prepare(chan) (but its sleep() has not gotten as far as acquiring p->lock), wakeup(chan) will see that p->chan is equal to chan, and wakeup will set p->chan to zero. In that case, when the other process does call sleep, it will see the zero and return immediately. The point is to avoid a lost wakeup if wakeup() is called just as another process is about to call sleep().\n\nThe rules for use of sleep_prepare() prevent us from having to worry about the situation in which an about-to-sleep process hasn’t yet called sleep_prepare(). Either that process surrounds its condition check and sleep_prepare() with a lock that prevents any call to wakeup() for the relevant channel, or that process must call sleep_prepare() before checking the condition.\n\nSometimes multiple processes are sleeping on the same channel; for example, more than one process reading from a pipe. A single call to wakeup will wake them all up. One of them will run first and (in the case of pipes) acquire the pipe lock and read whatever data is waiting. The other processes will find that, despite being woken up, there is no data to be read. From their point of view the wakeup was “spurious,” and they must sleep again. For this reason sleeping always occurs inside a loop that re-checks the condition, as in piperead above.\n\nNo harm is done if two uses of sleep/wakeup accidentally choose the same channel: they will see spurious wakeups, but looping as described above will tolerate this problem. Much of the charm of sleep/wakeup is that it is both lightweight (no need to create special data structures to act as wait channels) and provides a layer of indirection (callers need not know which specific process they are interacting with).",
+      "text_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+      "path": "benchmarks/quality_latency_v1/sources/os_wakeup.txt",
+      "url": "https://mit-pdos.github.io/xv6-riscv-book/sleep.html",
+      "license": "MIT",
+      "authors": "Russ Cox, Frans Kaashoek, and Robert Morris; Massachusetts Institute of Technology",
+      "license_path": "benchmarks/quality_latency_v1/sources/xv6-license.txt",
+      "provenance": {
+        "kind": "official_openly_licensed_text_excerpt",
+        "repository": "https://github.com/mit-pdos/xv6-riscv-book",
+        "license_revision": "2d689eee47087bea267914123b8b1172583cbb0e",
+        "retrieved_at_utc": "2026-09-22T11:52:18.489256+00:00",
+        "html_snapshots": [
+          {
+            "path": "benchmarks/quality_latency_v1/sources/xv6-sleep.html",
+            "url": "https://mit-pdos.github.io/xv6-riscv-book/sleep.html",
+            "sha256": "e9c2ffc62b431e21a925f298764461198f8bfc879a54692fccd75c02b5c2da48",
+            "paragraph_indices": [
+              1,
+              3,
+              5,
+              6,
+              7,
+              10,
+              11,
+              12,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ]
+          }
+        ],
+        "transformations": "Selected complete h1-h4/p text blocks; HTML entities decoded; inline text preserved; whitespace normalized. No figures, code blocks, tables, or displayed equations included. Gaps between selected paragraphs are intentional.",
+        "revision_note": "HTML publication snapshot is frozen by SHA-256; license_revision identifies the archived license revision only, not a claim that the live HTML was built from that exact commit."
+      }
+    },
+    {
+      "id": "db_atomicity",
+      "course": "databases",
+      "title": "PostgreSQL 18: Transactions and atomicity",
+      "language": "en",
+      "text": "3.4. Transactions #\n\nTransactions are a fundamental concept of all database systems. The essential point of a transaction is that it bundles multiple steps into a single, all-or-nothing operation. The intermediate states between the steps are not visible to other concurrent transactions, and if some failure occurs that prevents the transaction from completing, then none of the steps affect the database at all.\n\nThe details of these commands are not important here; the important point is that there are several separate updates involved to accomplish this rather simple operation. Our bank's officers will want to be assured that either all these updates happen, or none of them happen. It would certainly not do for a system failure to result in Bob receiving $100.00 that was not debited from Alice. Nor would Alice long remain a happy customer if she was debited without Bob being credited. We need a guarantee that if something goes wrong partway through the operation, none of the steps executed so far will take effect. Grouping the updates into a transaction gives us this guarantee. A transaction is said to be atomic: from the point of view of other transactions, it either happens completely or not at all.\n\nWe also want a guarantee that once a transaction is completed and acknowledged by the database system, it has indeed been permanently recorded and won't be lost even if a crash ensues shortly thereafter. For example, if we are recording a cash withdrawal by Bob, we do not want any chance that the debit to his account will disappear in a crash just after he walks out the bank door. A transactional database guarantees that all the updates made by a transaction are logged in permanent storage (i.e., on disk) before the transaction is reported complete.\n\nAnother important property of transactional databases is closely related to the notion of atomic updates: when multiple transactions are running concurrently, each one should not be able to see the incomplete changes made by others. For example, if one transaction is busy totalling all the branch balances, it would not do for it to include the debit from Alice's branch but not the credit to Bob's branch, nor vice versa. So transactions must be all-or-nothing not only in terms of their permanent effect on the database, but also in terms of their visibility as they happen. The updates made so far by an open transaction are invisible to other transactions until the transaction completes, whereupon all the updates become visible simultaneously.\n\nIn PostgreSQL, a transaction is set up by surrounding the SQL commands of the transaction with BEGIN and COMMIT commands. So our banking transaction would actually look like:\n\nIf, partway through the transaction, we decide we do not want to commit (perhaps we just noticed that Alice's balance went negative), we can issue the command ROLLBACK instead of COMMIT, and all our updates so far will be canceled.\n\nPostgreSQL actually treats every SQL statement as being executed within a transaction. If you do not issue a BEGIN command, then each individual statement has an implicit BEGIN and (if successful) COMMIT wrapped around it. A group of statements surrounded by BEGIN and COMMIT is sometimes called a transaction block.\n\nIt's possible to control the statements in a transaction in a more granular fashion through the use of savepoints. Savepoints allow you to selectively discard parts of the transaction, while committing the rest. After defining a savepoint with SAVEPOINT, you can if needed roll back to the savepoint with ROLLBACK TO. All the transaction's database changes between defining the savepoint and rolling back to it are discarded, but changes earlier than the savepoint are kept.\n\nAfter rolling back to a savepoint, it continues to be defined, so you can roll back to it several times. Conversely, if you are sure you won't need to roll back to a particular savepoint again, it can be released, so the system can free some resources. Keep in mind that either releasing or rolling back to a savepoint will automatically release all savepoints that were defined after it.\n\nAll this is happening within the transaction block, so none of it is visible to other database sessions. When and if you commit the transaction block, the committed actions become visible as a unit to other sessions, while the rolled-back actions never become visible at all.",
+      "text_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+      "path": "benchmarks/quality_latency_v1/sources/db_atomicity.txt",
+      "url": "https://www.postgresql.org/docs/18/tutorial-transactions.html",
+      "license": "PostgreSQL",
+      "authors": "The PostgreSQL Global Development Group",
+      "license_path": "benchmarks/quality_latency_v1/sources/postgres-license.txt",
+      "provenance": {
+        "kind": "official_openly_licensed_text_excerpt",
+        "repository": "https://github.com/postgres/postgres",
+        "license_revision": "ce2648b16ab8d18bd4fb4ac6fed5e260ac309f6d",
+        "retrieved_at_utc": "2026-09-22T11:52:18.489256+00:00",
+        "html_snapshots": [
+          {
+            "path": "benchmarks/quality_latency_v1/sources/postgres-transactions.html",
+            "url": "https://www.postgresql.org/docs/18/tutorial-transactions.html",
+            "sha256": "8301bc52363edcf236bddb454ffc550bb27b26b5d1ffaafcd4a75ddc9bb00bac",
+            "paragraph_indices": [
+              0,
+              1,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              11,
+              12,
+              13
+            ]
+          }
+        ],
+        "transformations": "Selected complete h1-h4/p text blocks; HTML entities decoded; inline text preserved; whitespace normalized. No figures, code blocks, tables, or displayed equations included. Gaps between selected paragraphs are intentional.",
+        "revision_note": "HTML publication snapshot is frozen by SHA-256; license_revision identifies the archived license revision only, not a claim that the live HTML was built from that exact commit."
+      }
+    },
+    {
+      "id": "db_read_committed",
+      "course": "databases",
+      "title": "PostgreSQL 18: Read Committed statement snapshots",
+      "language": "en",
+      "text": "13.2.1. Read Committed Isolation Level #\n\nRead Committed is the default isolation level in PostgreSQL. When a transaction uses this isolation level, a SELECT query (without a FOR UPDATE/SHARE clause) sees only data committed before the query began; it never sees either uncommitted data or changes committed by concurrent transactions during the query's execution. In effect, a SELECT query sees a snapshot of the database as of the instant the query begins to run. However, SELECT does see the effects of previous updates executed within its own transaction, even though they are not yet committed. Also note that two successive SELECT commands can see different data, even though they are within a single transaction, if other transactions commit changes after the first SELECT starts and before the second SELECT starts.\n\nBecause Read Committed mode starts each command with a new snapshot that includes all transactions committed up to that instant, subsequent commands in the same transaction will see the effects of the committed concurrent transaction in any case. The point at issue above is whether or not a single command sees an absolutely consistent view of the database.\n\nThe partial transaction isolation provided by Read Committed mode is adequate for many applications, and this mode is fast and simple to use; however, it is not sufficient for all cases. Applications that do complex queries and updates might require a more rigorously consistent view of the database than Read Committed mode provides.",
+      "text_sha256": "4ce1374147cdfeef6d5659750e47057f4c5da0f1fa41854903b72cfabb5e21b7",
+      "path": "benchmarks/quality_latency_v1/sources/db_read_committed.txt",
+      "url": "https://www.postgresql.org/docs/18/transaction-iso.html",
+      "license": "PostgreSQL",
+      "authors": "The PostgreSQL Global Development Group",
+      "license_path": "benchmarks/quality_latency_v1/sources/postgres-license.txt",
+      "provenance": {
+        "kind": "official_openly_licensed_text_excerpt",
+        "repository": "https://github.com/postgres/postgres",
+        "license_revision": "ce2648b16ab8d18bd4fb4ac6fed5e260ac309f6d",
+        "retrieved_at_utc": "2026-09-22T11:52:18.489256+00:00",
+        "html_snapshots": [
+          {
+            "path": "benchmarks/quality_latency_v1/sources/postgres-isolation.html",
+            "url": "https://www.postgresql.org/docs/18/transaction-iso.html",
+            "sha256": "beef1cd1c5f512e3934fd049454730e3cc9d459e69db8e938bf941125387cefc",
+            "paragraph_indices": [
+              14,
+              15,
+              24,
+              25
+            ]
+          }
+        ],
+        "transformations": "Selected complete h1-h4/p text blocks; HTML entities decoded; inline text preserved; whitespace normalized. No figures, code blocks, tables, or displayed equations included. Gaps between selected paragraphs are intentional.",
+        "revision_note": "HTML publication snapshot is frozen by SHA-256; license_revision identifies the archived license revision only, not a claim that the live HTML was built from that exact commit."
+      }
+    },
+    {
+      "id": "db_repeatable_read",
+      "course": "databases",
+      "title": "PostgreSQL 18: Repeatable Read and snapshot isolation",
+      "language": "en",
+      "text": "13.2.2. Repeatable Read Isolation Level #\n\nThe Repeatable Read isolation level only sees data committed before the transaction began; it never sees either uncommitted data or changes committed by concurrent transactions during the transaction's execution. (However, each query does see the effects of previous updates executed within its own transaction, even though they are not yet committed.) This is a stronger guarantee than is required by the SQL standard for this isolation level, and prevents all of the phenomena described in Table 13.1 except for serialization anomalies. As mentioned above, this is specifically allowed by the standard, which only describes the minimum protections each isolation level must provide.\n\nThis level is different from Read Committed in that a query in a repeatable read transaction sees a snapshot as of the start of the first non-transaction-control statement in the transaction, not as of the start of the current statement within the transaction. Thus, successive SELECT commands within a single transaction see the same data, i.e., they do not see changes made by other transactions that committed after their own transaction started.\n\nApplications using this level must be prepared to retry transactions due to serialization failures.\n\nUPDATE, DELETE, MERGE, SELECT FOR UPDATE, and SELECT FOR SHARE commands behave the same as SELECT in terms of searching for target rows: they will only find target rows that were committed as of the transaction start time. However, such a target row might have already been updated (or deleted or locked) by another concurrent transaction by the time it is found. In this case, the repeatable read transaction will wait for the first updating transaction to commit or roll back (if it is still in progress). If the first updater rolls back, then its effects are negated and the repeatable read transaction can proceed with updating the originally found row. But if the first updater commits (and actually updated or deleted the row, not just locked it) then the repeatable read transaction will be rolled back with the message\n\nbecause a repeatable read transaction cannot modify or lock rows changed by other transactions after the repeatable read transaction began.\n\nWhen an application receives this error message, it should abort the current transaction and retry the whole transaction from the beginning. The second time through, the transaction will see the previously-committed change as part of its initial view of the database, so there is no logical conflict in using the new version of the row as the starting point for the new transaction's update.\n\nNote that only updating transactions might need to be retried; read-only transactions will never have serialization conflicts.\n\nThe Repeatable Read mode provides a rigorous guarantee that each transaction sees a completely stable view of the database. However, this view will not necessarily always be consistent with some serial (one at a time) execution of concurrent transactions of the same level. For example, even a read-only transaction at this level may see a control record updated to show that a batch has been completed but not see one of the detail records which is logically part of the batch because it read an earlier revision of the control record. Attempts to enforce business rules by transactions running at this isolation level are not likely to work correctly without careful use of explicit locks to block conflicting transactions.\n\nThe Repeatable Read isolation level is implemented using a technique known in academic database literature and in some other database products as Snapshot Isolation. Differences in behavior and performance may be observed when compared with systems that use a traditional locking technique that reduces concurrency. Some other systems may even offer Repeatable Read and Snapshot Isolation as distinct isolation levels with different behavior. The permitted phenomena that distinguish the two techniques were not formalized by database researchers until after the SQL standard was developed, and are outside the scope of this manual. For a full treatment, please see [berenson95].",
+      "text_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+      "path": "benchmarks/quality_latency_v1/sources/db_repeatable_read.txt",
+      "url": "https://www.postgresql.org/docs/18/transaction-iso.html",
+      "license": "PostgreSQL",
+      "authors": "The PostgreSQL Global Development Group",
+      "license_path": "benchmarks/quality_latency_v1/sources/postgres-license.txt",
+      "provenance": {
+        "kind": "official_openly_licensed_text_excerpt",
+        "repository": "https://github.com/postgres/postgres",
+        "license_revision": "ce2648b16ab8d18bd4fb4ac6fed5e260ac309f6d",
+        "retrieved_at_utc": "2026-09-22T11:52:18.489256+00:00",
+        "html_snapshots": [
+          {
+            "path": "benchmarks/quality_latency_v1/sources/postgres-isolation.html",
+            "url": "https://www.postgresql.org/docs/18/transaction-iso.html",
+            "sha256": "beef1cd1c5f512e3934fd049454730e3cc9d459e69db8e938bf941125387cefc",
+            "paragraph_indices": [
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35
+            ]
+          }
+        ],
+        "transformations": "Selected complete h1-h4/p text blocks; HTML entities decoded; inline text preserved; whitespace normalized. No figures, code blocks, tables, or displayed equations included. Gaps between selected paragraphs are intentional.",
+        "revision_note": "HTML publication snapshot is frozen by SHA-256; license_revision identifies the archived license revision only, not a claim that the live HTML was built from that exact commit."
+      }
+    },
+    {
+      "id": "db_retry",
+      "course": "databases",
+      "title": "PostgreSQL 18: Serializable transactions and retry handling",
+      "language": "en",
+      "text": "13.2.3. Serializable Isolation Level #\n\nThe Serializable isolation level provides the strictest transaction isolation. This level emulates serial transaction execution for all committed transactions; as if transactions had been executed one after another, serially, rather than concurrently. However, like the Repeatable Read level, applications using this level must be prepared to retry transactions due to serialization failures. In fact, this isolation level works exactly the same as Repeatable Read except that it also monitors for conditions which could make execution of a concurrent set of serializable transactions behave in a manner inconsistent with all possible serial (one at a time) executions of those transactions. This monitoring does not introduce any blocking beyond that present in repeatable read, but there is some overhead to the monitoring, and detection of the conditions which could cause a serialization anomaly will trigger a serialization failure.\n\nWhen relying on Serializable transactions to prevent anomalies, it is important that any data read from a permanent user table not be considered valid until the transaction which read it has successfully committed. This is true even for read-only transactions, except that data read within a deferrable read-only transaction is known to be valid as soon as it is read, because such a transaction waits until it can acquire a snapshot guaranteed to be free from such problems before starting to read any data. In all other cases applications must not depend on results read during a transaction that later aborted; instead, they should retry the transaction until it succeeds.\n\nConsistent use of Serializable transactions can simplify development. The guarantee that any set of successfully committed concurrent Serializable transactions will have the same effect as if they were run one at a time means that if you can demonstrate that a single transaction, as written, will do the right thing when run by itself, you can have confidence that it will do the right thing in any mix of Serializable transactions, even without any information about what those other transactions might do, or it will not successfully commit. It is important that an environment which uses this technique have a generalized way of handling serialization failures (which always return with an SQLSTATE value of '40001'), because it will be very hard to predict exactly which transactions might contribute to the read/write dependencies and need to be rolled back to prevent serialization anomalies. The monitoring of read/write dependencies has a cost, as does the restart of transactions which are terminated with a serialization failure, but balanced against the cost and blocking involved in use of explicit locks and SELECT FOR UPDATE or SELECT FOR SHARE, Serializable transactions are the best performance choice for some environments.\n\n13.5. Serialization Failure Handling #\n\nBoth Repeatable Read and Serializable isolation levels can produce errors that are designed to prevent serialization anomalies. As previously stated, applications using these levels must be prepared to retry transactions that fail due to serialization errors. Such an error's message text will vary according to the precise circumstances, but it will always have the SQLSTATE code 40001 (serialization_failure).\n\nIn some cases it is also appropriate to retry unique-key failures, which have SQLSTATE code 23505 (unique_violation), and exclusion constraint failures, which have SQLSTATE code 23P01 (exclusion_violation). For example, if the application selects a new value for a primary key column after inspecting the currently stored keys, it could get a unique-key failure because another application instance selected the same new key concurrently. This is effectively a serialization failure, but the server will not detect it as such because it cannot “see” the connection between the inserted value and the previous reads. There are also some corner cases in which the server will issue a unique-key or exclusion constraint error even though in principle it has enough information to determine that a serialization problem is the underlying cause. While it's recommendable to just retry serialization_failure errors unconditionally, more care is needed when retrying these other error codes, since they might represent persistent error conditions rather than transient failures.\n\nIt is important to retry the complete transaction, including all logic that decides which SQL to issue and/or which values to use. Therefore, PostgreSQL does not offer an automatic retry facility, since it cannot do so with any guarantee of correctness.\n\nTransaction retry does not guarantee that the retried transaction will complete; multiple retries may be needed. In cases with very high contention, it is possible that completion of a transaction may take many attempts. In cases involving a conflicting prepared transaction, it may not be possible to make progress until the prepared transaction commits or rolls back.",
+      "text_sha256": "710c7c5e9c7bdc0394af791bc6a3777cfd7696bc32791506ef752f44ce5a347c",
+      "path": "benchmarks/quality_latency_v1/sources/db_retry.txt",
+      "url": "https://www.postgresql.org/docs/18/transaction-iso.html",
+      "license": "PostgreSQL",
+      "authors": "The PostgreSQL Global Development Group",
+      "license_path": "benchmarks/quality_latency_v1/sources/postgres-license.txt",
+      "provenance": {
+        "kind": "official_openly_licensed_text_excerpt",
+        "repository": "https://github.com/postgres/postgres",
+        "license_revision": "ce2648b16ab8d18bd4fb4ac6fed5e260ac309f6d",
+        "retrieved_at_utc": "2026-09-22T11:52:18.489256+00:00",
+        "html_snapshots": [
+          {
+            "path": "benchmarks/quality_latency_v1/sources/postgres-isolation.html",
+            "url": "https://www.postgresql.org/docs/18/transaction-iso.html",
+            "sha256": "beef1cd1c5f512e3934fd049454730e3cc9d459e69db8e938bf941125387cefc",
+            "paragraph_indices": [
+              38,
+              39,
+              45,
+              48
+            ]
+          },
+          {
+            "path": "benchmarks/quality_latency_v1/sources/postgres-retry.html",
+            "url": "https://www.postgresql.org/docs/18/mvcc-serialization-failure-handling.html",
+            "sha256": "e00499d69ddeaa7be0618b65cd48003c27cbbb4693ecd8e50f24bd911a904936",
+            "paragraph_indices": [
+              0,
+              1,
+              3,
+              4,
+              5
+            ]
+          }
+        ],
+        "transformations": "Selected complete h1-h4/p text blocks; HTML entities decoded; inline text preserved; whitespace normalized. No figures, code blocks, tables, or displayed equations included. Gaps between selected paragraphs are intentional.",
+        "revision_note": "HTML publication snapshot is frozen by SHA-256; license_revision identifies the archived license revision only, not a claim that the live HTML was built from that exact commit."
+      }
+    },
+    {
+      "id": "net_reliability",
+      "course": "computer_networks",
+      "title": "Computer Networks: A Systems Approach — Reliable transmission",
+      "language": "en",
+      "text": "2.5 Reliable Transmission\n\nAs we saw in the previous section, frames are sometimes corrupted while in transit, with an error code like CRC used to detect such errors. While some error codes are strong enough also to correct errors, in practice the overhead is typically too large to handle the range of bit and burst errors that can be introduced on a network link. Even when error-correcting codes are used (e.g., on wireless links) some errors will be too severe to be corrected. As a result, some corrupt frames must be discarded. A link-level protocol that wants to deliver frames reliably must somehow recover from these discarded (lost) frames.\n\nIt’s worth noting that reliability is a function that may be provided at the link level, but many modern link technologies omit this function. Furthermore, reliable delivery is frequently provided at higher levels, including both transport and sometimes, the application layer. Exactly where it should be provided is a matter of some debate and depends on many factors. We describe the basics of reliable delivery here, since the principles are common across layers, but you should be aware that we’re not just talking about a link-layer function.\n\nReliable delivery is usually accomplished using a combination of two fundamental mechanisms—acknowledgments and timeouts. An acknowledgment (ACK for short) is a small control frame that a protocol sends back to its peer saying that it has received an earlier frame. By control frame we mean a header without any data, although a protocol can piggyback an ACK on a data frame it just happens to be sending in the opposite direction. The receipt of an acknowledgment indicates to the sender of the original frame that its frame was successfully delivered. If the sender does not receive an acknowledgment after a reasonable amount of time, then it retransmits the original frame. This action of waiting a reasonable amount of time is called a timeout.\n\nThe general strategy of using acknowledgments and timeouts to implement reliable delivery is sometimes called automatic repeat request (abbreviated ARQ). This section describes three different ARQ algorithms using generic language; that is, we do not give detailed information about a particular protocol’s header fields.\n\n2.5.1 Stop-and-Wait\n\nThe simplest ARQ scheme is the stop-and-wait algorithm. The idea of stop-and-wait is straightforward: After transmitting one frame, the sender waits for an acknowledgment before transmitting the next frame. If the acknowledgment does not arrive after a certain period of time, the sender times out and retransmits the original frame.\n\nThere is one important subtlety in the stop-and-wait algorithm. Suppose the sender sends a frame and the receiver acknowledges it, but the acknowledgment is either lost or delayed in arriving. This situation is illustrated in timelines (c) and (d) of Figure 34. In both cases, the sender times out and retransmits the original frame, but the receiver will think that it is the next frame, since it correctly received and acknowledged the first frame. This has the potential to cause duplicate copies of a frame to be delivered. To address this problem, the header for a stop-and-wait protocol usually includes a 1-bit sequence number—that is, the sequence number can take on the values 0 and 1—and the sequence numbers used for each frame alternate, as illustrated in Figure 35. Thus, when the sender retransmits frame 0, the receiver can determine that it is seeing a second copy of frame 0 rather than the first copy of frame 1 and therefore can ignore it (the receiver still acknowledges it, in case the first ACK was lost).",
+      "text_sha256": "295680239bb44fd1c58e52da9d66aa9bea0b300ab63428ca89133035be569e00",
+      "path": "benchmarks/quality_latency_v1/sources/net_reliability.txt",
+      "url": "https://book.systemsapproach.org/direct/reliable.html",
+      "license": "CC-BY-4.0",
+      "authors": "Larry Peterson and Bruce Davie",
+      "license_path": "benchmarks/quality_latency_v1/sources/systems-approach-license.txt",
+      "provenance": {
+        "kind": "official_openly_licensed_text_excerpt",
+        "repository": "https://github.com/SystemsApproach/book",
+        "license_revision": "5deec5e741e2b8c0bc44566108a24cb783c2c7de",
+        "retrieved_at_utc": "2026-09-22T11:52:18.489256+00:00",
+        "html_snapshots": [
+          {
+            "path": "benchmarks/quality_latency_v1/sources/network-reliable.html",
+            "url": "https://book.systemsapproach.org/direct/reliable.html",
+            "sha256": "fe4a98f2657fe95f9e53fc905defb3cc600b59bf390b19b6d2da9f9ae69f05d6",
+            "paragraph_indices": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              11
+            ]
+          }
+        ],
+        "transformations": "Selected complete h1-h4/p text blocks; HTML entities decoded; inline text preserved; whitespace normalized. No figures, code blocks, tables, or displayed equations included. Gaps between selected paragraphs are intentional.",
+        "revision_note": "HTML publication snapshot is frozen by SHA-256; license_revision identifies the archived license revision only, not a claim that the live HTML was built from that exact commit."
+      }
+    },
+    {
+      "id": "net_byte_stream",
+      "course": "computer_networks",
+      "title": "Computer Networks: A Systems Approach — TCP byte-stream service",
+      "language": "en",
+      "text": "5.2 Reliable Byte Stream (TCP)\n\nIn contrast to a simple demultiplexing protocol like UDP, a more sophisticated transport protocol is one that offers a reliable, connection-oriented, byte-stream service. Such a service has proven useful to a wide assortment of applications because it frees the application from having to worry about missing or reordered data. The Internet’s Transmission Control Protocol is probably the most widely used protocol of this type; it is also the most carefully tuned. It is for these two reasons that this section studies TCP in detail, although we identify and discuss alternative design choices at the end of the section.\n\nIn terms of the properties of transport protocols given in the problem statement at the start of this chapter, TCP guarantees the reliable, in-order delivery of a stream of bytes. It is a full-duplex protocol, meaning that each TCP connection supports a pair of byte streams, one flowing in each direction. It also includes a flow-control mechanism for each of these byte streams that allows the receiver to limit how much data the sender can transmit at a given time. Finally, like UDP, TCP supports a demultiplexing mechanism that allows multiple application programs on any given host to simultaneously carry on a conversation with their peers.\n\nIn addition to the above features, TCP also implements a highly tuned congestion-control mechanism. The idea of this mechanism is to throttle how fast TCP sends data, not for the sake of keeping the sender from over-running the receiver, but so as to keep the sender from overloading the network. A description of TCP’s congestion-control mechanism is postponed until the next chapter, where we discuss it in the larger context of how network resources are fairly allocated.\n\nSince many people confuse congestion control and flow control, we restate the difference. Flow control involves preventing senders from over-running the capacity of receivers. Congestion control involves preventing too much data from being injected into the network, thereby causing switches or links to become overloaded. Thus, flow control is an end-to-end issue, while congestion control is concerned with how hosts and networks interact.\n\n5.2.2 Segment Format\n\nTCP is a byte-oriented protocol, which means that the sender writes bytes into a TCP connection and the receiver reads bytes out of the TCP connection. Although “byte stream” describes the service TCP offers to application processes, TCP does not, itself, transmit individual bytes over the Internet. Instead, TCP on the source host buffers enough bytes from the sending process to fill a reasonably sized packet and then sends this packet to its peer on the destination host. TCP on the destination host then empties the contents of the packet into a receive buffer, and the receiving process reads from this buffer at its leisure. This situation is illustrated in Figure 127, which, for simplicity, shows data flowing in only one direction. Remember that, in general, a single TCP connection supports byte streams flowing in both directions.\n\nThe packets exchanged between TCP peers in Figure 127 are called segments, since each one carries a segment of the byte stream. Each TCP segment contains the header schematically depicted in Figure 128. The relevance of most of these fields will become apparent throughout this section. For now, we simply introduce them.\n\nThe Acknowledgement, SequenceNum, and AdvertisedWindow fields are all involved in TCP’s sliding window algorithm. Because TCP is a byte-oriented protocol, each byte of data has a sequence number. The SequenceNum field contains the sequence number for the first byte of data carried in that segment, and the Acknowledgement and AdvertisedWindow fields carry information about the flow of data going in the other direction. To simplify our discussion, we ignore the fact that data can flow in both directions, and we concentrate on data that has a particular SequenceNum flowing in one direction and Acknowledgement and AdvertisedWindow values flowing in the opposite direction, as illustrated in Figure 129. The use of these three fields is described more fully later in this chapter.",
+      "text_sha256": "62bdf52ca99b1f2893c5546291124394f85a9cc215af9568106a23afb10f05b4",
+      "path": "benchmarks/quality_latency_v1/sources/net_byte_stream.txt",
+      "url": "https://book.systemsapproach.org/e2e/tcp.html",
+      "license": "CC-BY-4.0",
+      "authors": "Larry Peterson and Bruce Davie",
+      "license_path": "benchmarks/quality_latency_v1/sources/systems-approach-license.txt",
+      "provenance": {
+        "kind": "official_openly_licensed_text_excerpt",
+        "repository": "https://github.com/SystemsApproach/book",
+        "license_revision": "5deec5e741e2b8c0bc44566108a24cb783c2c7de",
+        "retrieved_at_utc": "2026-09-22T11:52:18.489256+00:00",
+        "html_snapshots": [
+          {
+            "path": "benchmarks/quality_latency_v1/sources/network-tcp.html",
+            "url": "https://book.systemsapproach.org/e2e/tcp.html",
+            "sha256": "3048ad0198207941b36d42aab6ffcc6c835ddb0067af6d8c48a735a8525e455f",
+            "paragraph_indices": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              17,
+              18,
+              20,
+              24
+            ]
+          }
+        ],
+        "transformations": "Selected complete h1-h4/p text blocks; HTML entities decoded; inline text preserved; whitespace normalized. No figures, code blocks, tables, or displayed equations included. Gaps between selected paragraphs are intentional.",
+        "revision_note": "HTML publication snapshot is frozen by SHA-256; license_revision identifies the archived license revision only, not a claim that the live HTML was built from that exact commit."
+      }
+    },
+    {
+      "id": "net_ack",
+      "course": "computer_networks",
+      "title": "Computer Networks: A Systems Approach — TCP sequence and acknowledgement numbers",
+      "language": "en",
+      "text": "The Acknowledgement, SequenceNum, and AdvertisedWindow fields are all involved in TCP’s sliding window algorithm. Because TCP is a byte-oriented protocol, each byte of data has a sequence number. The SequenceNum field contains the sequence number for the first byte of data carried in that segment, and the Acknowledgement and AdvertisedWindow fields carry information about the flow of data going in the other direction. To simplify our discussion, we ignore the fact that data can flow in both directions, and we concentrate on data that has a particular SequenceNum flowing in one direction and Acknowledgement and AdvertisedWindow values flowing in the opposite direction, as illustrated in Figure 129. The use of these three fields is described more fully later in this chapter.\n\nThe idea is that two parties want to agree on a set of parameters, which, in the case of opening a TCP connection, are the starting sequence numbers the two sides plan to use for their respective byte streams. In general, the parameters might be any facts that each side wants the other to know about. First, the client (the active participant) sends a segment to the server (the passive participant) stating the initial sequence number it plans to use (Flags = SYN, SequenceNum = x). The server then responds with a single segment that both acknowledges the client’s sequence number (Flags = ACK, Ack = x + 1) and states its own beginning sequence number (Flags = SYN, SequenceNum = y). That is, both the SYN and ACK bits are set in the Flags field of this second message. Finally, the client responds with a third segment that acknowledges the server’s sequence number (Flags = ACK, Ack = y + 1). The reason why each side acknowledges a sequence number that is one larger than the one sent is that the Acknowledgement field actually identifies the “next sequence number expected,” thereby implicitly acknowledging all earlier sequence numbers. Although not shown in this timeline, a timer is scheduled for each of the first two segments, and if the expected response is not received the segment is retransmitted.\n\n5.2.4 Sliding Window Revisited\n\nWe are now ready to discuss TCP’s variant of the sliding window algorithm, which serves several purposes: (1) it guarantees the reliable delivery of data, (2) it ensures that data is delivered in order, and (3) it enforces flow control between the sender and the receiver. TCP’s use of the sliding window algorithm is the same as at the link level in the case of the first two of these three functions. Where TCP differs from the link-level algorithm is that it folds the flow-control function in as well. In particular, rather than having a fixed-size sliding window, the receiver advertises a window size to the sender. This is done using the AdvertisedWindow field in the TCP header. The sender is then limited to having no more than a value of AdvertisedWindow bytes of unacknowledged data at any given time. The receiver selects a suitable value for AdvertisedWindow based on the amount of memory allocated to the connection for the purpose of buffering data. The idea is to keep the sender from over-running the receiver’s buffer. We discuss this at greater length below.\n\nReliable and Ordered Delivery\n\nTo see how the sending and receiving sides of TCP interact with each other to implement reliable and ordered delivery, consider the situation illustrated in Figure 132. TCP on the sending side maintains a send buffer. This buffer is used to store data that has been sent but not yet acknowledged, as well as data that has been written by the sending application but not transmitted. On the receiving side, TCP maintains a receive buffer. This buffer holds data that arrives out of order, as well as data that is in the correct order (i.e., there are no missing bytes earlier in the stream) but that the application process has not yet had the chance to read.\n\nTo make the following discussion simpler to follow, we initially ignore the fact that both the buffers and the sequence numbers are of some finite size and hence will eventually wrap around. Also, we do not distinguish between a pointer into a buffer where a particular byte of data is stored and the sequence number for that byte.\n\nis true because a byte cannot be read by the application until it is received and all preceding bytes have also been received. NextByteExpected points to the byte immediately after the latest byte to meet this criterion. Second,\n\nsince, if data has arrived in order, NextByteExpected points to the byte after LastByteRcvd, whereas if data has arrived out of order, then NextByteExpected points to the start of the first gap in the data, as in Figure 132. Note that bytes to the left of LastByteRead need not be buffered because they have already been read by the local application process, and bytes to the right of LastByteRcvd need not be buffered because they have not yet arrived.\n\nwhich represents the amount of free space remaining in its buffer. As data arrives, the receiver acknowledges it as long as all the preceding bytes have also arrived. In addition, LastByteRcvd moves to the right (is incremented), meaning that the advertised window potentially shrinks. Whether or not it shrinks depends on how fast the local application process is consuming data. If the local process is reading data just as fast as it arrives (causing LastByteRead to be incremented at the same rate as LastByteRcvd), then the advertised window stays open (i.e., AdvertisedWindow = MaxRcvBuffer). If, however, the receiving process falls behind, perhaps because it performs a very expensive operation on each byte of data that it reads, then the advertised window grows smaller with every segment that arrives, until it eventually goes to 0.",
+      "text_sha256": "582dd98a80568d9156c30ad5824a3acb05577e0a5ec8a930da341c56122a00ac",
+      "path": "benchmarks/quality_latency_v1/sources/net_ack.txt",
+      "url": "https://book.systemsapproach.org/e2e/tcp.html",
+      "license": "CC-BY-4.0",
+      "authors": "Larry Peterson and Bruce Davie",
+      "license_path": "benchmarks/quality_latency_v1/sources/systems-approach-license.txt",
+      "provenance": {
+        "kind": "official_openly_licensed_text_excerpt",
+        "repository": "https://github.com/SystemsApproach/book",
+        "license_revision": "5deec5e741e2b8c0bc44566108a24cb783c2c7de",
+        "retrieved_at_utc": "2026-09-22T11:52:18.489256+00:00",
+        "html_snapshots": [
+          {
+            "path": "benchmarks/quality_latency_v1/sources/network-tcp.html",
+            "url": "https://book.systemsapproach.org/e2e/tcp.html",
+            "sha256": "3048ad0198207941b36d42aab6ffcc6c835ddb0067af6d8c48a735a8525e455f",
+            "paragraph_indices": [
+              24,
+              34,
+              51,
+              52,
+              53,
+              54,
+              56,
+              61,
+              62,
+              68
+            ]
+          }
+        ],
+        "transformations": "Selected complete h1-h4/p text blocks; HTML entities decoded; inline text preserved; whitespace normalized. No figures, code blocks, tables, or displayed equations included. Gaps between selected paragraphs are intentional.",
+        "revision_note": "HTML publication snapshot is frozen by SHA-256; license_revision identifies the archived license revision only, not a claim that the live HTML was built from that exact commit."
+      }
+    },
+    {
+      "id": "net_windows",
+      "course": "computer_networks",
+      "title": "Computer Networks: A Systems Approach — Flow and congestion control",
+      "language": "en",
+      "text": "In terms of the properties of transport protocols given in the problem statement at the start of this chapter, TCP guarantees the reliable, in-order delivery of a stream of bytes. It is a full-duplex protocol, meaning that each TCP connection supports a pair of byte streams, one flowing in each direction. It also includes a flow-control mechanism for each of these byte streams that allows the receiver to limit how much data the sender can transmit at a given time. Finally, like UDP, TCP supports a demultiplexing mechanism that allows multiple application programs on any given host to simultaneously carry on a conversation with their peers.\n\nIn addition to the above features, TCP also implements a highly tuned congestion-control mechanism. The idea of this mechanism is to throttle how fast TCP sends data, not for the sake of keeping the sender from over-running the receiver, but so as to keep the sender from overloading the network. A description of TCP’s congestion-control mechanism is postponed until the next chapter, where we discuss it in the larger context of how network resources are fairly allocated.\n\nSince many people confuse congestion control and flow control, we restate the difference. Flow control involves preventing senders from over-running the capacity of receivers. Congestion control involves preventing too much data from being injected into the network, thereby causing switches or links to become overloaded. Thus, flow control is an end-to-end issue, while congestion control is concerned with how hosts and networks interact.\n\nFourth, the computers connected to a point-to-point link are generally engineered to support the link. For example, if a link’s delay × bandwidth product is computed to be 8 KB—meaning that a window size is selected to allow up to 8 KB of data to be unacknowledged at a given time—then it is likely that the computers at either end of the link have the ability to buffer up to 8 KB of data. Designing the system otherwise would be silly. On the other hand, almost any kind of computer can be connected to the Internet, making the amount of resources dedicated to any one TCP connection highly variable, especially considering that any one host can potentially support hundreds of TCP connections at the same time. This means that TCP must include a mechanism that each side uses to “learn” what resources (e.g., how much buffer space) the other side is able to apply to the connection. This is the flow control issue.\n\nFifth, because the transmitting side of a directly connected link cannot send any faster than the bandwidth of the link allows, and only one host is pumping data into the link, it is not possible to unknowingly congest the link. Said another way, the load on the link is visible in the form of a queue of packets at the sender. In contrast, the sending side of a TCP connection has no idea what links will be traversed to reach the destination. For example, the sending machine might be directly connected to a relatively fast Ethernet—and capable of sending data at a rate of 10 Gbps—but somewhere out in the middle of the network, a 1.5-Mbps link must be traversed. And, to make matters worse, data being generated by many different sources might be trying to traverse this same slow link. This leads to the problem of network congestion. Discussion of this topic is delayed until the next chapter.\n\nWe are now ready to discuss TCP’s variant of the sliding window algorithm, which serves several purposes: (1) it guarantees the reliable delivery of data, (2) it ensures that data is delivered in order, and (3) it enforces flow control between the sender and the receiver. TCP’s use of the sliding window algorithm is the same as at the link level in the case of the first two of these three functions. Where TCP differs from the link-level algorithm is that it folds the flow-control function in as well. In particular, rather than having a fixed-size sliding window, the receiver advertises a window size to the sender. This is done using the AdvertisedWindow field in the TCP header. The sender is then limited to having no more than a value of AdvertisedWindow bytes of unacknowledged data at any given time. The receiver selects a suitable value for AdvertisedWindow based on the amount of memory allocated to the connection for the purpose of buffering data. The idea is to keep the sender from over-running the receiver’s buffer. We discuss this at greater length below.\n\nwhich represents the amount of free space remaining in its buffer. As data arrives, the receiver acknowledges it as long as all the preceding bytes have also arrived. In addition, LastByteRcvd moves to the right (is incremented), meaning that the advertised window potentially shrinks. Whether or not it shrinks depends on how fast the local application process is consuming data. If the local process is reading data just as fast as it arrives (causing LastByteRead to be incremented at the same rate as LastByteRcvd), then the advertised window stays open (i.e., AdvertisedWindow = MaxRcvBuffer). If, however, the receiving process falls behind, perhaps because it performs a very expensive operation on each byte of data that it reads, then the advertised window grows smaller with every segment that arrives, until it eventually goes to 0.\n\nClearly, EffectiveWindow must be greater than 0 before the source can send more data. It is possible, therefore, that a segment arrives acknowledging x bytes, thereby allowing the sender to increment LastByteAcked by x, but because the receiving process was not reading any data, the advertised window is now x bytes smaller than the time before. In such a situation, the sender would be able to free buffer space, but not to send any more data.\n\nIt is now possible to understand how a slow receiving process ultimately stops a fast sending process. First, the receive buffer fills up, which means the advertised window shrinks to 0. An advertised window of 0 means that the sending side cannot transmit any data, even though data it has previously sent has been successfully acknowledged. Finally, not being able to transmit any data means that the send buffer fills up, which ultimately causes TCP to block the sending process. As soon as the receiving process starts to read data again, the receive-side TCP is able to open its window back up, which allows the send-side TCP to transmit data out of its buffer. When this data is eventually acknowledged, LastByteAcked is incremented, the buffer space holding this acknowledged data becomes free, and the sending process is unblocked and allowed to proceed.\n\n6.3 TCP Congestion Control\n\nThis section describes the predominant example of end-to-end congestion control in use today, which is implemented by TCP. The essential strategy of TCP is to send packets into the network without a reservation and then to react to observable events that occur. TCP assumes only FIFO queuing in the network’s routers, but also works with other queuing strategies.\n\nBroadly speaking, the idea of TCP congestion control is for each source to determine how much capacity is available in the network, so that it knows how many packets it can safely have in transit. Once a given source has this many packets in transit, it uses the arrival of an ACK as a signal that one of its packets has left the network and that it is therefore safe to insert a new packet into the network without adding to the level of congestion. By using ACKs to pace the transmission of packets, TCP is said to be self-clocking. Of course, determining the available capacity in the first place is no easy task. To make matters worse, because other connections come and go, the available bandwidth changes over time, meaning that any given source must be able to adjust the number of packets it has in transit. This section describes the algorithms used by TCP to address these and other problems.\n\nTCP maintains a new state variable for each connection, called CongestionWindow, which is used by the source to limit how much data it is allowed to have in transit at a given time. The congestion window is congestion control’s counterpart to flow control’s advertised window. TCP is modified such that the maximum number of bytes of unacknowledged data allowed is now the minimum of the congestion window and the advertised window. Thus, using the variables defined in the previous chapter, TCP’s effective window is revised as follows:\n\nThat is, MaxWindow replaces AdvertisedWindow in the calculation of EffectiveWindow. Thus, a TCP source is allowed to send no faster than the slowest component—the network or the destination host—can accommodate.\n\nThe problem, of course, is how TCP comes to learn an appropriate value for CongestionWindow. Unlike the AdvertisedWindow, which is sent by the receiving side of the connection, there is no one to send a suitable CongestionWindow to the sending side of TCP. The answer is that the TCP source sets the CongestionWindow based on the level of congestion it perceives to exist in the network. This involves decreasing the congestion window when the level of congestion goes up and increasing the congestion window when the level of congestion goes down. Taken together, the mechanism is commonly called additive increase/multiplicative decrease (AIMD); the reason for this mouthful of a name will become apparent below.",
+      "text_sha256": "77da1fcf34a1a14abc92a95a5d32159c9087603ca018c7793f1084718cb96f3f",
+      "path": "benchmarks/quality_latency_v1/sources/net_windows.txt",
+      "url": "https://book.systemsapproach.org/e2e/tcp.html",
+      "license": "CC-BY-4.0",
+      "authors": "Larry Peterson and Bruce Davie",
+      "license_path": "benchmarks/quality_latency_v1/sources/systems-approach-license.txt",
+      "provenance": {
+        "kind": "official_openly_licensed_text_excerpt",
+        "repository": "https://github.com/SystemsApproach/book",
+        "license_revision": "5deec5e741e2b8c0bc44566108a24cb783c2c7de",
+        "retrieved_at_utc": "2026-09-22T11:52:18.489256+00:00",
+        "html_snapshots": [
+          {
+            "path": "benchmarks/quality_latency_v1/sources/network-tcp.html",
+            "url": "https://book.systemsapproach.org/e2e/tcp.html",
+            "sha256": "3048ad0198207941b36d42aab6ffcc6c835ddb0067af6d8c48a735a8525e455f",
+            "paragraph_indices": [
+              3,
+              4,
+              5,
+              11,
+              12,
+              52,
+              68,
+              71,
+              75
+            ]
+          },
+          {
+            "path": "benchmarks/quality_latency_v1/sources/network-congestion.html",
+            "url": "https://book.systemsapproach.org/congestion/tcpcc.html",
+            "sha256": "97ce1cae8168cf1df3d7e41dede8d9e5a0e9c92569f45fd6451347dd1c025633",
+            "paragraph_indices": [
+              1,
+              2,
+              4,
+              7,
+              8,
+              9
+            ]
+          }
+        ],
+        "transformations": "Selected complete h1-h4/p text blocks; HTML entities decoded; inline text preserved; whitespace normalized. No figures, code blocks, tables, or displayed equations included. Gaps between selected paragraphs are intentional.",
+        "revision_note": "HTML publication snapshot is frozen by SHA-256; license_revision identifies the archived license revision only, not a claim that the live HTML was built from that exact commit."
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "os_context_switch_en",
+      "need_id": "os_context_switch",
+      "course": "operating_systems",
+      "language": "en",
+      "difficulty": "easy",
+      "question_type": "short_answer",
+      "topic": "Explain what a context switch preserves and the role of the scheduler in xv6 CPU multiplexing.",
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "source_ids": [
+        "os_context"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "os_context",
+          "quote": "it saves the switched-from thread’s CPU registers, and restores the previously-saved registers of the switched-to thread"
+        },
+        {
+          "source_id": "os_context",
+          "quote": "a kernel thread gives up the CPU by context-switching to that CPU’s “scheduler thread,”"
+        }
+      ],
+      "review_criteria": [
+        "Do not confuse a switch between kernel threads with saving an entire address space.",
+        "The explanation must identify saved/restored CPU registers and scheduling through the per-CPU scheduler.",
+        "Use the frozen xv6 description, not an unannounced alternative operating system."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "short_answer",
+        "core_topic": "os_context_switch",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "os_context_switch_zh",
+      "need_id": "os_context_switch",
+      "course": "operating_systems",
+      "language": "zh",
+      "difficulty": "easy",
+      "question_type": "short_answer",
+      "topic": "解释 xv6 的上下文切换需要保存什么，以及调度器在 CPU 复用中的作用。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "source_ids": [
+        "os_context"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "os_context",
+          "quote": "it saves the switched-from thread’s CPU registers, and restores the previously-saved registers of the switched-to thread"
+        },
+        {
+          "source_id": "os_context",
+          "quote": "a kernel thread gives up the CPU by context-switching to that CPU’s “scheduler thread,”"
+        }
+      ],
+      "review_criteria": [
+        "Do not confuse a switch between kernel threads with saving an entire address space.",
+        "The explanation must identify saved/restored CPU registers and scheduling through the per-CPU scheduler.",
+        "Use the frozen xv6 description, not an unannounced alternative operating system."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "short_answer",
+        "core_topic": "os_context_switch",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "os_race_condition_en",
+      "need_id": "os_race_condition",
+      "course": "operating_systems",
+      "language": "en",
+      "difficulty": "medium",
+      "question_type": "mcq",
+      "topic": "Apply mutual exclusion to a short shared-data update scenario, distinguishing a critical section from an unsafe check-then-set lock.",
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "source_ids": [
+        "os_races"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "os_races",
+          "quote": "The sequence of instructions between acquire and release is often called a critical section."
+        },
+        {
+          "source_id": "os_races",
+          "quote": "What we need is a way to make lines 25 and 26 execute as an atomic (indivisible) step."
+        }
+      ],
+      "review_criteria": [
+        "Provide the complete relevant interleaving or update operations, not omitted source-code line numbers.",
+        "Exactly one option must correctly identify or repair the race under the stated atomicity assumptions.",
+        "The reasoning must distinguish locking an invariant from only guarding an individual write."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "mcq",
+        "core_topic": "os_race_condition",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "os_race_condition_zh",
+      "need_id": "os_race_condition",
+      "course": "operating_systems",
+      "language": "zh",
+      "difficulty": "medium",
+      "question_type": "mcq",
+      "topic": "在一个简短的共享数据更新场景中应用互斥，区分临界区保护与不安全的先检查再设置锁。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "source_ids": [
+        "os_races"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "os_races",
+          "quote": "The sequence of instructions between acquire and release is often called a critical section."
+        },
+        {
+          "source_id": "os_races",
+          "quote": "What we need is a way to make lines 25 and 26 execute as an atomic (indivisible) step."
+        }
+      ],
+      "review_criteria": [
+        "Provide the complete relevant interleaving or update operations, not omitted source-code line numbers.",
+        "Exactly one option must correctly identify or repair the race under the stated atomicity assumptions.",
+        "The reasoning must distinguish locking an invariant from only guarding an individual write."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "mcq",
+        "core_topic": "os_race_condition",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "os_interrupt_deadlock_en",
+      "need_id": "os_interrupt_deadlock",
+      "course": "operating_systems",
+      "language": "en",
+      "difficulty": "hard",
+      "question_type": "short_answer",
+      "topic": "Analyze and justify a synchronization design when a kernel thread and an interrupt handler share a spinlock, including local and multiprocessor effects.",
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "source_ids": [
+        "os_interrupt_locks"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "os_interrupt_locks",
+          "quote": "only sys_pause can release it, but sys_pause will not continue running until clockintr returns."
+        },
+        {
+          "source_id": "os_interrupt_locks",
+          "quote": "Interrupts may still occur on other CPUs, so an interrupt’s acquire can wait for a thread to release a spinlock; just not on the same CPU."
+        }
+      ],
+      "review_criteria": [
+        "The scenario must state which CPU is interrupted and who owns the spinlock.",
+        "Reason through why the interrupted owner cannot release the lock while its same-CPU interrupt handler spins.",
+        "Disabling local interrupts does not replace mutual exclusion against other CPUs; preserve the role of atomic locks.",
+        "Difficulty requires linked reasoning about the deadlock and the limits of the proposed repair, not obscure terminology."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "short_answer",
+        "core_topic": "os_interrupt_deadlock",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "os_interrupt_deadlock_zh",
+      "need_id": "os_interrupt_deadlock",
+      "course": "operating_systems",
+      "language": "zh",
+      "difficulty": "hard",
+      "question_type": "short_answer",
+      "topic": "分析内核线程与中断处理程序共享自旋锁时的同步设计，并论证本 CPU 与多处理器情况下的影响。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "source_ids": [
+        "os_interrupt_locks"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "os_interrupt_locks",
+          "quote": "only sys_pause can release it, but sys_pause will not continue running until clockintr returns."
+        },
+        {
+          "source_id": "os_interrupt_locks",
+          "quote": "Interrupts may still occur on other CPUs, so an interrupt’s acquire can wait for a thread to release a spinlock; just not on the same CPU."
+        }
+      ],
+      "review_criteria": [
+        "The scenario must state which CPU is interrupted and who owns the spinlock.",
+        "Reason through why the interrupted owner cannot release the lock while its same-CPU interrupt handler spins.",
+        "Disabling local interrupts does not replace mutual exclusion against other CPUs; preserve the role of atomic locks.",
+        "Difficulty requires linked reasoning about the deadlock and the limits of the proposed repair, not obscure terminology."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "short_answer",
+        "core_topic": "os_interrupt_deadlock",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "os_lost_wakeup_en",
+      "need_id": "os_lost_wakeup",
+      "course": "operating_systems",
+      "language": "en",
+      "difficulty": "hard",
+      "question_type": "mcq",
+      "topic": "Evaluate a producer-consumer wait protocol for lost wakeups and condition rechecking using the supplied xv6 sleep_prepare/sleep/wakeup interface.",
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "source_ids": [
+        "os_wakeup"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "os_wakeup",
+          "quote": "sleep_prepare(chan) must be called either before checking the condition, or before releasing the lock that protects the condition."
+        },
+        {
+          "source_id": "os_wakeup",
+          "quote": "For this reason sleeping always occurs inside a loop that re-checks the condition"
+        }
+      ],
+      "review_criteria": [
+        "Use the frozen sleep_prepare/sleep interface rather than silently substituting an older xv6 API.",
+        "Give enough scheduling and lock details for every candidate protocol to be evaluated.",
+        "The unique answer must both avoid the check-to-sleep gap and handle a wakeup that does not guarantee the condition remains true.",
+        "Reject explanations that hold the condition lock while sleeping and thereby prevent the producer from making progress."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "mcq",
+        "core_topic": "os_lost_wakeup",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "os_lost_wakeup_zh",
+      "need_id": "os_lost_wakeup",
+      "course": "operating_systems",
+      "language": "zh",
+      "difficulty": "hard",
+      "question_type": "mcq",
+      "topic": "使用资料中的 xv6 sleep_prepare/sleep/wakeup 接口，评价生产者与消费者等待协议的丢失唤醒风险及条件复查。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "source_ids": [
+        "os_wakeup"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "os_wakeup",
+          "quote": "sleep_prepare(chan) must be called either before checking the condition, or before releasing the lock that protects the condition."
+        },
+        {
+          "source_id": "os_wakeup",
+          "quote": "For this reason sleeping always occurs inside a loop that re-checks the condition"
+        }
+      ],
+      "review_criteria": [
+        "Use the frozen sleep_prepare/sleep interface rather than silently substituting an older xv6 API.",
+        "Give enough scheduling and lock details for every candidate protocol to be evaluated.",
+        "The unique answer must both avoid the check-to-sleep gap and handle a wakeup that does not guarantee the condition remains true.",
+        "Reject explanations that hold the condition lock while sleeping and thereby prevent the producer from making progress."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "mcq",
+        "core_topic": "os_lost_wakeup",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "db_atomicity_en",
+      "need_id": "db_atomicity",
+      "course": "databases",
+      "language": "en",
+      "difficulty": "easy",
+      "question_type": "mcq",
+      "topic": "Recognize transaction atomicity and the effect of COMMIT versus ROLLBACK in a simple PostgreSQL transfer.",
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "source_ids": [
+        "db_atomicity"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "db_atomicity",
+          "quote": "A transaction is said to be atomic: from the point of view of other transactions, it either happens completely or not at all."
+        },
+        {
+          "source_id": "db_atomicity",
+          "quote": "we can issue the command ROLLBACK instead of COMMIT, and all our updates so far will be canceled."
+        }
+      ],
+      "review_criteria": [
+        "State the transaction boundary and whether COMMIT or ROLLBACK is reached.",
+        "Exactly one answer must preserve the all-or-nothing treatment of the transfer.",
+        "Do not present atomicity as a guarantee that every business rule or every concurrent invariant is automatically enforced."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "mcq",
+        "core_topic": "db_atomicity",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "db_atomicity_zh",
+      "need_id": "db_atomicity",
+      "course": "databases",
+      "language": "zh",
+      "difficulty": "easy",
+      "question_type": "mcq",
+      "topic": "识别简单 PostgreSQL 转账中的事务原子性，以及 COMMIT 和 ROLLBACK 的作用。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "source_ids": [
+        "db_atomicity"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "db_atomicity",
+          "quote": "A transaction is said to be atomic: from the point of view of other transactions, it either happens completely or not at all."
+        },
+        {
+          "source_id": "db_atomicity",
+          "quote": "we can issue the command ROLLBACK instead of COMMIT, and all our updates so far will be canceled."
+        }
+      ],
+      "review_criteria": [
+        "State the transaction boundary and whether COMMIT or ROLLBACK is reached.",
+        "Exactly one answer must preserve the all-or-nothing treatment of the transfer.",
+        "Do not present atomicity as a guarantee that every business rule or every concurrent invariant is automatically enforced."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "mcq",
+        "core_topic": "db_atomicity",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "db_statement_snapshot_en",
+      "need_id": "db_statement_snapshot",
+      "course": "databases",
+      "language": "en",
+      "difficulty": "medium",
+      "question_type": "short_answer",
+      "topic": "Trace what ordinary SELECT statements may observe under PostgreSQL Read Committed in a two-session schedule.",
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "source_ids": [
+        "db_read_committed"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "db_read_committed",
+          "quote": "a SELECT query (without a FOR UPDATE/SHARE clause) sees only data committed before the query began"
+        },
+        {
+          "source_id": "db_read_committed",
+          "quote": "two successive SELECT commands can see different data, even though they are within a single transaction"
+        }
+      ],
+      "review_criteria": [
+        "Supply initial values, each statement start, relevant commit times, and all modifications.",
+        "Use ordinary non-locking SELECT and explicitly identify the isolation level.",
+        "Each read must be evaluated against its statement snapshot while allowing the transaction to see its own earlier writes.",
+        "Do not incorrectly infer one fixed snapshot for the whole Read Committed transaction."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "short_answer",
+        "core_topic": "db_statement_snapshot",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "db_statement_snapshot_zh",
+      "need_id": "db_statement_snapshot",
+      "course": "databases",
+      "language": "zh",
+      "difficulty": "medium",
+      "question_type": "short_answer",
+      "topic": "在两个会话的执行顺序中，推演 PostgreSQL Read Committed 下普通 SELECT 可观察到的数据。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "source_ids": [
+        "db_read_committed"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "db_read_committed",
+          "quote": "a SELECT query (without a FOR UPDATE/SHARE clause) sees only data committed before the query began"
+        },
+        {
+          "source_id": "db_read_committed",
+          "quote": "two successive SELECT commands can see different data, even though they are within a single transaction"
+        }
+      ],
+      "review_criteria": [
+        "Supply initial values, each statement start, relevant commit times, and all modifications.",
+        "Use ordinary non-locking SELECT and explicitly identify the isolation level.",
+        "Each read must be evaluated against its statement snapshot while allowing the transaction to see its own earlier writes.",
+        "Do not incorrectly infer one fixed snapshot for the whole Read Committed transaction."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "short_answer",
+        "core_topic": "db_statement_snapshot",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "db_transaction_snapshot_en",
+      "need_id": "db_transaction_snapshot",
+      "course": "databases",
+      "language": "en",
+      "difficulty": "medium",
+      "question_type": "short_answer",
+      "topic": "Trace consecutive reads under PostgreSQL Repeatable Read and distinguish snapshot stability from serializable execution.",
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "source_ids": [
+        "db_repeatable_read"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "db_repeatable_read",
+          "quote": "a query in a repeatable read transaction sees a snapshot as of the start of the first non-transaction-control statement"
+        },
+        {
+          "source_id": "db_repeatable_read",
+          "quote": "this view will not necessarily always be consistent with some serial (one at a time) execution of concurrent transactions"
+        }
+      ],
+      "review_criteria": [
+        "State the first non-transaction-control statement and relevant other-session commits.",
+        "Do not substitute BEGIN time for the first snapshot-taking statement.",
+        "Explain that snapshot stability alone is not a proof of serializability.",
+        "Avoid attributing another DBMS Repeatable Read implementation to PostgreSQL."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "short_answer",
+        "core_topic": "db_transaction_snapshot",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "db_transaction_snapshot_zh",
+      "need_id": "db_transaction_snapshot",
+      "course": "databases",
+      "language": "zh",
+      "difficulty": "medium",
+      "question_type": "short_answer",
+      "topic": "推演 PostgreSQL Repeatable Read 下的连续读取，并区分快照稳定与可序列化执行。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "source_ids": [
+        "db_repeatable_read"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "db_repeatable_read",
+          "quote": "a query in a repeatable read transaction sees a snapshot as of the start of the first non-transaction-control statement"
+        },
+        {
+          "source_id": "db_repeatable_read",
+          "quote": "this view will not necessarily always be consistent with some serial (one at a time) execution of concurrent transactions"
+        }
+      ],
+      "review_criteria": [
+        "State the first non-transaction-control statement and relevant other-session commits.",
+        "Do not substitute BEGIN time for the first snapshot-taking statement.",
+        "Explain that snapshot stability alone is not a proof of serializability.",
+        "Avoid attributing another DBMS Repeatable Read implementation to PostgreSQL."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "short_answer",
+        "core_topic": "db_transaction_snapshot",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "db_serialization_retry_en",
+      "need_id": "db_serialization_retry",
+      "course": "databases",
+      "language": "en",
+      "difficulty": "hard",
+      "question_type": "mcq",
+      "topic": "Evaluate an application retry design after a PostgreSQL serialization failure when reads determine later writes.",
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "source_ids": [
+        "db_retry"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "db_retry",
+          "quote": "retry the complete transaction, including all logic that decides which SQL to issue and/or which values to use."
+        },
+        {
+          "source_id": "db_retry",
+          "quote": "Transaction retry does not guarantee that the retried transaction will complete; multiple retries may be needed."
+        }
+      ],
+      "review_criteria": [
+        "Specify transaction boundaries and the read-dependent application decision; do not rely on hidden external side effects.",
+        "Exactly one option must correctly rerun both reads/decisions and writes rather than only the failed statement.",
+        "A valid explanation distinguishes correctness of retry scope from any guarantee of immediate or eventual completion.",
+        "Do not conflate all persistent constraint errors with retryable serialization failures."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "mcq",
+        "core_topic": "db_serialization_retry",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "db_serialization_retry_zh",
+      "need_id": "db_serialization_retry",
+      "course": "databases",
+      "language": "zh",
+      "difficulty": "hard",
+      "question_type": "mcq",
+      "topic": "当读取结果决定后续写入时，评价 PostgreSQL 序列化失败后的应用重试设计。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "source_ids": [
+        "db_retry"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "db_retry",
+          "quote": "retry the complete transaction, including all logic that decides which SQL to issue and/or which values to use."
+        },
+        {
+          "source_id": "db_retry",
+          "quote": "Transaction retry does not guarantee that the retried transaction will complete; multiple retries may be needed."
+        }
+      ],
+      "review_criteria": [
+        "Specify transaction boundaries and the read-dependent application decision; do not rely on hidden external side effects.",
+        "Exactly one option must correctly rerun both reads/decisions and writes rather than only the failed statement.",
+        "A valid explanation distinguishes correctness of retry scope from any guarantee of immediate or eventual completion.",
+        "Do not conflate all persistent constraint errors with retryable serialization failures."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "mcq",
+        "core_topic": "db_serialization_retry",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "net_reliable_delivery_en",
+      "need_id": "net_reliable_delivery",
+      "course": "computer_networks",
+      "language": "en",
+      "difficulty": "easy",
+      "question_type": "mcq",
+      "topic": "Recognize the roles of acknowledgement, timeout, and a sequence number in stop-and-wait reliable delivery.",
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "source_ids": [
+        "net_reliability"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "net_reliability",
+          "quote": "After transmitting one frame, the sender waits for an acknowledgment before transmitting the next frame."
+        },
+        {
+          "source_id": "net_reliability",
+          "quote": "when the sender retransmits frame 0, the receiver can determine that it is seeing a second copy of frame 0"
+        }
+      ],
+      "review_criteria": [
+        "Do not assume a lost ACK means the data frame was never delivered.",
+        "The unique answer must distinguish retransmission from duplicate suppression.",
+        "Keep scope to the supplied stop-and-wait model, not an unspecified TCP variant."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "mcq",
+        "core_topic": "net_reliable_delivery",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "net_reliable_delivery_zh",
+      "need_id": "net_reliable_delivery",
+      "course": "computer_networks",
+      "language": "zh",
+      "difficulty": "easy",
+      "question_type": "mcq",
+      "topic": "识别停止等待可靠传输中确认、超时和序号各自的作用。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "source_ids": [
+        "net_reliability"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "net_reliability",
+          "quote": "After transmitting one frame, the sender waits for an acknowledgment before transmitting the next frame."
+        },
+        {
+          "source_id": "net_reliability",
+          "quote": "when the sender retransmits frame 0, the receiver can determine that it is seeing a second copy of frame 0"
+        }
+      ],
+      "review_criteria": [
+        "Do not assume a lost ACK means the data frame was never delivered.",
+        "The unique answer must distinguish retransmission from duplicate suppression.",
+        "Keep scope to the supplied stop-and-wait model, not an unspecified TCP variant."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "mcq",
+        "core_topic": "net_reliable_delivery",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "net_tcp_service_en",
+      "need_id": "net_tcp_service",
+      "course": "computer_networks",
+      "language": "en",
+      "difficulty": "easy",
+      "question_type": "short_answer",
+      "topic": "Describe the reliable, ordered, full-duplex byte-stream service that TCP offers applications and distinguish it from segment transmission.",
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "source_ids": [
+        "net_byte_stream"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "net_byte_stream",
+          "quote": "TCP guarantees the reliable, in-order delivery of a stream of bytes."
+        },
+        {
+          "source_id": "net_byte_stream",
+          "quote": "TCP does not, itself, transmit individual bytes over the Internet."
+        }
+      ],
+      "review_criteria": [
+        "The answer must distinguish the application byte stream from buffered segment transfer.",
+        "Do not claim an application write has an inherently preserved message boundary at the receiving application.",
+        "Do not claim full duplex means one unidirectional byte stream alternates direction."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "short_answer",
+        "core_topic": "net_tcp_service",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "net_tcp_service_zh",
+      "need_id": "net_tcp_service",
+      "course": "computer_networks",
+      "language": "zh",
+      "difficulty": "easy",
+      "question_type": "short_answer",
+      "topic": "描述 TCP 向应用提供的可靠、有序、全双工字节流服务，并区分字节流服务与报文段传输。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "source_ids": [
+        "net_byte_stream"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "net_byte_stream",
+          "quote": "TCP guarantees the reliable, in-order delivery of a stream of bytes."
+        },
+        {
+          "source_id": "net_byte_stream",
+          "quote": "TCP does not, itself, transmit individual bytes over the Internet."
+        }
+      ],
+      "review_criteria": [
+        "The answer must distinguish the application byte stream from buffered segment transfer.",
+        "Do not claim an application write has an inherently preserved message boundary at the receiving application.",
+        "Do not claim full duplex means one unidirectional byte stream alternates direction."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "short_answer",
+        "core_topic": "net_tcp_service",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "net_cumulative_ack_en",
+      "need_id": "net_cumulative_ack",
+      "course": "computer_networks",
+      "language": "en",
+      "difficulty": "medium",
+      "question_type": "mcq",
+      "topic": "Apply TCP byte sequence numbers and cumulative acknowledgements to a short arrival sequence with a missing range.",
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "source_ids": [
+        "net_ack"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "net_ack",
+          "quote": "the Acknowledgement field actually identifies the “next sequence number expected,” thereby implicitly acknowledging all earlier sequence numbers."
+        },
+        {
+          "source_id": "net_ack",
+          "quote": "if data has arrived out of order, then NextByteExpected points to the start of the first gap in the data"
+        }
+      ],
+      "review_criteria": [
+        "Provide the initial expected byte and lengths/ranges of all relevant arriving data segments.",
+        "State whether SYN/FIN, wraparound, delayed ACK, or SACK are in scope; avoid introducing them implicitly.",
+        "Cumulative ACK must stop at the first missing byte even if later bytes have arrived.",
+        "Check all arithmetic independently and ensure exactly one option is correct."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "mcq",
+        "core_topic": "net_cumulative_ack",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "net_cumulative_ack_zh",
+      "need_id": "net_cumulative_ack",
+      "course": "computer_networks",
+      "language": "zh",
+      "difficulty": "medium",
+      "question_type": "mcq",
+      "topic": "在存在缺失字节区间的简短到达序列中，应用 TCP 字节序号与累积确认规则。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "source_ids": [
+        "net_ack"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "net_ack",
+          "quote": "the Acknowledgement field actually identifies the “next sequence number expected,” thereby implicitly acknowledging all earlier sequence numbers."
+        },
+        {
+          "source_id": "net_ack",
+          "quote": "if data has arrived out of order, then NextByteExpected points to the start of the first gap in the data"
+        }
+      ],
+      "review_criteria": [
+        "Provide the initial expected byte and lengths/ranges of all relevant arriving data segments.",
+        "State whether SYN/FIN, wraparound, delayed ACK, or SACK are in scope; avoid introducing them implicitly.",
+        "Cumulative ACK must stop at the first missing byte even if later bytes have arrived.",
+        "Check all arithmetic independently and ensure exactly one option is correct."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "mcq",
+        "core_topic": "net_cumulative_ack",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "net_flow_congestion_en",
+      "need_id": "net_flow_congestion",
+      "course": "computer_networks",
+      "language": "en",
+      "difficulty": "hard",
+      "question_type": "short_answer",
+      "topic": "Compare receiver flow control and network congestion control, then justify the active sending constraint in contrasting TCP situations.",
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "source_ids": [
+        "net_windows"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "net_windows",
+          "quote": "Flow control involves preventing senders from over-running the capacity of receivers."
+        },
+        {
+          "source_id": "net_windows",
+          "quote": "the maximum number of bytes of unacknowledged data allowed is now the minimum of the congestion window and the advertised window."
+        }
+      ],
+      "review_criteria": [
+        "Separate receiver buffer pressure from congestion along the network path.",
+        "If numeric windows are used, provide their units and outstanding unacknowledged data; distinguish total allowed in-flight bytes from additional send allowance.",
+        "A justified comparison must identify which constraint is active in each case and why changing the other limit alone may not help.",
+        "Do not infer that a large advertised receive window proves the path is uncongested."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "short_answer",
+        "core_topic": "net_flow_congestion",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    },
+    {
+      "id": "net_flow_congestion_zh",
+      "need_id": "net_flow_congestion",
+      "course": "computer_networks",
+      "language": "zh",
+      "difficulty": "hard",
+      "question_type": "short_answer",
+      "topic": "比较接收端流量控制与网络拥塞控制，并在不同 TCP 场景中论证实际限制发送的约束。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "source_ids": [
+        "net_windows"
+      ],
+      "expected_evidence": [
+        {
+          "source_id": "net_windows",
+          "quote": "Flow control involves preventing senders from over-running the capacity of receivers."
+        },
+        {
+          "source_id": "net_windows",
+          "quote": "the maximum number of bytes of unacknowledged data allowed is now the minimum of the congestion window and the advertised window."
+        }
+      ],
+      "review_criteria": [
+        "Separate receiver buffer pressure from congestion along the network path.",
+        "If numeric windows are used, provide their units and outstanding unacknowledged data; distinguish total allowed in-flight bytes from additional send allowance.",
+        "A justified comparison must identify which constraint is active in each case and why changing the other limit alone may not help.",
+        "Do not infer that a large advertised receive window proves the path is uncongested."
+      ],
+      "grading_expectations": {
+        "reviewer_type": "AI_prepared_provisional",
+        "human_validated": false,
+        "difficulty_label_status": "requested_target_not_empirical_student_difficulty",
+        "format": "short_answer",
+        "core_topic": "net_flow_congestion",
+        "must_meet_all_criteria": true
+      },
+      "split": "dev",
+      "pilot": true
+    }
+  ]
+}

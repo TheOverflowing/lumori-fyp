@@ -1,0 +1,84 @@
+[
+  {
+    "blind_id": "Q001",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Trace consecutive reads under PostgreSQL Repeatable Read and distinguish snapshot stability from serializable execution.",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "A PostgreSQL database has an account row with balance 100, committed. Two transactions run concurrently.\n\nTransaction T1 uses Repeatable Read and starts at time t0. Its first statement is SELECT balance FROM accounts WHERE id=1;.\n\nTransaction T2 then executes UPDATE accounts SET balance=balance+50 WHERE id=1; and COMMIT at time t1.\n\nAfter t1, T1 executes the following statements in order, without committing or rolling back:\n\n1. SELECT balance FROM accounts WHERE id=1;\n\n2. SELECT balance FROM accounts WHERE id=1;\n\nQuestion: Under PostgreSQL Repeatable Read, what balance value does each of T1's two consecutive SELECT statements return? Explain why this shows snapshot stability, and state whether this guarantees that T1's view is equivalent to some serial execution with T2.\n\nAssume all times are distinct and that no other transactions touch the row.",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q002",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "识别停止等待可靠传输中确认、超时和序号各自的作用。",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "在停止等待可靠传输中，发送方发送一个数据帧后等待确认。如果确认帧丢失或延迟到达，发送方会超时并重传原帧；接收方可能把重传帧误认为新帧，从而向上层交付重复副本。\n\n资料规定：停止等待协议的帧头通常包含1位序号，取值0和1，各帧使用的序号交替。\n\n关于确认（ACK）、超时和序号三者作用，下列哪项说法正确？",
+      "options": [
+        "ACK用于告知发送方原帧已成功交付；超时用于在ACK未按时到达时触发重传；序号用于让接收方区分重传副本与新帧，避免重复交付",
+        "ACK用于在ACK未按时到达时触发重传；超时用于告知发送方原帧已成功交付；序号用于对帧进行分组排序",
+        "ACK用于让接收方区分重传副本与新帧；超时用于告知发送方原帧已成功交付；序号用于在超时后触发重传",
+        "ACK、超时和序号都用于提高带宽利用率；其中序号在超时未到之前可替代ACK"
+      ]
+    }
+  },
+  {
+    "blind_id": "Q003",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Analyze and justify a synchronization design when a kernel thread and an interrupt handler share a spinlock, including local and multiprocessor effects.",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "A kernel is being modified so that a kernel thread in sys_pause and a timer interrupt handler clockintr both access ticks. The lock tickslock serializes the two accesses.\n\nSome designers propose the following change: the thread should disable interrupts only on code paths that it knows can be interrupted by clockintr, and leave interrupts enabled while holding tickslock on other paths. They also propose that if the thread already holds tickslock and is interrupted by clockintr, then when clockintr tries to acquire tickslock, the acquire routine should hand the lock to clockintr because the interrupted thread already owns the lock.\n\n1. The thread's interrupt-disabling code is removed; the thread holds tickslock with interrupts enabled.\n2. clockintr runs on the same CPU while the thread holds tickslock.\n3. clockintr calls acquire on tickslock.\n4. If the acquire sees the lock is held, the proposed routine lets clockintr proceed with the lock.\n\nUsing the supplied xv6 semantics, evaluate whether this proposal is safe. In your answer, identify the deadlock that arises from the original ordering, explain what property of the proposed hand-off violates xv6's lock rules, and state what xv6 does to prevent the same-CPU deadlock when a spinlock is used by an interrupt handler. Then explain why interrupts on other CPUs still require the spinlock.",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q004",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Recognize transaction atomicity and the effect of COMMIT versus ROLLBACK in a simple PostgreSQL transfer.",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "Consider a PostgreSQL transaction block that transfers $100 from Alice to Bob, following the bank example from the course evidence.\n\n1. BEGIN runs.\n2. The statement debiting $100 from Alice runs successfully.\n3. Before the statement crediting $100 to Bob runs, the transaction issues ROLLBACK instead of COMMIT.\n4. The transaction block ends.\n\nWhich outcome correctly describes the atomicity behavior in this scenario?\n\nA: Alice's debit and Bob's credit both remain, because the debit statement already succeeded before ROLLBACK.\nB: Alice's debit remains but Bob's credit is discarded, because ROLLBACK only undoes statements that ran after a savepoint.\nC: Alice's debit and Bob's credit are both canceled, because the whole transaction is rolled back and none of its updates take effect.\nD: Alice's debit remains temporary and becomes visible to other concurrent transactions after the transaction block ends.",
+      "options": [
+        "Alice's debit and Bob's credit both remain, because the debit statement already succeeded before ROLLBACK.",
+        "Alice's debit remains but Bob's credit is discarded, because ROLLBACK only undoes statements that ran after a savepoint.",
+        "Alice's debit and Bob's credit are both canceled, because the whole transaction is rolled back and none of its updates take effect.",
+        "Alice's debit remains temporary and becomes visible to other concurrent transactions after the transaction block ends."
+      ]
+    }
+  },
+  {
+    "blind_id": "Q005",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "推演 PostgreSQL Repeatable Read 下的连续读取，并区分快照稳定与可序列化执行。",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "某应用在 PostgreSQL 中把两个事务都设为 Repeatable Read（而非 Serializable）。请结合“快照稳定”和“可串行化执行”这两个概念回答下列问题。\n\n背景与条件：\n1. 事务 T1 的隔离级别是 Repeatable Read，只读取数据。\n2. 事务 T1 在开始后先执行了一条非事务控制语句（如 SELECT），随后又连续执行了若干条 SELECT。\n3. 在 T1 执行期间，事务 T2 提交了对其中某些行的更新。\n4. T1 全程不执行任何写操作，也不显式加锁。\n5. 现有资料还指出：Repeatable Read 可能观察到“控制记录已更新但相应明细记录未更新”这类现象。\n\n请判断并说明：\n1. T1 后续的 SELECT 是否还能看到 T2 在其快照建立之后提交的更新？请说明依据。\n2. T1 的快照稳定是否意味着 T1 的整个执行必然等价于某个串行（一次一个）执行？请说明依据。\n3. 若要让 T1 这类只读事务在并发下也得到严格的可串行化保证，应使用哪个隔离级别？该级别相对 Repeatable Read 需要额外做什么？\n\n请把答案组织为三点，每点先用“能/不能”“是/否”或隔离级别名称作答，再给出简短依据。",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q006",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "分析内核线程与中断处理程序共享自旋锁时的同步设计，并论证本 CPU 与多处理器情况下的影响。",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "考虑一个内核，其内核线程和中断处理程序通过自旋锁共享数据。教材给出了 xv6 在此情形下的设计决策，这些决策直接涉及本 CPU 与多处理器两种场景。请基于教材给出的约束，分析 xv6 的锁获取/释放顺序和中断控制如何避免死锁，并解释这些设计与多处理器场景的区别。\n\n资料要点（可作为推理依据）：\n1. 若自旋锁会被中断处理程序使用，则 CPU 在持有该锁时必须关闭中断；xv6 更保守：获取任何锁时都关闭本 CPU 中断。\n2. 教材描述了一种死锁：sys_pause 持有 tickslock 时被时钟中断打断，clockintr 尝试获取 tickslock 而等待，但 sys_pause 无法继续，导致该 CPU 死锁。\n3. 教材强调 acquire 必须先调用 push_off 再设置 lk->locked；release 必须先释放锁再调用 pop_off。\n4. 中断仍可在其他 CPU 上发生，其他 CPU 上的 acquire 可能等待线程释放自旋锁。\n5. xv6 禁止同一 CPU 重复获取已持有的锁。\n\n请回答以下问题：\n(1) 根据教材，若 acquire 先设置 lk->locked 再调用 push_off，为什么可能死锁？请结合本 CPU 上中断处理程序的行为说明。\n(2) 根据教材，若 release 先调用 pop_off 再释放锁，为什么可能出错？请结合本 CPU 上中断处理程序的行为说明。\n(3) 在 xv6 中，若 CPU 在持有自旋锁时收到中断，会发生什么？该 CPU 上的中断处理程序是否会尝试获取该锁？为什么？\n(4) 若同样的锁被另一个 CPU 上的中断处理程序或内核线程竞争，会发生什么？为什么不会造成本 CPU 那样的死锁？\n(5) 教材提到 xv6 禁止同一 CPU 重复获取已持有的锁。请说明这与 acquire/release 的中断控制顺序之间的关系，并解释它如何避免本 CPU 自死锁。\n\n请给出简短但完整的解释，每题结论需有依据。",
+      "options": []
+    }
+  }
+]

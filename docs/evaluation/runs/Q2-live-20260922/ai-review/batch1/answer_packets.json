@@ -1,0 +1,1425 @@
+[
+  {
+    "blind_id": "Q001",
+    "answer": "Both SELECT statements return 100.\n\nT1 sees a snapshot as of the start of its first non-transaction-control statement, so it does not see T2's committed update even though that update committed before the SELECTs.\n\nThis demonstrates snapshot stability: successive SELECT commands in the same Repeatable Read transaction see the same data and do not see changes committed by other transactions after T1 started.\n\nIt does not guarantee serializable execution. Repeatable Read prevents serialization anomalies only by detecting some conditions; the documentation states that this view is not necessarily consistent with any serial execution of concurrent transactions at the same level, and that serialization anomalies are still possible.",
+    "explanation": "The first SELECT establishes the snapshot at t0, before T2 commits. Because Repeatable Read only sees data committed before the transaction began, T1's later SELECTs still return 100.\n\nThe stable repeated result shows snapshot stability. However, the source explicitly warns that this stable view may not match any serial ordering, so Repeatable Read alone does not guarantee serializable execution.",
+    "citation_ids": [
+      "context_b8c6ef176348d7351252ba5cadca8e33",
+      "context_64f3e87052e573330345c37544c9849b",
+      "context_62bc5560e3b8e9705d4ac424255acdd1"
+    ],
+    "sources": [
+      {
+        "id": "context_b8c6ef176348d7351252ba5cadca8e33",
+        "document_name": "db_repeatable_read.md",
+        "page": 1,
+        "text": "13.2.2. Repeatable Read Isolation Level #\n\nThe Repeatable Read isolation level only sees data committed before the transaction began; it never sees either uncommitted data or changes committed by concurrent transactions during the transaction's execution. (However, each query does see the effects of previous updates executed within its own transaction, even though they are not yet committed.) This is a stronger guarantee than is required by the SQL standard for this isolation level, and prevents all of the phenomena described in Table 13.1 except for serialization anomalies. As mentioned above, this is specifically allowed by the standard, which only describes the minimum protections each isolation level must provide.\n\nThis level is different from Read Committed in that a query in a repeatable read transaction sees a snapshot as of the start of the first non-transaction-control statement in the transaction, not as of the start of the current statement within the transaction. Thus, successive SELECT commands within a single transaction see the same data, i.e., they do not see changes made by other transactions that committed after their own transaction started.\n\nApplications using this level must be prepared to retry transactions due to serialization failures.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "transaction",
+            "Level",
+            "committed",
+            "Read",
+            "Isolation",
+            "Repeatable",
+            "sees",
+            "data"
+          ],
+          "token_count": 233,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4177,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 0,
+          "page_char_start": 0,
+          "page_char_end": 1279,
+          "source_page_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_repeatable_read",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "7d06fe9d73894b31689d21c2a245ea9f"
+          ]
+        }
+      },
+      {
+        "id": "context_64f3e87052e573330345c37544c9849b",
+        "document_name": "db_repeatable_read.md",
+        "page": 1,
+        "text": "UPDATE, DELETE, MERGE, SELECT FOR UPDATE, and SELECT FOR SHARE commands behave the same as SELECT in terms of searching for target rows: they will only find target rows that were committed as of the transaction start time. However, such a target row might have already been updated (or deleted or locked) by another concurrent transaction by the time it is found. In this case, the repeatable read transaction will wait for the first updating transaction to commit or roll back (if it is still in progress). If the first updater rolls back, then its effects are negated and the repeatable read transaction can proceed with updating the originally found row. But if the first updater commits (and actually updated or deleted the row, not just locked it) then the repeatable read transaction will be rolled back with the message\n\nbecause a repeatable read transaction cannot modify or lock rows changed by other transactions after the repeatable read transaction began.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "transaction",
+            "repeatable",
+            "read",
+            "SELECT",
+            "target",
+            "rows",
+            "row",
+            "first"
+          ],
+          "token_count": 187,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4177,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 1,
+          "page_char_start": 1281,
+          "page_char_end": 2248,
+          "source_page_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_repeatable_read",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "8b776609220b757f853a09c19048f962"
+          ]
+        }
+      },
+      {
+        "id": "context_62bc5560e3b8e9705d4ac424255acdd1",
+        "document_name": "db_repeatable_read.md",
+        "page": 1,
+        "text": "When an application receives this error message, it should abort the current transaction and retry the whole transaction from the beginning. The second time through, the transaction will see the previously-committed change as part of its initial view of the database, so there is no logical conflict in using the new version of the row as the starting point for the new transaction's update.\n\nNote that only updating transactions might need to be retried; read-only transactions will never have serialization conflicts.\n\nThe Repeatable Read mode provides a rigorous guarantee that each transaction sees a completely stable view of the database. However, this view will not necessarily always be consistent with some serial (one at a time) execution of concurrent transactions of the same level. For example, even a read-only transaction at this level may see a control record updated to show that a batch has been completed but not see one of the detail records which is logically part of the batch because it read an earlier revision of the control record. Attempts to enforce business rules by transactions running at this isolation level are not likely to work correctly without careful use of explicit locks to block conflicting transactions.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "transaction",
+            "transactions",
+            "see",
+            "view",
+            "level",
+            "time",
+            "part",
+            "database"
+          ],
+          "token_count": 222,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4177,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 2,
+          "page_char_start": 2250,
+          "page_char_end": 3496,
+          "source_page_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_repeatable_read",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "da4058e02b13cba0e2e2c65b421177f4"
+          ]
+        }
+      },
+      {
+        "id": "context_b5d64b7816288a1b0a6f2f889e70aa0a",
+        "document_name": "db_repeatable_read.md",
+        "page": 1,
+        "text": "The Repeatable Read isolation level is implemented using a technique known in academic database literature and in some other database products as Snapshot Isolation. Differences in behavior and performance may be observed when compared with systems that use a traditional locking technique that reduces concurrency. Some other systems may even offer Repeatable Read and Snapshot Isolation as distinct isolation levels with different behavior. The permitted phenomena that distinguish the two techniques were not formalized by database researchers until after the SQL standard was developed, and are outside the scope of this manual. For a full treatment, please see [berenson95].",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "isolation",
+            "database",
+            "Repeatable",
+            "Read",
+            "technique",
+            "some",
+            "other",
+            "Snapshot"
+          ],
+          "token_count": 115,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4177,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 3,
+          "page_char_start": 3498,
+          "page_char_end": 4177,
+          "source_page_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_repeatable_read",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "8695e80c696c65409ee00dc525734bc3"
+          ]
+        }
+      },
+      {
+        "id": "context_8f1f61795315649141b9f4a982fffc26",
+        "document_name": "db_retry.md",
+        "page": 1,
+        "text": "13.2.3. Serializable Isolation Level #\n\nThe Serializable isolation level provides the strictest transaction isolation. This level emulates serial transaction execution for all committed transactions; as if transactions had been executed one after another, serially, rather than concurrently. However, like the Repeatable Read level, applications using this level must be prepared to retry transactions due to serialization failures. In fact, this isolation level works exactly the same as Repeatable Read except that it also monitors for conditions which could make execution of a concurrent set of serializable transactions behave in a manner inconsistent with all possible serial (one at a time) executions of those transactions. This monitoring does not introduce any blocking beyond that present in repeatable read, but there is some overhead to the monitoring, and detection of the conditions which could cause a serialization anomaly will trigger a serialization failure.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "Level",
+            "transactions",
+            "Isolation",
+            "Serializable",
+            "Repeatable",
+            "Read",
+            "serialization",
+            "transaction"
+          ],
+          "token_count": 170,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 5049,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 0,
+          "page_char_start": 0,
+          "page_char_end": 977,
+          "source_page_sha256": "710c7c5e9c7bdc0394af791bc6a3777cfd7696bc32791506ef752f44ce5a347c",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "710c7c5e9c7bdc0394af791bc6a3777cfd7696bc32791506ef752f44ce5a347c",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_retry",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "c927b8f9533b868ef1173aa0937ce919"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "blind_id": "Q002",
+    "answer": "A",
+    "explanation": "A正确：资料指出，确认表示原帧已成功交付；若发送方在合理时间内未收到确认，则重传原帧，这一等待动作称为超时；针对ACK丢失或延迟导致接收方误认重传帧为新帧的问题，停止等待协议用1位交替序号使接收方能识别并忽略重复副本。\nB、C错误：它们把确认、超时和序号的作用互相颠倒；资料中确认不负责触发重传，超时不负责表示成功交付，序号在停止等待中用于区分重复帧而非分组排序。\nD错误：资料未把三者描述为提高带宽利用率，也未说序号可替代ACK；停止等待明确是发送后等待确认。",
+    "citation_ids": [
+      "context_4f3593644fe850f533212da4f1794563",
+      "context_703113b2752bacbfa42ba12b7de22984",
+      "context_af041bb0b9a114ad48f4a108f447f01d"
+    ],
+    "sources": [
+      {
+        "id": "context_4f3593644fe850f533212da4f1794563",
+        "document_name": "net_reliability.md",
+        "page": 1,
+        "text": "Reliable delivery is usually accomplished using a combination of two fundamental mechanisms—acknowledgments and timeouts. An acknowledgment (ACK for short) is a small control frame that a protocol sends back to its peer saying that it has received an earlier frame. By control frame we mean a header without any data, although a protocol can piggyback an ACK on a data frame it just happens to be sending in the opposite direction. The receipt of an acknowledgment indicates to the sender of the original frame that its frame was successfully delivered. If the sender does not receive an acknowledgment after a reasonable amount of time, then it retransmits the original frame. This action of waiting a reasonable amount of time is called a timeout.\n\nThe general strategy of using acknowledgments and timeouts to implement reliable delivery is sometimes called automatic repeat request (abbreviated ARQ). This section describes three different ARQ algorithms using generic language; that is, we do not give detailed information about a particular protocol’s header fields.\n\n2.5.1 Stop-and-Wait",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "frame",
+            "acknowledgment",
+            "protocol",
+            "Reliable",
+            "delivery",
+            "acknowledgments",
+            "timeouts",
+            "ACK"
+          ],
+          "token_count": 207,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 3660,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 1,
+          "page_char_start": 1202,
+          "page_char_end": 2296,
+          "source_page_sha256": "295680239bb44fd1c58e52da9d66aa9bea0b300ab63428ca89133035be569e00",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "295680239bb44fd1c58e52da9d66aa9bea0b300ab63428ca89133035be569e00",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_reliability",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "d9c1317b2a71859f8408471701deba08"
+          ]
+        }
+      },
+      {
+        "id": "context_703113b2752bacbfa42ba12b7de22984",
+        "document_name": "net_reliability.md",
+        "page": 1,
+        "text": "The simplest ARQ scheme is the stop-and-wait algorithm. The idea of stop-and-wait is straightforward: After transmitting one frame, the sender waits for an acknowledgment before transmitting the next frame. If the acknowledgment does not arrive after a certain period of time, the sender times out and retransmits the original frame.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "frame",
+            "stop-and-wait",
+            "After",
+            "transmitting",
+            "sender",
+            "acknowledgment",
+            "simplest",
+            "ARQ"
+          ],
+          "token_count": 65,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 3660,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 2,
+          "page_char_start": 2298,
+          "page_char_end": 2631,
+          "source_page_sha256": "295680239bb44fd1c58e52da9d66aa9bea0b300ab63428ca89133035be569e00",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "295680239bb44fd1c58e52da9d66aa9bea0b300ab63428ca89133035be569e00",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_reliability",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "eae2d41f25ead9dfc8d1743291935996"
+          ]
+        }
+      },
+      {
+        "id": "context_af041bb0b9a114ad48f4a108f447f01d",
+        "document_name": "net_reliability.md",
+        "page": 1,
+        "text": "There is one important subtlety in the stop-and-wait algorithm. Suppose the sender sends a frame and the receiver acknowledges it, but the acknowledgment is either lost or delayed in arriving. This situation is illustrated in timelines (c) and (d) of Figure 34. In both cases, the sender times out and retransmits the original frame, but the receiver will think that it is the next frame, since it correctly received and acknowledged the first frame. This has the potential to cause duplicate copies of a frame to be delivered. To address this problem, the header for a stop-and-wait protocol usually includes a 1-bit sequence number—that is, the sequence number can take on the values 0 and 1—and the sequence numbers used for each frame alternate, as illustrated in Figure 35. Thus, when the sender retransmits frame 0, the receiver can determine that it is seeing a second copy of frame 0 rather than the first copy of frame 1 and therefore can ignore it (the receiver still acknowledges it, in case the first ACK was lost).",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "frame",
+            "receiver",
+            "sender",
+            "first",
+            "sequence",
+            "stop-and-wait",
+            "acknowledges",
+            "lost"
+          ],
+          "token_count": 222,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 3660,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 3,
+          "page_char_start": 2633,
+          "page_char_end": 3660,
+          "source_page_sha256": "295680239bb44fd1c58e52da9d66aa9bea0b300ab63428ca89133035be569e00",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "295680239bb44fd1c58e52da9d66aa9bea0b300ab63428ca89133035be569e00",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_reliability",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "7e95442e1fc302d75abe9cc6d41e6bac"
+          ]
+        }
+      },
+      {
+        "id": "context_024a09f3f7d5023eed0d117c3ceabab0",
+        "document_name": "net_ack.md",
+        "page": 1,
+        "text": "The Acknowledgement, SequenceNum, and AdvertisedWindow fields are all involved in TCP’s sliding window algorithm. Because TCP is a byte-oriented protocol, each byte of data has a sequence number. The SequenceNum field contains the sequence number for the first byte of data carried in that segment, and the Acknowledgement and AdvertisedWindow fields carry information about the flow of data going in the other direction. To simplify our discussion, we ignore the fact that data can flow in both directions, and we concentrate on data that has a particular SequenceNum flowing in one direction and Acknowledgement and AdvertisedWindow values flowing in the opposite direction, as illustrated in Figure 129. The use of these three fields is described more fully later in this chapter.\n\nThe idea is that two parties want to agree on a set of parameters, which, in the case of opening a TCP connection, are the starting sequence numbers the two sides plan to use for their respective byte streams. In general, the parameters might be any facts that each side wants the other to know about.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "data",
+            "Acknowledgement",
+            "SequenceNum",
+            "AdvertisedWindow",
+            "fields",
+            "TCP",
+            "byte",
+            "sequence"
+          ],
+          "token_count": 218,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 5767,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 0,
+          "page_char_start": 0,
+          "page_char_end": 1086,
+          "source_page_sha256": "582dd98a80568d9156c30ad5824a3acb05577e0a5ec8a930da341c56122a00ac",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "582dd98a80568d9156c30ad5824a3acb05577e0a5ec8a930da341c56122a00ac",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_ack",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "4b3e1ea1c71ad3c6ffe128aa7b4111a4"
+          ]
+        }
+      },
+      {
+        "id": "context_e03bfce24c371d574e8d66b66796e6f1",
+        "document_name": "net_ack.md",
+        "page": 1,
+        "text": "First, the client (the active participant) sends a segment to the server (the passive participant) stating the initial sequence number it plans to use (Flags = SYN, SequenceNum = x). The server then responds with a single segment that both acknowledges the client’s sequence number (Flags = ACK, Ack = x + 1) and states its own beginning sequence number (Flags = SYN, SequenceNum = y). That is, both the SYN and ACK bits are set in the Flags field of this second message. Finally, the client responds with a third segment that acknowledges the server’s sequence number (Flags = ACK, Ack = y + 1). The reason why each side acknowledges a sequence number that is one larger than the one sent is that the Acknowledgement field actually identifies the “next sequence number expected,” thereby implicitly acknowledging all earlier sequence numbers. Although not shown in this timeline, a timer is scheduled for each of the first two segments, and if the expected response is not received the segment is retransmitted.\n\n5.2.4 Sliding Window Revisited",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "sequence",
+            "number",
+            "Flags",
+            "ACK",
+            "segment",
+            "client",
+            "server",
+            "SYN"
+          ],
+          "token_count": 219,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 5767,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 1,
+          "page_char_start": 1087,
+          "page_char_end": 2132,
+          "source_page_sha256": "582dd98a80568d9156c30ad5824a3acb05577e0a5ec8a930da341c56122a00ac",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "582dd98a80568d9156c30ad5824a3acb05577e0a5ec8a930da341c56122a00ac",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_ack",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "8834e17375d1a620909bf86261e411be"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "blind_id": "Q003",
+    "answer": "The proposal is not safe.\n\nOriginal deadlock ordering: if sys_pause holds tickslock with interrupts enabled and the same CPU is then interrupted by the timer interrupt, clockintr tries to acquire tickslock, sees it held, and waits. tickslock will never be released because only sys_pause can release it, and sys_pause cannot continue until clockintr returns. So the CPU deadlocks, and any code needing either lock also freezes.\n\nHand-off violation: xv6 forbids a CPU that currently holds a lock from re-acquiring it; detecting this is the purpose of the holding call in acquire. Letting clockintr proceed while the interrupted thread still holds tickslock means the same CPU holds the lock twice, violating xv6's non-re-entrant rule. It also lets a new operation run while invariants protected by tickslock may be temporarily violated and not yet restored.\n\nWhat xv6 does: when a CPU acquires any lock, xv6 always disables interrupts on that CPU. This prevents a same-CPU interrupt handler from attempting to acquire a lock the CPU already holds. Interrupts may still occur on other CPUs, so an interrupt's acquire can wait for a thread to release a spinlock; just not on the same CPU. Because the other CPUs can still enter the interrupt handler and contend for tickslock, the spinlock is still required to serialize the thread's and handler's accesses across CPUs.",
+    "explanation": "Correct reasoning must use the supplied xv6 facts: a same-CPU acquire of an already-held lock deadlocks because the holder cannot run until the handler returns, xv6 forbids re-acquisition by the same CPU through the holding check, and xv6 disables interrupts on the acquiring CPU whenever any lock is acquired. The hand-off proposal is exactly the re-acquisition xv6 forbids, so it does not restore safety. Cross-CPU interrupts are still possible, so disabling local interrupts does not remove the need for spinlock serialization of the shared data.",
+    "citation_ids": [
+      "context_4d761d5392513e25c031c334eb9f634a",
+      "context_18ed3aab01b029acd8c1aa100b6ea664",
+      "context_a223d95bb72ab6393473735d28bbebd8",
+      "context_721949419795d5384fb58f88476a0eb7"
+    ],
+    "sources": [
+      {
+        "id": "context_4d761d5392513e25c031c334eb9f634a",
+        "document_name": "os_interrupt_locks.md",
+        "page": 1,
+        "text": "A question that sometimes arises is what should happen if a CPU tries to acquire a lock that the same CPU already holds. One line of reasoning is that this should be allowed: no other CPU can hold the lock, so there’s no need to worry about CPUs interfering with each others’ use of the protected data. Locking systems that allow a CPU to re-acquire a lock it already holds are called a re-entrant or recursive. On the other hand, if a lock is already held, even on the same CPU, that means an operation may have temporarily violated and not yet restored some invariants; to allow a new operation to commence while the invariants don’t hold seems like an invitation to bugs. Xv6 takes this latter view, and forbids a CPU that currently holds a lock from re-acquiring it. Detecting this situation is the purpose of the call to holding in acquire.\n\n7.5 Locks and interrupts\n\nSome xv6 spinlocks protect data that is used by both threads and interrupt handlers. For example, the clockintr timer interrupt handler might increment ticks at about the same time that a kernel thread reads ticks in sys_pause. The lock tickslock serializes the two accesses.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "CPU",
+            "lock",
+            "same",
+            "already",
+            "holds",
+            "acquire",
+            "other",
+            "hold"
+          ],
+          "token_count": 244,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4198,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 2,
+          "page_char_start": 1247,
+          "page_char_end": 2395,
+          "source_page_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_interrupt_locks",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "a2177730d728cc62882a278424370908"
+          ]
+        }
+      },
+      {
+        "id": "context_18ed3aab01b029acd8c1aa100b6ea664",
+        "document_name": "os_interrupt_locks.md",
+        "page": 1,
+        "text": "The interaction of spinlocks and interrupts raises a potential danger. Suppose sys_pause holds tickslock, and its CPU is interrupted by a timer interrupt. clockintr would try to acquire tickslock, see it was held, and wait for it to be released. In this situation, tickslock will never be released: only sys_pause can release it, but sys_pause will not continue running until clockintr returns. So the CPU will deadlock, and any code that needs either lock will also freeze.\n\nTo avoid this situation, if a spinlock is used by an interrupt handler, a CPU must never hold that lock with interrupts enabled. Xv6 is more conservative: when a CPU acquires any lock, xv6 always disables interrupts on that CPU. Interrupts may still occur on other CPUs, so an interrupt’s acquire can wait for a thread to release a spinlock; just not on the same CPU.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "CPU",
+            "interrupts",
+            "sys_pause",
+            "tickslock",
+            "interrupt",
+            "lock",
+            "clockintr",
+            "acquire"
+          ],
+          "token_count": 181,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4198,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 3,
+          "page_char_start": 2397,
+          "page_char_end": 3240,
+          "source_page_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_interrupt_locks",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "89cf818288d673dd1949cc2d6c4b06ef"
+          ]
+        }
+      },
+      {
+        "id": "context_a223d95bb72ab6393473735d28bbebd8",
+        "document_name": "os_races.md",
+        "page": 1,
+        "text": "Most kernels, including xv6, interleave the execution of multiple activities. One source of interleaving is multiprocessor hardware: computers with multiple CPUs executing independently, such as xv6’s RISC-V. These multiple CPUs share physical RAM, and xv6 exploits the sharing to maintain kernel data structures that all CPUs read and write. This sharing raises the possibility of one CPU reading a data structure while another CPU is mid-way through updating it, or even multiple CPUs updating the same data simultaneously; without careful design such parallel access is likely to yield incorrect results or a broken data structure. Even on a uniprocessor, the kernel may switch the CPU among a number of threads, causing their execution to be interleaved. Finally, a device interrupt handler that modifies the same data as some interruptible code could damage the data if the interrupt occurs just as the interrupted code is also modifying the data. The word concurrency refers to situations in which multiple instruction streams are interleaved, due to multiprocessor parallelism, thread switching, or interrupts.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "data",
+            "multiple",
+            "CPUs",
+            "xv6",
+            "CPU",
+            "execution",
+            "One",
+            "multiprocessor"
+          ],
+          "token_count": 209,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 7146,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 0,
+          "page_char_start": 0,
+          "page_char_end": 1117,
+          "source_page_sha256": "0cf37b5fe1891b4795125b3fd96b06e962c6b397769bc36b74f2a969780722ab",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "0cf37b5fe1891b4795125b3fd96b06e962c6b397769bc36b74f2a969780722ab",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_races",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "42c74706022d98d01ec7aa7e273b355b"
+          ]
+        }
+      },
+      {
+        "id": "context_721949419795d5384fb58f88476a0eb7",
+        "document_name": "os_races.md",
+        "page": 1,
+        "text": "Xv6 has two types of locks: spinlocks and sleep-locks. We’ll start with spinlocks. Xv6 represents a spinlock as a struct spinlock. The important field in the structure is locked, a word that is zero when the lock is available and non-zero when it is held. Were there no concurrency, xv6 could acquire a lock with code like\n\nUnfortunately, this implementation does not guarantee mutual exclusion in the face of concurrency. Two CPUs could simultaneously reach line 25, see that lk->locked is zero, and then both grab the lock by executing line 26. At this point, two different CPUs hold the lock, which violates the mutual exclusion property. What we need is a way to make lines 25 and 26 execute as an atomic (indivisible) step.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "lock",
+            "Xv6",
+            "two",
+            "spinlocks",
+            "spinlock",
+            "locked",
+            "zero",
+            "concurrency"
+          ],
+          "token_count": 169,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 7146,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 5,
+          "page_char_start": 5136,
+          "page_char_end": 5864,
+          "source_page_sha256": "0cf37b5fe1891b4795125b3fd96b06e962c6b397769bc36b74f2a969780722ab",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "0cf37b5fe1891b4795125b3fd96b06e962c6b397769bc36b74f2a969780722ab",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_races",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "d4948cf8c5815112124c5dbc86f97f43"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "blind_id": "Q004",
+    "answer": "C",
+    "explanation": "Option A is wrong because ROLLBACK cancels all updates made so far in the transaction, so the already-successful debit does not remain.\nOption B is wrong because the evidence says that if we decide not to commit partway through, we can issue ROLLBACK and all our updates so far will be canceled; savepoints are not required for this effect.\nOption C is correct because a transaction bundles multiple steps into a single all-or-nothing operation, and ROLLBACK cancels all updates made so far in the transaction; the atomicity guarantee means none of the steps affect the database.\nOption D is wrong because rolled-back actions never become visible to other sessions, and the transaction has ended without committing.",
+    "citation_ids": [
+      "context_a4dbf6c57faf5ed73a3266f5fa5cc57b",
+      "context_7e0ec95ca5933d08f0f90d4f75ff0a6d"
+    ],
+    "sources": [
+      {
+        "id": "context_a4dbf6c57faf5ed73a3266f5fa5cc57b",
+        "document_name": "db_atomicity.md",
+        "page": 1,
+        "text": "3.4. Transactions #\n\nTransactions are a fundamental concept of all database systems. The essential point of a transaction is that it bundles multiple steps into a single, all-or-nothing operation. The intermediate states between the steps are not visible to other concurrent transactions, and if some failure occurs that prevents the transaction from completing, then none of the steps affect the database at all.\n\nThe details of these commands are not important here; the important point is that there are several separate updates involved to accomplish this rather simple operation. Our bank's officers will want to be assured that either all these updates happen, or none of them happen. It would certainly not do for a system failure to result in Bob receiving $100.00 that was not debited from Alice. Nor would Alice long remain a happy customer if she was debited without Bob being credited. We need a guarantee that if something goes wrong partway through the operation, none of the steps executed so far will take effect. Grouping the updates into a transaction gives us this guarantee. A transaction is said to be atomic: from the point of view of other transactions, it either happens completely or not at all.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "Transactions",
+            "all",
+            "transaction",
+            "steps",
+            "point",
+            "operation",
+            "none",
+            "updates"
+          ],
+          "token_count": 236,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4399,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 0,
+          "page_char_start": 0,
+          "page_char_end": 1220,
+          "source_page_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_atomicity",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "5db78ff1ace1838db8be9f257893db21"
+          ]
+        }
+      },
+      {
+        "id": "context_8b7a786dd2de96c460cb7fcbe8028962",
+        "document_name": "db_atomicity.md",
+        "page": 1,
+        "text": "We also want a guarantee that once a transaction is completed and acknowledged by the database system, it has indeed been permanently recorded and won't be lost even if a crash ensues shortly thereafter. For example, if we are recording a cash withdrawal by Bob, we do not want any chance that the debit to his account will disappear in a crash just after he walks out the bank door. A transactional database guarantees that all the updates made by a transaction are logged in permanent storage (i.e., on disk) before the transaction is reported complete.\n\nAnother important property of transactional databases is closely related to the notion of atomic updates: when multiple transactions are running concurrently, each one should not be able to see the incomplete changes made by others. For example, if one transaction is busy totalling all the branch balances, it would not do for it to include the debit from Alice's branch but not the credit to Bob's branch, nor vice versa. So transactions must be all-or-nothing not only in terms of their permanent effect on the database, but also in terms of their visibility as they happen. The updates made so far by an open transaction are invisible to other transactions until the transaction completes, whereupon all the updates become visible simultaneously.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "transaction",
+            "updates",
+            "database",
+            "all",
+            "made",
+            "transactions",
+            "branch",
+            "want"
+          ],
+          "token_count": 249,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4399,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 1,
+          "page_char_start": 1222,
+          "page_char_end": 2529,
+          "source_page_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_atomicity",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "910ac496cd6cefc8e30820610683d750"
+          ]
+        }
+      },
+      {
+        "id": "context_7e0ec95ca5933d08f0f90d4f75ff0a6d",
+        "document_name": "db_atomicity.md",
+        "page": 1,
+        "text": "In PostgreSQL, a transaction is set up by surrounding the SQL commands of the transaction with BEGIN and COMMIT commands. So our banking transaction would actually look like:\n\nIf, partway through the transaction, we decide we do not want to commit (perhaps we just noticed that Alice's balance went negative), we can issue the command ROLLBACK instead of COMMIT, and all our updates so far will be canceled.\n\nPostgreSQL actually treats every SQL statement as being executed within a transaction. If you do not issue a BEGIN command, then each individual statement has an implicit BEGIN and (if successful) COMMIT wrapped around it. A group of statements surrounded by BEGIN and COMMIT is sometimes called a transaction block.\n\nIt's possible to control the statements in a transaction in a more granular fashion through the use of savepoints. Savepoints allow you to selectively discard parts of the transaction, while committing the rest. After defining a savepoint with SAVEPOINT, you can if needed roll back to the savepoint with ROLLBACK TO. All the transaction's database changes between defining the savepoint and rolling back to it are discarded, but changes earlier than the savepoint are kept.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "transaction",
+            "COMMIT",
+            "savepoint",
+            "BEGIN",
+            "PostgreSQL",
+            "SQL",
+            "commands",
+            "actually"
+          ],
+          "token_count": 232,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4399,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 2,
+          "page_char_start": 2531,
+          "page_char_end": 3732,
+          "source_page_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_atomicity",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "c4ce122435f2e6109aca19c76fe95ba5"
+          ]
+        }
+      },
+      {
+        "id": "context_2cf186cae4f79cf460678cf586054617",
+        "document_name": "db_atomicity.md",
+        "page": 1,
+        "text": "After rolling back to a savepoint, it continues to be defined, so you can roll back to it several times. Conversely, if you are sure you won't need to roll back to a particular savepoint again, it can be released, so the system can free some resources. Keep in mind that either releasing or rolling back to a savepoint will automatically release all savepoints that were defined after it.\n\nAll this is happening within the transaction block, so none of it is visible to other database sessions. When and if you commit the transaction block, the committed actions become visible as a unit to other sessions, while the rolled-back actions never become visible at all.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "back",
+            "savepoint",
+            "all",
+            "visible",
+            "After",
+            "rolling",
+            "defined",
+            "roll"
+          ],
+          "token_count": 134,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4399,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 3,
+          "page_char_start": 3734,
+          "page_char_end": 4399,
+          "source_page_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_atomicity",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "60f6f558d4f025e89da6ee955f832bfb"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "blind_id": "Q005",
+    "answer": "1. 不能。Repeatable Read 的查询只看到事务开始前已提交的数据，看不到并发事务在事务执行期间提交的修改；其快照取第一个非事务控制语句开始时的状态，因此 T1 后续 SELECT 看到相同数据，不会看到 T2 在快照建立后提交的更新。\n2. 否。Repeatable Read 提供“每个事务看到完全稳定的数据库视图”的严格保证，但这个视图不一定与同一级别并发事务的某个串行执行一致；资料给出的控制记录与明细记录不一致的例子正说明即使只读事务也可能出现这类不一致。该级别只排除除序列化异常以外的现象。\n3. 应使用 Serializable。它和 Repeatable Read 工作方式基本相同，但额外监视那些可能使并发可串行化事务的执行结果与所有可能的串行执行都不一致的条件；检测到这种条件会触发序列化失败，因此应用仍需准备重试事务。",
+    "explanation": "评分要点：\n- 第 1 点：必须答出看不到 T2 在快照建立之后提交的更新。\n- 第 2 点：必须答出快照稳定不等于可串行化等价。\n- 第 3 点：必须答出 Serializable，并说明它额外监视可能造成串行化异常的条件、触发序列化失败。",
+    "citation_ids": [
+      "context_b8c6ef176348d7351252ba5cadca8e33",
+      "context_62bc5560e3b8e9705d4ac424255acdd1",
+      "context_8f1f61795315649141b9f4a982fffc26"
+    ],
+    "sources": [
+      {
+        "id": "context_b8c6ef176348d7351252ba5cadca8e33",
+        "document_name": "db_repeatable_read.md",
+        "page": 1,
+        "text": "13.2.2. Repeatable Read Isolation Level #\n\nThe Repeatable Read isolation level only sees data committed before the transaction began; it never sees either uncommitted data or changes committed by concurrent transactions during the transaction's execution. (However, each query does see the effects of previous updates executed within its own transaction, even though they are not yet committed.) This is a stronger guarantee than is required by the SQL standard for this isolation level, and prevents all of the phenomena described in Table 13.1 except for serialization anomalies. As mentioned above, this is specifically allowed by the standard, which only describes the minimum protections each isolation level must provide.\n\nThis level is different from Read Committed in that a query in a repeatable read transaction sees a snapshot as of the start of the first non-transaction-control statement in the transaction, not as of the start of the current statement within the transaction. Thus, successive SELECT commands within a single transaction see the same data, i.e., they do not see changes made by other transactions that committed after their own transaction started.\n\nApplications using this level must be prepared to retry transactions due to serialization failures.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "transaction",
+            "Level",
+            "committed",
+            "Read",
+            "Isolation",
+            "Repeatable",
+            "sees",
+            "data"
+          ],
+          "token_count": 233,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4177,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 0,
+          "page_char_start": 0,
+          "page_char_end": 1279,
+          "source_page_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_repeatable_read",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "7d06fe9d73894b31689d21c2a245ea9f"
+          ]
+        }
+      },
+      {
+        "id": "context_64f3e87052e573330345c37544c9849b",
+        "document_name": "db_repeatable_read.md",
+        "page": 1,
+        "text": "UPDATE, DELETE, MERGE, SELECT FOR UPDATE, and SELECT FOR SHARE commands behave the same as SELECT in terms of searching for target rows: they will only find target rows that were committed as of the transaction start time. However, such a target row might have already been updated (or deleted or locked) by another concurrent transaction by the time it is found. In this case, the repeatable read transaction will wait for the first updating transaction to commit or roll back (if it is still in progress). If the first updater rolls back, then its effects are negated and the repeatable read transaction can proceed with updating the originally found row. But if the first updater commits (and actually updated or deleted the row, not just locked it) then the repeatable read transaction will be rolled back with the message\n\nbecause a repeatable read transaction cannot modify or lock rows changed by other transactions after the repeatable read transaction began.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "transaction",
+            "repeatable",
+            "read",
+            "SELECT",
+            "target",
+            "rows",
+            "row",
+            "first"
+          ],
+          "token_count": 187,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4177,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 1,
+          "page_char_start": 1281,
+          "page_char_end": 2248,
+          "source_page_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_repeatable_read",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "8b776609220b757f853a09c19048f962"
+          ]
+        }
+      },
+      {
+        "id": "context_62bc5560e3b8e9705d4ac424255acdd1",
+        "document_name": "db_repeatable_read.md",
+        "page": 1,
+        "text": "When an application receives this error message, it should abort the current transaction and retry the whole transaction from the beginning. The second time through, the transaction will see the previously-committed change as part of its initial view of the database, so there is no logical conflict in using the new version of the row as the starting point for the new transaction's update.\n\nNote that only updating transactions might need to be retried; read-only transactions will never have serialization conflicts.\n\nThe Repeatable Read mode provides a rigorous guarantee that each transaction sees a completely stable view of the database. However, this view will not necessarily always be consistent with some serial (one at a time) execution of concurrent transactions of the same level. For example, even a read-only transaction at this level may see a control record updated to show that a batch has been completed but not see one of the detail records which is logically part of the batch because it read an earlier revision of the control record. Attempts to enforce business rules by transactions running at this isolation level are not likely to work correctly without careful use of explicit locks to block conflicting transactions.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "transaction",
+            "transactions",
+            "see",
+            "view",
+            "level",
+            "time",
+            "part",
+            "database"
+          ],
+          "token_count": 222,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4177,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 2,
+          "page_char_start": 2250,
+          "page_char_end": 3496,
+          "source_page_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_repeatable_read",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "da4058e02b13cba0e2e2c65b421177f4"
+          ]
+        }
+      },
+      {
+        "id": "context_b5d64b7816288a1b0a6f2f889e70aa0a",
+        "document_name": "db_repeatable_read.md",
+        "page": 1,
+        "text": "The Repeatable Read isolation level is implemented using a technique known in academic database literature and in some other database products as Snapshot Isolation. Differences in behavior and performance may be observed when compared with systems that use a traditional locking technique that reduces concurrency. Some other systems may even offer Repeatable Read and Snapshot Isolation as distinct isolation levels with different behavior. The permitted phenomena that distinguish the two techniques were not formalized by database researchers until after the SQL standard was developed, and are outside the scope of this manual. For a full treatment, please see [berenson95].",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "isolation",
+            "database",
+            "Repeatable",
+            "Read",
+            "technique",
+            "some",
+            "other",
+            "Snapshot"
+          ],
+          "token_count": 115,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4177,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 3,
+          "page_char_start": 3498,
+          "page_char_end": 4177,
+          "source_page_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_repeatable_read",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "8695e80c696c65409ee00dc525734bc3"
+          ]
+        }
+      },
+      {
+        "id": "context_8f1f61795315649141b9f4a982fffc26",
+        "document_name": "db_retry.md",
+        "page": 1,
+        "text": "13.2.3. Serializable Isolation Level #\n\nThe Serializable isolation level provides the strictest transaction isolation. This level emulates serial transaction execution for all committed transactions; as if transactions had been executed one after another, serially, rather than concurrently. However, like the Repeatable Read level, applications using this level must be prepared to retry transactions due to serialization failures. In fact, this isolation level works exactly the same as Repeatable Read except that it also monitors for conditions which could make execution of a concurrent set of serializable transactions behave in a manner inconsistent with all possible serial (one at a time) executions of those transactions. This monitoring does not introduce any blocking beyond that present in repeatable read, but there is some overhead to the monitoring, and detection of the conditions which could cause a serialization anomaly will trigger a serialization failure.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "Level",
+            "transactions",
+            "Isolation",
+            "Serializable",
+            "Repeatable",
+            "Read",
+            "serialization",
+            "transaction"
+          ],
+          "token_count": 170,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 5049,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 0,
+          "page_char_start": 0,
+          "page_char_end": 977,
+          "source_page_sha256": "710c7c5e9c7bdc0394af791bc6a3777cfd7696bc32791506ef752f44ce5a347c",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "710c7c5e9c7bdc0394af791bc6a3777cfd7696bc32791506ef752f44ce5a347c",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_retry",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "c927b8f9533b868ef1173aa0937ce919"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "blind_id": "Q006",
+    "answer": "(1) 若 acquire 先设置 lk->locked 再调用 push_off，则存在一个短暂窗口：锁已被本 CPU 持有但本 CPU 中断仍开启。若此时发生中断，中断处理程序若要获取同一把锁，会看到锁已被持有而自旋等待；而该锁只有被中断打断的代码能释放，但该代码无法继续运行，直到中断处理程序返回。于是本 CPU 自死锁。\n(2) 若 release 先调用 pop_off 再释放锁，则存在一个窗口：本 CPU 可能重新开启中断，但锁还未被释放。若此时中断发生，中断处理程序要获取同一把锁，会看到锁已被持有而自旋等待；而锁本应马上被释放，但中断处理程序不返回，释放代码就无法继续，故也会死锁。\n(3) 在 xv6 中，若 CPU 在持有自旋锁时收到中断，由于 acquire 已在本 CPU 关闭中断，该中断在该 CPU 上不会被处理，直到锁释放并恢复中断使能。该 CPU 上的中断处理程序不会在该锁被持有时运行，因此不会尝试获取同一把锁，从而避免本 CPU 自死锁。\n(4) 其他 CPU 上的中断处理程序或内核线程仍可尝试获取该锁。若锁已被持有，它们会自旋等待，直到持有者释放锁。此时持有者在本 CPU 上可以继续运行，因为本 CPU 中断已关闭，不会被同一 CPU 上的中断处理程序阻塞；因此其他 CPU 上的等待不会造成本 CPU 那种死锁。\n(5) 禁止同一 CPU 重复获取锁可防止递归获取造成自死锁：若同一 CPU 已持有锁，再次 acquire 会自旋等待永不会释放的锁（因为只有该 CPU 能释放，但它正忙等）。结合“acquire 先关中断再置锁位”的顺序，既防止中断处理程序在本 CPU 上插入并等待同一把锁，也防止同一 CPU 在已持有锁时再次获取，从而保证本 CPU 不会因自旋锁而永久等待自己。",
+    "explanation": "本题要求围绕教材给的四个约束进行推理：\n1. 获取锁时必须先禁用中断，再置锁位，否则“持有锁但中断开启”的窗口会让本 CPU 的中断处理程序自旋等待一把无法释放的锁。\n2. 释放锁时必须先释放锁，再恢复中断使能，否则“锁未释放但中断已开启”的窗口同样会让中断处理程序等待。\n3. 本 CPU 在持有自旋锁期间中断被关闭，因此本 CPU 上的中断处理程序不会插入并尝试获取同一把锁。\n4. 其他 CPU 仍可发生中断并竞争锁；它们自旋等待是允许的，因为持有者可以在本 CPU 上继续执行并最终释放。\n5. 禁止同一 CPU 重复获取锁，避免同一 CPU 上的递归自旋等待。\n以上各点均可由教材中关于 push_off、pop_off、acquire/release 顺序、hold 检查以及多处理器中断仍可发生的描述直接支持。",
+    "citation_ids": [
+      "context_4d761d5392513e25c031c334eb9f634a",
+      "context_18ed3aab01b029acd8c1aa100b6ea664",
+      "context_58f53138af43939331f05fa6b73fe520",
+      "context_a223d95bb72ab6393473735d28bbebd8"
+    ],
+    "sources": [
+      {
+        "id": "context_4d761d5392513e25c031c334eb9f634a",
+        "document_name": "os_interrupt_locks.md",
+        "page": 1,
+        "text": "A question that sometimes arises is what should happen if a CPU tries to acquire a lock that the same CPU already holds. One line of reasoning is that this should be allowed: no other CPU can hold the lock, so there’s no need to worry about CPUs interfering with each others’ use of the protected data. Locking systems that allow a CPU to re-acquire a lock it already holds are called a re-entrant or recursive. On the other hand, if a lock is already held, even on the same CPU, that means an operation may have temporarily violated and not yet restored some invariants; to allow a new operation to commence while the invariants don’t hold seems like an invitation to bugs. Xv6 takes this latter view, and forbids a CPU that currently holds a lock from re-acquiring it. Detecting this situation is the purpose of the call to holding in acquire.\n\n7.5 Locks and interrupts\n\nSome xv6 spinlocks protect data that is used by both threads and interrupt handlers. For example, the clockintr timer interrupt handler might increment ticks at about the same time that a kernel thread reads ticks in sys_pause. The lock tickslock serializes the two accesses.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "CPU",
+            "lock",
+            "same",
+            "already",
+            "holds",
+            "acquire",
+            "other",
+            "hold"
+          ],
+          "token_count": 244,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4198,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 2,
+          "page_char_start": 1247,
+          "page_char_end": 2395,
+          "source_page_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_interrupt_locks",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "a2177730d728cc62882a278424370908"
+          ]
+        }
+      },
+      {
+        "id": "context_18ed3aab01b029acd8c1aa100b6ea664",
+        "document_name": "os_interrupt_locks.md",
+        "page": 1,
+        "text": "The interaction of spinlocks and interrupts raises a potential danger. Suppose sys_pause holds tickslock, and its CPU is interrupted by a timer interrupt. clockintr would try to acquire tickslock, see it was held, and wait for it to be released. In this situation, tickslock will never be released: only sys_pause can release it, but sys_pause will not continue running until clockintr returns. So the CPU will deadlock, and any code that needs either lock will also freeze.\n\nTo avoid this situation, if a spinlock is used by an interrupt handler, a CPU must never hold that lock with interrupts enabled. Xv6 is more conservative: when a CPU acquires any lock, xv6 always disables interrupts on that CPU. Interrupts may still occur on other CPUs, so an interrupt’s acquire can wait for a thread to release a spinlock; just not on the same CPU.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "CPU",
+            "interrupts",
+            "sys_pause",
+            "tickslock",
+            "interrupt",
+            "lock",
+            "clockintr",
+            "acquire"
+          ],
+          "token_count": 181,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4198,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 3,
+          "page_char_start": 2397,
+          "page_char_end": 3240,
+          "source_page_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_interrupt_locks",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "89cf818288d673dd1949cc2d6c4b06ef"
+          ]
+        }
+      },
+      {
+        "id": "context_58f53138af43939331f05fa6b73fe520",
+        "document_name": "os_interrupt_locks.md",
+        "page": 1,
+        "text": "Xv6 re-enables interrupts when a CPU holds no spinlocks; it must do a little book-keeping to cope with nested critical sections. acquire calls push_off and release calls pop_off to track the nesting level of locks on the current CPU. When that count reaches zero, pop_off restores the interrupt enable state that existed at the start of the outermost critical section. push_off and pop_off tell the CPU to enable and disable interrupts by changing the SIE (Supervisor Interrupt Enable) bit in the sstatus (Supervisor Status) register, using intr_on and rc_sstatus(SSTATUS_SIE); the latter clears the SIE bit.\n\nIt is important that acquire call push_off strictly before setting lk->locked. If the two were reversed, there would be a brief window when the lock was held with interrupts enabled, and an unfortunately timed interrupt would deadlock the system. Similarly, it is important that release call pop_off only after releasing the lock (spinlock.c:73).",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "pop_off",
+            "interrupts",
+            "CPU",
+            "push_off",
+            "interrupt",
+            "enable",
+            "critical",
+            "acquire"
+          ],
+          "token_count": 201,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4198,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 4,
+          "page_char_start": 3242,
+          "page_char_end": 4198,
+          "source_page_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_interrupt_locks",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "b22aaac8361d7fbb056b5283698fdc17"
+          ]
+        }
+      },
+      {
+        "id": "context_a223d95bb72ab6393473735d28bbebd8",
+        "document_name": "os_races.md",
+        "page": 1,
+        "text": "Most kernels, including xv6, interleave the execution of multiple activities. One source of interleaving is multiprocessor hardware: computers with multiple CPUs executing independently, such as xv6’s RISC-V. These multiple CPUs share physical RAM, and xv6 exploits the sharing to maintain kernel data structures that all CPUs read and write. This sharing raises the possibility of one CPU reading a data structure while another CPU is mid-way through updating it, or even multiple CPUs updating the same data simultaneously; without careful design such parallel access is likely to yield incorrect results or a broken data structure. Even on a uniprocessor, the kernel may switch the CPU among a number of threads, causing their execution to be interleaved. Finally, a device interrupt handler that modifies the same data as some interruptible code could damage the data if the interrupt occurs just as the interrupted code is also modifying the data. The word concurrency refers to situations in which multiple instruction streams are interleaved, due to multiprocessor parallelism, thread switching, or interrupts.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "data",
+            "multiple",
+            "CPUs",
+            "xv6",
+            "CPU",
+            "execution",
+            "One",
+            "multiprocessor"
+          ],
+          "token_count": 209,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 7146,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 0,
+          "page_char_start": 0,
+          "page_char_end": 1117,
+          "source_page_sha256": "0cf37b5fe1891b4795125b3fd96b06e962c6b397769bc36b74f2a969780722ab",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "0cf37b5fe1891b4795125b3fd96b06e962c6b397769bc36b74f2a969780722ab",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_races",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "42c74706022d98d01ec7aa7e273b355b"
+          ]
+        }
+      }
+    ]
+  }
+]

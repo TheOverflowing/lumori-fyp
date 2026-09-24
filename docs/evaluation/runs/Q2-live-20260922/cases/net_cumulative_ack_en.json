@@ -1,0 +1,169 @@
+{
+  "run": {
+    "case_id": "net_cumulative_ack_en",
+    "job_id": "5bf9c6aa158648749d22a4f44ad06059",
+    "status": "failed",
+    "started_at": "2026-09-22T12:48:15.456254+00:00",
+    "ended_at": "2026-09-22T12:48:20.030910+00:00",
+    "wall_seconds": 4.574427,
+    "error": "rerank API 返回 HTTP 503；模型服务暂不可用或繁忙，请稍后重试。本次未自动重试。"
+  },
+  "job": {
+    "id": "5bf9c6aa158648749d22a4f44ad06059",
+    "request_key": "q1-generation-net_cumulative_ack_en",
+    "kind": "generate",
+    "payload": "{\"course_id\": \"q1-course-90e50072b5567b5550e8\", \"topic\": \"Apply TCP byte sequence numbers and cumulative acknowledgements to a short arrival sequence with a missing range.\", \"material\": \"quiz\", \"difficulty\": \"medium\", \"difficulty_distribution\": null, \"learner_profile\": \"Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.\", \"question_type\": \"mcq\", \"count\": 1, \"language\": \"en\", \"document_ids\": [], \"request_key\": \"q1-generation-net_cumulative_ack_en\", \"include_explanations\": false}",
+    "status": "failed",
+    "result": null,
+    "error": "rerank API 返回 HTTP 503；模型服务暂不可用或繁忙，请稍后重试。本次未自动重试。",
+    "created_at": "2026-09-22T12:48:15.455956+00:00",
+    "updated_at": "2026-09-22T12:48:20.023185+00:00"
+  },
+  "evidence": {
+    "schema_version": "education-agent-v1",
+    "configuration": {
+      "course_id": "q1-course-90e50072b5567b5550e8",
+      "topic": "Apply TCP byte sequence numbers and cumulative acknowledgements to a short arrival sequence with a missing range.",
+      "material": "quiz",
+      "difficulty": "medium",
+      "difficulty_distribution": null,
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "question_type": "mcq",
+      "count": 1,
+      "language": "en",
+      "document_ids": [],
+      "include_explanations": false,
+      "prompt_version": "education-agent-v1",
+      "text_model": "deepseek-flash",
+      "agent_prompt_revision": "20260922-quality-contract-v4",
+      "text_json_mode": true,
+      "tool_contract_sha256": "68744aa7e8427fbc9e9e7982a82a988241e98807815ab4861964d6c47c9204b1",
+      "text_endpoint_signature": "83b11c7b63af3acbbf3c",
+      "embedding_signature": "91fab32d24999992076e",
+      "retrieval": {
+        "version": "retrieval-v2",
+        "strategy": "hybrid_dense_lexical_v1",
+        "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+        "top_k": 5,
+        "candidate_k": 20,
+        "rrf_k": 60,
+        "mmr_lambda": 0.7,
+        "bm25_k1": 1.2,
+        "bm25_b": 0.75,
+        "query_term_frequency": "binary",
+        "candidate_pool": "top_candidate_k_per_route_then_top_candidate_k_fused_for_mmr",
+        "mmr_relevance": "rrf_score_divided_by_max_candidate_rrf_score",
+        "mmr_redundancy": "maximum_nonnegative_cosine_to_already_selected_chunks",
+        "dense_lexical_bonus_cap": 0.05,
+        "dense_lexical_score": "cosine_plus_capped_max_normalized_bm25",
+        "tie_break": "input_order",
+        "no_lexical_matches": "dense_fallback_for_hybrid_empty_for_bm25",
+        "score_semantics": "original_query_chunk_cosine",
+        "document_encoding": "title_path_v1",
+        "query_encoding": "cs_instruction_v1",
+        "context_tokens": 1024,
+        "expansion": "none",
+        "context_tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d",
+        "context_budget_unit": "qwen_source_serialization_tokens_v1",
+        "reranker_model": "qwen/qwen3-reranker-8b",
+        "reranker_signature": "ea51c5866aec287fbb13"
+      },
+      "rubric_version": "difficulty-rubric-v1",
+      "difficulty_plan": [
+        {
+          "slot_id": "q1",
+          "difficulty": "medium"
+        }
+      ],
+      "max_repairs": 1,
+      "max_calls": 12,
+      "context_chars": 48000,
+      "difficulty_policy": {
+        "revision": "difficulty-calibration-v1",
+        "strict_rounds": 3,
+        "relaxation_tiers": [
+          "adjacent_level",
+          "any_level"
+        ],
+        "correctness_relaxed": false,
+        "note": "After three bounded rounds, reuse the closest candidate whose other quality gates passed. Requested labels remain authoring targets; assessed levels are reported separately. Combined low-confidence quality judgments are never relaxed."
+      },
+      "repair_policy": {
+        "revision": "question-repair-v2",
+        "minimum_rounds": 3,
+        "manual_extension_rounds": 3,
+        "format_compatibility": "preserve_content_v1",
+        "quality_gates_relaxed": false
+      },
+      "review_policy_revision": "20260922-quality-contract-v1",
+      "role_schema_repair_policy": {
+        "revision": "native-role-schema-repair-v1",
+        "max_re_evaluations": 1,
+        "eligible_output": "complete_json_object",
+        "mode": "fresh_re_evaluation",
+        "quality_gates_relaxed": false
+      }
+    },
+    "request": {
+      "course_id": "q1-course-90e50072b5567b5550e8",
+      "topic": "Apply TCP byte sequence numbers and cumulative acknowledgements to a short arrival sequence with a missing range.",
+      "material": "quiz",
+      "difficulty": "medium",
+      "difficulty_distribution": null,
+      "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+      "question_type": "mcq",
+      "count": 1,
+      "language": "en",
+      "document_ids": [],
+      "include_explanations": false
+    },
+    "prompt_version": "education-agent-v1",
+    "note": "Separate model calls; not independent model families, teacher validation or empirical learner difficulty. Tool results prove computations for their inputs, not correspondence with question prose.",
+    "sources": [],
+    "agent": {
+      "version": "education-agent-v1",
+      "status": "provider_error",
+      "phase": "retrieval",
+      "resume_count": 0,
+      "call_count": 0,
+      "slots": [
+        {
+          "slot_id": "q1",
+          "difficulty": "medium",
+          "status": "pending",
+          "attempts": []
+        }
+      ],
+      "retrieval_in_flight": 0
+    }
+  },
+  "calls": [
+    {
+      "capability": "embedding",
+      "model": "qwen/qwen3-embedding-8b",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 42,
+        "total_tokens": 42,
+        "cost": 4.2e-07,
+        "cost_details": {
+          "upstream_inference_cost": 4.2e-07
+        }
+      },
+      "created_at": "2026-09-22T12:48:15.534117+00:00",
+      "duration_ms": 3496,
+      "http_status": 200,
+      "response_model": "Qwen/Qwen3-Embedding-8B"
+    },
+    {
+      "capability": "rerank",
+      "model": "qwen/qwen3-reranker-8b",
+      "status": "failed",
+      "usage": {},
+      "created_at": "2026-09-22T12:48:19.059744+00:00",
+      "duration_ms": 954,
+      "http_status": 503,
+      "response_model": null
+    }
+  ]
+}

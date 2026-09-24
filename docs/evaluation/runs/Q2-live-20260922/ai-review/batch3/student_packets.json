@@ -1,0 +1,84 @@
+[
+  {
+    "blind_id": "Q001",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Trace what ordinary SELECT statements may observe under PostgreSQL Read Committed in a two-session schedule.",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "Sessions S1 and S2 run concurrently on a PostgreSQL database under Read Committed isolation. All statements below are ordinary SELECT statements without FOR UPDATE or FOR SHARE. Assume each individual SELECT lasts only an instant and no statement is aborted.\n\n1. At time t1, S2 commits an INSERT that adds row R to table T.\n2. At time t2 (t2 > t1), S1 begins a transaction and issues SELECT * FROM T; this statement starts at time t3 (t3 > t2).\n3. At time t4 (t4 > t3), S2 commits an UPDATE to row R.\n4. At time t5 (t5 > t4), S1 issues the same SELECT * FROM T again; this statement starts at time t6 (t6 > t5).\n\nQuestion: For the first SELECT at t3 and for the second SELECT at t6, state whether each can observe row R in its updated form. Explain what determines visibility at each SELECT, and state whether the two SELECTs may return different versions of row R within the same S1 transaction under Read Committed.",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q002",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "描述 TCP 向应用提供的可靠、有序、全双工字节流服务，并区分字节流服务与报文段传输。",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "TCP 向其上层应用提供一种传输服务，同时在网络层之上与对等 TCP 实体交换数据单元。\n\n请结合以下要点作答：\n1. 说明 TCP 向应用提供的服务在可靠性、顺序性和方向性上的三个特征。\n2. 说明应用进程以什么单位写入和读取 TCP 连接。\n3. 说明 TCP 实体之间实际交换的数据单元名称，以及发送方为什么要等缓冲到一定数量再发送。\n4. 说明上述服务特征与所交换数据单元之间的关系。\n\n请用一段话或分点作答。",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q003",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "解释 xv6 的上下文切换需要保存什么，以及调度器在 CPU 复用中的作用。",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "xv6 通过上下文切换在多个进程之间复用 CPU。\n\n根据给定资料，回答下面两个问题：\n\n1. 在 xv6 的上下文切换中，被切换出的线程需要保存什么？为什么只保存这些信息就足够？\n\n2. 调度器在 CPU 复用中起什么作用？",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q004",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "当读取结果决定后续写入时，评价 PostgreSQL 序列化失败后的应用重试设计。",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "某库存服务在 PostgreSQL 上以 Serializable 隔离级别运行结算事务。每个事务按以下伪代码执行：\n\n1. 在事务内执行 SELECT，读取某商品的当前库存值并存入应用变量 stock。\n2. 应用根据 stock 计算新库存，并构造一条 UPDATE 语句，其 WHERE 条件使用第 1 步读到的 stock 值。\n3. 提交事务。\n\n现有四个关于失败后重试策略的设计判断，请选择唯一正确的选项。\n\n作答约定：只依据 Serializable 隔离级别、序列化失败的错误码约定、以及“重试必须覆盖完整事务”这一要求判断；不假设硬件或网络故障。",
+      "options": [
+        "收到 SQLSTATE 40001 时，可以只重新提交第 2 步构造好的 UPDATE 语句，因为 SELECT 读到的值属于事务外已提交数据，无需重新执行。",
+        "收到 SQLSTATE 40001 时，应中止当前事务并从头重试，重试时第 1 步的 SELECT 应在新事务内重新读取，使第 2 步基于新读到的值重新构造 UPDATE。",
+        "若重试过程中收到 SQLSTATE 23505，必须一次成功，因为该错误码总是代表持久性错误条件，重试不会改变结果。",
+        "由于 Serializable 会模拟串行执行，提交成功即代表读到的数据一定与某个串行顺序一致，因此重试无需重新读取，只需清除客户端缓存值即可。"
+      ]
+    }
+  },
+  {
+    "blind_id": "Q005",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Compare receiver flow control and network congestion control, then justify the active sending constraint in contrasting TCP situations.",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "A TCP sender S transmits a byte stream to a receiver R over a path that may traverse multiple links and routers.\n\nFor each situation, identify whether the active sending constraint on S is receiver flow control, network congestion control, neither, or both, and justify your choice by naming the state variable or observable condition that imposes the constraint and explaining what it protects.\n\n1. R's receive buffer is full. R advertises a window of 0 bytes. S has previously sent data that has all been acknowledged.\n2. R advertises a large window, but the path from S to R traverses a 1.5-Mbps link that is shared with many other senders. S's congestion window has recently been reduced.\n3. S's path to R also crosses a congested 1.5-Mbps link, and S's congestion window is large while R's advertised window is also large. Measurements show that packets from S are being dropped at an intermediate router on that path.\n\nFinally, state whether S is ever allowed to transmit more unacknowledged data than both the congestion window and the advertised window permit, and explain why in terms of the effective window.",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q006",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Apply mutual exclusion to a short shared-data update scenario, distinguishing a critical section from an unsafe check-then-set lock.",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "A shared list is protected by these inline operations:\n\nacquire(lk):\n  while (lk->locked == 0) {\n    lk->locked = 1;\n  }\n\nrelease(lk):\n  lk->locked = 0;\n\npush() runs on two CPUs and executes:\n  L1: if (lk->locked == 0)\n  L2:   lk->locked = 1\n  L3:   update list head\n  L4:   lk->locked = 0\n\nThe two CPUs execute L1 through L4 with arbitrary interleaving; each line is a single machine instruction, and no atomic swap or hardware test-and-set instruction is used.\n\n\nWhich statement is correct?",
+      "options": [
+        "L1 through L4 is a critical section protected by a correct lock, so simultaneous updates are impossible.",
+        "L1 through L4 is a critical section, but acquire is unsafe: both CPUs can pass L1 before either reaches L2, so both can enter and update the list.",
+        "L1 is the critical section, while L2 through L4 is only the release path, so mutual exclusion holds because L1 is executed atomically.",
+        "The lock is correct because the while loop in acquire makes L1 and L2 atomic; the only remaining risk is a lost update inside push."
+      ]
+    }
+  }
+]

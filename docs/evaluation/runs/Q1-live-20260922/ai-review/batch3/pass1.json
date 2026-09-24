@@ -1,0 +1,50 @@
+[
+  {
+    "blind_id": "Q001",
+    "independent_answer": "Option 1. An acknowledgment tells the sender that a prior frame was received; expiry of the timeout without an acknowledgment causes retransmission. The alternating sequence bit lets the receiver recognize a duplicate, avoid delivering it twice, and acknowledge it again.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "All three roles are stated explicitly in the question. Only option 1 preserves them; the other options contradict the described protocol."
+  },
+  {
+    "blind_id": "Q002",
+    "independent_answer": "A context switch preserves the outgoing kernel thread's saved register context so execution can later resume, and restores the incoming thread's context. In these excerpts, swtch saves ra, sp, and s0 through s11, but not caller-saved registers. A process kernel thread switches to its CPU's scheduler thread, which selects another process kernel thread and switches to it.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The supplied excerpts directly specify both the saved context and the two-stage switching path; a short synthesis answers both parts."
+  },
+  {
+    "blind_id": "Q003",
+    "independent_answer": "按题面明确给出的范围，swtch 保存切出线程的 ra、sp、s0..s11，并恢复切入线程对应的寄存器，使线程能从原先的执行位置和栈环境继续运行；它不保存调用者保存寄存器。若允许补充通常的函数调用约定，其原因是需要跨 swtch 调用保留的调用者保存寄存器由调用方负责，而不是由 swtch 保存；题面本身没有给出这条原因。调度器线程充当本 CPU 的切换中介：进程内核线程先切换到调度器线程，由后者选择可运行的进程内核线程，再切换到该线程。不能从所给要点进一步推断其他硬件状态均不需要保存。",
+    "assessed_difficulty": "medium",
+    "answerability": "uncertain",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "保存列表与调度路径足够明确，但要求说明不保存调用者保存寄存器的原因，所给资料未解释调用约定；“硬件方面”也比所给寄存器范围更宽。若把原因限制为题面证据，答案不完整；若允许通常的调用约定背景则可答。"
+  },
+  {
+    "blind_id": "Q004",
+    "independent_answer": "选项 2。收到 40001 后回滚当前事务，并从头重新执行全部读取、依读取作出的决策和写入；旧尝试的读取结果不能沿用为新尝试的决策依据，也不能在原事务成功提交前作为已确认的对外结果。",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "资料直接规定完整事务和决策逻辑必须一起重试。选项 2 与其一致；其他选项分别违反完整重试要求、虚构自动重试设施或忽略约束错误的持久性。"
+  },
+  {
+    "blind_id": "Q005",
+    "independent_answer": "字节流是 TCP 对应用呈现的服务：应用写入和读出有序字节，TCP 负责可靠、按序交付；全双工连接在两个方向各有一条字节流。报文段是 TCP 对等方在网络上传输的分组，每段承载字节流的一部分。发送端把字节组织成报文段，接收端将段内数据缓冲和整理，再供应用按自己的节奏读取，因此应用看到的连续字节流与网络上的分段传输属于不同的抽象层次，段边界不等于应用读取边界。",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "六条资料已给出应用接口、双向服务、分段发送和接收缓冲，完成答案只需组织这些信息并说明抽象层次差别。"
+  },
+  {
+    "blind_id": "Q006",
+    "independent_answer": "Option 1: Statements 1, 2, and 4 are correct; Statement 3 is incorrect. The separate check and set allow both CPUs to observe zero before either sets the flag, so both can enter the critical section. A coherent shared flag alone does not make acquisition atomic or prevent a lost counter increment.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "The question explicitly supplies the interleaving that violates mutual exclusion. Only option 1 evaluates all four statements consistently with that interleaving and the given definitions."
+  }
+]

@@ -1,0 +1,82 @@
+[
+  {
+    "blind_id": "Q001",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Evaluate an application retry design after a PostgreSQL serialization failure when reads determine later writes.",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "An application runs under Serializable isolation. One transaction does the following: it reads the current maximum value of a primary key column, computes the next value in application code, and inserts a row using that computed value. The transaction then fails with SQLSTATE 40001 (serialization_failure).\n\nConsider this proposed retry design:\n\n1. The retry loop catches only SQLSTATE 40001.\n2. On that error it aborts the current transaction.\n3. It then re-executes only the INSERT statement, reusing the primary key value computed before the failure.\n4. It treats a resulting SQLSTATE 23505 (unique_violation) from that INSERT as a permanent error and stops retrying.\n\nWhich evaluation of this design is best supported by the course evidence?",
+      "options": [
+        "The design is mostly correct; reusing the computed key is safe because retrying only the INSERT rechecks the uniqueness constraint against current data.",
+        "The design is flawed: the retry must re-run the whole transaction, including the reads and key-selection logic, and applications may also need to retry some unique-key failures such as 23505, which may be effectively serialization failures.",
+        "The design is correct for Serializable because 40001 is the only code that can indicate a serialization problem, and 23505 always represents a persistent error that should never be retried.",
+        "The design is flawed only in that it aborts the transaction; retrying the INSERT without aborting would preserve the earlier read results and avoid any serialization conflict."
+      ]
+    }
+  },
+  {
+    "blind_id": "Q002",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Evaluate a producer-consumer wait protocol for lost wakeups and condition rechecking using the supplied xv6 sleep_prepare/sleep/wakeup interface.",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "A pipe-like buffer is shared by one producer and one consumer using the xv6 sleep_prepare/sleep/wakeup interface. The consumer's intended wait loop is:\n\n1. acquire(condlock)\n2. while buffer is empty do:\n3.   sleep_prepare(&buf)\n4.   release(condlock)\n5.   sleep(&buf)\n6.   acquire(condlock)\n7. end while\n8. x = take one item\n9. release(condlock)\n\nThe producer runs on another CPU and does:\n\nP1. acquire(condlock)\nP2. put one item into buffer\nP3. wakeup(&buf)\nP4. release(condlock)\n\nAn engineer proposes replacing the consumer's loop with the supposedly equivalent \"flag\" version:\n\nF1. acquire(condlock)\nF2. while buffer is empty do:\nF3.   released = 0\nF4.   sleep_prepare(&buf)\nF5.   release(condlock)\nF6.   if (released == 0) sleep(&buf)\nF7.   acquire(condlock)\nF8.   if (released == 1) continue\nF9. end while\nF10. x = take one item\nF11. release(condlock)\n\nFor every numeric condition, claim, or symbol below, state whether it holds under ordinary xv6 semantics as described in the interface.\n\nCondition 1: In the consumer's original loop, sleep_prepare(&buf) at line 3 must be called before the condition check at line 2 or before releasing the lock at line 4, as required by the interface rules.\nCondition 2: In the original loop, if wakeup(&buf) runs between lines 3 and 5, the wakeup sets a flag in the sleeping process so sleep() at line 5 returns without sleeping.\nCondition 3: In the original loop, the condition lock at line 1 is what prevents wakeup(&buf) from occurring between the condition check and sleep_prepare(&buf).\nCondition 4: In the flag version, the flag 'released' must be set by wakeup() from the producer side before the consumer reads it at line F6.\nCondition 5: In the flag version, F8's continue branch rechecks the while condition at line F2 but does not necessarily prevent a lost wakeup if the condition check at F2 is not itself inside a lock.\nCondition 6: In the original loop, after sleep() returns and lock is reacquired at line 6, rechecking the while condition at line 2 is required before proceeding to take an item at line 8.\n\nQuestion: Which option correctly classifies all six conditions under the interface's rules, and identifies the exact failure of the flag version?",
+      "options": [
+        "Condition 1 holds; Condition 2 holds; Condition 3 holds; Condition 4 false because wakeup does not set 'released'; Condition 5 holds only when the condition check is outside any condition lock; Condition 6 holds. The flag version fails because 'released' is not written by wakeup and the sleep is not protected on the condition check side.",
+        "Condition 1 holds; Condition 2 false because wakeup never sets a flag; Condition 3 holds; Condition 4 holds; Condition 5 false because continue always prevents lost wakeups; Condition 6 holds. The flag version is correct as written.",
+        "Condition 1 holds; Condition 2 holds; Condition 3 holds; Condition 4 holds because wakeup will set the flag; Condition 5 false because the flag version rechecks the condition; Condition 6 holds. The flag version is correct because the wakeup path always sets 'released'.",
+        "Condition 1 false because sleep_prepare can be called after sleep; Condition 2 holds; Condition 3 false because sleep itself protects the condition; Condition 4 holds; Condition 5 holds; Condition 6 false because the condition need not be rechecked after sleep returns."
+      ]
+    }
+  },
+  {
+    "blind_id": "Q003",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "使用资料中的 xv6 sleep_prepare/sleep/wakeup 接口，评价生产者与消费者等待协议的丢失唤醒风险及条件复查。",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "某 xv6 管道实现中，读取进程在持有管道锁 pipe.lock 时调用 sleep_prepare(&pipe.chan) 并检查缓冲区为空，随后释放锁并调用 sleep()。写入进程在持有同一把锁时向缓冲区写入数据并调用 wakeup(&pipe.chan)。注意 sleep_prepare 只是记录等待通道 p->chan，sleep() 才会真正把进程置为 SLEEPING。\n\n现假设某次运行时发生如下交错：\n\n1. 读取进程调用 sleep_prepare(&pipe.chan)，此时 p->chan 被设为 &pipe.chan。\n2. 在读取进程释放锁之前，写入进程获得锁，写入数据，调用 wakeup(&pipe.chan)，然后释放锁。\n3. 读取进程随后释放锁，并调用 sleep()。\n\n关于这次交错是否会导致丢失唤醒，以及协议中哪些机制在起作用，下列哪项判断最准确？\n\nA. 会发生丢失唤醒，因为 wakeup 在读取进程尚未进入 SLEEPING 状态时执行，无法找到睡眠进程；必须让 sleep_prepare 内部获取 p->lock 并立即睡眠才能避免。\nB. 不会发生丢失唤醒，因为 wakeup 执行时读取进程已经持有 pipe.lock，写入进程无法获得该锁，所以 wakeup 不可能真被调用。\nC. 不会发生丢失唤醒，因为 wakeup 检测到 p->chan 等于 &pipe.chan 并将其置零，使读取进程随后调用 sleep() 时立即返回而不是睡眠；但读取进程返回后仍必须重新检查缓冲区，因为可能有多个进程被同一通道唤醒或发生虚假唤醒。\nD. 不会发生丢失唤醒，因为 sleep_prepare 已经把读取进程标记为 SLEEPING，wakeup 能直接将其改为 RUNNABLE，后续 sleep() 不会再改变状态。",
+      "options": [
+        "会发生丢失唤醒，因为 wakeup 在读取进程尚未进入 SLEEPING 状态时执行，无法找到睡眠进程；必须让 sleep_prepare 内部获取 p->lock 并立即睡眠才能避免。",
+        "不会发生丢失唤醒，因为 wakeup 执行时读取进程已经持有 pipe.lock，写入进程无法获得该锁，所以 wakeup 不可能真被调用。",
+        "不会发生丢失唤醒，因为 wakeup 检测到 p->chan 等于 &pipe.chan 并将其置零，使读取进程随后调用 sleep() 时立即返回而不是睡眠；但读取进程返回后仍必须重新检查缓冲区，因为可能有多个进程被同一通道唤醒或发生虚假唤醒。",
+        "不会发生丢失唤醒，因为 sleep_prepare 已经把读取进程标记为 SLEEPING，wakeup 能直接将其改为 RUNNABLE，后续 sleep() 不会再改变状态。"
+      ]
+    }
+  },
+  {
+    "blind_id": "Q004",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "识别简单 PostgreSQL 转账中的事务原子性，以及 COMMIT 和 ROLLBACK 的作用。",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "在 PostgreSQL 中，一个银行转账事务用 BEGIN 开始，按顺序执行“从 Alice 账户扣除 100 元”和“向 Bob 账户存入 100 元”两条更新。执行完第一条更新后、尚未执行第二条更新时，程序决定不提交并执行 ROLLBACK。\n\n根据事务原子性的定义，以及 COMMIT 和 ROLLBACK 在 PostgreSQL 中的作用，下列哪项描述是正确的？\n\n条件：\n1. 该事务由 BEGIN 和结束命令组成，两条更新在同一个事务块内。\n2. 第一条更新已经执行，第二条更新尚未执行。\n3. 最终执行的是 ROLLBACK，而不是 COMMIT。\n4. 只考虑这个事务在 PostgreSQL 中的原子效果，不考虑其他会话的细节。",
+      "options": [
+        "ROLLBACK 取消该事务中已经执行的第一条更新，Alice 的扣款不会生效；若执行 COMMIT，则两条更新会一起生效并永久记录。",
+        "ROLLBACK 只取消尚未执行的操作，已经执行的第一条更新仍然生效，因此 Alice 仍被扣除 100 元。",
+        "COMMIT 会把两条更新变成对其他事务立即可见，而 ROLLBACK 与 COMMIT 对已执行更新的效果相同，只是结束事务的方式不同。",
+        "因为 PostgreSQL 把每条语句各自当作一个隐式事务，BEGIN 对两条更新不起作用，所以第一条更新已经自动提交，ROLLBACK 只能取消第二条更新。"
+      ]
+    }
+  },
+  {
+    "blind_id": "Q005",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Describe the reliable, ordered, full-duplex byte-stream service that TCP offers applications and distinguish it from segment transmission.",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "A student is studying TCP's service model and reads two statements from the course material:\n\nStatement 1: TCP guarantees the reliable, in-order delivery of a stream of bytes, and a TCP connection is full-duplex.\n\nStatement 2: TCP does not itself transmit individual bytes over the Internet; instead, TCP buffers enough bytes from the sending process to fill a reasonably sized packet and sends that packet to its peer, and the packets exchanged between TCP peers are called segments.\n\nIn 2–4 sentences, explain in your own words how Statement 1 describes the service TCP offers to application processes and how Statement 2 describes what TCP actually sends across the network. Make clear why both statements can be true at the same time. Do not simply copy the statements.",
+      "options": []
+    }
+  }
+]

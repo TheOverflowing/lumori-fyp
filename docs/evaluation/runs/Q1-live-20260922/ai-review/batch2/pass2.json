@@ -1,0 +1,197 @@
+[
+  {
+    "blind_id": "Q001",
+    "independent_answer": "The first SELECT returns 100. The second SELECT returns 200 because Read Committed takes a fresh statement snapshot and B has committed before that SELECT begins. A's UPDATE reads the committed balance 200 and writes 250; its own earlier SELECT does not freeze the transaction at 100. After A commits, the balance is 250. Strictly, the UPDATE shown has no RETURNING clause, so it does not return a balance value: it reports one updated row (UPDATE 1).",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The generated trace agrees with the sealed answer: 100, 200, then an update from 200 to 250. The cited Read Committed text explicitly supplies fresh snapshots for successive commands, which suffices for this non-overlapping schedule. Minor wording issue remains: the stem asks what value each command returns, while UPDATE without RETURNING does not return a balance. The generated answer correctly says producing 250 rather than claiming UPDATE returns 250, but does not clarify its command status.",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "severity": "minor",
+    "evidence_quotes": [
+      {
+        "source_id": "context_80f09f9abd69f4e4cd054fd404a1f718",
+        "quote": "Because Read Committed mode starts each command with a new snapshot that includes all transactions committed up to that instant, subsequent commands in the same transaction will see the effects of the committed concurrent transaction in any case."
+      },
+      {
+        "source_id": "answer",
+        "quote": "UPDATE (Step 7): sees the committed value 200 as the target row and adds 50, producing 250."
+      },
+      {
+        "source_id": "question",
+        "quote": "Cite which value each command returns and explain why the snapshots produce those values."
+      }
+    ]
+  },
+  {
+    "blind_id": "Q002",
+    "independent_answer": "TCP presents each application with an ordered stream of bytes: bytes accepted and delivered through the connection arrive in the sending order, with TCP handling loss and duplicates rather than exposing packet delivery order to the application. Both endpoints can send and receive independently, so one connection carries a stream in each direction. On the network, TCP groups bytes into segments and the receiver reconstructs the stream; application writes and reads need not correspond one-to-one to segments or preserve message boundaries. Reliability does not mean a failed connection can guarantee eventual delivery forever.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The generated answer agrees with the independent solution on reliable ordered delivery, bidirectional streams, segment transmission and receive buffering. Both cited excerpts directly support these claims. The omitted explicit discussion of application message boundaries is not required by the stem. The supplied source presents the introductory service abstraction; neither its delivery guarantee nor its segment description should be expanded into claims about permanent network failure or a minimum payload size.",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "severity": "none",
+    "evidence_quotes": [
+      {
+        "source_id": "context_adff94e0c8029b725d33d37b44f2c0f4",
+        "quote": "TCP guarantees the reliable, in-order delivery of a stream of bytes. It is a full-duplex protocol, meaning that each TCP connection supports a pair of byte streams, one flowing in each direction."
+      },
+      {
+        "source_id": "context_a1a476576a6737794d48ce06cea6aff3",
+        "quote": "The packets exchanged between TCP peers in Figure 127 are called segments, since each one carries a segment of the byte stream."
+      },
+      {
+        "source_id": "context_a1a476576a6737794d48ce06cea6aff3",
+        "quote": "TCP on the destination host then empties the contents of the packet into a receive buffer, and the receiving process reads from this buffer at its leisure."
+      }
+    ]
+  },
+  {
+    "blind_id": "Q003",
+    "independent_answer": "A. It prepares before checking, checks under the condition lock, releases that lock before sleeping, then reacquires it and rechecks after returning. A wakeup after preparation prevents an ensuing sleep from blocking. B leaves an unprotected check-to-prepare gap; C sleeps with the condition lock held; D omits preparation and does not supply the required release-before-sleep behavior.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "A is uniquely correct under the supplied prepare/sleep interface, matching pass 1. The main protocol and rejection of B/C are supported. However, the explanation of D asserts a wakeup between the check and sleep even though D never releases the condition lock and the stem states that lock prevents the writer from issuing wakeup in that interval. Missing preparation is a contract violation, but the explanation must not assume the old unprepared-sleep lost-wakeup execution for this API. Also, condition rechecking is stated in the question but is not explicitly established by any of this question's actual cited excerpts; the separately cited recheck excerpt in Q006 cannot repair Q003's citation set.",
+    "answer_correctness": "pass",
+    "explanation_correctness": "fail",
+    "citation_support": "partially_supported",
+    "objective_alignment": "pass",
+    "severity": "minor",
+    "evidence_quotes": [
+      {
+        "source_id": "context_5d8bfdf4ac0d9917b59abe4b9a423a65",
+        "quote": "sleep_prepare(chan) must be called either before checking the condition, or before releasing the lock that protects the condition."
+      },
+      {
+        "source_id": "context_5c240f5980676e5fc885c4419dc08f24",
+        "quote": "A process must release the lock before calling sleep() (so that some other process or interrupt handler can modify the condition and call wakeup()), and re-acquire the lock after sleep() returns."
+      },
+      {
+        "source_id": "question",
+        "quote": "D. R acquires the condition lock; checks the condition (buffer empty); calls sleep(chan) directly without sleep_prepare(chan); after sleep returns, re-acquires the condition lock and rechecks the condition."
+      },
+      {
+        "source_id": "explanation",
+        "quote": "Option D omits sleep_prepare(chan) entirely, so wakeup cannot set the no-sleep flag before sleep(), and a wakeup arriving between the check and sleep() is lost."
+      },
+      {
+        "source_id": "context_5c240f5980676e5fc885c4419dc08f24",
+        "quote": "If p->chan is still non-zero when sleep() is called, sleep() changes the calling process to state SLEEPING and calls sched() to let other processes run."
+      }
+    ]
+  },
+  {
+    "blind_id": "Q004",
+    "independent_answer": "选 B。事务把扣款和存款作为整体处理：COMMIT 提交整个事务；提交前执行 ROLLBACK 会撤销该事务的更新，避免仅扣款或仅存款的部分结果。提交后的更新作为整体成为已提交状态。严格说，其他会话实际在何时读到这些更新还取决于其隔离级别和查询快照，不能把“同时可见”理解为所有已有快照立即改变。",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "B is uniquely defensible and matches the sealed answer. The actual cited sources directly support all-or-nothing updates, rollback of the transaction, durable completion and visibility as a unit. The introductory source itself uses simultaneous visibility wording; read as atomic visibility rather than retroactive refresh of every existing snapshot, the generated explanation is correct. The pass-1 snapshot qualification remains useful but does not change the answer.",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "severity": "none",
+    "evidence_quotes": [
+      {
+        "source_id": "context_a4dbf6c57faf5ed73a3266f5fa5cc57b",
+        "quote": "The essential point of a transaction is that it bundles multiple steps into a single, all-or-nothing operation."
+      },
+      {
+        "source_id": "context_7e0ec95ca5933d08f0f90d4f75ff0a6d",
+        "quote": "we can issue the command ROLLBACK instead of COMMIT, and all our updates so far will be canceled."
+      },
+      {
+        "source_id": "context_8b7a786dd2de96c460cb7fcbe8028962",
+        "quote": "A transactional database guarantees that all the updates made by a transaction are logged in permanent storage (i.e., on disk) before the transaction is reported complete."
+      },
+      {
+        "source_id": "context_2cf186cae4f79cf460678cf586054617",
+        "quote": "When and if you commit the transaction block, the committed actions become visible as a unit to other sessions, while the rolled-back actions never become visible at all."
+      }
+    ]
+  },
+  {
+    "blind_id": "Q005",
+    "independent_answer": "1. AdvertisedWindow = 0 means the receiver currently offers no receive-buffer space, so the sender must stop sending new ordinary payload data until the window permits it. 2. CongestionWindow limits outstanding data to avoid overloading the network path; a fast first hop cannot remove a congested downstream 1.5-Mbps bottleneck. 3. MaxWindow = min(CongestionWindow, AdvertisedWindow), measured as the allowed outstanding unacknowledged data, not simply the local link rate. 4. With an advertised window of zero, that maximum is zero, so no new ordinary data may be sent under the window rule. With a positive advertised window and small congestion window, outstanding data must fit the smaller window; new sending is possible only to the extent that this allowance exceeds data already outstanding. Previously acknowledged data frees outstanding-data capacity but does not override either current window. Zero-window probes are a distinct mechanism, not permission to ignore flow control.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The distinctions, minimum formula, zero-window case and eventual send-process blocking are supported. Part 4(b) incorrectly concludes that a positive advertised window and small congestion window make congestion the binding constraint. No relation AdvertisedWindow >= CongestionWindow is given: for example, advertised 1 KB and congestion 4 KB still bind at 1 KB. A correct answer must retain min and account for already outstanding data before permitting additional sending. The separate explanation states the generic formula correctly, so explanation correctness passes, while the scenario answer and its citation support do not. The source's no-data wording is an introductory payload-flow abstraction; this review does not interpret it as a prohibition on zero-window probes.",
+    "answer_correctness": "fail",
+    "explanation_correctness": "pass",
+    "citation_support": "partially_supported",
+    "objective_alignment": "pass",
+    "severity": "major",
+    "source_based_correction": "Addition to the unchanged pass-1 answer: the cited source explicitly says that inability to transmit eventually fills the sender buffer and then blocks the sending process. Pass 1 described stopping new ordinary payload transmission but omitted this eventual application-process behavior.",
+    "evidence_quotes": [
+      {
+        "source_id": "question",
+        "quote": "(b) when AdvertisedWindow > 0 but CongestionWindow is small due to the congested 1.5-Mbps link."
+      },
+      {
+        "source_id": "answer",
+        "quote": "(b) With AdvertisedWindow > 0 but a small CongestionWindow, min gives the small CongestionWindow, so the sender is limited to that smaller value; the network, not the receiver, is the binding constraint, and the sender may send only up to the congestion window."
+      },
+      {
+        "source_id": "context_a8ca87ed6b3ceef9eba3633d15f00fb3",
+        "quote": "TCP is modified such that the maximum number of bytes of unacknowledged data allowed is now the minimum of the congestion window and the advertised window."
+      },
+      {
+        "source_id": "context_59e5349b54728369a41447059eecd6d1",
+        "quote": "Finally, not being able to transmit any data means that the send buffer fills up, which ultimately causes TCP to block the sending process."
+      },
+      {
+        "source_id": "context_8c0a6af1cc78516ee81069043af7aa35",
+        "quote": "Flow control involves preventing senders from over-running the capacity of receivers. Congestion control involves preventing too much data from being injected into the network, thereby causing switches or links to become overloaded."
+      }
+    ]
+  },
+  {
+    "blind_id": "Q006",
+    "independent_answer": "选 A（候选甲）。条件不成立而需要等待时，应在持有条件锁期间调用 sleep_prepare，然后释放条件锁并调用 sleep；返回后重新加锁并循环检查条件。这样，准备后、真正睡眠前发生的 wakeup 也会被记录，写者能取得锁修改条件，多个等待者被唤醒后也不会错误假定条件仍成立。乙存在未加锁检查及不复查的问题；丙缺少准备并错误假定 sleep 会释放条件锁；丁持锁睡眠阻止写者推进。",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "A remains the unique most accurate option and agrees with pass 1. The cited current-interface sources support preparation while holding the condition lock, release before sleep, wakeup recording and rechecking in a loop. The explanation nevertheless attributes a lost-wakeup execution to C without respecting that C actually calls sleep while holding the condition lock; the stipulated interface does not release that lock automatically, so the writer cannot perform the described intervening wakeup. C violates the preparation/lock/recheck contract, but the old direct-sleep story is not an adequate explanation of this particular protocol. Minor stem defects also remain: its claim that all candidates check under the lock contradicts B, and A should explicitly condition waiting on the buffer being empty. These do not make another option correct.",
+    "answer_correctness": "pass",
+    "explanation_correctness": "fail",
+    "citation_support": "partially_supported",
+    "objective_alignment": "pass",
+    "severity": "minor",
+    "evidence_quotes": [
+      {
+        "source_id": "context_5c240f5980676e5fc885c4419dc08f24",
+        "quote": "A process must release the lock before calling sleep() (so that some other process or interrupt handler can modify the condition and call wakeup()), and re-acquire the lock after sleep() returns."
+      },
+      {
+        "source_id": "context_a199673d425ef31fd839f86c1f537f54",
+        "quote": "For this reason sleeping always occurs inside a loop that re-checks the condition, as in piperead above."
+      },
+      {
+        "source_id": "question",
+        "quote": "2) 条件不成立时在锁内调用 sleep()，由 sleep 自行释放锁，且未调用 sleep_prepare(chan)；"
+      },
+      {
+        "source_id": "explanation",
+        "quote": "候选丙没有 sleep_prepare，wakeup 可能在 sleep 之前找不到该进程，导致丢失唤醒；不复查条件也无法处理虚假唤醒。"
+      },
+      {
+        "source_id": "question",
+        "quote": "现在有四个候选协议片段，都在持有条件锁时检查“缓冲区非空”条件："
+      },
+      {
+        "source_id": "question",
+        "quote": "1) 释放条件锁，检查条件；"
+      }
+    ]
+  }
+]

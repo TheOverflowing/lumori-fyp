@@ -1,0 +1,50 @@
+[
+  {
+    "blind_id": "Q001",
+    "independent_answer": "选第一项：Acknowledgement = 221，NextByteExpected = 221。S1 后下一个缺失字节是 141；S2 乱序到达后仍是 141；S3 补齐 141–160 后推进到 201；S4 后连续收到至 220，故下一期待字节与累积确认号均为 221。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "四段最终覆盖连续字节 101–220；只有第一项同时给出下一期待字节和相同的累积确认号。"
+  },
+  {
+    "blind_id": "Q002",
+    "independent_answer": "Option A. The ACK reports receipt of a frame; if its ACK is not received in time, the sender retransmits. The alternating 1-bit sequence number lets the receiver recognize retransmitted frame 0 as a duplicate, ignore its data, and acknowledge it again rather than treating it as a new frame.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "The stem directly states the ACK, timeout, and duplicate-detection roles. The other options assign them incompatible functions."
+  },
+  {
+    "blind_id": "Q003",
+    "independent_answer": "A switch preserves a thread's execution state: its memory, including its stack, remains in RAM, while swtch saves the outgoing thread's callee-saved CPU registers (ra, sp, s0–s11) in its context and restores the incoming thread's saved registers. Caller-saved registers are handled on the stack under the calling convention. A kernel thread yields by switching to its CPU's scheduler thread; the scheduler chooses another process's kernel thread and switches to it, using the scheduler context stored in that CPU's struct cpu.",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The nine numbered source statements supply both the preserved register and memory state and the scheduler's role without requiring implementation details beyond those listed."
+  },
+  {
+    "blind_id": "Q004",
+    "independent_answer": "A 在步骤 2 的 SELECT 看到 k=1：该命令开始时只有初始行已提交。步骤 5 的 SELECT 使用它自己在 B 提交前取得的 Read Committed 命令快照，B 的 k=2 尚未提交，因此仍看到已提交旧版本 k=1。步骤 7 的 SELECT 在步骤 6 的 B COMMIT 之后开始，取得新的命令快照，看到 k=2。步骤 5 与 7 不同，因为同一个 A 事务内的普通 SELECT 各自使用命令开始时的快照。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "题目固定了提交和三次 SELECT 的顺序；Read Committed 下每条普通 SELECT 的命令快照分别决定其可见版本。"
+  },
+  {
+    "blind_id": "Q005",
+    "independent_answer": "(1) 流量控制：AdvertisedWindow=0 表示接收方暂不能接收更多数据，即使 CongestionWindow 很大也不能继续发送新的数据。(2) 拥塞控制：AdvertisedWindow 很大而 CongestionWindow 很小时，网络可承受的在途量成为主要限制。(3) 实际允许的在途未确认数据量不超过 min(AdvertisedWindow, CongestionWindow)；前者避免压垮接收端，后者避免压垮网络，任一窗口较小都必须限制发送。",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "资料要点直接给出零通告窗口、小拥塞窗口及两窗口取最小值的规则，足以判断两个场景。"
+  },
+  {
+    "blind_id": "Q006",
+    "independent_answer": "方式 1 的同一把锁会使 push 与遍历互斥。按题面给出的步骤，push 先把 n.next 指向原头节点，再将 list 指向 n；在顺序一致的交错中，遍历得到的旧头或新头都已有有效 next，没有展示出暂时破坏可达链表不变量的状态。方式 2 的普通先读后写没有说明为原子比较并交换，也没有同步遍历；是否出现错误还需明确原子性、内存顺序及要维护的具体不变量。因此第一项最接近一般原则，但没有一项完整准确地解释这个具体执行。",
+    "assessed_difficulty": "hard",
+    "answerability": "fail",
+    "unique_answer": "fail",
+    "concise_rationale": "选项一声称遍历可能读到 push 暂时破坏不变量的状态，但新节点在成为共享头节点前已设置 next；其余选项也误称普通先检查再设置具有原子性或否认互斥作用。题面缺少能使此例的中间状态危险的额外条件。"
+  }
+]

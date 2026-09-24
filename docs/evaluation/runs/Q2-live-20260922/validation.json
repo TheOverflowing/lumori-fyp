@@ -1,0 +1,236 @@
+{
+  "schema_version": "q2-run-validation-v1",
+  "validated_at_utc": "2026-09-23T01:51:47.816640Z",
+  "scope": "Read-only integrity check of frozen Q1/Q2 run artifacts, local source, runtime ledger, nearby local test logs, and the completed two-pass Q2 AI review. AI review is not human or learner validation.",
+  "archive_integrity": {
+    "manifest_status": {
+      "Q1": "completed",
+      "Q2": "completed"
+    },
+    "plan_and_live_code_hashes_match": {
+      "Q1": true,
+      "Q2": true
+    },
+    "source_sha256": {
+      "Q1": {
+        "manifest_source_files": 50,
+        "archived_sha_mismatch_count": 0,
+        "current_sha_mismatch_count": 4,
+        "current_mismatch_paths": [
+          "app/generation_agent.py",
+          "app/question_revision.py",
+          "app/store.py",
+          "app/task_control.py"
+        ]
+      },
+      "Q2": {
+        "manifest_source_files": 51,
+        "archived_sha_mismatch_count": 0,
+        "current_sha_mismatch_count": 0,
+        "current_mismatch_paths": []
+      }
+    },
+    "source_hash_coverage": "Manifest-listed Python files under app/ and three experiment scripts; frontend assets, tests, and dependencies are outside this code snapshot.",
+    "q2_dataset_canonical_digest_matches_manifest": true,
+    "q1_q2_dataset_byte_equal": true,
+    "q1_q2_frozen_cases_byte_equal": true,
+    "q1_q2_chunks_byte_equal": true,
+    "dataset_cases": 24,
+    "paired_knowledge_needs": 12,
+    "source_documents": 12
+  },
+  "q1_q2_controls": {
+    "dataset_digest_equal": true,
+    "case_order_equal": true,
+    "configuration_equal": true,
+    "environment_equal": true,
+    "budget_seed_and_case_count_equal": true,
+    "planned_cases": 24,
+    "call_cap": 192,
+    "per_job_cap": 12,
+    "max_seconds": 3600,
+    "seed": 20260922,
+    "changed_source_files": [
+      "app/generation_agent.py",
+      "app/question_quality.py",
+      "app/question_revision.py",
+      "app/store.py",
+      "app/task_control.py"
+    ],
+    "changed_source_files_match_intervention_record": true,
+    "interpretation": "The recorded protocol controls match. Changed source files define the Q2 intervention; one serial run and uncontrolled host load do not establish causal latency gains."
+  },
+  "runtime_and_ledger": {
+    "sqlite_integrity": "ok",
+    "total_study_calls": 183,
+    "study_call_statuses": {
+      "failed": 1,
+      "succeeded": 182
+    },
+    "case_calls": 171,
+    "setup_calls": 12,
+    "case_plus_setup_equals_study": true,
+    "job_statuses": {
+      "failed": 1,
+      "succeeded": 35
+    },
+    "failed_case_id": "net_cumulative_ack_en",
+    "failed_capability": "rerank",
+    "failed_http_status": 503,
+    "failure_classification": "Rerank provider HTTP 503; run/job records and ledger agree. No automatic retry is recorded for this case.",
+    "usage_boundary": "One failed call has no total-token record; provider-reported cost is partial, with totals null in the summary."
+  },
+  "test_logs": {
+    "mocked_backend_final": {
+      "path": "/private/tmp/lumori-q2-full-backend-final.txt",
+      "sha256": "08ed8c4bb9f4d0a5b41f5ff18c811700eb27c0fbd98f22c6d33a2dec2c8a2792",
+      "result": {
+        "passed": 2620,
+        "skipped": 19,
+        "warnings": 2,
+        "subtests_passed": 12,
+        "failed": 0
+      }
+    },
+    "mocked_backend_preliminary": {
+      "path": "/private/tmp/lumori-q2-full-backend.txt",
+      "sha256": "1b6ce8e99ba7459f4f0fde35950ee48740dd21edafbade40236d0e8cfb100bc3",
+      "result": {
+        "passed": 2606,
+        "failed": 14,
+        "skipped": 19,
+        "warnings": 2,
+        "subtests_passed": 12
+      },
+      "note": "Earlier local run failed; the later complete backend run passed."
+    },
+    "frontend": {
+      "path": "/private/tmp/lumori-q2-frontend.txt",
+      "sha256": "a166adf79fb3a203c109d8b0347cf5afcf2ea207d097349f9cb0065761ea958e",
+      "result": {
+        "tests": 233,
+        "passed": 233,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "provenance_limit": "The logs are local /private/tmp files outside the frozen Q2 directory and are not hashed by its manifest. Their exact tested source revision cannot be independently proven from the run archive alone."
+  },
+  "credential_value_scan": {
+    "scanned_at_utc": "2026-09-23T01:51:47.816640Z",
+    "scope": "Q2 run directory recursively (including four sealed AI batches and final summary), final comparison directory, and Q2 report; validation.json excluded.",
+    "files_scanned": 165,
+    "matching_file_count": 0,
+    "method": "Heuristic token/private-key signatures and literal named credential assignments; no matched values or paths recorded.",
+    "previous_scan": {
+      "scanned_at_utc": "2026-09-23T01:48:05.038963Z",
+      "files_scanned": 162,
+      "matching_file_count": 0
+    },
+    "boundary": "Pattern scan only; not proof that no credentials exist."
+  },
+  "summary_usability": {
+    "q1": {
+      "json_valid": true,
+      "case_count": 24,
+      "case_order_matches_manifest": true,
+      "outcomes_and_calls_match_case_metrics": true,
+      "delivery": {
+        "numerator": 20,
+        "denominator": 24,
+        "rate": 0.8333333333333334
+      },
+      "strict_difficulty_per_submitted": {
+        "numerator": 15,
+        "denominator": 24,
+        "rate": 0.625
+      },
+      "outcomes": {
+        "strict": 15,
+        "adjusted": 5,
+        "delivered_acceptance_unknown": 0,
+        "check_failed": 2,
+        "provider_failed": 1,
+        "cancelled": 0,
+        "insufficient_evidence": 0,
+        "resource_limited": 1,
+        "runtime_failed": 0,
+        "incomplete": 0
+      },
+      "external_quality_reviewed_at_run_summary": 0
+    },
+    "q2": {
+      "json_valid": true,
+      "case_count": 24,
+      "case_order_matches_manifest": true,
+      "outcomes_and_calls_match_case_metrics": true,
+      "delivery": {
+        "numerator": 23,
+        "denominator": 24,
+        "rate": 0.9583333333333334
+      },
+      "strict_difficulty_per_submitted": {
+        "numerator": 18,
+        "denominator": 24,
+        "rate": 0.75
+      },
+      "outcomes": {
+        "strict": 18,
+        "adjusted": 5,
+        "delivered_acceptance_unknown": 0,
+        "check_failed": 0,
+        "provider_failed": 1,
+        "cancelled": 0,
+        "insufficient_evidence": 0,
+        "resource_limited": 0,
+        "runtime_failed": 0,
+        "incomplete": 0
+      },
+      "external_quality_reviewed_at_run_summary": 0
+    },
+    "q2_json_and_case_accounting_consistent": true,
+    "comparison": "Q1 delivered 20/24 and strict 15/24; Q2 delivered 23/24 and strict 18/24. These are descriptive internal run metrics.",
+    "quality_boundary": "Q2 two-pass Codex AI review is sealed: 23/23 delivered candidates reviewed, 14/23 core quality pass, 13/23 target-difficulty match. It remains AI-assisted review, not teacher/human adjudication or learner outcome evidence.",
+    "latency_boundary": "Wall-time comparisons are descriptive because host background load was not controlled and the mocked backend suite overlapped early Q2 work."
+  },
+  "ai_review_validation": {
+    "evidence_tier": "Two-pass masked Codex AI-assisted review. No human or learner validation.",
+    "batch_count": 4,
+    "batch_record_counts": {
+      "batch1": 6,
+      "batch2": 5,
+      "batch3": 6,
+      "batch4": 6
+    },
+    "pass1_and_pass2_seals_verified": 8,
+    "pass1_answers_and_difficulty_unchanged": true,
+    "reviewed_candidates": 23,
+    "published_candidates_reviewed": 23,
+    "published_core_quality_pass": {
+      "numerator": 14,
+      "denominator": 23
+    },
+    "published_target_difficulty_match": {
+      "numerator": 13,
+      "denominator": 23
+    },
+    "summary_validation": {
+      "sealed_files_verified": true,
+      "pass1_answers_and_difficulty_unchanged": true,
+      "original_case_hashes_verified": true,
+      "quoted_spans_and_citation_membership_verified": true
+    },
+    "summary_sha256": "1b26544485043affd4f72a4ab2b003032d0a5327eacd058e0985c96150b5b97c",
+    "comparison_sha256": "cfe86a3c1270888a8910a11ffc037f2239df5806b36cf6a4ad078065bec05a2c",
+    "boundary": "One Codex AI rater per candidate; the summary is not teacher adjudication, inter-rater agreement, or learner outcome evidence."
+  },
+  "report_validation": {
+    "report_sha256": "c5642470a9a25767e56d5dae6fc2d25a754bcdc605b6a9a576bc886375dcd777",
+    "local_links_checked": 16,
+    "missing_local_links": 0,
+    "credential_signature_matches": 0,
+    "read_only_rebuild_verified": true,
+    "validated_at_utc": "2026-09-23T01:53:38.175824Z",
+    "boundary": "This checks report links and signatures plus read-only recomputation; it does not establish educational correctness."
+  }
+}

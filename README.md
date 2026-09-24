@@ -1,6 +1,6 @@
 # Lumori · FYP 研究与 CA1 档案
 
-当前归档：**CA1 · 2026-09-20**。请从[版本与材料索引](docs/releases/CA1_20260920.md)进入；最新论文为 [Part I v0.4](docs/thesis/README.md)。可部署产品另存于 [TheOverflowing/Lumori](https://github.com/TheOverflowing/Lumori)。
+当前归档：**2026-09-24**。请从[版本与材料索引](docs/releases/UPDATE_20260924.md)进入；最新论文为 [Part I v0.5](docs/thesis/README.md)。可部署产品另存于 [TheOverflowing/Lumori](https://github.com/TheOverflowing/Lumori)。
 
 CEG 311 FYP 的首版本地应用。按完整的 RAG 内容生成、难度控制、语音和图片、教师审核与学生学习流程设计。当前先完成 CA1 的文字生成与 RAG 后端，真实调用包括 DeepSeek 文字模型、OpenRouter 嵌入与专用重排模型，配图理解已按用户选择启用，语音和生成新图仍按原有配置独立控制。
 
@@ -15,6 +15,8 @@ CEG 311 FYP 的首版本地应用。按完整的 RAG 内容生成、难度控制
 H6 仍为可选实验模式：中英文单题已交付，真实多题组因规划或要求覆盖未达标而停止；完整结果、失败样本和独立复核均已保留。
 
 [H7 灵活答案与逐项验收](docs/agent/harness/H7_FLEXIBLE_ANSWERS_20260919.md)新增 `supervisor_v2`：支持有依据的多种论述立场，为每项要求保留题干和答案证据；数值题保持计算结果，另写可独立复核的概念解释。31 次真实调用交付 5/6 道草稿，包含英文双题整组；独立审核仍发现逻辑和难度缺口，不能将交付率当正确率。审核后已加按题资料归属与无截断组卷，默认模式暂不切换。
+
+设置中的“逐题子代理（测验与作业）”按账号保存，默认关闭。开启后，新建测验或作业使用 `supervisor_v2` 先规划，再按 `AGENT_MAX_PARALLEL_QUESTIONS`（1–40，默认 20）有界并行出题、解题与复核；实际同时出题数不会超过题目总数。原生 DeepSeek 接口也可使用。关闭后保留现有逐题流程，学习讲解不受影响。模式与并发上限写入新任务检查点；旧任务按原有串行检查点续做。并发调度与 20–40 题真实接口实验见 [实验记录](benchmarks/subagent_parallelism_v1/README.md)。
 
 完整研究方案见 [方案 Markdown](docs/Full_Scope_Research_Proposal.md) 和 [方案 Word](output/FYP_Full_Scope_Research_Proposal_API_First_v0.2.docx)。以前的单人任务书保留；当前采用 v0.2 全量 API 优先计划。
 

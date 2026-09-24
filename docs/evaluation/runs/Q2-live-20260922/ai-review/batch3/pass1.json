@@ -1,0 +1,50 @@
+[
+  {
+    "blind_id": "Q001",
+    "independent_answer": "The first SELECT starts before S2 commits the UPDATE, so it can see R as inserted but not in its updated form. The second SELECT starts after that commit, so it can see the updated R. In Read Committed, each ordinary SELECT uses the committed-data snapshot taken when that statement begins; the two SELECTs in one S1 transaction may therefore return different versions of R.",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The commit and statement-start order fixes which version is visible to each statement."
+  },
+  {
+    "blind_id": "Q002",
+    "independent_answer": "TCP 向应用提供可靠、按序、双向的字节流；应用按字节写入和读取，单次写入的边界不保证在读取时保留。对等 TCP 实体交换的是 TCP 报文段，发送端可以在发送缓冲区暂存字节并合并成报文段，以减少过多小报文段的开销；但 TCP 并不普遍要求必须等缓冲到某个固定数量才发送。报文段是传输单位，不改变应用看到的字节流语义。",
+    "assessed_difficulty": "medium",
+    "answerability": "uncertain",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "主要服务特征可回答，但第 3 点暗示必须等到一定缓冲量；是否等待及阈值取决于发送策略和条件，题面未给出。"
+  },
+  {
+    "blind_id": "Q003",
+    "independent_answer": "切换出的内核线程要保存恢复执行所需的上下文，尤其是栈指针、返回位置和调用约定要求被调用者保留的寄存器；具体寄存器集合随 xv6 的架构而异。切换发生在函数调用边界，其他临时寄存器由调用约定和已有栈帧处理，用户态寄存器则另由陷阱帧保存，因此无需由上下文切换例程重复保存全部寄存器。调度器选择可运行进程，切换其上下文，让多个进程轮流占用 CPU。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "可按调用约定和调度职责作答；题目未指定 xv6 架构，因此不宜列出唯一的具体寄存器清单。"
+  },
+  {
+    "blind_id": "Q004",
+    "independent_answer": "选第 2 项。收到 SQLSTATE 40001 后应放弃失败事务并重试完整事务；新事务必须重新 SELECT 库存，并用新读数重新计算和构造 UPDATE。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "读数决定后续写入时，重用旧读数或旧 UPDATE 不构成完整事务重试；其他三项均与这一要求或错误码的绝对化表述冲突。"
+  },
+  {
+    "blind_id": "Q005",
+    "independent_answer": "1. R 公告的接收窗口 rwnd=0，接收端流量控制阻止发送新的常规数据，保护接收缓冲区。2. 缩小的拥塞窗口 cwnd 体现网络拥塞控制，保护路径中的链路和路由器；但只有 cwnd 小于 rwnd 且可发送额度被用尽时，它才是实际起作用的窗口限制，题面没有给出这两个数值。3. 中间路由器丢包说明路径已拥塞并限制成功交付，发送端应在观察到相应丢包信号后调整 cwnd；仅凭两个窗口都“大”，不能判定此刻是拥塞窗口、接收窗口、两者还是两者都不限制新的发送。未确认数据的通常发送额度受 min(cwnd, rwnd) 限制，不能超过其中任一窗口允许的额度。",
+    "assessed_difficulty": "hard",
+    "answerability": "uncertain",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "第 1 种情形和有效窗口原则明确；第 2、3 种情形没有给出窗口的相对大小、在途数据量或发送端获知丢包的时点，无法唯一判定当前实际生效的发送限制。"
+  },
+  {
+    "blind_id": "Q006",
+    "independent_answer": "选第 2 项。两个 CPU 都可能在锁值仍为 0 时完成 L1，随后都执行 L2 并进入 L3，造成并发修改。L1 的检查和 L2 的设置不是一个原子操作；所列 acquire 的 while 条件也不能实现可靠的互斥。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "第 2 项是唯一指出检查与设置之间竞态的选项；其将 L1–L4 整段称为临界区虽较宽泛，但不影响核心判断。"
+  }
+]

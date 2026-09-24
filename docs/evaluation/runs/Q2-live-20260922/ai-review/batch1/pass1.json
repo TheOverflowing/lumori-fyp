@@ -1,0 +1,50 @@
+[
+  {
+    "blind_id": "Q001",
+    "independent_answer": "Both later SELECTs return 100. PostgreSQL Repeatable Read uses the snapshot established by T1's first query, so T2's later commit is invisible to both reads. This particular two-transaction history is consistent with the serial order T1 then T2. Snapshot stability alone does not guarantee serializability for arbitrary concurrent transactions.",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The first read precedes T2's commit and fixes T1's snapshot. The last question needs the distinction between this concrete history and a general isolation-level guarantee."
+  },
+  {
+    "blind_id": "Q002",
+    "independent_answer": "第一项。ACK 表示接收方已确认原帧；超时让未按时收到 ACK 的发送方重传；交替序号使接收方识别重传副本，避免重复交付。",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "只有第一项正确区分了确认、超时和序号的职责；其余选项混淆或误换三者的作用。"
+  },
+  {
+    "blind_id": "Q003",
+    "independent_answer": "The proposal is unsafe. If the thread holds tickslock with local interrupts enabled, clockintr can interrupt it and spin trying to acquire the same lock; the thread cannot resume to release it. Letting clockintr proceed while the interrupted thread still owns the lock breaks exclusive ownership and can expose partially updated shared state. xv6 calls push_off before marking a spinlock held, and releases the lock before pop_off, keeping local interrupts disabled throughout the critical section; it also rejects recursive acquisition on one CPU. An interrupt or thread on another CPU can still run and contend for tickslock, so the spinlock remains necessary; that CPU can wait while the owner continues and releases it.",
+    "assessed_difficulty": "hard",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "Requires tracing same-CPU preemption, lock ownership, ordering of interrupt masking, and distinct behavior on another CPU."
+  },
+  {
+    "blind_id": "Q004",
+    "independent_answer": "C. ROLLBACK undoes Alice's debit, and Bob's credit never ran; therefore neither account receives an update from this transaction.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "C uniquely states the intended atomic outcome, although saying Bob's unexecuted credit is 'canceled' is imprecise."
+  },
+  {
+    "blind_id": "Q005",
+    "independent_answer": "1. 不能。T1 的首次非事务控制语句建立快照后，后续 SELECT 继续使用该快照，看不到 T2 此后提交的更新。\n2. 否。快照稳定本身不是 Repeatable Read 对任意并发历史的可串行化保证；但若仅有题述的只读 T1 和随后提交更新的 T2，这一观察结果可按 T1、T2 排成串行顺序。题干提及的异常不能单由这两个事务的已给事实推出。\n3. Serializable。它需在快照读取之外检测并阻止可能形成不可串行化历史的并发依赖，必要时使事务以序列化失败结束并由应用重试。",
+    "assessed_difficulty": "hard",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The general guarantee and the restricted two-transaction example have different answers; the stated anomaly lacks a concrete schedule. A complete response must preserve that distinction."
+  },
+  {
+    "blind_id": "Q006",
+    "independent_answer": "(1) 若先置 locked 再 push_off，本 CPU 可在两步之间被中断；处理程序等待该锁，而被打断的线程无法继续释放，形成死锁。\n(2) 若先 pop_off 再清除锁，本 CPU 的中断可在锁仍被持有时运行，处理程序试图获取该锁并使线程无法继续释放。\n(3) 正常持锁期间，本 CPU 的中断已被关闭，时钟中断会延后处理，因此该 CPU 的处理程序不会在此时尝试获取该锁。\n(4) 另一 CPU 仍可执行中断或线程；其 acquire 可自旋等待。持锁 CPU 没有因此被打断，仍能运行并释放锁，所以不会出现上述同 CPU 的等待环。\n(5) xv6 不允许同一 CPU 重复获取已持有的锁；这种调用会被判为错误。先关中断再置锁、先解锁再恢复中断，可阻止中断处理程序在本 CPU 意外重入同一锁；显式重复获取则需由禁止重入的检查识别，不能靠中断顺序解决。",
+    "assessed_difficulty": "hard",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "All five parts can be answered from the listed facts. Recursive-acquire checking and interrupt-order prevention serve related but distinct purposes."
+  }
+]

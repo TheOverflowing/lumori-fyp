@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>7&nbsp; Locking – xv6: a simple, Unix-like teaching operating system</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./sched.html" rel="next">
+<link href="./interrupt.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-144df1dae3228b148528002f82521db4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar docked fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./lock.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Locking</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">xv6: a simple, Unix-like teaching operating system</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/mit-pdos/xv6-riscv" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Foreword and acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Operating system interfaces</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./first.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Operating system organization</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mem.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Page tables</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./trap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Traps and system calls</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pgfault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Page faults</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interrupt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Interrupts and device drivers</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lock.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Locking</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sched.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Scheduling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sleep.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Sleep and Wakeup</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">File system</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./log.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Logging</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lock2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Concurrency revisited</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sum.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="CH:LOCK" class="quarto-section-identifier"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Locking</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Most kernels, including xv6, interleave the execution of multiple activities. One source of interleaving is multiprocessor hardware: computers with multiple CPUs executing independently, such as xv6’s RISC-V. These multiple CPUs share physical RAM, and xv6 exploits the sharing to maintain kernel data structures that all CPUs read and write. This sharing raises the possibility of one CPU reading a data structure while another CPU is mid-way through updating it, or even multiple CPUs updating the same data simultaneously; without careful design such parallel access is likely to yield incorrect results or a broken data structure. Even on a uniprocessor, the kernel may switch the CPU among a number of threads, causing their execution to be interleaved. Finally, a device interrupt handler that modifies the same data as some interruptible code could damage the data if the interrupt occurs just as the interrupted code is also modifying the data. The word <em>concurrency</em> refers to situations in which multiple instruction streams are interleaved, due to multiprocessor parallelism, thread switching, or interrupts.</p>
+<p>Kernels are full of concurrently-accessed data. For example, two CPUs could simultaneously call <code>kalloc</code>, thereby concurrently popping from the head of the free list. Kernel designers like to allow for lots of concurrency, since it can increase performance and responsiveness. However, they must then convince themselves of correctness despite concurrency. Strategies aimed at correctness under concurrency, and abstractions that support them, are called <em>concurrency control</em> techniques.</p>
+<p>This chapter focuses on a widely used concurrency control technique: the <em>lock</em>. As a preview, here’s what use of a lock in the xv6 kernel looks like:</p>
+<pre><code>struct spinlock lk;
+...;
+acquire(&amp;lk);
+... read or write some shared data ...
+release(&amp;lk);</code></pre>
+<p>A lock provides mutual exclusion, ensuring that only one CPU at a time can hold the lock. If the programmer associates a lock with each shared data item, and the code always holds the associated lock when using an item, then the item will be used by only one CPU at a time. In this situation, we say that the lock protects the data item. Although a lock is an easy-to-understand concurrency control mechanism, it can limit performance by serializing concurrent operations on the data it protects.</p>
+<p>The rest of this chapter explains why xv6 needs locks, how xv6 implements them, and how it uses them.</p>
+<section id="races" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="races"><span class="header-section-number">7.1</span> Races</h2>
+<figure id="fig:smp" data-latex-placement="t" class="figure">
+<img src="fig/smp.svg" class="figure-img">
+<figcaption>
+Figure 7.1: Simplified SMP architecture
+</figcaption>
+</figure>
+<p>As an example of why we need locks, consider two processes with exited children calling the <code>wait</code> system call on two different CPUs. <code>wait</code> frees the child’s memory. Thus on each CPU, the kernel will call <code>kfree</code> to free the children’s memory pages. The kernel allocator maintains a linked list of free pages: <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/kalloc.c#L69" class="coderef" data-path="kernel/kalloc.c" data-line="69"><code>kalloc()</code></a> pops a page of memory from the list, and <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/kalloc.c#L47" class="coderef" data-path="kernel/kalloc.c" data-line="47"><code>kfree()</code></a> pushes a page onto the list. For best performance, we might hope that the <code>kfree</code>s of the two parent processes would execute in parallel without either having to wait for the other, but this would not be correct given xv6’s <code>kfree</code> implementation.</p>
+<p>Figure&nbsp;<a href="#fig:smp">7.1</a> illustrates the setting in more detail: the linked list of free pages is in memory that is shared by the two CPUs, which manipulate the list using load and store instructions. (In reality, the processors have caches, but conceptually multiprocessor systems behave as if there were a single, shared memory.) If there were no concurrent requests, you might implement a list <code>push</code> operation as follows:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-startfrom="1"><pre class="sourceCode numberSource numberLines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>    struct element {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>      int data;</span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>      struct element *next;</span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>    };</span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>    struct element *list = 0;</span>
+<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a>    void</span>
+<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a>    push(int data)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-label="10"></a>    {</span>
+<span id="cb2-11"><a href="#cb2-11" aria-label="11"></a>      struct element *l;</span>
+<span id="cb2-12"><a href="#cb2-12" aria-label="12"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-label="13"></a>      l = malloc(sizeof *l);</span>
+<span id="cb2-14"><a href="#cb2-14" aria-label="14"></a>      l-&gt;data = data;</span>
+<span id="cb2-15"><a href="#cb2-15" aria-label="15"></a>      l-&gt;next = list;</span>
+<span id="cb2-16"><a href="#cb2-16" aria-label="16"></a>      list = l;</span>
+<span id="cb2-17"><a href="#cb2-17" aria-label="17"></a>   }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<figure id="fig:race" data-latex-placement="t" class="figure">
+<img src="fig/race.svg" class="figure-img">
+<figcaption>
+Figure 7.2: Example race
+</figcaption>
+</figure>
+<p>This implementation is correct if executed in isolation. However, the code is not correct if more than one copy executes concurrently. If two CPUs execute <code>push</code> at the same time, both might execute line&nbsp;15 as shown in Figure&nbsp;<a href="#fig:smp">7.1</a>, before either executes line&nbsp;16, which results in an incorrect outcome as illustrated by Figure&nbsp;<a href="#fig:race">7.2</a>. There would then be two list elements with <code>next</code> set to the same former value of <code>list</code>. When the two assignments to <code>list</code> happen at line &nbsp;16, the second one will overwrite the first; the element involved in the first assignment will be lost.</p>
+<p>The lost update at line&nbsp;16 is an example of a <em>race</em>. A race is a situation in which a memory location is accessed concurrently, and at least one access is a write. A race is often a sign of a bug, either a lost update (if the accesses are writes) or a read of an incompletely-updated data structure. The outcome of a race depends on the machine code generated by the compiler, the timing of the two CPUs involved, and how their memory operations are ordered by the memory system, which can make race-induced errors difficult to reproduce and debug. For example, adding print statements while debugging <code>push</code> might change the timing of the execution enough to make the race disappear.</p>
+<p>The usual way to avoid races is to use a lock. Locks ensure <em>mutual exclusion</em>, so that only one CPU at a time can execute the sensitive lines of <code>push</code>; this makes the scenario above impossible. The correctly locked version of the above code adds just a few lines (highlighted in yellow):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-startfrom="6" data-hl-lines="7,16,19"><pre class="sourceCode numberSource numberLines code-with-copy"><code class="sourceCode" style="counter-reset: source-line 5;"><span id="cb3-6"><a href="#cb3-6" aria-label="6"></a>   struct element *list = 0;</span>
+<span id="cb3-7"><a href="#cb3-7" aria-label="7"></a>   struct lock listlock;</span>
+<span id="cb3-8"><a href="#cb3-8" aria-label="8"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-label="9"></a>   void</span>
+<span id="cb3-10"><a href="#cb3-10" aria-label="10"></a>   push(int data)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-label="11"></a>   {</span>
+<span id="cb3-12"><a href="#cb3-12" aria-label="12"></a>     struct element *l;</span>
+<span id="cb3-13"><a href="#cb3-13" aria-label="13"></a>     l = malloc(sizeof *l);</span>
+<span id="cb3-14"><a href="#cb3-14" aria-label="14"></a>     l-&gt;data = data;</span>
+<span id="cb3-15"><a href="#cb3-15" aria-label="15"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-label="16"></a>     acquire(&amp;listlock);</span>
+<span id="cb3-17"><a href="#cb3-17" aria-label="17"></a>     l-&gt;next = list;</span>
+<span id="cb3-18"><a href="#cb3-18" aria-label="18"></a>     list = l;</span>
+<span id="cb3-19"><a href="#cb3-19" aria-label="19"></a>     release(&amp;listlock);</span>
+<span id="cb3-20"><a href="#cb3-20" aria-label="20"></a>   }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The sequence of instructions between <code>acquire</code> and <code>release</code> is often called a <em>critical section</em>. The lock is said to be protecting <code>list</code>.</p>
+<p>When we say that a lock protects data, we really mean that the lock protects some collection of invariants that apply to the data. Invariants are properties of data structures that are maintained across operations. Typically, an operation’s correct behavior depends on the invariants being true when the operation begins. The operation may temporarily violate the invariants but must reestablish them before finishing. For example, in the linked list case, the invariant is that <code>list</code> points at the first element in the list and that each element’s <code>next</code> field points at the next element. The implementation of <code>push</code> violates this invariant temporarily: in line&nbsp;17, <code>l</code> points to the next list element, but <code>list</code> does not point at <code>l</code> yet (reestablished at line&nbsp;18). The race we examined above happened because a second CPU executed code that depended on the list invariants while they were (temporarily) violated. Proper use of a lock ensures that only one CPU at a time can operate on the data structure in the critical section, so that no CPU will execute a data structure operation when the data structure’s invariants do not hold.</p>
+<p>You can think of a lock as <em>serializing</em> concurrent critical sections so that they run one at a time, and thus preserve invariants (assuming the critical sections are correct in isolation). You can also think of critical sections guarded by the same lock as being atomic with respect to each other, so that each sees only the complete set of changes from earlier critical sections, and never sees partially-completed updates.</p>
+<p>Though useful for correctness, locks inherently limit performance. For example, if two processes call <code>kfree</code> concurrently, the locks will serialize the two critical sections, so that there is no benefit from running them on different CPUs. We say that multiple processes <em>conflict</em> if they want the same lock at the same time, or that the lock experiences <em>contention</em>. A major challenge in kernel design is avoidance of lock contention in pursuit of parallelism. Xv6 does little of that, but sophisticated kernels organize data structures and algorithms specifically to avoid lock contention. In the list example, a kernel may maintain a separate free list per CPU and only touch another CPU’s free list if the current CPU’s list is empty and it must steal memory from another CPU. Other use cases may require more complicated designs.</p>
+<p>The placement of locks is also important for performance. For example, it would be correct to move <code>acquire</code> earlier in <code>push</code>, before line&nbsp;13. But this would likely reduce performance because then the calls to <code>malloc</code> would be serialized. The section “Using locks” below provides some guidelines for where to insert <code>acquire</code> and <code>release</code> invocations.</p>
+</section>
+<section id="code-locks" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="code-locks"><span class="header-section-number">7.2</span> Code: Locks</h2>
+<p>Please read <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/spinlock.h" class="coderef" data-path="kernel/spinlock.h"><code>kernel/spinlock.h</code></a> and <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/spinlock.c" class="coderef" data-path="kernel/spinlock.c"><code>kernel/spinlock.c</code></a>.</p>
+<p>Xv6 has two types of locks: spinlocks and sleep-locks. We’ll start with spinlocks. Xv6 represents a spinlock as a <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/spinlock.h#L2" class="coderef" data-path="kernel/spinlock.h" data-line="2"><code>struct spinlock</code></a>. The important field in the structure is <code>locked</code>, a word that is zero when the lock is available and non-zero when it is held. Were there no concurrency, xv6 could acquire a lock with code like</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-startfrom="21"><pre class="sourceCode numberSource numberLines code-with-copy"><code class="sourceCode" style="counter-reset: source-line 20;"><span id="cb4-21"><a href="#cb4-21" aria-label="21"></a>   void</span>
+<span id="cb4-22"><a href="#cb4-22" aria-label="22"></a>   acquire(struct spinlock *lk) // does not work!</span>
+<span id="cb4-23"><a href="#cb4-23" aria-label="23"></a>   {</span>
+<span id="cb4-24"><a href="#cb4-24" aria-label="24"></a>     for(;;) {</span>
+<span id="cb4-25"><a href="#cb4-25" aria-label="25"></a>       if(lk-&gt;locked == 0) {</span>
+<span id="cb4-26"><a href="#cb4-26" aria-label="26"></a>         lk-&gt;locked = 1;</span>
+<span id="cb4-27"><a href="#cb4-27" aria-label="27"></a>         break;</span>
+<span id="cb4-28"><a href="#cb4-28" aria-label="28"></a>       }</span>
+<span id="cb4-29"><a href="#cb4-29" aria-label="29"></a>     }</span>
+<span id="cb4-30"><a href="#cb4-30" aria-label="30"></a>   }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Unfortunately, this implementation does not guarantee mutual exclusion in the face of concurrency. Two CPUs could simultaneously reach line&nbsp;25, see that <code>lk-&gt;locked</code> is zero, and then both grab the lock by executing line&nbsp;26. At this point, two different CPUs hold the lock, which violates the mutual exclusion property. What we need is a way to make lines&nbsp;25 and&nbsp;26 execute as an <em>atomic</em> (indivisible) step.</p>
+<p>Because locks are widely used, multi-core processors usually provide an instruction that can be used to make lines&nbsp;25 and&nbsp;26 atomic. On the RISC-V this instruction is <code>amoswap r, r, a</code>. The <code>amoswap</code> instruction reads the value at memory address <code>a</code>, writes the contents of register <code>r</code> to that address, and puts the value it read into <code>r</code>. That is, it swaps the contents of the register and the addressed memory location. It performs this sequence atomically, using special hardware to prevent any other CPU from using the memory address between the read and the write.</p>
+<p>The C compiler provides a family of “atomic” built-in functions that generate atomic instructions. Xv6’s <code>acquire()</code> uses <code>__atomic_exchange_n(addr, value, ...)</code>, which boils down to the <code>amoswap</code> instruction; the function returns the old (swapped) contents of <code>addr</code>. Here’s a good way to write the loop in <code>acquire</code>:</p>
+<pre><code>  while (__atomic_exchange_n(&amp;lk-&gt;locked, 1, __ATOMIC_ACQUIRE) != 0)
+    ;</code></pre>
+<p>Xv6’s <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/spinlock.c#L22" class="coderef" data-path="kernel/spinlock.c" data-line="22"><code>acquire</code></a> uses the above loop (Section&nbsp;<a href="lock.html#SEC:MEMORDER">7.6</a> will explain <code>__ATOMIC_ACQUIRE</code>). Each iteration swaps one into <code>lk-&gt;locked</code> and checks the previous value; if the previous value is zero, then we’ve acquired the lock, and the swap will have set <code>lk-&gt;locked</code> to one. If the previous value is one, then some other CPU holds the lock, and the fact that we atomically swapped one into <code>lk-&gt;locked</code> didn’t change its value.</p>
+<p>Once the lock is acquired, <code>acquire</code> records, for debugging, the CPU that acquired the lock. The <code>lk-&gt;cpu</code> field is protected by the lock and must only be changed while holding the lock.</p>
+<p>The function <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/spinlock.c#L46" class="coderef" data-path="kernel/spinlock.c" data-line="46"><code>release</code></a> is the opposite of <code>acquire</code>: it clears the <code>lk-&gt;cpu</code> field and then releases the lock. Conceptually, the release just assigns zero to <code>lk-&gt;locked</code>. The C standard allows compilers to implement an assignment with multiple store instructions, so a C assignment might be non-atomic with respect to concurrent code. Instead, <code>release</code> uses the C atomic function <code>__atomic_store_n(addr, 0, ...)</code> that stores zero to the address in a single indivisible operation.</p>
+</section>
+<section id="code-using-locks" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="code-using-locks"><span class="header-section-number">7.3</span> Code: Using locks</h2>
+<p>Xv6 uses locks in many places to avoid races. As described above, <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/kalloc.c#L69" class="coderef" data-path="kernel/kalloc.c" data-line="69"><code>kalloc</code></a> and <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/kalloc.c#L47" class="coderef" data-path="kernel/kalloc.c" data-line="47"><code>kfree</code></a> form a good example. Try Exercises 1 and 2 to see what happens if those functions omit the locks. You’ll likely find that it’s difficult to trigger incorrect behavior, suggesting that it’s hard to reliably test whether code is free from locking errors and races. Xv6 may well have as-yet-undiscovered races.</p>
+<p>A hard part about using locks is deciding how many locks to use and which data and invariants each lock should protect. There are a few basic principles. First, in any code that might cause a memory location to be written by one CPU at the same time that another CPU reads or writes it, a lock should be used to keep the two operations from overlapping. Second, remember that locks protect invariants: if an invariant involves multiple memory locations, typically all of them need to be protected by a single lock to ensure the invariant is maintained.</p>
+<p>The rules above say when locks are necessary but say nothing about when locks are unnecessary, and it is important for efficiency not to lock too much, because locks reduce parallelism. If parallelism isn’t important, then one could arrange to have only a single thread and not worry about locks. A simple kernel can do this on a multiprocessor by having a single lock; the kernel acquires the lock every time the kernel is entered from user space, for a system call or interrupt; the kernel releases the lock when it returns to user space. Many uniprocessor operating systems have been converted to run on multiprocessors using this approach, sometimes called a “big kernel lock,” but the approach sacrifices parallelism: only one CPU can execute in the kernel at a time. If the kernel consumes significant CPU time, more parallelism could be obtained by protecting different objects or modules with different locks, so that different CPUs could be executing in different parts of the kernel at the same time.</p>
+<p>As an example of coarse-grained locking, xv6’s <code>kalloc.c</code> allocator has a single free list protected by a single lock. If multiple processes on different CPUs try to allocate pages at the same time, each will have to wait for its turn by spinning in <code>acquire</code>. Spinning wastes CPU time, since it’s not useful work. If contention for the lock wasted a significant fraction of CPU time, perhaps performance could be improved by changing the allocator to have a separate free list per CPU, each with its own lock, to allow truly parallel allocation.</p>
+<p>As an example of fine-grained locking, xv6 has a separate lock for each file, so that processes that manipulate different files can often proceed without waiting for each other’s locks. The file locking scheme could be made even more fine-grained if one wanted to allow processes to simultaneously write different areas of the same file. Ultimately lock granularity decisions need to be driven by performance requirements as well as complexity considerations.</p>
+<p>As subsequent chapters explain each part of xv6, they will mention examples of xv6’s use of locks to deal with concurrency. As a preview, Figure&nbsp;<a href="#fig:locktable">7.3</a> lists all of the locks in xv6.</p>
+<figure id="fig:locktable" data-latex-placement="t" class="figure">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">
+<span><strong>Lock</strong></span>
+</th>
+<th style="text-align: left;">
+<span><strong>Description</strong></span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">
+bcache.lock
+</td>
+<td style="text-align: left;">
+Protects allocation of block buffer cache entries
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+cons.lock
+</td>
+<td style="text-align: left;">
+Serializes read processing of console input
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+tx_lock
+</td>
+<td style="text-align: left;">
+Serializes access to console (uart) output hardware
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+ftable.lock
+</td>
+<td style="text-align: left;">
+Serializes allocation of a struct file in file table
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+itable.lock
+</td>
+<td style="text-align: left;">
+Protects allocation of in-memory inode entries
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+vdisk_lock
+</td>
+<td style="text-align: left;">
+Serializes access to disk hardware and queue of DMA descriptors
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+kmem.lock
+</td>
+<td style="text-align: left;">
+Serializes allocation of memory
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+log.lock
+</td>
+<td style="text-align: left;">
+Serializes operations on the transaction log
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+pipe’s pi-&gt;lock
+</td>
+<td style="text-align: left;">
+Serializes operations on each pipe
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+pid_lock
+</td>
+<td style="text-align: left;">
+Serializes increments of next_pid
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+proc’s p-&gt;lock
+</td>
+<td style="text-align: left;">
+Serializes changes to each process’s state
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+wait_lock
+</td>
+<td style="text-align: left;">
+Helps wait avoid lost wakeups
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+tickslock
+</td>
+<td style="text-align: left;">
+Serializes operations on the ticks counter
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+inode’s ip-&gt;lock
+</td>
+<td style="text-align: left;">
+Serializes operations on each inode and its content
+</td>
+</tr>
+<tr>
+<td style="text-align: left;">
+buf’s b-&gt;lock
+</td>
+<td style="text-align: left;">
+Serializes operations on each block buffer
+</td>
+</tr>
+</tbody>
+</table>
+<figcaption>
+Figure 7.3: Locks in xv6
+</figcaption>
+</figure>
+</section>
+<section id="deadlock-and-lock-ordering" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="deadlock-and-lock-ordering"><span class="header-section-number">7.4</span> Deadlock and lock ordering</h2>
+<p>Suppose the functions running on CPUs C1 and C2 both have a point at which each needs to hold both lock A and lock B, and they acquire them in different orders:</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="fig/order.svg" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+<p>With a bit of bad luck, C1 and C2 might both execute their first acquire at exactly the same moment; both can succeed, since they are asking for different locks. But then both C1 and C2 will have to wait in their second calls to <code>acquire()</code>, since both locks are already held by the other CPU. Because both CPUs are waiting for each other, neither will ever release a lock, and both will wait forever. This situation is called <em>deadlock</em>.</p>
+<p>The key problem in the C1/C2 example is that the two CPUs acquired the locks in different orders. If they had both tried to acquire A first, one would have acquired A and then B and then released them both, and then the other CPU could have proceeded. More generally, locking code must follow this rule to avoid deadlock: all code paths that hold multiple locks must acquire locks in the same order. The need for this global lock acquisition order means that locks are effectively part of each function’s specification: callers must invoke functions in a way that causes locks to be acquired in the agreed-on order.</p>
+<p>Xv6 has many lock-order chains of length two involving per-process locks (the lock in each <code>struct proc</code>) due to the way that the <code>sleep</code>/<code>wakeup</code> mechanism works (see Chapter&nbsp;<a href="sleep.html#CH:SLEEP">9</a>). For example, <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/console.c#L147" class="coderef" data-path="kernel/console.c" data-line="147"><code>consoleintr</code></a> is the interrupt routine which handles typed characters. When a newline arrives, any process that is waiting for console input should be woken up. To do this, <code>consoleintr</code> holds <code>cons.lock</code> while calling <code>wakeup</code>, which acquires the waiting process’s lock in order to wake it up. In consequence, the global deadlock-avoiding lock order includes the rule that <code>cons.lock</code> must be acquired before any process lock. The file-system code contains xv6’s longest lock chains. For example, creating a file requires simultaneously holding a lock on the directory, a lock on the new file’s inode, a lock on a disk block buffer, the disk driver’s <code>vdisk_lock</code>, and the calling process’s <code>p-&gt;lock</code>. To avoid deadlock, file-system code always acquires locks in the order mentioned in the previous sentence.</p>
+<p>Honoring a global deadlock-avoiding order can be surprisingly difficult. Sometimes the lock order conflicts with logical program structure, e.g., perhaps code module M1 calls module M2, but the lock order requires that a lock in M2 be acquired before a lock in M1. Sometimes the identities of locks aren’t known in advance, perhaps because one lock must be held in order to discover the identity of the lock to be acquired next. This kind of situation arises in the file system as it looks up successive components in a path name, and in the code for the <code>wait</code> and <code>exit</code> system calls as they search the table of processes looking for child processes. Finally, the danger of deadlock is often a constraint on how fine-grained one can make a locking scheme, since more locks often means more opportunity for deadlock. The need to avoid deadlock is often a major factor in kernel implementation.</p>
+<p>A question that sometimes arises is what should happen if a CPU tries to acquire a lock that the same CPU already holds. One line of reasoning is that this should be allowed: no other CPU can hold the lock, so there’s no need to worry about CPUs interfering with each others’ use of the protected data. Locking systems that allow a CPU to re-acquire a lock it already holds are called a <em>re-entrant</em> or <em>recursive</em>. On the other hand, if a lock is already held, even on the same CPU, that means an operation may have temporarily violated and not yet restored some invariants; to allow a new operation to commence while the invariants don’t hold seems like an invitation to bugs. Xv6 takes this latter view, and forbids a CPU that currently holds a lock from re-acquiring it. Detecting this situation is the purpose of the call to <code>holding</code> in <code>acquire</code>.</p>
+</section>
+<section id="s:lockinter" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="s:lockinter"><span class="header-section-number">7.5</span> Locks and interrupts</h2>
+<p>Some xv6 spinlocks protect data that is used by both threads and interrupt handlers. For example, the <code>clockintr</code> timer interrupt handler might increment <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/trap.c#L167" class="coderef" data-path="kernel/trap.c" data-line="167"><code>ticks</code></a> at about the same time that a kernel thread reads <code>ticks</code> in <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/sysproc.c#L77" class="coderef" data-path="kernel/sysproc.c" data-line="77"><code>sys_pause</code></a>. The lock <code>tickslock</code> serializes the two accesses.</p>
+<p>The interaction of spinlocks and interrupts raises a potential danger. Suppose <code>sys_pause</code> holds <code>tickslock</code>, and its CPU is interrupted by a timer interrupt. <code>clockintr</code> would try to acquire <code>tickslock</code>, see it was held, and wait for it to be released. In this situation, <code>tickslock</code> will never be released: only <code>sys_pause</code> can release it, but <code>sys_pause</code> will not continue running until <code>clockintr</code> returns. So the CPU will deadlock, and any code that needs either lock will also freeze.</p>
+<p>To avoid this situation, if a spinlock is used by an interrupt handler, a CPU must never hold that lock with interrupts enabled. Xv6 is more conservative: when a CPU acquires any lock, xv6 always disables interrupts on that CPU. Interrupts may still occur on other CPUs, so an interrupt’s <code>acquire</code> can wait for a thread to release a spinlock; just not on the same CPU.</p>
+<p>Xv6 re-enables interrupts when a CPU holds no spinlocks; it must do a little book-keeping to cope with nested critical sections. <code>acquire</code> calls <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/spinlock.c#L93" class="coderef" data-path="kernel/spinlock.c" data-line="93"><code>push_off</code></a> and <code>release</code> calls <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/spinlock.c#L106" class="coderef" data-path="kernel/spinlock.c" data-line="106"><code>pop_off</code></a> to track the nesting level of locks on the current CPU. When that count reaches zero, <code>pop_off</code> restores the interrupt enable state that existed at the start of the outermost critical section. <code>push_off</code> and <code>pop_off</code> tell the CPU to enable and disable interrupts by changing the <code>SIE</code> (Supervisor Interrupt Enable) bit in the <code>sstatus</code> (Supervisor Status) register, using <code>intr_on</code> and <code>rc_sstatus(SSTATUS_SIE)</code>; the latter clears the <code>SIE</code> bit.</p>
+<p>It is important that <code>acquire</code> call <code>push_off</code> strictly before setting <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/spinlock.c#L37" class="coderef" data-path="kernel/spinlock.c" data-line="37"><code>lk-&gt;locked</code></a>. If the two were reversed, there would be a brief window when the lock was held with interrupts enabled, and an unfortunately timed interrupt would deadlock the system. Similarly, it is important that <code>release</code> call <code>pop_off</code> only after releasing the lock <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/spinlock.c#L73" class="coderef" data-path="kernel/spinlock.c" data-line="73">(spinlock.c:73)</a>.</p>
+</section>
+<section id="SEC:MEMORDER" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="SEC:MEMORDER"><span class="header-section-number">7.6</span> Instruction and memory ordering</h2>
+<p>It is natural to think of programs executing in the order in which source code statements appear. That’s a reasonable mental model for single-threaded code, but is not what actually happens.</p>
+<p>One reason is that compilers emit load and store instructions in orders different from those implied by the source code, and may entirely omit them (for example by caching data in registers). Another reason is that the CPU may execute instructions out of order to increase performance. For example, a CPU may notice that in a serial sequence of instructions A and B are not dependent on each other. The CPU may start instruction B first, either because its inputs are ready before A’s inputs, or in order to overlap execution of A and B.</p>
+<p>Memory access re-ordering by the CPU and compiler can cause problems when multiple threads interact through shared memory&nbsp;<span class="citation" data-cites="riscv:user boehm04">(<a href="references.html#ref-riscv:user" role="doc-biblioref">Waterman and Asanovic 2024</a>; <a href="references.html#ref-boehm04" role="doc-biblioref">Boehm 2005</a>)</span>. As an example of what could go wrong, in this code for <code>push</code>, it would be a disaster if the compiler or CPU moved the store corresponding to line&nbsp;4 to a point after the <code>release</code> on line&nbsp;6:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-startfrom="1"><pre class="sourceCode numberSource numberLines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a>      l = malloc(sizeof *l);</span>
+<span id="cb6-2"><a href="#cb6-2" aria-label="2"></a>      l-&gt;data = data;</span>
+<span id="cb6-3"><a href="#cb6-3" aria-label="3"></a>      acquire(&amp;listlock);</span>
+<span id="cb6-4"><a href="#cb6-4" aria-label="4"></a>      l-&gt;next = list;</span>
+<span id="cb6-5"><a href="#cb6-5" aria-label="5"></a>      list = l;</span>
+<span id="cb6-6"><a href="#cb6-6" aria-label="6"></a>      release(&amp;listlock);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If such a re-ordering occurred, there would be a window during which another CPU could acquire the lock and observe the updated <code>list</code>, but see an uninitialized <code>list-&gt;next</code>.</p>
+<p>The good news is that compilers and CPUs provide ways for programmers to prevent re-ordering. These appear in xv6 as the <code>__ATOMIC_ACQUIRE</code> and <code>__ATOMIC_RELEASE</code> arguments to the C atomic functions used in <code>acquire</code> and <code>release</code>. Each has two effects. First, each tells the compiler not to move memory references past the atomic call. Second, each tells the compiler to generate instructions that tell the CPU not to move execution-time memory references past the instructions generated for the atomic call. Such a “don’t move past” point is called a <em>memory barrier</em> or a <em>fence</em>.</p>
+<p>The barriers in xv6’s spinlock functions have two important effects on code that uses locks. First, all memory references (reads and writes) that occur in the C code before a <code>release()</code> are guaranteed to take effect on the memory system before the <code>release()</code> completes. This includes both memory references in the critical section and memory references before the critical section. Second, all memory references in the C code after the <code>acquire</code> are guaranteed <strong>not</strong> to take effect before the successful completion of the <code>amoswap</code> in <code>acquire()</code>. Again, this includes both references inside the critical section and references after the <code>release</code>.</p>
+<p>These barriers produce an important transitive effect. For example, if a CPU writes to a newly-allocated data object (without holding locks) and then, in a critical section, links that object into a list, any CPU that subsequently acquires a lock and obtains a pointer to the object from the list is guaranteed to observe the first CPU’s writes.</p>
+<p>The barriers in xv6’s <code>acquire</code> and <code>release</code> force order in almost all cases where it matters, since xv6 uses locks around accesses to shared data. Chapter&nbsp;<a href="lock2.html#CH:LOCK2">12</a> discusses a few exceptions.</p>
+</section>
+<section id="programming-with-atomics" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="programming-with-atomics"><span class="header-section-number">7.7</span> Programming with Atomics</h2>
+<p>Though xv6 doesn’t do this, it is sometimes possible to update shared data while avoiding races by direct use of atomic instructions, without use of locks. Most CPUs conveniently supply dozens of atomic instructions, typically with the pattern that they read a memory location, modify the value, and write the new value to the same memory location, atomically. The RISC-V <code>amoadd</code> instruction is an example: it atomically adds a register’s contents to a location in memory. The C compiler provides “atomic” wrappers for these instructions.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Thus code could increment a shared counter without locks using</p>
+<pre><code>  __atomic_fetch_add(&amp;counter, 1, __ATOMIC_SEQ_CST);</code></pre>
+<p>It can be useful to avoid locks because they consume CPU time, or because a structural reason such as deadlock avoidance makes use of locks awkward.</p>
+</section>
+<section id="sleep-locks" class="level2" data-number="7.8">
+<h2 data-number="7.8" class="anchored" data-anchor-id="sleep-locks"><span class="header-section-number">7.8</span> Sleep locks</h2>
+<p>Sometimes xv6 needs to hold a lock for a long time. For example, the file system (Chapter&nbsp;<a href="fs.html#CH:FS">10</a>) keeps a file locked while reading and writing its content on the disk, and these disk operations can take tens of milliseconds. Holding a spinlock that long would lead to waste if another process wanted to acquire it, since the acquiring process would waste CPU for a long time while spinning. Another drawback of spinlocks is that a process cannot yield the CPU while retaining a spinlock; we’d like to do this so that other processes can use the CPU while the process with the lock waits for the disk. Yielding while holding a spinlock is illegal because it might lead to deadlock if a second thread then tried to acquire the spinlock; since <code>acquire</code> doesn’t yield the CPU, the second thread’s spinning might prevent the first thread from running and releasing the lock. Yielding while holding a lock would also violate the requirement that interrupts must be off while a spinlock is held. Thus we’d like a type of lock that yields the CPU while waiting to acquire, and allows yields (and interrupts) while the lock is held.</p>
+<p>Xv6 provides such locks in the form of <em>sleep-locks</em>. <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/sleeplock.c#L22" class="coderef" data-path="kernel/sleeplock.c" data-line="22"><code>acquiresleep</code></a> yields the CPU while waiting, using techniques that will be explained in Chapter&nbsp;<a href="sleep.html#CH:SLEEP">9</a>. At a high level, a sleep-lock has a <code>locked</code> field that is protected by a spinlock. If the sleep-lock is held, <code>acquiresleep</code> releases the spinlock and calls <code>sleep</code>, which yields the CPU until <code>releasesleep</code> calls <code>wakeup</code>. The result is that other threads can execute while <code>acquiresleep</code> waits.</p>
+<p>Because sleep-locks leave interrupts enabled, they cannot be used in interrupt handlers. Because <code>acquiresleep</code> may yield the CPU, sleep-locks cannot be used inside spinlock critical sections (though spinlocks can be used inside sleep-lock critical sections).</p>
+<p>Spin-locks are best suited to short critical sections, since waiting for them wastes CPU time; sleep-locks work well for lengthy operations.</p>
+</section>
+<section id="real-world" class="level2" data-number="7.9">
+<h2 data-number="7.9" class="anchored" data-anchor-id="real-world"><span class="header-section-number">7.9</span> Real world</h2>
+<p>Programming with locks remains challenging despite years of research into concurrency primitives and parallelism. It is often best to conceal locks within higher-level constructs like synchronized queues, although xv6 does not do this. If you program with locks, it is wise to use a tool that attempts to identify races, because it is easy to miss an invariant that requires a lock.</p>
+<p>Most operating systems support POSIX threads (Pthreads), which allow a user process to have several threads running concurrently on different CPUs. Pthreads has support for user-level locks, barriers, etc. Pthreads also allows a programmer to optionally specify that a lock should be re-entrant.</p>
+<p>Supporting Pthreads at user level requires support from the operating system. For example, it should be the case that if one pthread blocks in a system call, another pthread of the same process should be able to run on that CPU. As another example, if a pthread changes its process’s address space (e.g., maps or unmaps memory), the kernel must arrange that other CPUs that run threads of the same process update their hardware page tables to reflect the change in the address space.</p>
+<p>It is possible to implement locks without atomic instructions&nbsp;<span class="citation" data-cites="lamport:bakery">(<a href="references.html#ref-lamport:bakery" role="doc-biblioref">Lamport 1974</a>)</span>, but it is expensive, so most operating systems use atomic instructions.</p>
+<p>Locks can be expensive if many CPUs try to acquire the same lock at the same time. If one CPU has a lock cached in its local cache, and another CPU must acquire the lock, then the atomic instruction to update the cache line that holds the lock must move the line from the one CPU’s cache to the other CPU’s cache, and perhaps invalidate any other copies of the cache line. Fetching a cache line from another CPU’s cache can be orders of magnitude more expensive than fetching a line from a local cache.</p>
+<p>To avoid the expenses associated with locks, many operating systems use lock-free data structures and algorithms&nbsp;<span class="citation" data-cites="herlihy:art mckenney:rcuusage">(<a href="references.html#ref-herlihy:art" role="doc-biblioref">Herlihy and Shavit 2012</a>; <a href="references.html#ref-mckenney:rcuusage" role="doc-biblioref">Mckenney et al. 2013</a>)</span>. For example, it is possible to implement a linked list like the one in the beginning of the chapter that requires no locks during list searches, and one atomic instruction to insert an item in a list. Lock-free programming is more complicated, however, than programming locks; for example, one must worry about instruction and memory reordering. Programming with locks is already hard, so xv6 avoids the additional complexity of lock-free programming.</p>
+</section>
+<section id="exercises" class="level2" data-number="7.10">
+<h2 data-number="7.10" class="anchored" data-anchor-id="exercises"><span class="header-section-number">7.10</span> Exercises</h2>
+<ol type="1">
+<li><p>Comment out the calls to <code>acquire</code> and <code>release</code> in <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/kalloc.c#L69" class="coderef" data-path="kernel/kalloc.c" data-line="69"><code>kalloc</code></a>. This seems like it should cause problems for kernel code that calls <code>kalloc</code>; what symptoms do you expect to see? When you run xv6, do you see these symptoms? How about when running <code>usertests</code>? If you don’t see a problem, why not? See if you can provoke a problem by inserting dummy loops into the critical section of <code>kalloc</code>.</p></li>
+<li><p>Suppose that you instead commented out the locking in <code>kfree</code> (after restoring locking in <code>kalloc</code>). What might now go wrong? Is lack of locks in <code>kfree</code> less harmful than in <code>kalloc</code>?</p></li>
+<li><p>If two CPUs call <code>kalloc</code> at the same time, one will have to wait for the other, which is bad for performance. Modify <code>kalloc.c</code> to have more parallelism, so that simultaneous calls to <code>kalloc</code> from different CPUs can proceed without waiting for each other.</p></li>
+<li><p>Write a parallel program using POSIX threads, which is supported on most operating systems. For example, implement a parallel hash table and measure if the number of puts/gets scales with increasing number of CPUs.</p></li>
+<li><p>Implement a subset of Pthreads in xv6. That is, implement a user-level thread library so that a user process can have more than 1 thread and arrange that these threads can run in parallel on different CPUs. Come up with a design that correctly handles a thread making a blocking system call and changing its shared address space.</p></li>
+</ol>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-boehm04" class="csl-entry" role="listitem">
+Boehm, Hans-J. 2005. <span>“Threads Cannot Be Implemented as a Library.”</span> <em>ACM PLDI Conference</em>.
+</div>
+<div id="ref-herlihy:art" class="csl-entry" role="listitem">
+Herlihy, Maurice, and Nir Shavit. 2012. <em>The Art of Multiprocessor Programming, Revised Reprint</em>. Morgan Kaufmann.
+</div>
+<div id="ref-lamport:bakery" class="csl-entry" role="listitem">
+Lamport, L. 1974. <span>“A New Solution of Dijkstra’s Concurrent Programming Problem.”</span> <em>Communications of the ACM</em>.
+</div>
+<div id="ref-mckenney:rcuusage" class="csl-entry" role="listitem">
+Mckenney, Paul E., Silas Boyd-wickizer, and Jonathan Walpole. 2013. <em><span>RCU</span> Usage in the Linux Kernel: One Decade Later</em>.
+</div>
+<div id="ref-riscv:user" class="csl-entry" role="listitem">
+Waterman, Andrew, and Krste Asanovic, eds. 2024. <em>The <span>RISC-V</span> Instruction Set Manual <span>Volume I</span>: Unprivileged Specification <span>ISA</span></em>. <a href="https://drive.google.com/file/d/17GeetSnT5wW3xNuAHI95-SI1gPGd5sJ_/view?usp=drive_link" class="uri">Https://drive.google.com/file/d/17GeetSnT5wW3xNuAHI95-SI1gPGd5sJ_/view?usp=drive_link</a>.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p><a href="https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html" class="uri">https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<!-- Side-by-side source code panel for xv6 book "code reference" links.
+     Included via _quarto.yml's `include-after-body`. Clicking a link tagged
+     `.coderef` (see convert.py) fetches the referenced file from GitHub's raw
+     CDN, shows it in a right-hand pane, and highlights the referenced line(s).
+     GitHub blocks <iframe> embedding (X-Frame-Options: deny), so we fetch the
+     raw text (raw.githubusercontent.com sends Access-Control-Allow-Origin: *)
+     and render it ourselves. -->
+<div id="coderef-panel" aria-hidden="true">
+  <div id="coderef-head">
+    <span id="coderef-title">source</span>
+    <a id="coderef-gh" href="#" target="_blank" rel="noopener" title="Open on GitHub">GitHub ↗</a>
+    <button id="coderef-close" type="button" title="Close (Esc)" aria-label="Close">✕</button>
+  </div>
+  <div id="coderef-body"><div id="coderef-msg">Loading…</div></div>
+</div>
+<script>
+(function () {
+  // raw.githubusercontent.com mirror of the GH blob base used in convert.py.
+  var RAW = "https://raw.githubusercontent.com/mit-pdos/xv6-riscv/riscv/";
+  var cache = {};                       // path -> array of source lines
+
+  var panel = document.getElementById("coderef-panel");
+  var bodyEl = document.getElementById("coderef-body");
+  var titleEl = document.getElementById("coderef-title");
+  var ghEl = document.getElementById("coderef-gh");
+
+  function openPanel() {
+    document.documentElement.classList.add("coderef-open");
+    panel.setAttribute("aria-hidden", "false");
+  }
+  function closePanel() {
+    document.documentElement.classList.remove("coderef-open");
+    panel.setAttribute("aria-hidden", "true");
+  }
+  document.getElementById("coderef-close").addEventListener("click", closePanel);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closePanel();
+  });
+
+  function render(lines, start, end) {
+    var frag = document.createDocumentFragment();
+    var pre = document.createElement("pre");
+    pre.className = "coderef-code";
+    var target = null;
+    for (var i = 0; i < lines.length; i++) {
+      var n = i + 1;
+      var row = document.createElement("div");
+      row.className = "coderef-row";
+      if (n >= start && n <= end) {
+        row.classList.add("coderef-hl");
+        if (!target) target = row;
+      }
+      var gut = document.createElement("span");
+      gut.className = "coderef-ln";
+      gut.textContent = n;
+      var code = document.createElement("span");
+      code.className = "coderef-src";
+      code.textContent = lines[i];
+      row.appendChild(gut);
+      row.appendChild(code);
+      pre.appendChild(row);
+    }
+    frag.appendChild(pre);
+    bodyEl.innerHTML = "";
+    bodyEl.appendChild(frag);
+    // scroll the first highlighted line to roughly a third down the pane.
+    if (target) {
+      bodyEl.scrollTop = Math.max(0, target.offsetTop - bodyEl.clientHeight / 3);
+    }
+  }
+
+  function show(path, start, end, href) {
+    openPanel();
+    titleEl.textContent = path + (start ? ":" + start + (end > start ? "-" + end : "") : "");
+    ghEl.href = href;
+    if (cache[path]) {
+      render(cache[path], start, end);
+      return;
+    }
+    bodyEl.innerHTML = '<div id="coderef-msg">Loading ' + path + ' …</div>';
+    fetch(RAW + path)
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.text();
+      })
+      .then(function (txt) {
+        cache[path] = txt.replace(/\n$/, "").split("\n");
+        render(cache[path], start, end);
+      })
+      .catch(function (err) {
+        bodyEl.innerHTML =
+          '<div id="coderef-msg">Could not load source (' + err.message +
+          ').<br><a href="' + href + '" target="_blank" rel="noopener">Open on GitHub ↗</a></div>';
+      });
+  }
+
+  // Event delegation: one listener handles every .coderef link on the page.
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a.coderef");
+    if (!a) return;
+    // let modified clicks fall through to the normal GitHub link / new tab.
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    var path = a.getAttribute("data-path");
+    if (!path) return;
+    e.preventDefault();
+    var start = parseInt(a.getAttribute("data-line"), 10) || 0;
+    var end = parseInt(a.getAttribute("data-end"), 10) || start;
+    show(path, start, end, a.href);
+  });
+})();
+</script>
+<!-- Chapter section list inside the left sidebar.
+     Included via _quarto.yml's `include-after-body`. The book sets `toc: false`
+     so Quarto emits no right-hand margin TOC (that space belongs to the code
+     pop-out in coderef-panel.html). Instead we build the current chapter's
+     section list here and nest it under the chapter's own sidebar entry. -->
+<script>
+(function () {
+  function build() {
+    var active = document.querySelector("#quarto-sidebar .sidebar-link.active");
+    if (!active) return;
+    var item = active.closest("li.sidebar-item");
+    if (!item) return;
+
+    var secs = document.querySelectorAll("main#quarto-document-content section.level2[id]");
+    if (!secs.length) return;
+
+    var list = document.createElement("ul");
+    list.className = "list-unstyled chapter-sections";
+    var links = [];
+    secs.forEach(function (sec) {
+      var h = sec.querySelector("h2");
+      if (!h) return;
+      var li = document.createElement("li");
+      li.className = "chapter-section";
+      var a = document.createElement("a");
+      a.className = "sidebar-item-text sidebar-link chapter-section-link";
+      a.href = "#" + sec.id;
+      // The heading already renders its own section number, so take it as-is.
+      a.textContent = h.textContent.replace(/\s+/g, " ").trim();
+      li.appendChild(a);
+      list.appendChild(li);
+      links.push({ a: a, sec: sec });
+    });
+    item.appendChild(list);
+
+    // Highlight the section the reader is currently in; Quarto's own scrollspy
+    // only ran against the margin TOC, which no longer exists.
+    var current = null;
+    function sync() {
+      var found = links[0];
+      for (var i = 0; i < links.length; i++) {
+        if (links[i].sec.getBoundingClientRect().top <= 120) found = links[i];
+      }
+      if (found === current) return;
+      if (current) current.a.classList.remove("active");
+      if (found) found.a.classList.add("active");
+      current = found;
+    }
+    var queued = false;
+    window.addEventListener("scroll", function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () { queued = false; sync(); });
+    }, { passive: true });
+    sync();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", build);
+  } else {
+    build();
+  }
+})();
+</script>
+<!-- Yellow highlighting for individual code-listing lines, the HTML counterpart
+     of the book's \hl{} in lstlisting escapes (see convert-quarto.py).
+     Included via _quarto.yml's `include-after-body`. convert-quarto.py tags the
+     listing with hl-lines="7,16,19", which pandoc emits as data-hl-lines on the
+     wrapping <div class="sourceCode">; pandoc numbers the lines by wrapping each
+     one in <span id="cbN-L">, so we just add .added-line (see styles.css) to the
+     spans whose line numbers were listed. -->
+<script>
+(function () {
+  function highlight(div) {
+    var code = div.querySelector("pre > code");
+    if (!code) return;
+    var spans = code.querySelectorAll(":scope > span[id]");
+    if (!spans.length) return;         // block isn't line-numbered
+    // The first span's id is "cbN-<first line number>", which is where the
+    // listing's numbering starts (lstlisting's firstnumber=).
+    var first = parseInt(spans[0].id.replace(/^.*-/, ""), 10);
+    if (isNaN(first)) return;
+    div.getAttribute("data-hl-lines").split(",").forEach(function (s) {
+      var i = parseInt(s, 10) - first;
+      if (i >= 0 && i < spans.length) spans[i].classList.add("added-line");
+    });
+  }
+  document.querySelectorAll("div.sourceCode[data-hl-lines]").forEach(highlight);
+})();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./interrupt.html" class="pagination-link" aria-label="Interrupts and device drivers">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Interrupts and device drivers</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./sched.html" class="pagination-link" aria-label="Scheduling">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Scheduling</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

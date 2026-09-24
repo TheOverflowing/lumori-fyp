@@ -1,0 +1,42 @@
+[
+  {
+    "blind_id": "Q001",
+    "independent_answer": "Option B. After SQLSTATE 40001, start a new transaction and repeat the read and key-selection logic before inserting. A 23505 can also warrant a retry when it results from a concurrent key-selection race, though not every unique violation is transient.",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "The inserted key depends on a prior read, so reusing it does not retry the transaction's decision. B is the only option that accounts for both the full retry and the qualified 23505 case."
+  },
+  {
+    "blind_id": "Q002",
+    "independent_answer": "No listed option fully describes the code. The consumer checks emptiness while holding condlock and calls sleep_prepare before releasing it, so the producer cannot change the buffer and call wakeup in that gap. In the flag version, released is set to 0 and never set to 1 by any shown code; F6 therefore calls sleep just as the original does, and F8 never takes its branch. Whether a wakeup after preparation but before sleep is remembered depends on the interface's wakeup/sleep semantics, which the question does not define.",
+    "assessed_difficulty": "hard",
+    "answerability": "fail",
+    "unique_answer": "fail",
+    "concise_rationale": "The options claim that the flag version loses protection of the condition check or that wakeup writes released. Neither follows from the displayed code. The flag is redundant, but that alone does not create the stated lost wakeup; the unspecified interface behavior also prevents a reliable six-condition classification."
+  },
+  {
+    "blind_id": "Q003",
+    "independent_answer": "Option B. The stated interleaving cannot occur: the reader still holds pipe.lock in step 2, so the writer cannot acquire that same lock, write, or call wakeup until the reader releases it. Once the reader releases the lock after preparing to sleep, the protocol's pending-wakeup behavior would matter in a possible schedule, and the reader must still recheck the buffer condition after waking.",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "Step 2 contradicts the shared-lock ownership stated in the stem. B alone identifies the impossible schedule; the other options reason about a wakeup that cannot occur at that point or incorrectly say preparation already makes the reader SLEEPING."
+  },
+  {
+    "blind_id": "Q004",
+    "independent_answer": "ROLLBACK undoes Alice's already executed debit. If COMMIT were executed at the stated point, before Bob's update runs, only Alice's debit would be committed; both updates would be committed only if both had executed before COMMIT. Thus none of the options is fully correct as written.",
+    "assessed_difficulty": "medium",
+    "answerability": "fail",
+    "unique_answer": "fail",
+    "concise_rationale": "A correctly describes ROLLBACK but incorrectly says COMMIT would persist both updates even though the second update has not executed. The other options also misstate transaction behavior."
+  },
+  {
+    "blind_id": "Q005",
+    "independent_answer": "To an application, TCP presents each direction of a connection as an ordered byte stream: data written by one side arrives reliably and in order at the other, and both sides can send at once. TCP groups bytes into segments for network transmission, then reconstructs the stream for the receiving application. Segment boundaries therefore need not match the application's writes or reads.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The two statements distinguish the application-visible byte-stream service from TCP's packetized transmission and provide enough information for a short explanation."
+  }
+]

@@ -1,0 +1,102 @@
+[
+  {
+    "blind_id": "Q001",
+    "independent_answer": "Q1 使用它开始时的快照，不能看到 S1 尚未提交的 v=10 更新；若 id=1 原来存在，它看到更新前已提交的值，但题目没有给出该具体数值。Q2 开始于 S1 提交之后，使用新的语句快照；若 S1 的 UPDATE 确实更新了原有 id=1 行，Q2 看到 v=10。两次 SELECT 位于同一事务内也不共享固定快照，所以可能不同；若原值本来就是10则结果相同。严格说，题目也没有明确 id=1 起初存在：若不存在且没有其他插入，UPDATE 影响零行，两个 SELECT 都返回空结果。因此不能凭题面断言 Q1 的具体旧值，或无条件断言 Q2 一定返回一行10。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "answer_correctness": "fail",
+    "explanation_correctness": "fail",
+    "objective_alignment": "pass",
+    "citation_support": "partially_supported",
+    "severity": "major",
+    "review_provenance": "AI-assisted review by Codex; not human annotation, an educator review, or a human gold standard.",
+    "concise_rationale": "资料正确支撑每条语句建立新快照，却没有支撑题目未给的初始行存在条件。生成答案在Q1明确考虑“从未有该行的已提交版本”，到Q2却无条件断言看到v=10：若行不存在，本序列只有UPDATE而没有INSERT，UPDATE影响零行，Q2同样无行。这是影响答案的缺失前提，不是要求重复本科基础知识。另一个较小问题是若原值已为10，两次结果相同；答案应说可能不同。题目允许描述值或状态，因此仍可通过条件答案作答，但交付答案和解析不完整。",
+    "evidence_quotes": [
+      {
+        "source_id": "question",
+        "quote": "会话 S1 执行 UPDATE t SET v = 10 WHERE id = 1; 未提交。"
+      },
+      {
+        "source_id": "answer",
+        "quote": "若从未有该行的已提交版本，则 Q1 查不到该行"
+      },
+      {
+        "source_id": "answer",
+        "quote": "所以 Q2 能看到 S1 已提交的 v=10。"
+      },
+      {
+        "source_id": "context_80f09f9abd69f4e4cd054fd404a1f718",
+        "quote": "Read Committed mode starts each command with a new snapshot"
+      }
+    ]
+  },
+  {
+    "blind_id": "Q002",
+    "independent_answer": "C，200字节。四段分别覆盖100–149、200–249、150–199、250–299；S3到达后补齐中间缺口，全部到达后100–299连续，能够交付的这批数据共299−100+1=200字节，对应下一个期望字节为300。这里按题面列出的数据段统计本批可连续交付的总量，而不是假定应用在到达过程中完全没有读取数据后的某个瞬间缓冲区占用量。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "objective_alignment": "pass",
+    "citation_support": "supported",
+    "severity": "minor",
+    "review_provenance": "AI-assisted review by Codex; not human annotation, an educator review, or a human gold standard.",
+    "concise_rationale": "C=200及按100–299连续区间计数与独立答案一致；实际引用片段支撑首字节序号、先前字节全部收到才可交付、缺口起点等规则。解析先描述150字节子区间再接上后50字节，虽然冗余但计算没有错。题干“接收端已从应用层读取”把读取方向写反，引用材料明确是本地应用进程从接收数据读取，应改为“应用已读取的最后一个字节”。这不改变后文足以确定的唯一答案。",
+    "evidence_quotes": [
+      {
+        "source_id": "question",
+        "quote": "接收端已从应用层读取的最后一个字节序号为 99"
+      },
+      {
+        "source_id": "context_1e4936c4e6a2d7b6afa93d98871b242d",
+        "quote": "they have already been read by the local application process"
+      },
+      {
+        "source_id": "context_46d20324bab49880e1c1764165dd9b2b",
+        "quote": "a byte cannot be read by the application until it is received and all preceding bytes have also been received"
+      },
+      {
+        "source_id": "explanation",
+        "quote": "共 100–299 即 200 字节。"
+      }
+    ]
+  },
+  {
+    "blind_id": "Q003",
+    "independent_answer": "C 是四个选项中对互斥原则的正确概括：在临界区代码能够恢复不变量且所有相关访问都遵守同一把有效锁的前提下，其他受该锁保护的操作不能观察临界区中的临时不一致状态。单独读取 locked 再按值写入不是原子获取操作，两个CPU可同时读到0并都认为自己获得了锁；失败不是单纯缺少 list 指针刷新。题干的具体链表描述有缺陷：先把现有表头 list 保存到 l，再把同一 l 写回 list，按所述并未插入新结点，也无法自然产生“list 尚未指向 l”的所述中间状态。应改为明确的新结点插入步骤，例如 l->next=list，然后 list=l；此外锁保证互斥，不会自动修复临界区自身不恢复不变量的逻辑错误。",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "objective_alignment": "pass",
+    "citation_support": "partially_supported",
+    "severity": "major",
+    "review_provenance": "AI-assisted review by Codex; not human annotation, an educator review, or a human gold standard.",
+    "concise_rationale": "C和解析的互斥/原子获取结论与独立答案、引用原则一致，故单就选项仍可答。但题干把旧表头list保存为l后再写回，未描述新结点及next更新，却断言中间出现list尚未指向l；这不是所引push插入场景的有效重述，具体情境内部不一致。所引资料还明确以临界区独立执行正确为前提，锁本身不会修复不变量恢复错误。此题应修正链表更新步骤，并把临界区正确性前提保留，不能因C可选就直接作为严谨场景题交付。",
+    "evidence_quotes": [
+      {
+        "source_id": "question",
+        "quote": "代码先把 list 指向的链表首元素保存到局部指针 l，再把 l 写入 list 的头部。"
+      },
+      {
+        "source_id": "question",
+        "quote": "更新过程中会短暂出现 list 尚未指向 l 的中间状态。"
+      },
+      {
+        "source_id": "context_7b291db7e9a7eed06ba1c5df6b7667ce",
+        "quote": "The operation may temporarily violate the invariants but must reestablish them before finishing."
+      },
+      {
+        "source_id": "context_6053232ea3836c760c29cf16cd6a9df8",
+        "quote": "assuming the critical sections are correct in isolation"
+      },
+      {
+        "source_id": "context_721949419795d5384fb58f88476a0eb7",
+        "quote": "Two CPUs could simultaneously reach line 25, see that lk->locked is zero"
+      }
+    ]
+  }
+]

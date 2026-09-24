@@ -107,9 +107,9 @@ A check is valid for 15 minutes and one generation with the same account and set
 
 If you have no uploaded sources, or existing materials cover only part of your objective, enable **Auto exploration** in **Settings** at the bottom of the sidebar. It is off by default and remembered per account in this browser. A course and configured text and embedding models are still required; uploading a file first is optional in this mode. With exploration off, enabled course sources with ready indexes are required.
 
-系统先检查已有依据，必要时查找公开参考资料。下载并解析后，先建立临时索引，再按缺少的知识点查找相关段落；通过检查的资料会保存到当前课程，用于继续生成。默认“公开课程目录”只从预设公开课程网址中寻找材料，然后联网读取；它不是全网搜索。维护者配置 Brave Search 后才可进行实时网页搜索。可以在设置的“资料搜索”一行查看当前提供方。
+系统先检查已有依据，必要时查找公开参考资料。下载并解析后，先建立临时索引，再按缺少的知识点查找相关段落；通过检查的资料会保存到当前课程，用于继续生成。默认“课程目录与百科搜索”优先查精选课程资料，并补充有界的百科文章搜索；它仍不是全网搜索。找到网页后还要核对可保存许可与正文证据。维护者配置 Brave Search 后可使用更广的实时网页搜索。可以在设置的“资料搜索”一行查看当前提供方。
 
-The app checks existing evidence and finds public references when needed. After downloading and parsing, it creates a temporary index and retrieves passages for each missing concept. Sources that pass the evidence check are saved to the current course for generation. The default **Public course directory** searches a preset collection of public course URLs and then reads them online; it is not a full web search. Live web search requires Brave Search configuration by the operator. Check **Source search** in Settings to see the current provider.
+The app checks existing evidence and finds public references when needed. After downloading and parsing, it creates a temporary index and retrieves passages for each missing concept. Sources that pass the evidence check are saved to the current course for generation. The default **Course directory and encyclopedia search** starts with reviewed course pages and adds bounded encyclopedia article search. It is broader than the preset catalog but is not a full web search; pages must still pass license and evidence checks. Full web search requires Brave Search configuration by the operator. Check **Source search** in Settings to see the current provider.
 
 只有通过筛选且允许自动保存的来源才会进入当前课程，标记为“自动发现”。可保存来源包括已有明确政策的目录资料，以及网页明确声明受支持开放许可的内容；没有明确许可的材料不会自动收录。可在资料列表和生成内容的引用面板打开原始来源，并像上传的文件一样停用或删除。资料归当前账号所有；关闭探索不会移除已保存资料。搜索使用提炼的公共概念词，不直接把上传文件全文交给搜索服务；资料覆盖与选择仍使用已配置的文本模型。
 

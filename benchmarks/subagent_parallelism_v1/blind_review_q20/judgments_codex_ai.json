@@ -1,0 +1,22 @@
+{
+  "reviewer_type": "Codex AI, independently checked against the frozen excerpt; not a human or teacher label",
+  "review_date": "2026-09-23",
+  "judgment_values": ["yes", "no", "uncertain"],
+  "items": [
+    {"review_id": "783df20cd683", "answer_correct": "uncertain", "source_supported": "yes", "student_solvable": "yes", "brief_met": "yes", "note": "The answer repeats both 'before the transaction began' and 'snapshot at first statement'. Those phrases are not equivalent if another transaction commits between BEGIN and the first statement; the source itself uses both formulations."},
+    {"review_id": "9802e6564bba", "answer_correct": "yes", "source_supported": "yes", "student_solvable": "yes", "brief_met": "yes", "note": "Correct distinction between blocking syscall and periodic forced switch."},
+    {"review_id": "f514b938ca62", "answer_correct": "yes", "source_supported": "yes", "student_solvable": "yes", "brief_met": "yes", "note": "Correctly maps blocking read to voluntary and long computation to involuntary."},
+    {"review_id": "fb4dde2546fa", "answer_correct": "yes", "source_supported": "yes", "student_solvable": "yes", "brief_met": "no", "note": "The frozen focus was a complete transaction retry, but the question and answer only ask that transactions be retried; they never distinguish retrying the whole transaction from one statement."},
+    {"review_id": "89af85329134", "answer_correct": "uncertain", "source_supported": "uncertain", "student_solvable": "uncertain", "brief_met": "yes", "note": "Checking a false condition before sleeping is sensible, but the excerpt does not specify the atomic condition-check/sleep protocol needed to rule out a lost wakeup. The answer could imply the initial check alone is sufficient."},
+    {"review_id": "c67bb28e74f9", "answer_correct": "yes", "source_supported": "yes", "student_solvable": "yes", "brief_met": "yes", "note": "The answer identifies the snapshot point and stable subsequent SELECT view; explanation repeats the source's simplified transaction-start wording."},
+    {"review_id": "0c3f9e9c2425", "answer_correct": "yes", "source_supported": "yes", "student_solvable": "yes", "brief_met": "yes", "note": "Matches the Serializable anomaly detection and transaction retry stated in the excerpt."},
+    {"review_id": "fe04a574cf6c", "answer_correct": "yes", "source_supported": "yes", "student_solvable": "yes", "brief_met": "yes", "note": "Correct snapshot timing and visibility for a commit between two SELECTs; explanatory prose again uses simplified transaction-start wording."},
+    {"review_id": "c01269e9fe41", "answer_correct": "yes", "source_supported": "yes", "student_solvable": "yes", "brief_met": "yes", "note": "Correct per-statement snapshot reasoning for a commit during the first query."},
+    {"review_id": "d42268e26db8", "answer_correct": "yes", "source_supported": "no", "student_solvable": "no", "brief_met": "yes", "note": "The cited excerpt explains atomicity but never defines COMMIT or that it makes changes permanent; the answer imports outside knowledge needed to solve the asked question."},
+    {"review_id": "9beb1e10539d", "answer_correct": "yes", "source_supported": "yes", "student_solvable": "yes", "brief_met": "yes", "note": "The flow-control versus congestion-control distinction is explicit in the cited excerpt."},
+    {"review_id": "de6fc2d3219b", "answer_correct": "yes", "source_supported": "uncertain", "student_solvable": "uncertain", "brief_met": "yes", "note": "Full-duplex and flow/demultiplexing are supported, but the claim that TCP preserves no application message boundaries is only implicit in the brief byte-stream excerpt."},
+    {"review_id": "f4cf749e1b7f", "answer_correct": "yes", "source_supported": "yes", "student_solvable": "yes", "brief_met": "yes", "note": "Correctly applies the Read Committed fresh-snapshot rule to the second SELECT."},
+    {"review_id": "5713023f0d02", "answer_correct": "yes", "source_supported": "yes", "student_solvable": "yes", "brief_met": "yes", "note": "Correctly states the detected anomaly condition and resulting serialization failure."},
+    {"review_id": "3a7b38da5efc", "answer_correct": "yes", "source_supported": "yes", "student_solvable": "yes", "brief_met": "yes", "note": "Explains why corruption is discarded and retransmission is required; the timer is not needed for this stem."}
+  ]
+}

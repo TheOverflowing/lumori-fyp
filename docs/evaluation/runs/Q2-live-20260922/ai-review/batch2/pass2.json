@@ -1,0 +1,101 @@
+[
+  {
+    "blind_id": "Q001",
+    "independent_answer": "Option B. After SQLSTATE 40001, start a new transaction and repeat the read and key-selection logic before inserting. A 23505 can also warrant a retry when it results from a concurrent key-selection race, though not every unique violation is transient.",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "unique_answer": "pass",
+    "severity": "none",
+    "concise_rationale": "B correctly requires redoing the read-dependent transaction logic and recognizes that some 23505 errors are effectively serialization failures. A reuses a stale decision, C wrongly rules out transient 23505, and D omits the required abort and full retry. The actual cited excerpts support these distinctions.",
+    "evidence_quotes": [
+      {"source_id": "context_d295bafea7de5e32aedcdb29341b3ba0", "quote": "It is important to retry the complete transaction, including all logic that decides which SQL to issue and/or which values to use."},
+      {"source_id": "context_d295bafea7de5e32aedcdb29341b3ba0", "quote": "In some cases it is also appropriate to retry unique-key failures, which have SQLSTATE code 23505 (unique_violation)"},
+      {"source_id": "context_62bc5560e3b8e9705d4ac424255acdd1", "quote": "it should abort the current transaction and retry the whole transaction from the beginning."}
+    ]
+  },
+  {
+    "blind_id": "Q002",
+    "independent_answer": "No listed option fully describes the code. The consumer checks emptiness while holding condlock and calls sleep_prepare before releasing it, so the producer cannot change the buffer and call wakeup in that gap. In the flag version, released is set to 0 and never set to 1 by any shown code; F6 therefore calls sleep just as the original does, and F8 never takes its branch. Whether a wakeup after preparation but before sleep is remembered depends on the interface's wakeup/sleep semantics, which the question does not define.",
+    "assessed_difficulty": "hard",
+    "answerability": "fail",
+    "answer_correctness": "fail",
+    "explanation_correctness": "fail",
+    "citation_support": "partially_supported",
+    "objective_alignment": "pass",
+    "unique_answer": "fail",
+    "severity": "major",
+    "concise_rationale": "The citations support conditions 1, 2, 3, 4-as-false, and 6, and explain why an unlocked condition check would be risky. But F2 is actually under condlock at F1/F7; released remains 0, so F6 still invokes the interface's protected sleep and F8 cannot change the protocol. A's claimed exact failure is false. B and C falsely say wakeup writes released, while D misstates preparation, locking, and rechecking; no option is fully defensible.",
+    "source_based_correction": "The cited interface text specifies that a wakeup between sleep_prepare and sleep is remembered and sleep then returns immediately, resolving the interface uncertainty in the sealed independent answer. Its conclusion that none of the options correctly identifies a failure of the shown flag version remains unchanged.",
+    "evidence_quotes": [
+      {"source_id": "question", "quote": "F1. acquire(condlock)\nF2. while buffer is empty do:\nF3.   released = 0\nF4.   sleep_prepare(&buf)\nF5.   release(condlock)\nF6.   if (released == 0) sleep(&buf)\nF7.   acquire(condlock)\nF8.   if (released == 1) continue"},
+      {"source_id": "question", "quote": "The flag version fails because 'released' is not written by wakeup and the sleep is not protected on the condition check side."},
+      {"source_id": "context_c24a632a225957eb067e40615105e0d4", "quote": "sleep() returns right away if wakeup(chan) has already been called after the (required) previous call to sleep_prepare(chan)"},
+      {"source_id": "context_5d8bfdf4ac0d9917b59abe4b9a423a65", "quote": "sleep_prepare(chan) must be called either before checking the condition, or before releasing the lock that protects the condition."},
+      {"source_id": "context_5c240f5980676e5fc885c4419dc08f24", "quote": "there is a lock that protects the condition and prevents wakeup() from being called between when the going-to-sleep process checks the condition and when it calls sleep_prepare()."},
+      {"source_id": "context_535b742a701f444a77c0c4fd651d00bf", "quote": "wakeup will set p->chan to zero."}
+    ]
+  },
+  {
+    "blind_id": "Q003",
+    "independent_answer": "Option B. The stated interleaving cannot occur: the reader still holds pipe.lock in step 2, so the writer cannot acquire that same lock, write, or call wakeup until the reader releases it. Once the reader releases the lock after preparing to sleep, the protocol's pending-wakeup behavior would matter in a possible schedule, and the reader must still recheck the buffer condition after waking.",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "answer_correctness": "fail",
+    "explanation_correctness": "fail",
+    "citation_support": "partially_supported",
+    "objective_alignment": "pass",
+    "unique_answer": "pass",
+    "severity": "major",
+    "concise_rationale": "B identifies the impossible schedule: the writer cannot acquire pipe.lock before the reader releases it. The generated C and its explanation apply valid pending-wakeup and recheck facts to an impossible interleaving, then reject B merely because the stem asserts that the writer acquired the lock. A and D misstate the interface. One cited excerpt directly supports the locking constraint that the generated answer ignores.",
+    "evidence_quotes": [
+      {"source_id": "question", "quote": "读取进程在持有管道锁 pipe.lock 时调用 sleep_prepare(&pipe.chan) 并检查缓冲区为空，随后释放锁并调用 sleep()。写入进程在持有同一把锁时向缓冲区写入数据并调用 wakeup(&pipe.chan)。"},
+      {"source_id": "question", "quote": "2. 在读取进程释放锁之前，写入进程获得锁，写入数据，调用 wakeup(&pipe.chan)，然后释放锁。"},
+      {"source_id": "explanation", "quote": "选项 B 错误：交错步骤明确描述写入进程获得了锁并调用了 wakeup，且释放锁后读取进程才调用 sleep()。"},
+      {"source_id": "context_5c240f5980676e5fc885c4419dc08f24", "quote": "there is a lock that protects the condition and prevents wakeup() from being called between when the going-to-sleep process checks the condition and when it calls sleep_prepare()."},
+      {"source_id": "context_535b742a701f444a77c0c4fd651d00bf", "quote": "wakeup will set p->chan to zero."},
+      {"source_id": "context_a199673d425ef31fd839f86c1f537f54", "quote": "For this reason sleeping always occurs inside a loop that re-checks the condition"}
+    ]
+  },
+  {
+    "blind_id": "Q004",
+    "independent_answer": "ROLLBACK undoes Alice's already executed debit. If COMMIT were executed at the stated point, before Bob's update runs, only Alice's debit would be committed; both updates would be committed only if both had executed before COMMIT. Thus none of the options is fully correct as written.",
+    "assessed_difficulty": "medium",
+    "answerability": "fail",
+    "answer_correctness": "fail",
+    "explanation_correctness": "fail",
+    "citation_support": "partially_supported",
+    "objective_alignment": "pass",
+    "unique_answer": "fail",
+    "severity": "major",
+    "concise_rationale": "A correctly says ROLLBACK cancels Alice's debit, but its COMMIT clause assumes Bob's as-yet-unexecuted update also takes effect. The generated explanation repeats the transaction principle without resolving that contradiction. B wrongly preserves the rolled-back debit, C equates COMMIT and ROLLBACK, and D ignores the explicit BEGIN; no fully correct option remains. The citations support only changes already made within the transaction.",
+    "evidence_quotes": [
+      {"source_id": "question", "quote": "执行完第一条更新后、尚未执行第二条更新时，程序决定不提交并执行 ROLLBACK。"},
+      {"source_id": "question", "quote": "若执行 COMMIT，则两条更新会一起生效并永久记录。"},
+      {"source_id": "context_7e0ec95ca5933d08f0f90d4f75ff0a6d", "quote": "all our updates so far will be canceled."},
+      {"source_id": "context_2cf186cae4f79cf460678cf586054617", "quote": "When and if you commit the transaction block, the committed actions become visible as a unit to other sessions, while the rolled-back actions never become visible at all."},
+      {"source_id": "explanation", "quote": "如果执行 COMMIT，则事务完成后所有更新成为永久记录并对其他会话作为一个整体可见。"}
+    ]
+  },
+  {
+    "blind_id": "Q005",
+    "independent_answer": "To an application, TCP presents each direction of a connection as an ordered byte stream: data written by one side arrives reliably and in order at the other, and both sides can send at once. TCP groups bytes into segments for network transmission, then reconstructs the stream for the receiving application. Segment boundaries therefore need not match the application's writes or reads.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "unique_answer": "not_applicable",
+    "severity": "none",
+    "concise_rationale": "The four-sentence answer explains the application-visible ordered, reliable, full-duplex streams and the segment-based transmission mechanism. Its receive-buffer detail and the explanation's distinctions are in the two actual cited excerpts. The short-answer item directly matches the objective.",
+    "evidence_quotes": [
+      {"source_id": "context_adff94e0c8029b725d33d37b44f2c0f4", "quote": "TCP guarantees the reliable, in-order delivery of a stream of bytes. It is a full-duplex protocol, meaning that each TCP connection supports a pair of byte streams, one flowing in each direction."},
+      {"source_id": "context_a1a476576a6737794d48ce06cea6aff3", "quote": "Although “byte stream” describes the service TCP offers to application processes, TCP does not, itself, transmit individual bytes over the Internet."},
+      {"source_id": "context_a1a476576a6737794d48ce06cea6aff3", "quote": "The packets exchanged between TCP peers in Figure 127 are called segments, since each one carries a segment of the byte stream."}
+    ]
+  }
+]

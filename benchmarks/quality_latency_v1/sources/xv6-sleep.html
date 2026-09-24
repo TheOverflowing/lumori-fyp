@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9&nbsp; Sleep and Wakeup – xv6: a simple, Unix-like teaching operating system</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./fs.html" rel="next">
+<link href="./sched.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-144df1dae3228b148528002f82521db4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar docked fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sleep.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Sleep and Wakeup</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">xv6: a simple, Unix-like teaching operating system</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/mit-pdos/xv6-riscv" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Foreword and acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Operating system interfaces</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./first.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Operating system organization</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mem.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Page tables</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./trap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Traps and system calls</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pgfault.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Page faults</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interrupt.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Interrupts and device drivers</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lock.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Locking</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sched.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Scheduling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sleep.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Sleep and Wakeup</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">File system</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./log.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Logging</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lock2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Concurrency revisited</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sum.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="CH:SLEEP" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Sleep and Wakeup</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Scheduling and locks help conceal the actions of one thread from another, but we also need abstractions that help threads intentionally interact. For example, the reader of a pipe in xv6 may need to wait for a writing process to produce data; a parent’s call to <code>wait</code> may need to wait for a child to exit; and a process reading the disk needs to wait for the disk hardware to finish the read. The xv6 kernel uses a mechanism called sleep and wakeup in these situations (and many others). Sleep allows a kernel thread to wait for some <em>condition</em> to be true; another thread or an interrupt handler can cause the condition to be true (typically by modifying some variable(s)) and then call wakeup to indicate that threads waiting for the condition should resume. Sleep and wakeup are often called <em>sequence coordination</em> or <em>conditional synchronization</em> mechanisms.</p>
+<p>Before proceeding, please read the functions <code>sleep_prepare()</code>, <code>sleep()</code>, and <code>wakeup()</code> in <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/proc.c" class="coderef" data-path="kernel/proc.c"><code>kernel/proc.c</code></a>, and all of file <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/pipe.c" class="coderef" data-path="kernel/pipe.c"><code>kernel/pipe.c</code></a>.</p>
+<section id="overview" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">9.1</span> Overview</h2>
+<p>The sleep/wakeup interface looks like:</p>
+<pre><code>void sleep_prepare(void *chan)
+void sleep()
+void wakeup(void *chan)</code></pre>
+<p>A process sleeps in order to wait for a condition to become true, and the <code>chan</code> argument (the <em>wait channel</em>) names the desired condition. <code>sleep_prepare(chan)</code> declares that a process might soon sleep in order to wait for the indicated wait channel; it returns right away. <code>wakeup(chan)</code> is called when the condition named by <code>chan</code> has (or might have) become true; it wakes up all processes that have called <code>sleep_prepare(chan)</code> and then <code>sleep()</code> with the same <code>chan</code>. <code>sleep()</code> returns right away if <code>wakeup(chan)</code> has already been called after the (required) previous call to <code>sleep_prepare(chan)</code>; if not, <code>sleep()</code> marks the calling process as <code>SLEEPING</code> (not <code>RUNNABLE</code>) and releases the CPU by context-switching to the scheduler, so that other processes can run. <code>sleep_prepare()</code> and <code>sleep()</code> are called by the same process (typically within a few lines of each other); <code>wakeup()</code> is called by a different process or by an interrupt handler.</p>
+<p>These functions treat <code>chan</code> as an opaque 64-bit value; the only thing they do with it is compare for equality. The usual pattern is for callers to pass the address of some convenient object as the <code>chan</code> argument. The kernel programmer is responsible for choosing wait channel conventions, and for passing the same <code>chan</code> to <code>sleep_prepare()</code> and <code>wakeup()</code> calls that should interact.</p>
+<p>Kernel code sleeps in order to wait for some condition to become true. For example, the kernel code that reads from a pipe sleeps if the pipe buffer is currently empty; the condition in this case is the pipe buffer becoming non-empty (due to another process writing to the pipe). <code>sleep_prepare()</code> and <code>sleep</code> do not know how to check the condition: only the calling code knows. The usual pattern is for the potentially sleeping process to first acquire a lock that protects the condition; then check the condition; and if it is not true, call <code>sleep_prepare()</code>, release the lock, and call <code>sleep()</code>. Code that later causes the condition to become true calls <code>wakeup</code>.</p>
+<p>Here’s a sketch of how the xv6 kernel pipe code sleeps:</p>
+<pre><code>piperead(pipe){
+  acquire(&amp;pipe-&gt;lock);
+  while(there's no data in pipe-&gt;buffer){
+    sleep_prepare(&amp;pipe);
+    release(&amp;pipe-&gt;lock);
+    sleep();
+    acquire(&amp;pipe-&gt;lock);
+  }
+  remove the data from the pipe;
+  release(&amp;pipe-&gt;lock);
+}
+
+pipewrite(pipe){
+  acquire(&amp;pipe-&gt;lock);
+  append data to pipe-&gt;buffer;
+  wakeup(&amp;pipe);
+  release(&amp;pipe-&gt;lock);
+}</code></pre>
+<p>This code uses the address of the pipe data structure as the wait channel.</p>
+<p><code>sleep_prepare(chan)</code> must be called either before checking the condition, or before releasing the lock that protects the condition. The call records the fact that the process may need to sleep on the indicated <code>chan</code>. If another process (or interrupt) calls <code>wakeup(chan)</code> between the calls to <code>sleep_prepare(chan)</code> and <code>sleep()</code>, <code>wakeup()</code> sets a flag in the about-to-sleep process indicating that it shouldn’t actually sleep. If <code>sleep()</code> sees this flag, it returns rather than sleeping.</p>
+<p>What is the reason for <code>sleep_prepare(chan)</code>? There is the possibility that the condition might become true, and <code>wakeup()</code> called, between when the pipe reader sees that the buffer is empty, and when it calls <code>sleep</code>. Without some cleverness, the <code>wakeup()</code> would not find any sleeping processes, and would not have any effect. Then the process would call <code>sleep()</code> even though the pipe buffer has data to read; and if (as could be the case) the pipe writer never wrote anything more, the reader could incorrectly sleep forever. This undesirable situation is called a <em>lost wake-up</em>. The behavior described in the previous paragraph avoids this problem.</p>
+<p>In the pipe example, as in most sleeping code, there is a lock that protects the condition and prevents <code>wakeup()</code> from being called between when the going-to-sleep process checks the condition and when it calls <code>sleep_prepare()</code>. This lock is often called the <em>condition lock</em>. A process must release the lock before calling <code>sleep()</code> (so that some other process or interrupt handler can modify the condition and call <code>wakeup()</code>), and re-acquire the lock after <code>sleep()</code> returns.</p>
+</section>
+<section id="code-sleep-and-wakeup" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="code-sleep-and-wakeup"><span class="header-section-number">9.2</span> Code: Sleep and wakeup</h2>
+<p>Xv6’s <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/proc.c#L548" class="coderef" data-path="kernel/proc.c" data-line="548"><code>sleep_prepare</code></a> and <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/proc.c#L563" class="coderef" data-path="kernel/proc.c" data-line="563"><code>sleep</code></a> and <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/proc.c#L577" class="coderef" data-path="kernel/proc.c" data-line="577"><code>wakeup</code></a> implement the interface used in the example above. The basic idea is to have <code>sleep</code> mark the current process as <code>SLEEPING</code> and then call <code>sched</code> to release the CPU; <code>wakeup</code> looks for processes sleeping on the given wait channel and marks them <code>RUNNABLE</code>.</p>
+<p><code>sleep_prepare(chan)</code> records the wait channel in <code>p-&gt;chan</code> and returns. If <code>p-&gt;chan</code> is still non-zero when <code>sleep()</code> is called, <code>sleep()</code> changes the calling process to state <code>SLEEPING</code> and calls <code>sched()</code> to let other processes run.</p>
+<p><code>wakeup(chan)</code> handles two situations with respect to some other process that might concurrently be in the process of going to sleep on <code>chan</code>. If that other process has gotten as far as marking itself as <code>SLEEPING</code>, then <code>wakeup</code> will see it in that state and change it to <code>RUNNABLE</code>; its call to <code>sleep()</code> will then return. If the other process has gotten as far as calling <code>sleep_prepare(chan)</code> (but its <code>sleep()</code> has not gotten as far as acquiring <code>p-&gt;lock</code>), <code>wakeup(chan)</code> will see that <code>p-&gt;chan</code> is equal to <code>chan</code>, and <code>wakeup</code> will set <code>p-&gt;chan</code> to zero. In that case, when the other process does call <code>sleep</code>, it will see the zero and return immediately. The point is to avoid a lost wakeup if <code>wakeup()</code> is called just as another process is about to call <code>sleep()</code>.</p>
+<p>The rules for use of <code>sleep_prepare()</code> prevent us from having to worry about the situation in which an about-to-sleep process hasn’t yet called <code>sleep_prepare()</code>. Either that process surrounds its condition check and <code>sleep_prepare()</code> with a lock that prevents any call to <code>wakeup()</code> for the relevant channel, or that process must call <code>sleep_prepare()</code> before checking the condition.</p>
+<p>Sometimes multiple processes are sleeping on the same channel; for example, more than one process reading from a pipe. A single call to <code>wakeup</code> will wake them all up. One of them will run first and (in the case of pipes) acquire the pipe lock and read whatever data is waiting. The other processes will find that, despite being woken up, there is no data to be read. From their point of view the wakeup was “spurious,” and they must sleep again. For this reason sleeping always occurs inside a loop that re-checks the condition, as in <code>piperead</code> above.</p>
+<p>No harm is done if two uses of sleep/wakeup accidentally choose the same channel: they will see spurious wakeups, but looping as described above will tolerate this problem. Much of the charm of sleep/wakeup is that it is both lightweight (no need to create special data structures to act as wait channels) and provides a layer of indirection (callers need not know which specific process they are interacting with).</p>
+</section>
+<section id="code-pipes" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="code-pipes"><span class="header-section-number">9.3</span> Code: Pipes</h2>
+<p>xv6’s pipes are an example of code that sleeps to synchronize producers and consumers. We saw the interface for pipes in Chapter&nbsp;<a href="unix.html#CH:UNIX">1</a>: bytes written to one end of a pipe are copied to an in-kernel buffer and then can be read from the other end of the pipe. Future chapters will examine the file descriptor support surrounding pipes, but let’s look now at the implementations of <code>pipewrite</code> and <code>piperead</code>.</p>
+<p>Each pipe is represented by a <code>struct pipe</code>, which contains a <code>lock</code> and a <code>data</code> buffer. The fields <code>nread</code> and <code>nwrite</code> count the total number of bytes read from and written to the buffer. The buffer wraps around: the next byte written after <code>buf[PIPESIZE-1]</code> is <code>buf[0]</code>. The counts do not wrap. This convention lets the implementation distinguish a full buffer (<code>nwrite</code> <code>==</code> <code>nread+PIPESIZE</code>) from an empty buffer (<code>nwrite</code> <code>==</code> <code>nread</code>), but it means that indexing into the buffer must use <code>buf[nread</code> <code>%</code> <code>PIPESIZE]</code> instead of just <code>buf[nread]</code> (and similarly for <code>nwrite</code>).</p>
+<p>Let’s suppose that calls to <code>piperead</code> and <code>pipewrite</code> happen simultaneously on two different CPUs. <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/pipe.c#L77" class="coderef" data-path="kernel/pipe.c" data-line="77"><code>pipewrite</code></a> begins by acquiring the pipe’s lock, which protects the counts, the data, and their associated invariants. <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/pipe.c#L112" class="coderef" data-path="kernel/pipe.c" data-line="112"><code>piperead</code></a> then tries to acquire the lock too, but cannot. It spins in <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/spinlock.c#L22" class="coderef" data-path="kernel/spinlock.c" data-line="22"><code>acquire</code></a> waiting for the lock. While <code>piperead</code> waits, <code>pipewrite</code> loops over the bytes being written (<code>addr[0..n-1]</code>), adding each to the pipe in turn <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/pipe.c#L101" class="coderef" data-path="kernel/pipe.c" data-line="101">(pipe.c:101)</a>. During this loop, it could happen that the buffer fills <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/pipe.c#L88" class="coderef" data-path="kernel/pipe.c" data-line="88">(pipe.c:88)</a>. In this case, <code>pipewrite</code> calls <code>wakeup</code> to alert any sleeping readers to the fact that there is data waiting in the buffer, releases the lock, and sleeps on channel <code>&amp;pi-&gt;nwrite</code> to wait for a reader to take some bytes out of the buffer.</p>
+<p><code>piperead</code> now acquires the pipe’s lock and enters its critical section: it finds that <code>pi-&gt;nread</code> <code>!=</code> <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/pipe.c#L119" class="coderef" data-path="kernel/pipe.c" data-line="119"><code>pi-&gt;nwrite</code></a> (<code>pipewrite</code> went to sleep because <code>pi-&gt;nwrite</code> <code>==</code> <code>pi-&gt;nread</code> <code>+</code> <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/pipe.c#L88" class="coderef" data-path="kernel/pipe.c" data-line="88"><code>PIPESIZE</code></a>), so it falls through to the <code>for</code> loop, copies data out of the pipe <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/pipe.c#L129" class="coderef" data-path="kernel/pipe.c" data-line="129">(pipe.c:129)</a>, and increments <code>nread</code> by the number of bytes copied. That much space in the buffer is now available for writing, so <code>piperead</code> calls <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/pipe.c#L140" class="coderef" data-path="kernel/pipe.c" data-line="140"><code>wakeup</code></a> to wake any sleeping writers before it returns. <code>wakeup</code> finds a process sleeping on <code>&amp;pi-&gt;nwrite</code> (the process that was running <code>pipewrite</code> but stopped when the buffer filled). <code>wakeup</code> marks that process as <code>RUNNABLE</code>.</p>
+<p>The pipe code uses separate wait channels for reader and writer (<code>&amp;pi-&gt;nread</code> and <code>&amp;pi-&gt;nwrite</code>); this might make the system more efficient in the event that there are lots of readers and writers waiting for the same pipe. The pipe code sleeps inside a loop checking the sleep condition; if there are multiple readers or writers, all but the first process to wake up will see the condition is false and sleep again.</p>
+</section>
+<section id="code-wait-exit-and-kill" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="code-wait-exit-and-kill"><span class="header-section-number">9.4</span> Code: Wait, exit, and kill</h2>
+<p>Please read the code for functions <code>kwait()</code>, <code>kexit()</code>, and <code>kkill()</code> in <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/proc.c" class="coderef" data-path="kernel/proc.c"><code>kernel/proc.c</code></a>; these are the internal implementations of the corresponding system calls.</p>
+<p>An interesting example of sleeping, introduced in Chapter&nbsp;<a href="unix.html#CH:UNIX">1</a>, is the interaction between a child’s <code>exit</code> and its parent’s <code>wait</code>. At the time of the child’s death, the parent may already be sleeping in <code>wait</code>, or may be doing something else; in the latter case, a subsequent call to <code>wait</code> must observe the child’s death, perhaps long after it calls <code>exit</code>. The way that xv6 records the child’s demise until <code>wait</code> observes it is for <code>exit</code> to put the caller into the <code>ZOMBIE</code> state, where it stays until the parent’s <code>wait</code> notices it, changes the child’s state to <code>UNUSED</code>, copies the child’s exit status, and returns the child’s process ID to the parent. If the parent exits before the child, the parent gives the child to the <code>init</code> process, which perpetually calls <code>wait</code>; thus every child has a parent to clean up after it. A challenge is to avoid races and deadlock between simultaneous parent <code>wait</code> and child <code>exit</code>, as well as simultaneous <code>exit</code> and <code>exit</code>.</p>
+<p><code>kwait</code>, the kernel implementation for <code>wait</code>, starts by acquiring <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/proc.c#L370" class="coderef" data-path="kernel/proc.c" data-line="370"><code>wait_lock</code></a>, which acts as the condition lock that helps ensure that <code>kwait</code> doesn’t miss a <code>wakeup</code> from an exiting child. Then <code>kwait</code> scans the process table. If it finds a child in <code>ZOMBIE</code> state, it frees that child’s resources and its <code>proc</code> structure, copies the child’s exit status to the address supplied to <code>wait</code> (if it is not 0), and returns the child’s process ID. If <code>kwait</code> finds children but none have exited, it sleeps to wait for any of them to exit <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/proc.c#L414" class="coderef" data-path="kernel/proc.c" data-line="414">(proc.c:414)</a>, then scans again. <code>kwait</code> often holds two locks, <code>wait_lock</code> and some process’s <code>pp-&gt;lock</code>; the deadlock-avoiding order is first <code>wait_lock</code> and then <code>pp-&gt;lock</code>.</p>
+<p><a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/proc.c#L326" class="coderef" data-path="kernel/proc.c" data-line="326"><code>kexit</code></a> records the exit status, frees some resources, calls <code>reparent</code> to give any children to the <code>init</code> process, wakes up the parent in case it is in <code>wait</code>, marks the caller as a zombie, and permanently yields the CPU. <code>kexit</code> holds both <code>wait_lock</code> and <code>p-&gt;lock</code> during this sequence. It holds <code>wait_lock</code> because it’s the condition lock for the <code>wakeup(p-&gt;parent)</code>, preventing a parent in <code>wait</code> from losing the wakeup. <code>kexit</code> must hold <code>p-&gt;lock</code> for this sequence also, to prevent a parent in <code>wait</code> from seeing that the child is in state <code>ZOMBIE</code> before the child has finally called <code>swtch</code>. <code>kexit</code> acquires these locks in the same order as <code>kwait</code> to avoid deadlock.</p>
+<p>It may look incorrect for <code>kexit</code> to wake up the parent before setting its state to <code>ZOMBIE</code>, but that is safe: although <code>wakeup</code> may cause the parent to run, the loop in the parent’s <code>kwait</code> cannot examine the child until the child’s <code>p-&gt;lock</code> is released by <code>scheduler</code>, so <code>kwait</code> can’t look at the exiting process until after <code>kexit</code> has set its state to <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/proc.c#L358" class="coderef" data-path="kernel/proc.c" data-line="358"><code>ZOMBIE</code></a>.</p>
+<p>While <code>exit</code> allows a process to terminate itself, the <code>kill</code> system call <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/proc.c#L602" class="coderef" data-path="kernel/proc.c" data-line="602">(proc.c:602)</a> lets one process request that another terminate. It would be too complex for <code>kill</code> to directly destroy the victim process, since the victim might be executing on another CPU, perhaps in the middle of a sensitive sequence of updates to kernel data structures. Thus <code>kkill</code> does very little: it just sets the victim’s <code>p-&gt;killed</code> and, if it is sleeping, wakes it up. Eventually the victim will enter or leave the kernel, at which point code in <code>usertrap</code> will call <code>kexit</code> if <code>p-&gt;killed</code> is set (it checks by calling <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/proc.c#L631" class="coderef" data-path="kernel/proc.c" data-line="631"><code>killed</code></a>). If the victim is running in user space, it will see that it has been killed the next time it enters the kernel by making a system call or because the timer (or some other device) interrupts.</p>
+<p>If the victim process is sleeping, <code>kkill</code> sets its state to <code>RUNNABLE</code> so that the victim returns from <code>sleep</code>. This is potentially dangerous because the condition being waited for may not be true. However, xv6 calls to <code>sleep</code> are always wrapped in a <code>while</code> loop that re-tests the condition after <code>sleep</code> returns. Some calls to <code>sleep</code> also test <code>p-&gt;killed</code> in the loop, and abandon the current activity if it is set. This is only done when such abandonment would be correct. For example, the pipe read and write code <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/pipe.c#L84" class="coderef" data-path="kernel/pipe.c" data-line="84">(pipe.c:84)</a> returns if the killed flag is set; eventually the code will return back to trap, which will again check <code>p-&gt;killed</code> and exit.</p>
+<p>Some xv6 <code>sleep</code> loops do not check <code>p-&gt;killed</code> because the code is in the middle of a multi-step system call that should be atomic (i.e., would be incorrect if abandoned midway through). The virtio driver <a href="https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/virtio_disk.c#L287" class="coderef" data-path="kernel/virtio_disk.c" data-line="287">(virtio_disk.c:287)</a> is an example: it does not check <code>p-&gt;killed</code> because a disk operation may be one of a set of writes that are all needed in order for the file system to be left in a correct state. A process that is killed while waiting for disk I/O won’t exit until it completes the current system call and <code>usertrap</code> sees the killed flag.</p>
+</section>
+<section id="process-locking" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="process-locking"><span class="header-section-number">9.5</span> Process Locking</h2>
+<p>The lock associated with each process (<code>p-&gt;lock</code>) is the most complex lock in xv6. A simple way to think about <code>p-&gt;lock</code> is that it must be held while reading or writing any of the following <code>struct proc</code> fields: <code>p-&gt;state</code>, <code>p-&gt;chan</code>, <code>p-&gt;killed</code>, <code>p-&gt;xstate</code>, and <code>p-&gt;pid</code>. These fields can be used by other processes, or by scheduler threads on other CPUs, so it’s natural that they must be protected by a lock.</p>
+<p>However, most uses of <code>p-&gt;lock</code> are protecting higher-level invariants of xv6’s process data structures and algorithms. Here’s the full set of things that <code>p-&gt;lock</code> does:</p>
+<ul>
+<li><p>Along with <code>p-&gt;state</code>, it prevents races in allocating <code>proc[]</code> slots for new processes.</p></li>
+<li><p>It conceals a process from view while it is being created or destroyed.</p></li>
+<li><p>It prevents a parent’s <code>wait</code> from collecting a process that has set its state to <code>ZOMBIE</code> but has not yet yielded the CPU.</p></li>
+<li><p>It prevents another CPU’s scheduler from deciding to run a yielding process after it sets its state to <code>RUNNABLE</code> but before it finishes <code>swtch</code>.</p></li>
+<li><p>It ensures that only one CPU’s scheduler decides to run a <code>RUNNABLE</code> processes.</p></li>
+<li><p>It prevents a timer interrupt from causing a process to yield while it is in <code>swtch</code>.</p></li>
+<li><p>It prevents races between <code>sleep</code> and <code>wakeup</code>.</p></li>
+<li><p>It prevents the victim process of <code>kill</code> from exiting and perhaps being re-allocated between <code>kkill</code>’s check of <code>p-&gt;pid</code> and setting <code>p-&gt;killed</code>.</p></li>
+<li><p>It makes <code>kkill</code>’s check and write of <code>p-&gt;state</code> atomic.</p></li>
+</ul>
+<p>The <code>p-&gt;parent</code> field is protected by the global lock <code>wait_lock</code> rather than by <code>p-&gt;lock</code>. Only a process’s parent modifies <code>p-&gt;parent</code>, though the field is read both by the process itself and by other processes searching for their children. The purpose of <code>wait_lock</code> is to act as the condition lock when <code>wait</code> sleeps waiting for any child to exit. An exiting child holds either <code>wait_lock</code> or <code>p-&gt;lock</code> until after it has set its state to <code>ZOMBIE</code>, woken up its parent, and yielded the CPU. <code>wait_lock</code> also serializes concurrent <code>exit</code>s by a parent and child, so that the <code>init</code> process (which inherits the child) is guaranteed to be woken up from its <code>wait</code>. <code>wait_lock</code> is a global lock rather than a per-process lock in each parent, because, until a process acquires it, it cannot know who its parent is.</p>
+</section>
+<section id="real-world" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="real-world"><span class="header-section-number">9.6</span> Real world</h2>
+<p><code>sleep</code> and <code>wakeup</code> are a simple and effective synchronization method, but there are many others; semaphores&nbsp;<span class="citation" data-cites="dijkstra65">(<a href="references.html#ref-dijkstra65" role="doc-biblioref">Dijkstra 1965</a>)</span> are an example. The first challenge in all of them is to avoid the “lost wakeups” problem we saw at the beginning of the chapter. The original Unix kernel’s <code>sleep</code> simply disabled interrupts, which sufficed because Unix ran on a single-CPU system. Plan 9’s <code>sleep</code> uses a callback function that runs with the scheduling lock held just before going to sleep; the function serves as a last-minute check of the sleep condition, to avoid lost wakeups. The Linux kernel’s <code>sleep</code> uses an explicit process queue, called a wait queue, instead of a wait channel; the queue has its own internal lock.</p>
+<p>Scanning the entire set of processes in <code>wakeup</code> is inefficient. A better solution is to replace the <code>chan</code> in both <code>sleep</code> and <code>wakeup</code> with a data structure that holds a list of processes sleeping on that structure, such as Linux’s wait queue. Plan 9’s <code>sleep</code> and <code>wakeup</code> call that structure a rendezvous point. Many thread libraries refer to the same structure as a condition variable; in that context, the operations <code>sleep</code> and <code>wakeup</code> are called <code>wait</code> and <code>signal</code>. All of these mechanisms share the same flavor: the sleep condition is protected by some kind of lock dropped atomically during sleep.</p>
+<p>xv6’s <code>wakeup</code> wakes up all processes that are waiting on a particular wait channel. If there are more than one of them, they will all try to acquire the condition lock and re-check the condition; in many cases only one will be able to do anything useful (e.g., read all the data waiting in a pipe). The rest will find the condition is no longer true and go back to sleep; it was a waste of CPU time to wake them up. As a result, most condition variable designs provide two primitives: <code>signal</code>, which wakes up one of the processes waiting for the condition variable, and <code>broadcast</code>, which wakes up all of them.</p>
+<p>Forcibly killing processes poses some problems. For example, a killed process may be deep inside the kernel sleeping, and unwinding its stack requires care, since each function on the call stack may need to do some clean-up. Some languages help out by providing an exception mechanism, but not C. Furthermore, there are other events that can cause a sleeping process to be woken up, even though the event it is waiting for has not happened yet. For example, when a Unix process is sleeping, another process may send a <code>signal</code> to it. In this case, the process will return from the interrupted system call with the value -1 and with the error code set to EINTR. The application can check for these values and decide what to do. Xv6 doesn’t support signals and this complexity doesn’t arise.</p>
+<p>Xv6’s support for <code>kill</code> is not entirely satisfactory: there are sleep loops which probably should check for <code>p-&gt;killed</code>. A related problem is that, even for <code>sleep</code> loops that check <code>p-&gt;killed</code>, there is a race between <code>sleep</code> and <code>kill</code>; the latter may set <code>p-&gt;killed</code> and try to wake up the victim just after the victim’s loop checks <code>p-&gt;killed</code> but before it calls <code>sleep</code>. If this problem occurs, the victim won’t notice the <code>p-&gt;killed</code> until the condition it is waiting for occurs. This may be quite a bit later or even never (e.g., if the victim is waiting for input from the console, but the user doesn’t type any input).</p>
+</section>
+<section id="exercises" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="exercises"><span class="header-section-number">9.7</span> Exercises</h2>
+<ol type="1">
+<li><p>Implement counting semaphores in xv6. Choose a few of xv6’s uses of sleep and wakeup and replace them with semaphores. Judge the result.</p></li>
+<li><p>Can you implement a sleep/wakeup scheme that just needs a call to <code>sleep()</code> (perhaps with additional arguments), and doesn’t need anything like the call to <code>sleep_prepare()</code>?</p></li>
+<li><p>Fix the race mentioned above between <code>kill</code> and <code>sleep</code>, so that a <code>kill</code> that occurs after the victim’s sleep loop checks <code>p-&gt;killed</code> but before it calls <code>sleep</code> results in the victim abandoning the current system call.</p></li>
+<li><p>Design a plan so that every sleep loop checks <code>p-&gt;killed</code> so that, for example, a process that is in the virtio driver can return quickly from the while loop if it is killed by another process.</p></li>
+</ol>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-dijkstra65" class="csl-entry" role="listitem">
+Dijkstra, Edsger. 1965. <em>Cooperating Sequential Processes</em>. <a href="https://www.cs.utexas.edu/users/EWD/transcriptions/EWD01xx/EWD123.html" class="uri">Https://www.cs.utexas.edu/users/EWD/transcriptions/EWD01xx/EWD123.html</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<!-- Side-by-side source code panel for xv6 book "code reference" links.
+     Included via _quarto.yml's `include-after-body`. Clicking a link tagged
+     `.coderef` (see convert.py) fetches the referenced file from GitHub's raw
+     CDN, shows it in a right-hand pane, and highlights the referenced line(s).
+     GitHub blocks <iframe> embedding (X-Frame-Options: deny), so we fetch the
+     raw text (raw.githubusercontent.com sends Access-Control-Allow-Origin: *)
+     and render it ourselves. -->
+<div id="coderef-panel" aria-hidden="true">
+  <div id="coderef-head">
+    <span id="coderef-title">source</span>
+    <a id="coderef-gh" href="#" target="_blank" rel="noopener" title="Open on GitHub">GitHub ↗</a>
+    <button id="coderef-close" type="button" title="Close (Esc)" aria-label="Close">✕</button>
+  </div>
+  <div id="coderef-body"><div id="coderef-msg">Loading…</div></div>
+</div>
+<script>
+(function () {
+  // raw.githubusercontent.com mirror of the GH blob base used in convert.py.
+  var RAW = "https://raw.githubusercontent.com/mit-pdos/xv6-riscv/riscv/";
+  var cache = {};                       // path -> array of source lines
+
+  var panel = document.getElementById("coderef-panel");
+  var bodyEl = document.getElementById("coderef-body");
+  var titleEl = document.getElementById("coderef-title");
+  var ghEl = document.getElementById("coderef-gh");
+
+  function openPanel() {
+    document.documentElement.classList.add("coderef-open");
+    panel.setAttribute("aria-hidden", "false");
+  }
+  function closePanel() {
+    document.documentElement.classList.remove("coderef-open");
+    panel.setAttribute("aria-hidden", "true");
+  }
+  document.getElementById("coderef-close").addEventListener("click", closePanel);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closePanel();
+  });
+
+  function render(lines, start, end) {
+    var frag = document.createDocumentFragment();
+    var pre = document.createElement("pre");
+    pre.className = "coderef-code";
+    var target = null;
+    for (var i = 0; i < lines.length; i++) {
+      var n = i + 1;
+      var row = document.createElement("div");
+      row.className = "coderef-row";
+      if (n >= start && n <= end) {
+        row.classList.add("coderef-hl");
+        if (!target) target = row;
+      }
+      var gut = document.createElement("span");
+      gut.className = "coderef-ln";
+      gut.textContent = n;
+      var code = document.createElement("span");
+      code.className = "coderef-src";
+      code.textContent = lines[i];
+      row.appendChild(gut);
+      row.appendChild(code);
+      pre.appendChild(row);
+    }
+    frag.appendChild(pre);
+    bodyEl.innerHTML = "";
+    bodyEl.appendChild(frag);
+    // scroll the first highlighted line to roughly a third down the pane.
+    if (target) {
+      bodyEl.scrollTop = Math.max(0, target.offsetTop - bodyEl.clientHeight / 3);
+    }
+  }
+
+  function show(path, start, end, href) {
+    openPanel();
+    titleEl.textContent = path + (start ? ":" + start + (end > start ? "-" + end : "") : "");
+    ghEl.href = href;
+    if (cache[path]) {
+      render(cache[path], start, end);
+      return;
+    }
+    bodyEl.innerHTML = '<div id="coderef-msg">Loading ' + path + ' …</div>';
+    fetch(RAW + path)
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.text();
+      })
+      .then(function (txt) {
+        cache[path] = txt.replace(/\n$/, "").split("\n");
+        render(cache[path], start, end);
+      })
+      .catch(function (err) {
+        bodyEl.innerHTML =
+          '<div id="coderef-msg">Could not load source (' + err.message +
+          ').<br><a href="' + href + '" target="_blank" rel="noopener">Open on GitHub ↗</a></div>';
+      });
+  }
+
+  // Event delegation: one listener handles every .coderef link on the page.
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a.coderef");
+    if (!a) return;
+    // let modified clicks fall through to the normal GitHub link / new tab.
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    var path = a.getAttribute("data-path");
+    if (!path) return;
+    e.preventDefault();
+    var start = parseInt(a.getAttribute("data-line"), 10) || 0;
+    var end = parseInt(a.getAttribute("data-end"), 10) || start;
+    show(path, start, end, a.href);
+  });
+})();
+</script>
+<!-- Chapter section list inside the left sidebar.
+     Included via _quarto.yml's `include-after-body`. The book sets `toc: false`
+     so Quarto emits no right-hand margin TOC (that space belongs to the code
+     pop-out in coderef-panel.html). Instead we build the current chapter's
+     section list here and nest it under the chapter's own sidebar entry. -->
+<script>
+(function () {
+  function build() {
+    var active = document.querySelector("#quarto-sidebar .sidebar-link.active");
+    if (!active) return;
+    var item = active.closest("li.sidebar-item");
+    if (!item) return;
+
+    var secs = document.querySelectorAll("main#quarto-document-content section.level2[id]");
+    if (!secs.length) return;
+
+    var list = document.createElement("ul");
+    list.className = "list-unstyled chapter-sections";
+    var links = [];
+    secs.forEach(function (sec) {
+      var h = sec.querySelector("h2");
+      if (!h) return;
+      var li = document.createElement("li");
+      li.className = "chapter-section";
+      var a = document.createElement("a");
+      a.className = "sidebar-item-text sidebar-link chapter-section-link";
+      a.href = "#" + sec.id;
+      // The heading already renders its own section number, so take it as-is.
+      a.textContent = h.textContent.replace(/\s+/g, " ").trim();
+      li.appendChild(a);
+      list.appendChild(li);
+      links.push({ a: a, sec: sec });
+    });
+    item.appendChild(list);
+
+    // Highlight the section the reader is currently in; Quarto's own scrollspy
+    // only ran against the margin TOC, which no longer exists.
+    var current = null;
+    function sync() {
+      var found = links[0];
+      for (var i = 0; i < links.length; i++) {
+        if (links[i].sec.getBoundingClientRect().top <= 120) found = links[i];
+      }
+      if (found === current) return;
+      if (current) current.a.classList.remove("active");
+      if (found) found.a.classList.add("active");
+      current = found;
+    }
+    var queued = false;
+    window.addEventListener("scroll", function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () { queued = false; sync(); });
+    }, { passive: true });
+    sync();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", build);
+  } else {
+    build();
+  }
+})();
+</script>
+<!-- Yellow highlighting for individual code-listing lines, the HTML counterpart
+     of the book's \hl{} in lstlisting escapes (see convert-quarto.py).
+     Included via _quarto.yml's `include-after-body`. convert-quarto.py tags the
+     listing with hl-lines="7,16,19", which pandoc emits as data-hl-lines on the
+     wrapping <div class="sourceCode">; pandoc numbers the lines by wrapping each
+     one in <span id="cbN-L">, so we just add .added-line (see styles.css) to the
+     spans whose line numbers were listed. -->
+<script>
+(function () {
+  function highlight(div) {
+    var code = div.querySelector("pre > code");
+    if (!code) return;
+    var spans = code.querySelectorAll(":scope > span[id]");
+    if (!spans.length) return;         // block isn't line-numbered
+    // The first span's id is "cbN-<first line number>", which is where the
+    // listing's numbering starts (lstlisting's firstnumber=).
+    var first = parseInt(spans[0].id.replace(/^.*-/, ""), 10);
+    if (isNaN(first)) return;
+    div.getAttribute("data-hl-lines").split(",").forEach(function (s) {
+      var i = parseInt(s, 10) - first;
+      if (i >= 0 && i < spans.length) spans[i].classList.add("added-line");
+    });
+  }
+  document.querySelectorAll("div.sourceCode[data-hl-lines]").forEach(highlight);
+})();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./sched.html" class="pagination-link" aria-label="Scheduling">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Scheduling</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./fs.html" class="pagination-link" aria-label="File system">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">File system</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,66 @@
+[
+  {
+    "blind_id": "Q001",
+    "independent_answer": "A. After SQLSTATE 40001, roll back the aborted attempt and retry the complete transaction, including all reads and the application decisions that select the later writes, using a fresh transaction snapshot. Reusing values from the aborted attempt or retrying only the failed statement would not implement the required retry. A read-only deferrable transaction is not required. This establishes the retry's correctness for this error, not guaranteed eventual completion under persistent contention.",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "The task applies a known whole-transaction retry rule to a concrete read-decide-write transaction. A is the sole defensible option; the other options contradict rollback or introduce an unnecessary read-only restriction. The correct design is substantially supplied in the stem."
+  },
+  {
+    "blind_id": "Q002",
+    "independent_answer": "1. 应看到稳定快照。PostgreSQL Repeatable Read 的快照在事务的第一个非事务控制语句开始时确定，而不是简单地在 BEGIN 时确定；后续 SELECT 不会看到该时点之后其他事务提交的更新。题设事务只读，故不涉及读到自身后续写入这一例外。2. 稳定快照不等于可串行化执行，Repeatable Read 仍可能出现序列化异常。例如两个值班人员事务各自在快照中看到另一人在岗，分别将自己改为离岗并都提交，最终无人值班；若它们串行执行并遵守至少一人在岗的检查，则不会出现该结果。3. 对题设只读 Repeatable Read 事务，不会因该级别的序列化冲突而要求重试；涉及更新的 Repeatable Read 事务可能需要在序列化失败后整体重试。不能把这一只读结论扩展为所有隔离级别的通用结论。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "要求结合快照建立时点、隔离级别区别与一个异常例子，超出简单定义复述，但属于学过资料后的常规解释和应用。只读重试问题应按题设 Repeatable Read 范围理解；未提供资料原文，所以这里给的是独立通用异常例子，不声称复现资料中的特定例子。"
+  },
+  {
+    "blind_id": "Q003",
+    "independent_answer": "1. No. In PostgreSQL Repeatable Read, the first non-transaction-control statement fixes T1's snapshot, so its later SELECT does not see T2's subsequent commit. 2. No. A transaction's stable view does not guarantee that the combined reads and writes of concurrent transactions can be ordered into an equivalent serial execution; snapshot isolation permits serialization anomalies. 3. A read-only transaction can participate in an anomalous concurrent history when overlapping updating transactions have conflicting read/write dependencies and its snapshot exposes a combination of committed effects that forces an impossible serial ordering. The absence of a serialization-conflict error for a read-only Repeatable Read transaction is not a serializability guarantee. No such anomaly is demonstrated by the single-row T1/T2 schedule alone; the third part must be interpreted as asking about more general concurrent updating transactions.",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The first two parts are standard snapshot-isolation applications. The third requires separating read-only conflict behavior from global serializability; its general interpretation is answerable, although the supplied two-transaction, single-row schedule by itself cannot exhibit the claimed anomaly."
+  },
+  {
+    "blind_id": "Q004",
+    "independent_answer": "1. CPU0 的中断处理程序在自旋等待 tickslock，而持锁的 sys_pause 被该中断暂停，只有处理程序返回后才能继续释放锁；双方因此无法前进。同一 CPU 的这种等待不能通过其他 CPU 的运行来解除。2. xv6 在获取自旋锁前关闭当前 CPU 的中断，并在适当释放后恢复。单 CPU 上避免本 CPU 的中断在持锁期间进入并等待同一把锁；多 CPU 上只阻止本地中断，其他 CPU 仍可执行和接收中断，所以仍需要自旋锁提供跨 CPU 互斥。3. acquire 必须先 push_off，再把锁置为持有，避免已持锁但本地中断尚未关闭的窗口；release 必须先解除锁的持有，再 pop_off，避免重新开启中断后中断处理程序遇到仍由被中断线程持有的锁。4. push_off 关闭中断并增加当前 CPU 的嵌套计数，在最外层进入时保存此前中断是否开启；pop_off 减少计数，只有计数归零且最外层进入前中断原本开启，才重新开启中断。若原本已经关闭，则归零也保持关闭。",
+    "assessed_difficulty": "hard",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "需要综合同 CPU 抢占死锁、跨 CPU 互斥、获取与释放的竞态窗口及嵌套恢复条件，逐项论证设计次序的必要性。题面没有给 push_off/pop_off 的完整实现，但学习者被明确设定为已学所给材料，且题目指定 xv6，不必依赖其他未说明实现。"
+  },
+  {
+    "blind_id": "Q005",
+    "independent_answer": "If interrupts were enabled while sys_pause held tickslock, clockintr could interrupt that same CPU and spin on the lock. The interrupted sys_pause cannot resume and release tickslock until clockintr returns, while clockintr cannot return until it acquires the lock: this is a local deadlock. xv6 prevents that interleaving by disabling interrupts on the acquiring CPU before taking the spinlock and restoring the prior interrupt state only after releasing the relevant nested locks. Other CPUs are not the interrupted owner and can continue independently; their interrupts need not be disabled. Because other CPUs can still access shared state, the spinlock remains necessary for inter-CPU mutual exclusion. Steps 1–3 describe the hypothetical unsafe design; they cannot actually occur in the stated xv6 design with local interrupts disabled throughout lock ownership.",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The student must explain a deadlock dependency and distinguish local interrupt masking from cross-CPU synchronization. Most of the causal sequence is already supplied, making this a focused application rather than open-ended design. The wording blends a counterfactual unsafe sequence with actual xv6 behavior, but the final question disambiguates it sufficiently."
+  },
+  {
+    "blind_id": "Q006",
+    "independent_answer": "The acknowledgement number is 180: Segment 1 supplies bytes 100–179, and the missing range begins at 180, so receiving bytes 240–289 does not advance the cumulative ACK past the gap. C expresses this directly. A also gives ACK 180 and can defensibly be understood as saying that cumulative acknowledgement covers only the contiguous data through byte 179; therefore the options do not establish a unique correct choice. A would be clearly false only if it explicitly claimed that the ACK field itself equals 179, which it does not.",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "fail",
+    "concise_rationale": "The numerical question is completely answerable using the given byte ranges and next-expected-byte rule. However, A and C share the correct ACK value and compatible cumulative-acknowledgement explanations under an ordinary reading, creating a major single-answer MCQ ambiguity."
+  },
+  {
+    "blind_id": "Q007",
+    "independent_answer": "A. ROLLBACK undoes the debit and any other updates already made in this transaction. Neither account change takes effect as a committed transfer; if the credit had not executed yet, it remains unperformed.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "A direct atomicity/rollback recognition question. The stem itself states that ROLLBACK cancels all updates already made, making A uniquely supported without an unstated assumption about whether the credit executed."
+  },
+  {
+    "blind_id": "Q008",
+    "independent_answer": "A。确认让发送方知道对应帧已经被正确接收；在规定时间内没有收到确认时，超时机制触发对原帧的重传；交替序号帮助接收方区分新帧与同一帧的重复传输，避免将重复帧再次交付。",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "考查停止等待的三个基础机制，题干已给出等待、超时重传和交替序号背景。A 准确匹配，其他选项混入连接建立、流量控制或不相关功能。"
+  }
+]

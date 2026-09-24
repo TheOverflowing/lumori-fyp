@@ -1,0 +1,1188 @@
+{
+  "schema_version": "quality-latency-ai-review-summary-v1",
+  "evidence_tier": "Two-pass masked Codex AI-assisted review. No human or learner validation.",
+  "reviewer_assignment": "One AI rater per candidate, three agents across four batches; not inter-rater agreement.",
+  "rubric": "Core quality requires answerability, answer, explanation, objective alignment all pass; MCQ uniqueness pass; citations supported. Target difficulty is reported separately.",
+  "packet_count": 23,
+  "reviewed": 23,
+  "published": {
+    "reviewed": 23,
+    "core_quality_pass": {
+      "numerator": 14,
+      "denominator": 23,
+      "rate": 0.6086956521739131
+    },
+    "difficulty_match": {
+      "numerator": 13,
+      "denominator": 23,
+      "rate": 0.5652173913043478
+    },
+    "severity": {
+      "major": 7,
+      "none": 11,
+      "minor": 5
+    },
+    "labels": {
+      "answerability": {
+        "pass": 18,
+        "fail": 5
+      },
+      "answer_correctness": {
+        "fail": 8,
+        "pass": 15
+      },
+      "explanation_correctness": {
+        "fail": 8,
+        "pass": 15
+      },
+      "citation_support": {
+        "partially_supported": 9,
+        "supported": 14
+      },
+      "objective_alignment": {
+        "pass": 21,
+        "fail": 2
+      },
+      "unique_answer": {
+        "not_applicable": 12,
+        "pass": 7,
+        "fail": 4
+      }
+    },
+    "difficulty_confusion": {
+      "easy": {
+        "easy": 4,
+        "medium": 4
+      },
+      "medium": {
+        "medium": 5,
+        "hard": 2
+      },
+      "hard": {
+        "hard": 4,
+        "medium": 3,
+        "easy": 1
+      }
+    }
+  },
+  "all_candidates": {
+    "reviewed": 23,
+    "core_quality_pass": {
+      "numerator": 14,
+      "denominator": 23,
+      "rate": 0.6086956521739131
+    },
+    "difficulty_match": {
+      "numerator": 13,
+      "denominator": 23,
+      "rate": 0.5652173913043478
+    },
+    "severity": {
+      "major": 7,
+      "none": 11,
+      "minor": 5
+    },
+    "labels": {
+      "answerability": {
+        "pass": 18,
+        "fail": 5
+      },
+      "answer_correctness": {
+        "fail": 8,
+        "pass": 15
+      },
+      "explanation_correctness": {
+        "fail": 8,
+        "pass": 15
+      },
+      "citation_support": {
+        "partially_supported": 9,
+        "supported": 14
+      },
+      "objective_alignment": {
+        "pass": 21,
+        "fail": 2
+      },
+      "unique_answer": {
+        "not_applicable": 12,
+        "pass": 7,
+        "fail": 4
+      }
+    },
+    "difficulty_confusion": {
+      "easy": {
+        "easy": 4,
+        "medium": 4
+      },
+      "medium": {
+        "medium": 5,
+        "hard": 2
+      },
+      "hard": {
+        "hard": 4,
+        "medium": 3,
+        "easy": 1
+      }
+    }
+  },
+  "published_core_quality_per_submitted": {
+    "numerator": 14,
+    "denominator": 24,
+    "rate": 0.5833333333333334
+  },
+  "not_reviewed_case_ids": [
+    "net_cumulative_ack_en"
+  ],
+  "validation": {
+    "sealed_files_verified": true,
+    "pass1_answers_and_difficulty_unchanged": true,
+    "original_case_hashes_verified": true,
+    "quoted_spans_and_citation_membership_verified": true
+  },
+  "records": [
+    {
+      "blind_id": "Q001",
+      "case_id": "db_transaction_snapshot_en",
+      "need_id": "db_transaction_snapshot",
+      "target_difficulty": "medium",
+      "job_id": "56604955bb2d4fa2b0e5b8c22de38df7",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "b8f6c638d303fe67216316998e6fd4934261cdab75116a3c11bbf8b7106898ee",
+      "batch": "batch1",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": false,
+      "difficulty_match": true,
+      "review": {
+        "blind_id": "Q001",
+        "independent_answer": "Both later SELECTs return 100. PostgreSQL Repeatable Read uses the snapshot established by T1's first query, so T2's later commit is invisible to both reads. This particular two-transaction history is consistent with the serial order T1 then T2. Snapshot stability alone does not guarantee serializability for arbitrary concurrent transactions.",
+        "assessed_difficulty": "medium",
+        "answerability": "pass",
+        "answer_correctness": "fail",
+        "explanation_correctness": "fail",
+        "citation_support": "partially_supported",
+        "objective_alignment": "pass",
+        "unique_answer": "not_applicable",
+        "severity": "major",
+        "concise_rationale": "Both reads are correctly given as 100. This particular T1/T2 history is equivalent to serial T1 then T2; the answer applies a general Repeatable Read caveat to this concrete history without saying so. It also inaccurately says Repeatable Read prevents serialization anomalies by detecting some conditions. The cited text supports only the general caveat.",
+        "evidence_quotes": [
+          {
+            "source_id": "explanation",
+            "quote": "The first SELECT establishes the snapshot at t0, before T2 commits."
+          },
+          {
+            "source_id": "answer",
+            "quote": "It does not guarantee serializable execution. Repeatable Read prevents serialization anomalies only by detecting some conditions;"
+          },
+          {
+            "source_id": "context_b8c6ef176348d7351252ba5cadca8e33",
+            "quote": "prevents all of the phenomena described in Table 13.1 except for serialization anomalies."
+          },
+          {
+            "source_id": "context_62bc5560e3b8e9705d4ac424255acdd1",
+            "quote": "However, this view will not necessarily always be consistent with some serial (one at a time) execution of concurrent transactions of the same level."
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q002",
+      "case_id": "net_reliable_delivery_zh",
+      "need_id": "net_reliable_delivery",
+      "target_difficulty": "easy",
+      "job_id": "6d7e43e818c54f4eb87984b86b5f2e1e",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "1d230d969063e24286b5a9b32469ff9293ca97c30524f697d97867541837ff94",
+      "batch": "batch1",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": true,
+      "difficulty_match": true,
+      "review": {
+        "blind_id": "Q002",
+        "independent_answer": "第一项。ACK 表示接收方已确认原帧；超时让未按时收到 ACK 的发送方重传；交替序号使接收方识别重传副本，避免重复交付。",
+        "assessed_difficulty": "easy",
+        "answerability": "pass",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "unique_answer": "pass",
+        "severity": "none",
+        "concise_rationale": "A alone assigns ACK, timeout, and the alternating sequence number their correct roles. B and C swap those roles; D wrongly makes them bandwidth mechanisms and treats a sequence number as an ACK substitute. All three cited passages directly support the explanation.",
+        "evidence_quotes": [
+          {
+            "source_id": "context_4f3593644fe850f533212da4f1794563",
+            "quote": "The receipt of an acknowledgment indicates to the sender of the original frame that its frame was successfully delivered."
+          },
+          {
+            "source_id": "context_703113b2752bacbfa42ba12b7de22984",
+            "quote": "If the acknowledgment does not arrive after a certain period of time, the sender times out and retransmits the original frame."
+          },
+          {
+            "source_id": "context_af041bb0b9a114ad48f4a108f447f01d",
+            "quote": "the receiver can determine that it is seeing a second copy of frame 0 rather than the first copy of frame 1 and therefore can ignore it"
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q003",
+      "case_id": "os_interrupt_deadlock_en",
+      "need_id": "os_interrupt_deadlock",
+      "target_difficulty": "hard",
+      "job_id": "31460e85daf04755bc1448b19ea486f9",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "e7e81395adf14fd5ff2780e35f064a97ece5424b314d9b0d70197ddd597e911e",
+      "batch": "batch1",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": true,
+      "difficulty_match": true,
+      "review": {
+        "blind_id": "Q003",
+        "independent_answer": "The proposal is unsafe. If the thread holds tickslock with local interrupts enabled, clockintr can interrupt it and spin trying to acquire the same lock; the thread cannot resume to release it. Letting clockintr proceed while the interrupted thread still owns the lock breaks exclusive ownership and can expose partially updated shared state. xv6 calls push_off before marking a spinlock held, and releases the lock before pop_off, keeping local interrupts disabled throughout the critical section; it also rejects recursive acquisition on one CPU. An interrupt or thread on another CPU can still run and contend for tickslock, so the spinlock remains necessary; that CPU can wait while the owner continues and releases it.",
+        "assessed_difficulty": "hard",
+        "answerability": "pass",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "unique_answer": "not_applicable",
+        "severity": "none",
+        "concise_rationale": "The response explains the same-CPU wait cycle, why hand-off violates xv6 non-reentrance while invariants may be broken, local interrupt masking, and why other CPUs still require the lock. The actual citations cover each point.",
+        "evidence_quotes": [
+          {
+            "source_id": "context_18ed3aab01b029acd8c1aa100b6ea664",
+            "quote": "only sys_pause can release it, but sys_pause will not continue running until clockintr returns."
+          },
+          {
+            "source_id": "context_4d761d5392513e25c031c334eb9f634a",
+            "quote": "Xv6 takes this latter view, and forbids a CPU that currently holds a lock from re-acquiring it."
+          },
+          {
+            "source_id": "context_18ed3aab01b029acd8c1aa100b6ea664",
+            "quote": "when a CPU acquires any lock, xv6 always disables interrupts on that CPU. Interrupts may still occur on other CPUs"
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q004",
+      "case_id": "db_atomicity_en",
+      "need_id": "db_atomicity",
+      "target_difficulty": "easy",
+      "job_id": "c25c29e1356c4b988266699064654619",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "8626430cc087dc43fe10bb9de08b0760dd8d38165a6c35963a82b177d6e0f0fe",
+      "batch": "batch1",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": true,
+      "difficulty_match": true,
+      "review": {
+        "blind_id": "Q004",
+        "independent_answer": "C. ROLLBACK undoes Alice's debit, and Bob's credit never ran; therefore neither account receives an update from this transaction.",
+        "assessed_difficulty": "easy",
+        "answerability": "pass",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "unique_answer": "pass",
+        "severity": "minor",
+        "concise_rationale": "C is the sole defensible option: Alice's debit is undone and Bob's credit was never executed, so neither update persists. The option and explanation loosely call the unexecuted credit canceled, a small wording flaw that does not create another correct option.",
+        "evidence_quotes": [
+          {
+            "source_id": "context_7e0ec95ca5933d08f0f90d4f75ff0a6d",
+            "quote": "we can issue the command ROLLBACK instead of COMMIT, and all our updates so far will be canceled."
+          },
+          {
+            "source_id": "context_a4dbf6c57faf5ed73a3266f5fa5cc57b",
+            "quote": "it bundles multiple steps into a single, all-or-nothing operation."
+          },
+          {
+            "source_id": "explanation",
+            "quote": "Option C is correct because a transaction bundles multiple steps into a single all-or-nothing operation"
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q005",
+      "case_id": "db_transaction_snapshot_zh",
+      "need_id": "db_transaction_snapshot",
+      "target_difficulty": "medium",
+      "job_id": "7257072fdfa54d288606e2a863133181",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "0eff1183952fbe2cc7de4946605575e0fc42b8cd06a63b5a3e5442c172271584",
+      "batch": "batch1",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": true,
+      "difficulty_match": false,
+      "review": {
+        "blind_id": "Q005",
+        "independent_answer": "1. 不能。T1 的首次非事务控制语句建立快照后，后续 SELECT 继续使用该快照，看不到 T2 此后提交的更新。\n2. 否。快照稳定本身不是 Repeatable Read 对任意并发历史的可串行化保证；但若仅有题述的只读 T1 和随后提交更新的 T2，这一观察结果可按 T1、T2 排成串行顺序。题干提及的异常不能单由这两个事务的已给事实推出。\n3. Serializable。它需在快照读取之外检测并阻止可能形成不可串行化历史的并发依赖，必要时使事务以序列化失败结束并由应用重试。",
+        "assessed_difficulty": "hard",
+        "answerability": "pass",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "unique_answer": "not_applicable",
+        "severity": "minor",
+        "concise_rationale": "The three requested general principles match the cited material. A caveat is missing: with only the specified read-only T1 and updating T2, the reads can be ordered T1 then T2; the cited control/detail anomaly is a general warning, not a demonstrated outcome of this two-transaction schedule.",
+        "evidence_quotes": [
+          {
+            "source_id": "context_b8c6ef176348d7351252ba5cadca8e33",
+            "quote": "successive SELECT commands within a single transaction see the same data"
+          },
+          {
+            "source_id": "context_62bc5560e3b8e9705d4ac424255acdd1",
+            "quote": "However, this view will not necessarily always be consistent with some serial (one at a time) execution of concurrent transactions of the same level."
+          },
+          {
+            "source_id": "context_8f1f61795315649141b9f4a982fffc26",
+            "quote": "it also monitors for conditions which could make execution of a concurrent set of serializable transactions behave in a manner inconsistent with all possible serial (one at a time) executions of those transactions."
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q006",
+      "case_id": "os_interrupt_deadlock_zh",
+      "need_id": "os_interrupt_deadlock",
+      "target_difficulty": "hard",
+      "job_id": "0e02cbbe7995458a9d00d52d823961d6",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "c1c5a71d4a95b91b7d82a636c51ada59fd73eaa0742bbefb3475886205c5d57e",
+      "batch": "batch1",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": false,
+      "difficulty_match": true,
+      "review": {
+        "blind_id": "Q006",
+        "independent_answer": "(1) 若先置 locked 再 push_off，本 CPU 可在两步之间被中断；处理程序等待该锁，而被打断的线程无法继续释放，形成死锁。\n(2) 若先 pop_off 再清除锁，本 CPU 的中断可在锁仍被持有时运行，处理程序试图获取该锁并使线程无法继续释放。\n(3) 正常持锁期间，本 CPU 的中断已被关闭，时钟中断会延后处理，因此该 CPU 的处理程序不会在此时尝试获取该锁。\n(4) 另一 CPU 仍可执行中断或线程；其 acquire 可自旋等待。持锁 CPU 没有因此被打断，仍能运行并释放锁，所以不会出现上述同 CPU 的等待环。\n(5) xv6 不允许同一 CPU 重复获取已持有的锁；这种调用会被判为错误。先关中断再置锁、先解锁再恢复中断，可阻止中断处理程序在本 CPU 意外重入同一锁；显式重复获取则需由禁止重入的检查识别，不能靠中断顺序解决。",
+        "assessed_difficulty": "hard",
+        "answerability": "pass",
+        "answer_correctness": "fail",
+        "explanation_correctness": "pass",
+        "citation_support": "partially_supported",
+        "objective_alignment": "pass",
+        "unique_answer": "not_applicable",
+        "severity": "minor",
+        "concise_rationale": "Parts 1–4 and the general warning about recursive acquisition are sound. Part 5 describes a second acquire on a lock already held by the same CPU as actually spinning forever; xv6 detects and forbids that call with holding in acquire. The cited source supports the risk of re-entry but contradicts the stated implementation behavior.",
+        "evidence_quotes": [
+          {
+            "source_id": "answer",
+            "quote": "若同一 CPU 已持有锁，再次 acquire 会自旋等待永不会释放的锁"
+          },
+          {
+            "source_id": "context_4d761d5392513e25c031c334eb9f634a",
+            "quote": "Xv6 takes this latter view, and forbids a CPU that currently holds a lock from re-acquiring it. Detecting this situation is the purpose of the call to holding in acquire."
+          },
+          {
+            "source_id": "context_58f53138af43939331f05fa6b73fe520",
+            "quote": "It is important that acquire call push_off strictly before setting lk->locked."
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q001",
+      "case_id": "db_serialization_retry_en",
+      "need_id": "db_serialization_retry",
+      "target_difficulty": "hard",
+      "job_id": "b440d7c4181c44b79630d9561bc461b2",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "9336fccb2db3037fe0553faa11d8ddaf7f7b3fe5488b8648db1eb9d7cb402d60",
+      "batch": "batch2",
+      "delivered": true,
+      "runtime_outcome": "adjusted",
+      "core_quality_pass": true,
+      "difficulty_match": false,
+      "review": {
+        "blind_id": "Q001",
+        "independent_answer": "Option B. After SQLSTATE 40001, start a new transaction and repeat the read and key-selection logic before inserting. A 23505 can also warrant a retry when it results from a concurrent key-selection race, though not every unique violation is transient.",
+        "assessed_difficulty": "medium",
+        "answerability": "pass",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "unique_answer": "pass",
+        "severity": "none",
+        "concise_rationale": "B correctly requires redoing the read-dependent transaction logic and recognizes that some 23505 errors are effectively serialization failures. A reuses a stale decision, C wrongly rules out transient 23505, and D omits the required abort and full retry. The actual cited excerpts support these distinctions.",
+        "evidence_quotes": [
+          {
+            "source_id": "context_d295bafea7de5e32aedcdb29341b3ba0",
+            "quote": "It is important to retry the complete transaction, including all logic that decides which SQL to issue and/or which values to use."
+          },
+          {
+            "source_id": "context_d295bafea7de5e32aedcdb29341b3ba0",
+            "quote": "In some cases it is also appropriate to retry unique-key failures, which have SQLSTATE code 23505 (unique_violation)"
+          },
+          {
+            "source_id": "context_62bc5560e3b8e9705d4ac424255acdd1",
+            "quote": "it should abort the current transaction and retry the whole transaction from the beginning."
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q002",
+      "case_id": "os_lost_wakeup_en",
+      "need_id": "os_lost_wakeup",
+      "target_difficulty": "hard",
+      "job_id": "645bb6a1bf494358954df6ea2f49e978",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "5bb8f5ee99ac9bff31a8fbf633c35fd955291a32664795de35534fa422623236",
+      "batch": "batch2",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": false,
+      "difficulty_match": true,
+      "review": {
+        "blind_id": "Q002",
+        "independent_answer": "No listed option fully describes the code. The consumer checks emptiness while holding condlock and calls sleep_prepare before releasing it, so the producer cannot change the buffer and call wakeup in that gap. In the flag version, released is set to 0 and never set to 1 by any shown code; F6 therefore calls sleep just as the original does, and F8 never takes its branch. Whether a wakeup after preparation but before sleep is remembered depends on the interface's wakeup/sleep semantics, which the question does not define.",
+        "assessed_difficulty": "hard",
+        "answerability": "fail",
+        "answer_correctness": "fail",
+        "explanation_correctness": "fail",
+        "citation_support": "partially_supported",
+        "objective_alignment": "pass",
+        "unique_answer": "fail",
+        "severity": "major",
+        "concise_rationale": "The citations support conditions 1, 2, 3, 4-as-false, and 6, and explain why an unlocked condition check would be risky. But F2 is actually under condlock at F1/F7; released remains 0, so F6 still invokes the interface's protected sleep and F8 cannot change the protocol. A's claimed exact failure is false. B and C falsely say wakeup writes released, while D misstates preparation, locking, and rechecking; no option is fully defensible.",
+        "source_based_correction": "The cited interface text specifies that a wakeup between sleep_prepare and sleep is remembered and sleep then returns immediately, resolving the interface uncertainty in the sealed independent answer. Its conclusion that none of the options correctly identifies a failure of the shown flag version remains unchanged.",
+        "evidence_quotes": [
+          {
+            "source_id": "question",
+            "quote": "F1. acquire(condlock)\nF2. while buffer is empty do:\nF3.   released = 0\nF4.   sleep_prepare(&buf)\nF5.   release(condlock)\nF6.   if (released == 0) sleep(&buf)\nF7.   acquire(condlock)\nF8.   if (released == 1) continue"
+          },
+          {
+            "source_id": "question",
+            "quote": "The flag version fails because 'released' is not written by wakeup and the sleep is not protected on the condition check side."
+          },
+          {
+            "source_id": "context_c24a632a225957eb067e40615105e0d4",
+            "quote": "sleep() returns right away if wakeup(chan) has already been called after the (required) previous call to sleep_prepare(chan)"
+          },
+          {
+            "source_id": "context_5d8bfdf4ac0d9917b59abe4b9a423a65",
+            "quote": "sleep_prepare(chan) must be called either before checking the condition, or before releasing the lock that protects the condition."
+          },
+          {
+            "source_id": "context_5c240f5980676e5fc885c4419dc08f24",
+            "quote": "there is a lock that protects the condition and prevents wakeup() from being called between when the going-to-sleep process checks the condition and when it calls sleep_prepare()."
+          },
+          {
+            "source_id": "context_535b742a701f444a77c0c4fd651d00bf",
+            "quote": "wakeup will set p->chan to zero."
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q003",
+      "case_id": "os_lost_wakeup_zh",
+      "need_id": "os_lost_wakeup",
+      "target_difficulty": "hard",
+      "job_id": "3baf7cd559124f2e8f7c09fb0691df4a",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "cd7b140c597ceb1b8a585d9546edaa841c9a496ac9eaa77e955c149a9a601c1d",
+      "batch": "batch2",
+      "delivered": true,
+      "runtime_outcome": "adjusted",
+      "core_quality_pass": false,
+      "difficulty_match": false,
+      "review": {
+        "blind_id": "Q003",
+        "independent_answer": "Option B. The stated interleaving cannot occur: the reader still holds pipe.lock in step 2, so the writer cannot acquire that same lock, write, or call wakeup until the reader releases it. Once the reader releases the lock after preparing to sleep, the protocol's pending-wakeup behavior would matter in a possible schedule, and the reader must still recheck the buffer condition after waking.",
+        "assessed_difficulty": "medium",
+        "answerability": "pass",
+        "answer_correctness": "fail",
+        "explanation_correctness": "fail",
+        "citation_support": "partially_supported",
+        "objective_alignment": "pass",
+        "unique_answer": "pass",
+        "severity": "major",
+        "concise_rationale": "B identifies the impossible schedule: the writer cannot acquire pipe.lock before the reader releases it. The generated C and its explanation apply valid pending-wakeup and recheck facts to an impossible interleaving, then reject B merely because the stem asserts that the writer acquired the lock. A and D misstate the interface. One cited excerpt directly supports the locking constraint that the generated answer ignores.",
+        "evidence_quotes": [
+          {
+            "source_id": "question",
+            "quote": "读取进程在持有管道锁 pipe.lock 时调用 sleep_prepare(&pipe.chan) 并检查缓冲区为空，随后释放锁并调用 sleep()。写入进程在持有同一把锁时向缓冲区写入数据并调用 wakeup(&pipe.chan)。"
+          },
+          {
+            "source_id": "question",
+            "quote": "2. 在读取进程释放锁之前，写入进程获得锁，写入数据，调用 wakeup(&pipe.chan)，然后释放锁。"
+          },
+          {
+            "source_id": "explanation",
+            "quote": "选项 B 错误：交错步骤明确描述写入进程获得了锁并调用了 wakeup，且释放锁后读取进程才调用 sleep()。"
+          },
+          {
+            "source_id": "context_5c240f5980676e5fc885c4419dc08f24",
+            "quote": "there is a lock that protects the condition and prevents wakeup() from being called between when the going-to-sleep process checks the condition and when it calls sleep_prepare()."
+          },
+          {
+            "source_id": "context_535b742a701f444a77c0c4fd651d00bf",
+            "quote": "wakeup will set p->chan to zero."
+          },
+          {
+            "source_id": "context_a199673d425ef31fd839f86c1f537f54",
+            "quote": "For this reason sleeping always occurs inside a loop that re-checks the condition"
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q004",
+      "case_id": "db_atomicity_zh",
+      "need_id": "db_atomicity",
+      "target_difficulty": "easy",
+      "job_id": "4e5433084d7e4c59b240ce8b78878db7",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "cf138891f72f789a61df2d4fea72d5639b0da8596c4b444266b9224c9d18de5c",
+      "batch": "batch2",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": false,
+      "difficulty_match": false,
+      "review": {
+        "blind_id": "Q004",
+        "independent_answer": "ROLLBACK undoes Alice's already executed debit. If COMMIT were executed at the stated point, before Bob's update runs, only Alice's debit would be committed; both updates would be committed only if both had executed before COMMIT. Thus none of the options is fully correct as written.",
+        "assessed_difficulty": "medium",
+        "answerability": "fail",
+        "answer_correctness": "fail",
+        "explanation_correctness": "fail",
+        "citation_support": "partially_supported",
+        "objective_alignment": "pass",
+        "unique_answer": "fail",
+        "severity": "major",
+        "concise_rationale": "A correctly says ROLLBACK cancels Alice's debit, but its COMMIT clause assumes Bob's as-yet-unexecuted update also takes effect. The generated explanation repeats the transaction principle without resolving that contradiction. B wrongly preserves the rolled-back debit, C equates COMMIT and ROLLBACK, and D ignores the explicit BEGIN; no fully correct option remains. The citations support only changes already made within the transaction.",
+        "evidence_quotes": [
+          {
+            "source_id": "question",
+            "quote": "执行完第一条更新后、尚未执行第二条更新时，程序决定不提交并执行 ROLLBACK。"
+          },
+          {
+            "source_id": "question",
+            "quote": "若执行 COMMIT，则两条更新会一起生效并永久记录。"
+          },
+          {
+            "source_id": "context_7e0ec95ca5933d08f0f90d4f75ff0a6d",
+            "quote": "all our updates so far will be canceled."
+          },
+          {
+            "source_id": "context_2cf186cae4f79cf460678cf586054617",
+            "quote": "When and if you commit the transaction block, the committed actions become visible as a unit to other sessions, while the rolled-back actions never become visible at all."
+          },
+          {
+            "source_id": "explanation",
+            "quote": "如果执行 COMMIT，则事务完成后所有更新成为永久记录并对其他会话作为一个整体可见。"
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q005",
+      "case_id": "net_tcp_service_en",
+      "need_id": "net_tcp_service",
+      "target_difficulty": "easy",
+      "job_id": "97733ec89de342a5a68d69f160a16949",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "b37011e8a7de0ff5e9a6eb647030ef76ca3975e284be3c113390ffa91174b5b0",
+      "batch": "batch2",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": true,
+      "difficulty_match": true,
+      "review": {
+        "blind_id": "Q005",
+        "independent_answer": "To an application, TCP presents each direction of a connection as an ordered byte stream: data written by one side arrives reliably and in order at the other, and both sides can send at once. TCP groups bytes into segments for network transmission, then reconstructs the stream for the receiving application. Segment boundaries therefore need not match the application's writes or reads.",
+        "assessed_difficulty": "easy",
+        "answerability": "pass",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "unique_answer": "not_applicable",
+        "severity": "none",
+        "concise_rationale": "The four-sentence answer explains the application-visible ordered, reliable, full-duplex streams and the segment-based transmission mechanism. Its receive-buffer detail and the explanation's distinctions are in the two actual cited excerpts. The short-answer item directly matches the objective.",
+        "evidence_quotes": [
+          {
+            "source_id": "context_adff94e0c8029b725d33d37b44f2c0f4",
+            "quote": "TCP guarantees the reliable, in-order delivery of a stream of bytes. It is a full-duplex protocol, meaning that each TCP connection supports a pair of byte streams, one flowing in each direction."
+          },
+          {
+            "source_id": "context_a1a476576a6737794d48ce06cea6aff3",
+            "quote": "Although “byte stream” describes the service TCP offers to application processes, TCP does not, itself, transmit individual bytes over the Internet."
+          },
+          {
+            "source_id": "context_a1a476576a6737794d48ce06cea6aff3",
+            "quote": "The packets exchanged between TCP peers in Figure 127 are called segments, since each one carries a segment of the byte stream."
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q001",
+      "case_id": "db_statement_snapshot_en",
+      "need_id": "db_statement_snapshot",
+      "target_difficulty": "medium",
+      "job_id": "8689aa0432934e88ae420b011d5796d4",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "20a0b11b3a41cdda28d2ed4b7dc276e403a8bdeb4936196af3a51a31263a82b9",
+      "batch": "batch3",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": true,
+      "difficulty_match": true,
+      "review": {
+        "blind_id": "Q001",
+        "independent_answer": "The first SELECT starts before S2 commits the UPDATE, so it can see R as inserted but not in its updated form. The second SELECT starts after that commit, so it can see the updated R. In Read Committed, each ordinary SELECT uses the committed-data snapshot taken when that statement begins; the two SELECTs in one S1 transaction may therefore return different versions of R.",
+        "assessed_difficulty": "medium",
+        "answerability": "pass",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "unique_answer": "not_applicable",
+        "severity": "none",
+        "concise_rationale": "两个 SELECT 的开始时点分别位于 UPDATE 提交前后；答案和解析正确应用逐语句快照，所引 Read Committed 原文直接支持。",
+        "evidence_quotes": [
+          {
+            "source_id": "context_80f09f9abd69f4e4cd054fd404a1f718",
+            "quote": "a SELECT query sees a snapshot of the database as of the instant the query begins to run."
+          },
+          {
+            "source_id": "context_80f09f9abd69f4e4cd054fd404a1f718",
+            "quote": "two successive SELECT commands can see different data, even though they are within a single transaction"
+          },
+          {
+            "source_id": "answer",
+            "quote": "First SELECT at t3: R is visible in the form committed at t1"
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q002",
+      "case_id": "net_tcp_service_zh",
+      "need_id": "net_tcp_service",
+      "target_difficulty": "easy",
+      "job_id": "374d273d28344e578808108f51d8f141",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "40b018db822243673195e3282d8b7e311b1c78428aa00c4e7294cc198aba084b",
+      "batch": "batch3",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": true,
+      "difficulty_match": false,
+      "review": {
+        "blind_id": "Q002",
+        "independent_answer": "TCP 向应用提供可靠、按序、双向的字节流；应用按字节写入和读取，单次写入的边界不保证在读取时保留。对等 TCP 实体交换的是 TCP 报文段，发送端可以在发送缓冲区暂存字节并合并成报文段，以减少过多小报文段的开销；但 TCP 并不普遍要求必须等缓冲到某个固定数量才发送。报文段是传输单位，不改变应用看到的字节流语义。",
+        "assessed_difficulty": "medium",
+        "answerability": "pass",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "unique_answer": "not_applicable",
+        "severity": "minor",
+        "concise_rationale": "核心的可靠、有序、全双工字节流及报文段区分均正确且有直接来源；“为什么等”仅以凑成合理大小分组作简略说明，未说明这不是通用固定阈值。",
+        "evidence_quotes": [
+          {
+            "source_id": "context_adff94e0c8029b725d33d37b44f2c0f4",
+            "quote": "TCP guarantees the reliable, in-order delivery of a stream of bytes. It is a full-duplex protocol"
+          },
+          {
+            "source_id": "context_a1a476576a6737794d48ce06cea6aff3",
+            "quote": "TCP on the source host buffers enough bytes from the sending process to fill a reasonably sized packet and then sends this packet to its peer on the destination host."
+          },
+          {
+            "source_id": "context_a1a476576a6737794d48ce06cea6aff3",
+            "quote": "The packets exchanged between TCP peers in Figure 127 are called segments"
+          },
+          {
+            "source_id": "answer",
+            "quote": "发送方 TCP 会缓冲足够字节组成一个大小合理的分组后再发送"
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q003",
+      "case_id": "os_context_switch_zh",
+      "need_id": "os_context_switch",
+      "target_difficulty": "easy",
+      "job_id": "97e82606c601454080b0a0db69ca6318",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "7be963ac80f292832cda00756bdf8b378ba0369951f9626e07cfd526c66e5413",
+      "batch": "batch3",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": true,
+      "difficulty_match": false,
+      "review": {
+        "blind_id": "Q003",
+        "independent_answer": "切换出的内核线程要保存恢复执行所需的上下文，尤其是栈指针、返回位置和调用约定要求被调用者保留的寄存器；具体寄存器集合随 xv6 的架构而异。切换发生在函数调用边界，其他临时寄存器由调用约定和已有栈帧处理，用户态寄存器则另由陷阱帧保存，因此无需由上下文切换例程重复保存全部寄存器。调度器选择可运行进程，切换其上下文，让多个进程轮流占用 CPU。",
+        "assessed_difficulty": "medium",
+        "answerability": "pass",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "unique_answer": "not_applicable",
+        "severity": "none",
+        "concise_rationale": "生成答案按所引 RISC-V xv6 版本细化了保存的寄存器，解释了其他状态为何已在内存中及调度器线程如何转接，均与来源一致。",
+        "evidence_quotes": [
+          {
+            "source_id": "context_1070d34d22a827ac4deec45bc21d7ebb",
+            "quote": "swtch saves callee-saved registers (ra,sp,s0..s11) but not caller-saved registers."
+          },
+          {
+            "source_id": "context_fd00925c62506d1a56664d64fd3fd7e7",
+            "quote": "thread memory need not saved and restored because different threads keep their data in different areas of RAM"
+          },
+          {
+            "source_id": "context_1c12080941940825f2dc2c86c88ee465",
+            "quote": "the scheduler thread picks a different process’s kernel thread to run"
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q004",
+      "case_id": "db_serialization_retry_zh",
+      "need_id": "db_serialization_retry",
+      "target_difficulty": "hard",
+      "job_id": "27da76cbfec94daa97a1379933272f13",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "cf2be3b3bb6a6ac716f243cb35bb94bd354b4b1ae04a08f9f75b36b7a03bae32",
+      "batch": "batch3",
+      "delivered": true,
+      "runtime_outcome": "adjusted",
+      "core_quality_pass": true,
+      "difficulty_match": false,
+      "review": {
+        "blind_id": "Q004",
+        "independent_answer": "选第 2 项。收到 SQLSTATE 40001 后应放弃失败事务并重试完整事务；新事务必须重新 SELECT 库存，并用新读数重新计算和构造 UPDATE。",
+        "assessed_difficulty": "medium",
+        "answerability": "pass",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "unique_answer": "pass",
+        "severity": "none",
+        "concise_rationale": "B 是唯一符合 40001 完整事务重试的选项；来源还明确排除把 23505 一律视为持久错误，解析对 A、C、D 的排除成立。",
+        "evidence_quotes": [
+          {
+            "source_id": "context_1e29bb3833d7f959a0ca888af78b5236",
+            "quote": "it will always have the SQLSTATE code 40001 (serialization_failure)."
+          },
+          {
+            "source_id": "context_d295bafea7de5e32aedcdb29341b3ba0",
+            "quote": "It is important to retry the complete transaction, including all logic that decides which SQL to issue and/or which values to use."
+          },
+          {
+            "source_id": "context_d295bafea7de5e32aedcdb29341b3ba0",
+            "quote": "In some cases it is also appropriate to retry unique-key failures, which have SQLSTATE code 23505 (unique_violation)"
+          },
+          {
+            "source_id": "answer",
+            "quote": "B"
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q005",
+      "case_id": "net_flow_congestion_en",
+      "need_id": "net_flow_congestion",
+      "target_difficulty": "hard",
+      "job_id": "e9454ab8484a40c09dd154b39b7f5484",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "8c97b288050d3f055fe86c340b0bccc1d555e26263cd86452b59e9ab22282446",
+      "batch": "batch3",
+      "delivered": true,
+      "runtime_outcome": "adjusted",
+      "core_quality_pass": false,
+      "difficulty_match": true,
+      "review": {
+        "blind_id": "Q005",
+        "independent_answer": "1. R 公告的接收窗口 rwnd=0，接收端流量控制阻止发送新的常规数据，保护接收缓冲区。2. 缩小的拥塞窗口 cwnd 体现网络拥塞控制，保护路径中的链路和路由器；但只有 cwnd 小于 rwnd 且可发送额度被用尽时，它才是实际起作用的窗口限制，题面没有给出这两个数值。3. 中间路由器丢包说明路径已拥塞并限制成功交付，发送端应在观察到相应丢包信号后调整 cwnd；仅凭两个窗口都“大”，不能判定此刻是拥塞窗口、接收窗口、两者还是两者都不限制新的发送。未确认数据的通常发送额度受 min(cwnd, rwnd) 限制，不能超过其中任一窗口允许的额度。",
+        "assessed_difficulty": "hard",
+        "answerability": "fail",
+        "answer_correctness": "fail",
+        "explanation_correctness": "fail",
+        "citation_support": "partially_supported",
+        "objective_alignment": "fail",
+        "unique_answer": "not_applicable",
+        "severity": "major",
+        "concise_rationale": "第 1 种情形和未确认数据总量受 min(cwnd,rwnd) 约束正确；第 2 种缺少 cwnd<rwnd 及在途数据量，第 3 种丢包只证明路径拥塞而未证明发送端此刻受拥塞窗口限制。答案把“大窗口”推成窗口不生效，并把最大窗口误写成当前有效发送窗口；引用仅支持一般机制和最大未确认数据上限。",
+        "evidence_quotes": [
+          {
+            "source_id": "answer",
+            "quote": "R's advertised window is large, so the receiver is not the bottleneck"
+          },
+          {
+            "source_id": "answer",
+            "quote": "both the advertised window and congestion window are large, so neither receiver nor window size is the active constraint"
+          },
+          {
+            "source_id": "answer",
+            "quote": "The effective window equals min(congestion window, advertised window)"
+          },
+          {
+            "source_id": "context_a8ca87ed6b3ceef9eba3633d15f00fb3",
+            "quote": "the maximum number of bytes of unacknowledged data allowed is now the minimum of the congestion window and the advertised window."
+          },
+          {
+            "source_id": "context_a8ca87ed6b3ceef9eba3633d15f00fb3",
+            "quote": "MaxWindow replaces AdvertisedWindow in the calculation of EffectiveWindow."
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q006",
+      "case_id": "os_race_condition_en",
+      "need_id": "os_race_condition",
+      "target_difficulty": "medium",
+      "job_id": "76cc7f2578f34abbb96dbab442dfdcf3",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "65513aae1024952e9e935584a603b81c2f12906b316956d456aa2027ba9fe1fa",
+      "batch": "batch3",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": false,
+      "difficulty_match": true,
+      "review": {
+        "blind_id": "Q006",
+        "independent_answer": "选第 2 项。两个 CPU 都可能在锁值仍为 0 时完成 L1，随后都执行 L2 并进入 L3，造成并发修改。L1 的检查和 L2 的设置不是一个原子操作；所列 acquire 的 while 条件也不能实现可靠的互斥。",
+        "assessed_difficulty": "medium",
+        "answerability": "fail",
+        "answer_correctness": "fail",
+        "explanation_correctness": "fail",
+        "citation_support": "partially_supported",
+        "objective_alignment": "fail",
+        "unique_answer": "fail",
+        "severity": "major",
+        "concise_rationale": "B 正确指出 L1/L2 的非原子检查设置竞态，但把 L1–L4 整段称为临界区；所引来源把临界区定义为获取锁与释放锁之间的指令，内联代码中 L1/L2 是获取尝试、L4 是释放，因而 B 前半句不成立，其余选项也不正确。给定 acquire 在锁已占用时还会直接退出，进一步说明代码不安全。",
+        "evidence_quotes": [
+          {
+            "source_id": "context_bbdf265863492bcef01911cca167df7b",
+            "quote": "The sequence of instructions between acquire and release is often called a critical section."
+          },
+          {
+            "source_id": "context_721949419795d5384fb58f88476a0eb7",
+            "quote": "Two CPUs could simultaneously reach line 25, see that lk->locked is zero, and then both grab the lock by executing line 26."
+          },
+          {
+            "source_id": "explanation",
+            "quote": "The sequence between acquire and release is the critical section, so L1–L4 is the critical section here."
+          }
+        ],
+        "source_based_correction": "第一阶段把 B 当作唯一可辩护选项；所引来源明确将临界区限定在获取锁与释放锁之间。精确地说，仅持锁的共享列表更新位于该区间，故 B 的首句不成立，四项没有完全正确的答案。封存的独立答案与难度保持原样。"
+      }
+    },
+    {
+      "blind_id": "Q001",
+      "case_id": "net_cumulative_ack_zh",
+      "need_id": "net_cumulative_ack",
+      "target_difficulty": "medium",
+      "job_id": "750f2d29e3f14e47bca2975bce107651",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "67589dc46e9d77bd04db3671b64339f97af0db447bdb060fa46470cbdc29e3c4",
+      "batch": "batch4",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": false,
+      "difficulty_match": true,
+      "review": {
+        "blind_id": "Q001",
+        "independent_answer": "选第一项：Acknowledgement = 221，NextByteExpected = 221。S1 后下一个缺失字节是 141；S2 乱序到达后仍是 141；S3 补齐 141–160 后推进到 201；S4 后连续收到至 220，故下一期待字节与累积确认号均为 221。",
+        "assessed_difficulty": "medium",
+        "answerability": "pass",
+        "unique_answer": "pass",
+        "concise_rationale": "A is the only option with both final values 221: S2 leaves a gap, S3 fills it, and S4 extends the contiguous range through 220. The explanation computes these states correctly, but misdescribes B and D as intermediate states and says C gives 201 as NextByteExpected even though C gives 221. The actual cited excerpts establish byte numbering, buffering, and NextByteExpected, but do not explicitly establish that the cumulative ACK field equals that next expected byte.",
+        "answer_correctness": "pass",
+        "explanation_correctness": "fail",
+        "citation_support": "partially_supported",
+        "objective_alignment": "pass",
+        "severity": "minor",
+        "evidence_quotes": [
+          {
+            "source_id": "explanation",
+            "quote": "S4 到达 201–220，继续连续；LastByteRcvd=220，NextByteExpected=221。"
+          },
+          {
+            "source_id": "explanation",
+            "quote": "选项 B 的错误在于停留在重排完成之前的状态，未处理 S3、S4 的填补效果。"
+          },
+          {
+            "source_id": "explanation",
+            "quote": "选项 C 混用了乱序阶段与最终状态，201 不是最终的 NextByteExpected。"
+          },
+          {
+            "source_id": "explanation",
+            "quote": "选项 D 只看到 S3 填补后的下一步，忽略了 S4 已连续到达。"
+          },
+          {
+            "source_id": "context_1e4936c4e6a2d7b6afa93d98871b242d",
+            "quote": "if data has arrived in order, NextByteExpected points to the byte after LastByteRcvd"
+          },
+          {
+            "source_id": "context_46d20324bab49880e1c1764165dd9b2b",
+            "quote": "This buffer holds data that arrives out of order, as well as data that is in the correct order"
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q002",
+      "case_id": "net_reliable_delivery_en",
+      "need_id": "net_reliable_delivery",
+      "target_difficulty": "easy",
+      "job_id": "d162f351613a40cda80ee02ad09ce1ea",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "a5b0d7d379c675ebffa9e4be2427ec0b4a1ef1b9e1a6e80aa795a1dbb3ddd428",
+      "batch": "batch4",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": true,
+      "difficulty_match": true,
+      "review": {
+        "blind_id": "Q002",
+        "independent_answer": "Option A. The ACK reports receipt of a frame; if its ACK is not received in time, the sender retransmits. The alternating 1-bit sequence number lets the receiver recognize retransmitted frame 0 as a duplicate, ignore its data, and acknowledge it again rather than treating it as a new frame.",
+        "assessed_difficulty": "easy",
+        "answerability": "pass",
+        "unique_answer": "pass",
+        "concise_rationale": "A correctly assigns ACK to receipt confirmation, timeout to retransmission, and the alternating bit to duplicate recognition; B, C, and D each assign false roles to timeout or the sequence bit. The cited sources directly cover all three mechanisms and the lost-ACK example.",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "severity": "none",
+        "evidence_quotes": [
+          {
+            "source_id": "context_4f3593644fe850f533212da4f1794563",
+            "quote": "The receipt of an acknowledgment indicates to the sender of the original frame that its frame was successfully delivered."
+          },
+          {
+            "source_id": "context_703113b2752bacbfa42ba12b7de22984",
+            "quote": "If the acknowledgment does not arrive after a certain period of time, the sender times out and retransmits the original frame."
+          },
+          {
+            "source_id": "context_af041bb0b9a114ad48f4a108f447f01d",
+            "quote": "the receiver can determine that it is seeing a second copy of frame 0 rather than the first copy of frame 1 and therefore can ignore it"
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q003",
+      "case_id": "os_context_switch_en",
+      "need_id": "os_context_switch",
+      "target_difficulty": "easy",
+      "job_id": "5ec1647efcaa4813a8fd3f52893b08c4",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "0efc35e286c83849580fc224221972e97d5dc442eff8e14202da4f948c342279",
+      "batch": "batch4",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": true,
+      "difficulty_match": false,
+      "review": {
+        "blind_id": "Q003",
+        "independent_answer": "A switch preserves a thread's execution state: its memory, including its stack, remains in RAM, while swtch saves the outgoing thread's callee-saved CPU registers (ra, sp, s0–s11) in its context and restores the incoming thread's saved registers. Caller-saved registers are handled on the stack under the calling convention. A kernel thread yields by switching to its CPU's scheduler thread; the scheduler chooses another process's kernel thread and switches to it, using the scheduler context stored in that CPU's struct cpu.",
+        "assessed_difficulty": "medium",
+        "answerability": "pass",
+        "unique_answer": "not_applicable",
+        "concise_rationale": "The answer and explanation correctly distinguish thread memory retained in RAM from saved/restored registers, identify the RISC-V register convention, and describe the scheduler thread as the intermediary. The cited excerpts support each point.",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "severity": "none",
+        "evidence_quotes": [
+          {
+            "source_id": "context_fd00925c62506d1a56664d64fd3fd7e7",
+            "quote": "it saves the switched-from thread’s CPU registers, and restores the previously-saved registers of the switched-to thread."
+          },
+          {
+            "source_id": "context_fd00925c62506d1a56664d64fd3fd7e7",
+            "quote": "thread memory need not saved and restored because different threads keep their data in different areas of RAM"
+          },
+          {
+            "source_id": "context_1070d34d22a827ac4deec45bc21d7ebb",
+            "quote": "swtch saves callee-saved registers (ra,sp,s0..s11) but not caller-saved registers."
+          },
+          {
+            "source_id": "context_1c12080941940825f2dc2c86c88ee465",
+            "quote": "the scheduler thread picks a different process’s kernel thread to run, and context-switches to that thread."
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q004",
+      "case_id": "db_statement_snapshot_zh",
+      "need_id": "db_statement_snapshot",
+      "target_difficulty": "medium",
+      "job_id": "7eb6c039877c4776a2ae984c49e7b1ec",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "87b314e3d650ae698b1cecc9aac8c392462dcdf44deaf36c1639b0a63fe83c4d",
+      "batch": "batch4",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": true,
+      "difficulty_match": true,
+      "review": {
+        "blind_id": "Q004",
+        "independent_answer": "A 在步骤 2 的 SELECT 看到 k=1：该命令开始时只有初始行已提交。步骤 5 的 SELECT 使用它自己在 B 提交前取得的 Read Committed 命令快照，B 的 k=2 尚未提交，因此仍看到已提交旧版本 k=1。步骤 7 的 SELECT 在步骤 6 的 B COMMIT 之后开始，取得新的命令快照，看到 k=2。步骤 5 与 7 不同，因为同一个 A 事务内的普通 SELECT 各自使用命令开始时的快照。",
+        "assessed_difficulty": "medium",
+        "answerability": "pass",
+        "unique_answer": "not_applicable",
+        "concise_rationale": "The three SELECT results are 1, 1, and 2. The second query starts before B commits and the third starts afterward; each Read Committed command receives a fresh snapshot. The single actual citation directly establishes both visibility and successive-query behavior.",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "severity": "none",
+        "evidence_quotes": [
+          {
+            "source_id": "context_80f09f9abd69f4e4cd054fd404a1f718",
+            "quote": "a SELECT query (without a FOR UPDATE/SHARE clause) sees only data committed before the query began; it never sees either uncommitted data or changes committed by concurrent transactions during the query's execution."
+          },
+          {
+            "source_id": "context_80f09f9abd69f4e4cd054fd404a1f718",
+            "quote": "two successive SELECT commands can see different data, even though they are within a single transaction, if other transactions commit changes after the first SELECT starts and before the second SELECT starts."
+          },
+          {
+            "source_id": "context_80f09f9abd69f4e4cd054fd404a1f718",
+            "quote": "Read Committed mode starts each command with a new snapshot that includes all transactions committed up to that instant"
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q005",
+      "case_id": "net_flow_congestion_zh",
+      "need_id": "net_flow_congestion",
+      "target_difficulty": "hard",
+      "job_id": "795f659a84274ba188709372ddb4464f",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "d781e3c2711866428d16cbe6dba3fb119c2ec5f5179e0773102d646b8e0b8d06",
+      "batch": "batch4",
+      "delivered": true,
+      "runtime_outcome": "adjusted",
+      "core_quality_pass": true,
+      "difficulty_match": false,
+      "review": {
+        "blind_id": "Q005",
+        "independent_answer": "(1) 流量控制：AdvertisedWindow=0 表示接收方暂不能接收更多数据，即使 CongestionWindow 很大也不能继续发送新的数据。(2) 拥塞控制：AdvertisedWindow 很大而 CongestionWindow 很小时，网络可承受的在途量成为主要限制。(3) 实际允许的在途未确认数据量不超过 min(AdvertisedWindow, CongestionWindow)；前者避免压垮接收端，后者避免压垮网络，任一窗口较小都必须限制发送。",
+        "assessed_difficulty": "easy",
+        "answerability": "pass",
+        "unique_answer": "not_applicable",
+        "concise_rationale": "The answer identifies the zero advertised window as the receiver-side limit, the small congestion window as the network-side limit, and min(AdvertisedWindow, CongestionWindow) as the in-flight unacknowledged-data cap. All three statements are explicit in the actual citations.",
+        "answer_correctness": "pass",
+        "explanation_correctness": "pass",
+        "citation_support": "supported",
+        "objective_alignment": "pass",
+        "severity": "none",
+        "evidence_quotes": [
+          {
+            "source_id": "context_8c0a6af1cc78516ee81069043af7aa35",
+            "quote": "Flow control involves preventing senders from over-running the capacity of receivers. Congestion control involves preventing too much data from being injected into the network"
+          },
+          {
+            "source_id": "context_59e5349b54728369a41447059eecd6d1",
+            "quote": "An advertised window of 0 means that the sending side cannot transmit any data"
+          },
+          {
+            "source_id": "context_a8ca87ed6b3ceef9eba3633d15f00fb3",
+            "quote": "the maximum number of bytes of unacknowledged data allowed is now the minimum of the congestion window and the advertised window."
+          }
+        ]
+      }
+    },
+    {
+      "blind_id": "Q006",
+      "case_id": "os_race_condition_zh",
+      "need_id": "os_race_condition",
+      "target_difficulty": "medium",
+      "job_id": "5bd93fc94b374d7a97de17091a2e1023",
+      "candidate_scope": "published",
+      "attempt_number": null,
+      "artifact_sha256": "6be3c5c246f8621d4588011254b38be0306594ed40eaf2762606b26f7d6fb377",
+      "batch": "batch4",
+      "delivered": true,
+      "runtime_outcome": "strict",
+      "core_quality_pass": false,
+      "difficulty_match": false,
+      "review": {
+        "blind_id": "Q006",
+        "independent_answer": "方式 1 的同一把锁会使 push 与遍历互斥。按题面给出的步骤，push 先把 n.next 指向原头节点，再将 list 指向 n；在顺序一致的交错中，遍历得到的旧头或新头都已有有效 next，没有展示出暂时破坏可达链表不变量的状态。方式 2 的普通先读后写没有说明为原子比较并交换，也没有同步遍历；是否出现错误还需明确原子性、内存顺序及要维护的具体不变量。因此第一项最接近一般原则，但没有一项完整准确地解释这个具体执行。",
+        "assessed_difficulty": "hard",
+        "answerability": "fail",
+        "unique_answer": "fail",
+        "concise_rationale": "The shared lock in option A does provide mutual exclusion, but the concrete push initializes n.next before publishing n as list, while the only traversal reads head then head.next. Under the shown order, a traversal of the old or new head cannot reach an unlinked next field. The generated explanation incorrectly assumes head.next has not yet been linked; the cited source discusses a different line-numbered push example and generic races, not this concrete state. The plain read/check then write is not an atomic compare-and-swap and does not synchronize traversal, so B, C, and D are also wrong; no option is wholly defensible.",
+        "answer_correctness": "fail",
+        "explanation_correctness": "fail",
+        "citation_support": "partially_supported",
+        "objective_alignment": "pass",
+        "severity": "major",
+        "evidence_quotes": [
+          {
+            "source_id": "explanation",
+            "quote": "不能阻止遍历读取 head 后、head.next 尚未连好的中间状态。"
+          },
+          {
+            "source_id": "explanation",
+            "quote": "两个 CPU 可能同时看到锁可用并同时获取，说明非原子的检查与设置本身不能保证互斥。"
+          },
+          {
+            "source_id": "context_2479cbe1fd70a4bbb80a83635817429e",
+            "quote": "A lock provides mutual exclusion, ensuring that only one CPU at a time can hold the lock."
+          },
+          {
+            "source_id": "context_7b291db7e9a7eed06ba1c5df6b7667ce",
+            "quote": "The implementation of push violates this invariant temporarily: in line 17, l points to the next list element, but list does not point at l yet (reestablished at line 18)."
+          },
+          {
+            "source_id": "context_721949419795d5384fb58f88476a0eb7",
+            "quote": "What we need is a way to make lines 25 and 26 execute as an atomic (indivisible) step."
+          }
+        ]
+      }
+    }
+  ]
+}

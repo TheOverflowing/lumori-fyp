@@ -1,0 +1,185 @@
+[
+  {
+    "blind_id": "Q001",
+    "independent_answer": "Option 1. An acknowledgment tells the sender that a prior frame was received; expiry of the timeout without an acknowledgment causes retransmission. The alternating sequence bit lets the receiver recognize a duplicate, avoid delivering it twice, and acknowledge it again.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "Generated answer A matches the independent answer. All three cited excerpts directly support acknowledgment, timeout/retransmission, and alternating-bit duplicate suppression with re-acknowledgment. The options have one defensible answer and match the stated recognition objective.",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "severity": "none",
+    "evidence_quotes": [
+      {
+        "source_id": "context_4f3593644fe850f533212da4f1794563",
+        "quote": "An acknowledgment (ACK for short) is a small control frame that a protocol sends back to its peer saying that it has received an earlier frame."
+      },
+      {
+        "source_id": "context_703113b2752bacbfa42ba12b7de22984",
+        "quote": "If the acknowledgment does not arrive after a certain period of time, the sender times out and retransmits the original frame."
+      },
+      {
+        "source_id": "context_af041bb0b9a114ad48f4a108f447f01d",
+        "quote": "the receiver can determine that it is seeing a second copy of frame 0 rather than the first copy of frame 1 and therefore can ignore it (the receiver still acknowledges it, in case the first ACK was lost)."
+      }
+    ]
+  },
+  {
+    "blind_id": "Q002",
+    "independent_answer": "A context switch preserves the outgoing kernel thread's saved register context so execution can later resume, and restores the incoming thread's context. In these excerpts, swtch saves ra, sp, and s0 through s11, but not caller-saved registers. A process kernel thread switches to its CPU's scheduler thread, which selects another process kernel thread and switches to it.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The answer correctly synthesizes the register context and scheduler-mediated switching path. It agrees with the independent answer and the exact cited excerpts; it does not require unstated implementation details. The register grouping follows the terminology supplied by this source.",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "severity": "none",
+    "evidence_quotes": [
+      {
+        "source_id": "context_fd00925c62506d1a56664d64fd3fd7e7",
+        "quote": "it saves the switched-from thread’s CPU registers, and restores the previously-saved registers of the switched-to thread."
+      },
+      {
+        "source_id": "context_1070d34d22a827ac4deec45bc21d7ebb",
+        "quote": "swtch saves callee-saved registers (ra,sp,s0..s11) but not caller-saved registers."
+      },
+      {
+        "source_id": "context_1c12080941940825f2dc2c86c88ee465",
+        "quote": "Xv6 does not directly context switch from one process’s kernel thread to another process’s kernel thread; instead, a kernel thread gives up the CPU by context-switching to that CPU’s “scheduler thread,” and the scheduler thread picks a different process’s kernel thread to run, and context-switches to that thread."
+      }
+    ]
+  },
+  {
+    "blind_id": "Q003",
+    "independent_answer": "按题面明确给出的范围，swtch 保存切出线程的 ra、sp、s0..s11，并恢复切入线程对应的寄存器，使线程能从原先的执行位置和栈环境继续运行；它不保存调用者保存寄存器。若允许补充通常的函数调用约定，其原因是需要跨 swtch 调用保留的调用者保存寄存器由调用方负责，而不是由 swtch 保存；题面本身没有给出这条原因。调度器线程充当本 CPU 的切换中介：进程内核线程先切换到调度器线程，由后者选择可运行的进程内核线程，再切换到该线程。不能从所给要点进一步推断其他硬件状态均不需要保存。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "实际引用已明确解释调用约定和线程内存，学习过所给课程资料的学习者可以作答，故可答性修正为 pass。生成答案的保存范围、内存无需搬移及调度路径均正确且有引文支持。轻微措辞问题是“调用前已负责保存/恢复”容易混淆时序；应写为仅对仍需保留的调用者保存寄存器在调用前保存、返回后恢复，不影响核心答案。",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "severity": "minor",
+    "source_based_correction": "第一阶段对可答性 uncertain 的保留来自题干摘要未复述调用约定；现在实际引用 context_1070d34d22a827ac4deec45bc21d7ebb 明确给出调用前保存与返回后恢复，context_fd00925c62506d1a56664d64fd3fd7e7 给出线程内存位于不同 RAM 区域的原因。考虑学习者已学习所给课程资料，可答性应为 pass；不再把这些解释视为未说明的实现假设。第一阶段独立答案与 medium 难度评级保持原文。",
+    "evidence_quotes": [
+      {
+        "source_id": "context_fd00925c62506d1a56664d64fd3fd7e7",
+        "quote": "thread memory need not saved and restored because different threads keep their data in different areas of RAM; but the CPU has only one set of registers so they must be switched (saved and restored) between threads."
+      },
+      {
+        "source_id": "context_1070d34d22a827ac4deec45bc21d7ebb",
+        "quote": "The RISC-V calling convention requires that if code needs to preserve the value in a caller-saved register across a function call, the compiler must generate instructions that save the register to the stack before the function call, and restore from the stack when the function returns."
+      },
+      {
+        "source_id": "answer",
+        "quote": "调用者保存寄存器也不需要由 swtch 保存，因为按照 RISC-V 调用约定，调用函数在调用前已负责保存/恢复这些寄存器。"
+      },
+      {
+        "source_id": "context_1c12080941940825f2dc2c86c88ee465",
+        "quote": "a kernel thread gives up the CPU by context-switching to that CPU’s “scheduler thread,” and the scheduler thread picks a different process’s kernel thread to run, and context-switches to that thread."
+      }
+    ]
+  },
+  {
+    "blind_id": "Q004",
+    "independent_answer": "选项 2。收到 40001 后回滚当前事务，并从头重新执行全部读取、依读取作出的决策和写入；旧尝试的读取结果不能沿用为新尝试的决策依据，也不能在原事务成功提交前作为已确认的对外结果。",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "B 与独立答案一致，实际引用明确要求完整重试包括读取后的决策逻辑，并否定自动重试设施、要求谨慎区分约束错误。提交前有效性应理解为不可依赖最终回滚事务的对外结果，不妨碍本次事务内部基于读取决定写入。所引 context_62bc5560e3b8e9705d4ac424255acdd1 下文属于 Repeatable Read；其完整重试原则得到其他 Serializable 引用的直接支撑，答案未把该段“只读不冲突”误用于 Serializable。",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "severity": "none",
+    "evidence_quotes": [
+      {
+        "source_id": "context_1e29bb3833d7f959a0ca888af78b5236",
+        "quote": "it will always have the SQLSTATE code 40001 (serialization_failure)."
+      },
+      {
+        "source_id": "context_d295bafea7de5e32aedcdb29341b3ba0",
+        "quote": "It is important to retry the complete transaction, including all logic that decides which SQL to issue and/or which values to use. Therefore, PostgreSQL does not offer an automatic retry facility, since it cannot do so with any guarantee of correctness."
+      },
+      {
+        "source_id": "context_4d6f225b971d15c3c1b1141eff6b92fb",
+        "quote": "In all other cases applications must not depend on results read during a transaction that later aborted; instead, they should retry the transaction until it succeeds."
+      },
+      {
+        "source_id": "context_d295bafea7de5e32aedcdb29341b3ba0",
+        "quote": "more care is needed when retrying these other error codes, since they might represent persistent error conditions rather than transient failures."
+      }
+    ]
+  },
+  {
+    "blind_id": "Q005",
+    "independent_answer": "字节流是 TCP 对应用呈现的服务：应用写入和读出有序字节，TCP 负责可靠、按序交付；全双工连接在两个方向各有一条字节流。报文段是 TCP 对等方在网络上传输的分组，每段承载字节流的一部分。发送端把字节组织成报文段，接收端将段内数据缓冲和整理，再供应用按自己的节奏读取，因此应用看到的连续字节流与网络上的分段传输属于不同的抽象层次，段边界不等于应用读取边界。",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "生成答案与独立答案一致，完整区分面向应用的可靠、有序、全双工字节流服务与对等 TCP 实体之间交换的报文段，且发送组段、接收缓冲均有实际引用支持。资料中的“足够字节”是一般性的教学描述，答案没有据此添加固定分组大小或逐字节网络传输假设。",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "severity": "none",
+    "evidence_quotes": [
+      {
+        "source_id": "context_adff94e0c8029b725d33d37b44f2c0f4",
+        "quote": "TCP guarantees the reliable, in-order delivery of a stream of bytes. It is a full-duplex protocol, meaning that each TCP connection supports a pair of byte streams, one flowing in each direction."
+      },
+      {
+        "source_id": "context_a1a476576a6737794d48ce06cea6aff3",
+        "quote": "Although “byte stream” describes the service TCP offers to application processes, TCP does not, itself, transmit individual bytes over the Internet."
+      },
+      {
+        "source_id": "context_a1a476576a6737794d48ce06cea6aff3",
+        "quote": "The packets exchanged between TCP peers in Figure 127 are called segments, since each one carries a segment of the byte stream."
+      },
+      {
+        "source_id": "context_46d20324bab49880e1c1764165dd9b2b",
+        "quote": "This buffer holds data that arrives out of order, as well as data that is in the correct order (i.e., there are no missing bytes earlier in the stream) but that the application process has not yet had the chance to read."
+      }
+    ]
+  },
+  {
+    "blind_id": "Q006",
+    "independent_answer": "Option 1: Statements 1, 2, and 4 are correct; Statement 3 is incorrect. The separate check and set allow both CPUs to observe zero before either sets the flag, so both can enter the critical section. A coherent shared flag alone does not make acquisition atomic or prevent a lost counter increment.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "Answer A is uniquely correct and the main explanation accurately applies the cited critical-section and non-atomic acquisition rules. A minor factual error occurs only in the final distractor explanation: it says the flag is set after both CPUs have entered, whereas the supplied scenario sets it before both enter. Replace that sentence with: D incorrectly assumes that setting the flag provides automatic hardware exclusion. The cited material supports the core reasoning, not the misstated chronology.",
+    "answer_correctness": "pass",
+    "explanation_correctness": "fail",
+    "citation_support": "partially_supported",
+    "objective_alignment": "pass",
+    "severity": "minor",
+    "evidence_quotes": [
+      {
+        "source_id": "context_2479cbe1fd70a4bbb80a83635817429e",
+        "quote": "A lock provides mutual exclusion, ensuring that only one CPU at a time can hold the lock."
+      },
+      {
+        "source_id": "context_bbdf265863492bcef01911cca167df7b",
+        "quote": "The sequence of instructions between acquire and release is often called a critical section."
+      },
+      {
+        "source_id": "context_721949419795d5384fb58f88476a0eb7",
+        "quote": "Two CPUs could simultaneously reach line 25, see that lk->locked is zero, and then both grab the lock by executing line 26. At this point, two different CPUs hold the lock, which violates the mutual exclusion property."
+      },
+      {
+        "source_id": "question",
+        "quote": "C1 then executes Step 2, setting lk->locked to one. C2 then executes Step 2, setting lk->locked to one. Both CPUs then execute the counter update as a critical section and later release lk."
+      },
+      {
+        "source_id": "explanation",
+        "quote": "D wrongly assumes that setting lk->locked to one after both CPUs have entered prevents both from entering."
+      }
+    ]
+  }
+]

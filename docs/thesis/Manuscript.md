@@ -6,11 +6,11 @@ AI-Powered Multimodal Content & Assessment Generation for Educational Applicatio
 
 Core text generation, retrieval and difficulty control
 
-20 September 2026 · Version 0.3
+Version 0.5
 
 Prepared for the CA1 stage of the AY 2026/2027 final-year project
 
-This manuscript documents the implemented text-based foundation and its evidence. Multimodal output generation and learner studies are reserved for subsequent research. It is a working thesis manuscript, not an institution-approved submission template.
+This manuscript presents the text-based foundation of Lumori. Multimodal output generation and learner studies form the subsequent research stage.
 
 <!-- PAGE -->
 # Abstract
@@ -25,7 +25,7 @@ Keywords: educational question generation; retrieval-augmented generation; bilin
 
 ### Scope and evidence declaration
 
-Results dated 12 September and the later R6–R8 experiments are preserved historical runs, not evaluations rerun while preparing this manuscript. Implementation descriptions were refreshed on 20 September; policy changes do not rewrite earlier outcomes. Screenshots were captured from the current application in light mode on 19 September. Content judgments in this manuscript are explicitly AI-assisted; no human reviewer scores, learner outcomes or supervisor approval are asserted. The writing and audit were prepared with assistance from Codex.
+R1–R5 and the subsequent R6–R8 studies are preserved experimental runs. The implementation snapshot and light-mode interface captures document a later system state; they do not retroactively change earlier policies or outcomes. The archived evidence index retains the original run metadata. Content judgments in this manuscript are explicitly AI-assisted; no human reviewer scores, learner outcomes or supervisor approval are asserted. The writing and audit were prepared with assistance from Codex.
 
 <!-- PAGE -->
 # Contents
@@ -43,7 +43,7 @@ Chapters 1–4 establish the problem, research basis and implemented system. Cha
 
 {{FIGURE_LIST}}
 
-The workflow diagrams are original illustrations of the implemented system. Figure 1 reproduces a licensed external research result; Figures 4, 5 and 15 are dated interface captures.
+The workflow diagrams are original illustrations of the implemented system. Figure 1 reproduces a licensed external research result; Figures 4, 5 and 15 are interface captures of the documented implementation.
 
 <!-- PAGE -->
 # 1  Introduction
@@ -51,7 +51,7 @@ The workflow diagrams are original illustrations of the implemented system. Figu
 
 Educators and students both construct practice materials from lectures, notes and reference texts. This work involves selecting relevant concepts, writing answerable questions, explaining answers and adjusting the intended demand for a particular learner. A general-purpose language model can accelerate drafting, but fluent output may introduce unsupported claims or depart from the supplied curriculum. An authoring interface therefore needs an evidence workflow as well as a generation workflow.
 
-The project brief asks for educational content and assessment generation with precise control over difficulty, RAG integration and later multimodal transformations [1]. At CA1, the stated deliverables are a literature survey, system design and an initial functional prototype with core text generation and RAG. This manuscript addresses that stage. It does not treat the project's anticipated benefits—more efficient educator workflows and personalized learning—as experimentally demonstrated outcomes.
+The course project brief specifies educational content and assessment generation with precise control over difficulty, RAG integration and later multimodal transformations. At CA1, the stated deliverables are a literature survey, system design and an initial functional prototype with core text generation and RAG. This manuscript addresses that stage. It does not treat the project's anticipated benefits—more efficient educator workflows and personalized learning—as experimentally demonstrated outcomes.
 
 Lumori uses one course-oriented application for both authoring and self-practice. An educator may create an assignment; a student may create questions for revision. These uses share ingestion, retrieval and generation functionality. Separate teacher and student products are not necessary to demonstrate the present research objective. Account isolation is implemented, while institutional permissions and secure examination delivery are outside the current prototype.
 
@@ -69,47 +69,47 @@ These contributions are bounded. The external datasets provide existing relevanc
 # 2  Literature Review
 ## 2.1  Review method and educational generation
 
-This is a targeted narrative review, extending the project's 11 September literature survey with retrieval and chunking research inspected during the subsequent experiments. Sources include ACL Anthology, arXiv and PMLR. Selection prioritizes educational question generation, difficulty estimation, evidence retrieval and evaluation. Publication metadata and the original source ledger are retained. The review is neither exhaustive nor a systematic survey of all publications available in 2026; preprints are identified in the bibliography.
+This targeted narrative review extends the initial project literature survey with retrieval and chunking research examined during the subsequent experiments. Sources include ACL Anthology, arXiv and PMLR. Selection prioritizes educational question generation, difficulty estimation, evidence retrieval and evaluation. Publication metadata and the original source ledger are retained. The review is neither exhaustive nor a systematic survey of all publications available in 2026; preprints are identified in the bibliography.
 
-Du et al. [2] study neural question generation for reading comprehension. Their formulation establishes a useful passage-to-question foundation, but an educational application also needs objectives, reference answers and reviewable explanations. KHANQ [3] focuses attention on deeper learner questions, motivating evaluation beyond grammaticality. For Lumori, the unit of authoring is consequently a learning asset containing an explanation, assessment items, answers and supporting passages, rather than a question in isolation.
+Du et al. [1] study neural question generation for reading comprehension. Their formulation establishes a useful passage-to-question foundation, but an educational application also needs objectives, reference answers and reviewable explanations. KHANQ [2] focuses attention on deeper learner questions, motivating evaluation beyond grammaticality. For Lumori, the unit of authoring is consequently a learning asset containing an explanation, assessment items, answers and supporting passages, rather than a question in isolation.
 
-Maity et al. [4] compare in-context and retrieval-based approaches for educational question generation. Such comparisons motivate grounding, but model differences complicate attribution: a stronger generator and a better retrieval mechanism are distinct interventions. A future generation ablation in this project should hold the generator and output schema constant while varying the available evidence. The current retrieval experiments do not constitute that generation-quality ablation.
+Maity et al. [3] compare in-context and retrieval-based approaches for educational question generation. Such comparisons motivate grounding, but model differences complicate attribution: a stronger generator and a better retrieval mechanism are distinct interventions. A future generation ablation in this project should hold the generator and output schema constant while varying the available evidence. The current retrieval experiments do not constitute that generation-quality ablation.
 
-Objective-led planning in educational mathematics [5] provides a further design principle: an instruction such as “make this difficult” should be decomposed into an inspectable task plan. Domain-specific results do not establish transfer to all undergraduate subjects. Lumori adopts the general principle of explicit objectives and constraints without claiming to reproduce the paper's mathematics-specific method.
+Objective-led planning in educational mathematics [4] provides a further design principle: an instruction such as “make this difficult” should be decomposed into an inspectable task plan. Domain-specific results do not establish transfer to all undergraduate subjects. Lumori adopts the general principle of explicit objectives and constraints without claiming to reproduce the paper's mathematics-specific method.
 
 ## 2.2  Intended cognitive demand and measured difficulty
 
-Park et al. [6] investigate model-based difficulty estimation against student-derived information. Difficulty estimation and difficulty-controlled generation are related but different tasks. A model may judge a question hard without demonstrating that the intended learner population finds it hard, or that the item discriminates between levels of understanding.
+Park et al. [5] investigate model-based difficulty estimation against student-derived information. Difficulty estimation and difficulty-controlled generation are related but different tasks. A model may judge a question hard without demonstrating that the intended learner population finds it hard, or that the item discriminates between levels of understanding.
 
 Lumori operationalizes difficulty through the required cognitive task, available context and expected marking points. These descriptors support authoring and review; they do not map directly to a probability of a correct answer. Long wording, many steps and the verb “analyze” are insufficient evidence of difficulty. The same item can be routine for one cohort and unfamiliar for another. The interface therefore records learner background, and the evaluation keeps exact allocation compliance separate from model-assessed demand and future student performance.
 
 <!-- PAGE -->
 ## 2.3  Retrieval, segmentation and evidence selection
 
-RAG [7] motivates conditioning generation on retrieved material, while dense passage retrieval [8] supplies a practical semantic search mechanism. Their relevance here is architectural: external evidence can be selected at request time without retraining the generator. Neither design guarantees that the selected evidence is correct, sufficient or faithfully used. Retrieval and generation must therefore be evaluated separately.
+RAG [6] motivates conditioning generation on retrieved material, while dense passage retrieval [7] supplies a practical semantic search mechanism. Their relevance here is architectural: external evidence can be selected at request time without retraining the generator. Neither design guarantees that the selected evidence is correct, sufficient or faithfully used. Retrieval and generation must therefore be evaluated separately.
 
-Long-context findings [9] caution against assuming that adding more source text always improves use of evidence. For this project, a fixed source budget is both a cost control and an experimental constraint. Chunk size changes how many semantic units fit within that budget; overlap can preserve boundary context but also duplicate text. Returning five short chunks is not comparable to returning thirteen passages under a much larger budget unless both conditions are stated.
+Long-context findings [8] caution against assuming that adding more source text always improves use of evidence. For this project, a fixed source budget is both a cost control and an experimental constraint. Chunk size changes how many semantic units fit within that budget; overlap can preserve boundary context but also duplicate text. Returning five short chunks is not comparable to returning thirteen passages under a much larger budget unless both conditions are stated.
 
-Qu et al. [16] examine whether semantic chunking's computational expense is justified by consistent gains. Their findings motivate a measured comparison rather than selecting the most elaborate segmenter by reputation. Lumori initially favors recursive structural boundaries, then tests token-sized alternatives. A content-aware method remains a candidate, not an automatically superior replacement.
+Qu et al. [15] examine whether semantic chunking's computational expense is justified by consistent gains. Their findings motivate a measured comparison rather than selecting the most elaborate segmenter by reputation. Lumori initially favors recursive structural boundaries, then tests token-sized alternatives. A content-aware method remains a candidate, not an automatically superior replacement.
 
-Late chunking [17] preserves wider document context by pooling chunk representations after contextual token encoding. It is conceptually different from splitting text before an ordinary embedding request. The present API path returns pooled embeddings and does not expose the token representations needed to reproduce that procedure. The report therefore treats late chunking as a future controlled experiment rather than relabeling title prefixes or parent expansion as an implementation of it.
+Late chunking [16] preserves wider document context by pooling chunk representations after contextual token encoding. It is conceptually different from splitting text before an ordinary embedding request. The present API path returns pooled embeddings and does not expose the token representations needed to reproduce that procedure. The report therefore treats late chunking as a future controlled experiment rather than relabeling title prefixes or parent expansion as an implementation of it.
 
-Qwen3 Embedding [18] offers multilingual embedding and reranking models. This motivates testing instruction-sensitive retrieval and cross-language search locally. Published benchmark strength does not predict this application's exact corpus, language direction or provider reliability. Lumori's choice of an 8B reranker is supported by its bounded development experiment, with a cheaper instruction-only alternative retained for comparison.
+Qwen3 Embedding [17] offers multilingual embedding and reranking models. This motivates testing instruction-sensitive retrieval and cross-language search locally. Published benchmark strength does not predict this application's exact corpus, language direction or provider reliability. Lumori's choice of an 8B reranker is supported by its bounded development experiment, with a cheaper instruction-only alternative retained for comparison.
 
 ## 2.4  Evaluating support rather than surface plausibility
 
-Citation-oriented generation [10] highlights the importance of checking whether claims are supported by their references. RAGAs [11] and ARES [12] motivate separating retrieval relevance, faithfulness and answer quality. Automated evaluators can make large-scale screening feasible, but they remain measurement instruments with their own errors. A model judging its own model family's output is not independent expert validation.
+Citation-oriented generation [9] highlights the importance of checking whether claims are supported by their references. RAGAs [10] and ARES [11] motivate separating retrieval relevance, faithfulness and answer quality. Automated evaluators can make large-scale screening feasible, but they remain measurement instruments with their own errors. A model judging its own model family's output is not independent expert validation.
 
-Question-generation evaluation also depends on how acceptable alternatives are represented [13]. Open-ended questions can admit multiple valid answers; a single reference is an incomplete description of quality. MIRROR [14] further motivates structured evaluation of open-ended generation. Lumori consequently preserves exact source snapshots and assesses answerability, ambiguity and support as distinct dimensions. The September 19 audit in Chapter 6 uses these distinctions qualitatively and does not present its judgments as a validated benchmark score.
+Question-generation evaluation also depends on how acceptable alternatives are represented [12]. Open-ended questions can admit multiple valid answers; a single reference is an incomplete description of quality. MIRROR [13] further motivates structured evaluation of open-ended generation. Lumori consequently preserves exact source snapshots and assesses answerability, ambiguity and support as distinct dimensions. The AI-assisted audit in Chapter 6 uses these distinctions qualitatively and does not present its judgments as a validated benchmark score.
 
 <!-- PAGE -->
 ## 2.5  Quantitative evidence for retrieval and segmentation
 
-Published retrieval scores are useful only with their task and denominator. DPR [8, Table 2, p. 6773] reports top-20 answer-containing passage retrieval on open-domain QA over English Wikipedia. On Natural Questions, the single-dataset DPR model reaches 78.4%, compared with 59.1% for BM25, an absolute difference of 19.3 percentage points. On SQuAD, however, BM25 reaches 68.8% and single-dataset DPR 63.2%. The same model class therefore has different advantages under different query construction and supervision conditions. These values are not a baseline for Lumori's bilingual course corpus.
+Published retrieval scores are useful only with their task and denominator. DPR [7, Table 2, p. 6773] reports top-20 answer-containing passage retrieval on open-domain QA over English Wikipedia. On Natural Questions, the single-dataset DPR model reaches 78.4%, compared with 59.1% for BM25, an absolute difference of 19.3 percentage points. On SQuAD, however, BM25 reaches 68.8% and single-dataset DPR 63.2%. The same model class therefore has different advantages under different query construction and supervision conditions. These values are not a baseline for Lumori's bilingual course corpus.
 
-Qu et al. [16] provide a more direct comparison of chunk construction. Their document-retrieval experiment samples 100 queries per dataset and maps retrieved chunks back to source documents. Some short-document datasets are artificially stitched into longer documents. On stitched NQ, breakpoint segmentation has a large F1@5 advantage; on non-stitched HotpotQA the fixed-size method is stronger. The distinction matters because concatenating unrelated passages creates boundaries that a semantic detector is particularly suited to finding.
+Qu et al. [15] provide a more direct comparison of chunk construction. Their document-retrieval experiment samples 100 queries per dataset and maps retrieved chunks back to source documents. Some short-document datasets are artificially stitched into longer documents. On stitched NQ, breakpoint segmentation has a large F1@5 advantage; on non-stitched HotpotQA the fixed-size method is stronger. The distinction matters because concatenating unrelated passages creates boundaries that a semantic detector is particularly suited to finding.
 
-Table L1. Published segmentation results from Qu et al. [16, Tables 1–2, p. 2158]. All values are percentages; F1@5 is not the probability that a query has any relevant hit.
+Table L1. Published segmentation results from Qu et al. [15, Tables 1–2, p. 2158]. All values are percentages; F1@5 is not the probability that a query has any relevant hit.
 
 | Task and dataset | Fixed size | Breakpoint | Clustering |
 |---|---:|---:|---:|
@@ -120,14 +120,12 @@ Table L1. Published segmentation results from Qu et al. [16, Tables 1–2, p. 21
 
 The table supports a task-dependent comparison rather than a universal ranking of chunkers. Our recursive policy preserves structural boundaries with a token limit; it is not identical to the paper's fixed-size baseline. A valid local comparison must hold the corpus, embedding model, final source budget and evaluation spans constant. Otherwise, a larger chunk can appear to improve coverage simply because more text is supplied.
 
-Late chunking [17] addresses contextual representation rather than only breakpoint placement. It encodes a document before pooling token representations into chunks, whereas an ordinary embedding API encodes each submitted chunk separately. Title prefixes approximate contextual cues but do not reproduce that mechanism. Since the deployed provider path exposes pooled vectors, implementing late chunking would require a compatible encoder interface and a separately costed index rebuild.
+Late chunking [16] addresses contextual representation rather than only breakpoint placement. It encodes a document before pooling token representations into chunks, whereas an ordinary embedding API encodes each submitted chunk separately. Title prefixes approximate contextual cues but do not reproduce that mechanism. Since the deployed provider path exposes pooled vectors, implementing late chunking would require a compatible encoder interface and a separately costed index rebuild.
 
 <!-- PAGE -->
 ## 2.6  Context position and evidence use
 
-Liu et al. [9] separate the presence of an answer-bearing passage from the model's ability to use it. Their multi-document QA protocol varies the position of the relevant passage while controlling the surrounding documents. Figure 1 reproduces the original study's illustrative result. Accuracy is highest near the beginning or end and weaker in the middle, even though the evidence remains in the input.
-
-![Figure 1. Context-position sensitivity in an external study. Reproduced from Liu et al. [9], original Figure 1, p. 158, under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Cropped to the chart, axes and legend; data are unchanged. This is GPT-3.5-Turbo-0613 with 20 retrieved documents, approximately 4,000 tokens, not a Lumori experiment.](figures/literature-middle.png)
+Liu et al. [8] separate the presence of an answer-bearing passage from the model's ability to use it. Their multi-document QA protocol varies the position of the relevant passage while controlling the surrounding documents. Figure 1 reproduces the original study's illustrative result. Accuracy is highest near the beginning or end and weaker in the middle, even though the evidence remains in the input.
 
 For that study's GPT-3.5-Turbo setting, Table 1 reports 56.1% closed-book accuracy and 88.3% oracle accuracy with the answer-containing document. The figure shows why an oracle result cannot be assumed when irrelevant passages are added. Neither number predicts DeepSeek's performance on educational authoring.
 
@@ -135,12 +133,14 @@ The implication for our design is to budget and order evidence deliberately, the
 
 This motivates a future context-use ablation: retain the same accepted evidence, vary its position and distractor count, and measure claim support with the same generator. It is distinct from the existing chunk-retrieval experiments and has not yet been run.
 
+![Figure 1. Context-position sensitivity in an external study. Reproduced from Liu et al. [8], original Figure 1, p. 158, under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Cropped to the chart, axes and legend; data are unchanged. This is GPT-3.5-Turbo-0613 with 20 retrieved documents, approximately 4,000 tokens, not a Lumori experiment.](figures/literature-middle.png)
+
 <!-- PAGE -->
 ## 2.7  Objective alignment and educational validity
 
-Educational generation introduces criteria that passage retrieval cannot measure. Cheng et al. [5] formulate objective-directed mathematical question generation as planning and iterative refinement. Their EQPR framework uses a search procedure to improve questions against educational objectives. Lumori borrows the principle of an explicit plan and separate review; its native sequential controller does not implement their Monte Carlo tree search.
+Educational generation introduces criteria that passage retrieval cannot measure. Cheng et al. [4] formulate objective-directed mathematical question generation as planning and iterative refinement. Their EQPR framework uses a search procedure to improve questions against educational objectives. Lumori borrows the principle of an explicit plan and separate review; its native sequential controller does not implement their Monte Carlo tree search.
 
-Table L2. Selected results from Cheng et al. [5, Tables 1–2, p. 12843]. These are the paper's mathematical-question settings and evaluators, not our computer-science results.
+Table L2. Selected results from Cheng et al. [4, Tables 1–2, p. 12843]. These are the paper's mathematical-question settings and evaluators, not our computer-science results.
 
 | Condition | Comparator | EQPR | Interpretation |
 |---|---:|---:|---|
@@ -150,18 +150,18 @@ Table L2. Selected results from Cheng et al. [5, Tables 1–2, p. 12843]. These 
 
 The human comparison is smaller than the model-evaluated contrast and uses a different comparator. It should not be presented as independent confirmation of the same effect size. The reported Fleiss' kappa for human win judgments is 0.47, compared with 0.71 for clarity. This disagreement is relevant to rubric design: readable questions are not necessarily easy to rank by educational quality.
 
-A separate question is difficulty. A model assessment based on cognitive operations is a useful authoring signal, but does not estimate the proportion of students who will answer correctly. Park et al. [6] motivate relating model estimates to student information; our prototype has no such student calibration. Difficulty acceptance must therefore distinguish the requested label, model-assessed demand and observed learner response. A delivered adjusted draft satisfies a usability policy, not a strict difficulty experiment.
+A separate question is difficulty. A model assessment based on cognitive operations is a useful authoring signal, but does not estimate the proportion of students who will answer correctly. Park et al. [5] motivate relating model estimates to student information; our prototype has no such student calibration. Difficulty acceptance must therefore distinguish the requested label, model-assessed demand and observed learner response. A delivered adjusted draft satisfies a usability policy, not a strict difficulty experiment.
 
-Citation evaluation adds another independent dimension. ALCE [10] measures whether cited passages support generated statements and whether included citations are relevant; RAGAs [11] and ARES [12] similarly decompose evaluation. An identifier that resolves to a real passage can still support only part of a claim. Our export now groups references by source document for readability, while retaining passage-level provenance. The shorter bibliography does not reduce the granularity required for support review.
+Citation evaluation adds another independent dimension. ALCE [9] measures whether cited passages support generated statements and whether included citations are relevant; RAGAs [10] and ARES [11] similarly decompose evaluation. An identifier that resolves to a real passage can still support only part of a claim. Our export now groups references by source document for readability, while retaining passage-level provenance. The shorter bibliography does not reduce the granularity required for support review.
 
 <!-- PAGE -->
 ## 2.8  Rewriting and preserving the original query
 
-Query rewriting can bridge everyday language and course terminology, but it can also introduce a premise or answer that the user never supplied. Ma et al. [21] establish a Rewrite–Retrieve–Read framework and study a trained rewriter using downstream feedback. Our prompt-based normalization does not reproduce that training. We separate faithful terminology recovery from hypothetical-answer expansion: an invented answer may be useful as a search probe, but is not factual evidence.
+Query rewriting can bridge everyday language and course terminology, but it can also introduce a premise or answer that the user never supplied. Ma et al. [20] establish a Rewrite–Retrieve–Read framework and study a trained rewriter using downstream feedback. Our prompt-based normalization does not reproduce that training. We separate faithful terminology recovery from hypothetical-answer expansion: an invented answer may be useful as a search probe, but is not factual evidence.
 
-Recent work makes the integration mechanism explicit. Sun and Surdeanu's AnchorQE [22] fixes generated expansions and compares how they enter a frozen dense retriever. It encodes original and expanded queries separately and combines their normalized vectors. Its stream-calibrated variant estimates a weight from eight unlabeled prefix queries and then freezes it. This is not per-question intent detection. Its equivalence to linear score fusion assumes one document vector space and complete dot-product ranking; it does not establish equivalence to truncated RRF or our lexical augmentation.
+Recent work makes the integration mechanism explicit. Sun and Surdeanu's AnchorQE [21] fixes generated expansions and compares how they enter a frozen dense retriever. It encodes original and expanded queries separately and combines their normalized vectors. Its stream-calibrated variant estimates a weight from eight unlabeled prefix queries and then freezes it. This is not per-question intent detection. Its equivalence to linear score fusion assumes one document vector space and complete dot-product ranking; it does not establish equivalence to truncated RRF or our lexical augmentation.
 
-Shanian et al. [23] examine rewriting under a fixed dense-retrieval, reranking and diversification pipeline. In their Enterprise simulation, routing expansion to 39.0% of queries raises HIT@10 from 39.22% to 43.55%; always merging reaches 47.94%. On AmbigNQ, always merging instead gives 93.42%, below the original 93.67%. These values are from the paper's routing analysis, not an online user experiment. The enterprise corpus is synthetic, and the routing threshold must not be transplanted as a calibrated confidence probability.
+Shanian et al. [22] examine rewriting under a fixed dense-retrieval, reranking and diversification pipeline. In their Enterprise simulation, routing expansion to 39.0% of queries raises HIT@10 from 39.22% to 43.55%; always merging reaches 47.94%. On AmbigNQ, always merging instead gives 93.42%, below the original 93.67%. These values are from the paper's routing analysis, not an online user experiment. The enterprise corpus is synthetic, and the routing threshold must not be transplanted as a calibrated confidence probability.
 
 These studies motivate our R8A design: reuse the exact same rewrites and vectors, then vary interleaving, reciprocal-rank fusion and vector interpolation. RRF sums reciprocal ranks with a constant of 60 over the two lists; a missing item contributes zero. This combines ranking evidence without assuming comparable raw scores. It can retain an original-query route, but cannot prove that the rewrite preserved intent.
 
@@ -170,11 +170,11 @@ Equal output size is necessary but insufficient for fair comparison. Two queries
 <!-- PAGE -->
 ## 2.9  Clarification and the cost of interaction
 
-Clarification obtains information from a user; rewriting only rearranges the information already available. Formal wording can omit a decisive constraint, while colloquial wording can be complete. Asking every colloquial user a question would conflate language style with missing intent. Zhang and Choi [24] investigate selective interaction through intent uncertainty and use oracle clarification to isolate the decision to ask. That setting does not by itself validate automatically generated questions or real user replies.
+Clarification obtains information from a user; rewriting only rearranges the information already available. Formal wording can omit a decisive constraint, while colloquial wording can be complete. Asking every colloquial user a question would conflate language style with missing intent. Zhang and Choi [23] investigate selective interaction through intent uncertainty and use oracle clarification to isolate the decision to ask. That setting does not by itself validate automatically generated questions or real user replies.
 
-Huang et al.'s Clarify-Then-Search [25] evaluates 518 curated underspecified queries derived from Baidu queries. Its closed-book protocol separates the hidden intent, clarifier, constrained simulated user and rewriter. A fixed search backend measures restored evidence nuggets against a static reference. Selection favors cases where clarification is useful, so the sample cannot estimate how often everyday users need a follow-up.
+Huang et al.'s Clarify-Then-Search [24] evaluates 518 curated underspecified queries derived from Baidu queries. Its closed-book protocol separates the hidden intent, clarifier, constrained simulated user and rewriter. A fixed search backend measures restored evidence nuggets against a static reference. Selection favors cases where clarification is useful, so the sample cannot estimate how often everyday users need a follow-up.
 
-Table L3. External clarification results from Huang et al. [25, Tables 2 and 4], one question per instance, n = 518. Restoration is the paper's score out of 100, not retrieval recall or student accuracy.
+Table L3. External clarification results from Huang et al. [24, Tables 2 and 4], one question per instance, n = 518. Restoration is the paper's score out of 100, not retrieval recall or student accuracy.
 
 | System label in paper | Mean restoration | Change from original | Unknown reply fraction |
 |---|---:|---:|---:|
@@ -209,7 +209,7 @@ Table 1. Requirements and the evidence needed to assess them.
 
 A FastAPI application serves a browser interface and coordinates ingestion and generation jobs. SQLite stores application records; local storage holds uploaded files and associated artifacts. Provider adapters separate text generation, embeddings and reranking. This organization supports a small deployable prototype without introducing a distributed infrastructure whose performance has not been evaluated.
 
-![Figure 2. Implemented logical architecture. Solid arrows show the core text workflow; the optional figure-description branch is an input enrichment extension, not completed multimodal output generation.](figures/architecture.png)
+![Figure 2. Implemented logical architecture. Solid arrows connect the application, core text workflow and evidence store. Optional figure-description enrichment is detailed separately in Figure 6 and does not represent completed multimodal output generation.](figures/v0.5/architecture.png)
 
 <!-- PAGE -->
 ## 3.3  Ownership, provenance and state transitions
@@ -242,7 +242,7 @@ Versioning, ownership and refusal are complementary controls. None proves that a
 
 Authentication resolves an opaque session to an account. Resource access then resolves the requested course and object within that account's scope. Mutations additionally require the session-bound CSRF token. This ordering matters: knowing a document or job identifier must not grant access to its text, vectors, evidence or generated versions.
 
-![Figure 3. Authentication and ownership checks. The graph separates session validity, resource ownership and CSRF validation. A valid session alone is not sufficient authorization for another account's objects.](figures/v0.4/account-scope.png)
+![Figure 3. Authentication and ownership checks. The graph separates session validity, resource ownership and CSRF validation. A valid session alone is not sufficient authorization for another account's objects.](figures/v0.5/account-scope.png)
 
 The same ownership boundary applies to retrieval, generation jobs and exports. Local account registration does not automatically assign preserved legacy data. The rejection branches shown here summarize access failures; rate limits, session expiry and transaction details remain implementation concerns rather than additional trust domains.
 
@@ -280,22 +280,22 @@ Difficulty allocation is represented as an integer plan. If a request contains N
 
 The operational rubric defines easy questions as recognition or explanation of a clear concept, usually with one or two marking points. Medium questions apply or analyze related concepts in a concrete situation, with two or three linked points. Hard questions integrate concepts, handle constraints and justify a judgment or design, with three to six points. Point counts make the intended design inspectable; they are not themselves a difficulty metric. The learner profile provides the context in which these tasks are intended to be interpreted.
 
-![Figure 4. Exact difficulty allocation captured from the live light-mode interface on 20 September 2026. The example requests three hard questions and zero easy or medium questions. This is a captured form state, not an additional generation experiment.](figures/v0.4/ui-difficulty-light.png)
-
-The historical whole-asset pipeline uses a separate, target-blind assessment request. The current native assessment Agent adds an independent solve stage that does not receive the author answer or target difficulty, followed by answer and evidence review. The text roles use the same model family and can share errors. These are different evaluation paths; the September 12 results are not retroactively attributed to the newer Agent.
+The historical whole-asset pipeline uses a separate, target-blind assessment request. The current native assessment Agent adds an independent solve stage that does not receive the author answer or target difficulty, followed by answer and evidence review. The text roles use the same model family and can share errors. These are different evaluation paths; the historical whole-asset results are not retroactively attributed to the newer Agent.
 
 New tasks normally allow three ordinary attempts. Eligible candidates that fail only difficulty matching are retained. After the strict rounds, the controller can deliver the closest eligible candidate with an explicit adjusted status; target labels remain unchanged. Other quality checks are not relaxed. Section 4.8 specifies this policy and distinguishes completion from strict matching. Historical experiments retain their original retry policy. Actual student difficulty still requires response data.
+
+![Figure 4. Exact difficulty allocation captured from the live light-mode interface. The example requests three hard questions and zero easy or medium questions. This is a captured form state, not an additional generation experiment.](figures/v0.4/ui-difficulty-light.png)
 
 <!-- PAGE -->
 ## 4.4  Reviewing and revising a learning asset
 
 The material view presents the generated explanation alongside questions, reference answers and accessible source evidence. The evidence panel supports checking what the system actually retrieved rather than assuming the entire uploaded document was available to the generator. Version-specific records distinguish original model checks, later edits and explicit approval actions.
 
-![Figure 5. Live source-citation interface captured on 20 September 2026. A numbered citation opens the retrieved passage and its original-source link. The displayed material is an existing saved asset, not a new generation experiment.](figures/v0.4/ui-citation-light.png)
-
 For self-practice, the learning view can conceal answers until requested. This is a usability feature, not a secure assessment boundary. The system does not claim to prevent a learner from accessing solutions in an authoring account. Institutional assessment delivery would require a different permission and release model.
 
 The distinction between model screening and approval is visible in the data model as well as the interface. An edit must not inherit a stale model assessment as though the new text had been screened. Similarly, a teacher's approval does not create a model-review result retroactively. Historical materials without the newer screening fields remain readable with their evidence limitations intact.
+
+![Figure 5. Live source-citation interface. A numbered citation opens the retrieved passage and its original-source link. The displayed material is an existing saved asset, not a new generation experiment.](figures/v0.4/ui-citation-light.png)
 
 ## 4.5  Operational constraints
 
@@ -308,7 +308,7 @@ The prototype bounds document size, indexing work and provider requests. Local s
 
 The ingestion path records a source's identity before generating retrieval units. The ingestion diagram separates text parsing from optional visual enrichment. A figure description is generated metadata linked to an original crop and location; it is not a substitute for inspecting the image. Scanned pages, equations and diagrams require evaluation at the region and semantic level in a later parsing study.
 
-![Figure 6. Original diagram of document ingestion and source association. Dashed styling marks the optional figure-description branch. The diagram describes input processing, not completed generation of multimodal learning outputs.](figures/ingestion-flow.png)
+![Figure 6. Original diagram of document ingestion and source association. Dashed styling marks the optional figure-description branch. The diagram describes input processing, not completed generation of multimodal learning outputs.](figures/v0.5/ingestion-flow.png)
 
 Source records and chunk records serve different purposes. The source retains the original material and location; the chunk supplies a bounded retrieval unit. A description can make a diagram searchable, but its generated keywords must remain distinguishable from literal source text. This is especially important for educational figures where labels, arrows or numerical values carry the meaning.
 
@@ -317,7 +317,7 @@ Source records and chunk records serve different purposes. The source retains th
 
 Chunking preserves a relationship between the retrieval representation and the original page. Structural units are split more finely when they exceed the configured budget, rather than discarding their locations. For the selected token policy, the source-body target is 256 tokens with no overlap; title context is added for the embedding representation.
 
-![Figure 7. Recursive segmentation with an explicit budget test and a refinement loop. Metadata retain page and heading context, character coordinates and a chunk hash. The diagram abstracts special handling of protected blocks; oversized blocks may still require finer splitting.](figures/v0.4/chunk-provenance.png)
+![Figure 7. Recursive segmentation with an explicit budget test and a refinement loop. Metadata retain page and heading context, character coordinates and a chunk hash. The diagram abstracts special handling of protected blocks; oversized blocks may still require finer splitting.](figures/v0.5/chunk-provenance.png)
 
 This metadata serves two purposes. It allows evaluation against source spans rather than unstable display numbers, and it lets a citation lead back to the original passage or figure. It is not a claim that metadata weighting improves retrieval: the selected ranking policy keeps the extra metadata-score weight at zero.
 
@@ -326,62 +326,62 @@ This metadata serves two purposes. It allows evaluation against source spans rat
 
 The runtime also separates the pre-generation needs check from optional query fusion. The check can ask one question and records the actual response. A skipped or uncertain answer does not supply a hidden constraint. When enabled in Settings, fusion keeps the original route and adds a model-proposed query; ambiguity or failure falls back to the original. Fusion is off by default. These decisions are configured per request and preserved with its evidence.
 
-![Figure 8. Original and rewritten retrieval paths. Dashed nodes and edges belong to optional fusion; the direct original-query path supplies reranking when fusion is off or falls back. Each retrieval node combines dense and lexical candidates. The course index is scoped to the authenticated owner. The graphic was refined with an image-generation tool from a checked directed-graph specification.](figures/v0.4/retrieval-generated.png)
-
 The default precheck is a usability decision, not an experimentally validated retrieval improvement. It receives the objective, material type, learner background and language; it does not receive source contents or hidden evaluation intents. When necessary, a short follow-up asks for missing conditions. Actual user answers and the offered options are preserved so that later generation can interpret references such as “the second option” without treating an unselected option as a fact.
 
 The response is bound to the account and submitted parameters. Changed requirements invalidate an old preparation result. A failed check is shown explicitly and the user can continue with the original input. In the fusion path, the original request remains available alongside the proposed query; an unresolved or skipped clarification does not justify inventing a more specific question.
+
+![Figure 8. Original and rewritten retrieval paths. Dashed nodes and edges belong to optional fusion; the direct original-query path supplies reranking when fusion is off or falls back. Each retrieval node combines dense and lexical candidates. The course index is scoped to the authenticated owner.](figures/v0.5/retrieval-generated.png)
 
 <!-- PAGE -->
 ## 4.7  Bounded generation with independent roles
 
 Assessments use the native agent_v1 workflow with sequential orchestration by default; learning explanations retain their separate text workflow. The controller fixes question slots, type, order and target allocation before authoring. Each question is created and reviewed in a fresh role context. Independent solving hides the author's answer and target difficulty; subsequent review compares answers and source support. Three calls to one model family remain correlated judgments.
 
-![Figure 9. Original diagram of the default per-question assessment workflow. The dashed return denotes remaining slots; the repair edge is bounded by the frozen policy and task/account quotas. The detailed difficulty decision is shown separately.](figures/question-agent.png)
-
 For supported scheduling calculations, whitelisted Python functions compute results from validated parameters. The model cannot execute arbitrary code. Correct tool output establishes the computation for those inputs; it does not establish that the inputs faithfully encode the question or that the explanation describes the trace correctly. Unsupported reasoning remains dependent on model review.
 
 Accepted slots and their attempts are saved before deterministic assembly. A fifty-question request is supported structurally, but its minimum role-call demand can exceed the default daily allowance; no fifty-question paid quality evaluation is claimed. Optional Harness and supervisor variants explore other orchestration and answer contracts. They are experimental configurations and must not be presented as the default or as measured parallel speedups.
+
+![Figure 9. Original diagram of the default per-question assessment workflow. The dashed return denotes remaining slots; the repair edge is bounded by the frozen policy and task/account quotas. The detailed difficulty decision is shown separately.](figures/v0.5/question-agent.png)
 
 <!-- PAGE -->
 ## 4.7.1  Main agent and isolated subagents
 
 The optional supervisor mode adds model-authored planning before the per-question loop. The host freezes and validates the resulting briefs; workers execute serially with fresh role contexts and a shared task/account budget.
 
-![Figure 10. Optional supervisor control flow. The upper dashed region is the host controller, including the main-agent planning call and host validation; the lower region is one isolated question worker. An accepted checkpoint returns to the all-slots decision. Only a complete accepted set enters programmatic assembly. Repair and acceptance are simplified here; difficulty-only adjustment follows Section 4.8. Image-assisted rendering follows the retained directed-graph specification.](figures/v0.4/supervisor-generated.png)
-
 The main agent does not rewrite accepted answers during assembly. The default native sequential mode omits the model planning step; this diagram does not imply concurrent workers or independent model families.
+
+![Figure 10. Optional supervisor control flow. The host validates the main agent’s plan and dispatches one isolated worker at a time. Accepted checkpoints return to the all-slots decision; only a complete set enters deterministic assembly. Difficulty-only adjustment follows Section 4.8.](figures/v0.5/supervisor-generated.png)
 
 <!-- PAGE -->
 ## 4.8  Difficulty acceptance and recoverable failure
 
-The September 20 policy prioritizes retaining useful work while exposing imperfect difficulty matching. It first seeks a strict result. Ordinary attempts normally allow three rounds, although invalid responses consume attempts and quotas may interrupt earlier. Candidates are retained for difficulty adjustment only after the workflow's other applicable checks pass; low joint-quality confidence is not treated as a difficulty-only defect.
-
-![Figure 11. Original diagram of difficulty-only candidate acceptance. The diagram omits provider and format-recovery branches for clarity. Strict and adjusted outcomes remain separate fields in the saved evidence.](figures/difficulty-decision.png)
+The documented recovery policy prioritizes retaining useful work while exposing imperfect difficulty matching. It first seeks a strict result. Ordinary attempts normally allow three rounds, although invalid responses consume attempts and quotas may interrupt earlier. Candidates are retained for difficulty adjustment only after the workflow's other applicable checks pass; low joint-quality confidence is not treated as a difficulty-only defect.
 
 After strict attempts, selection first considers adjacent levels, then other eligible levels. The controller orders candidates by maximum level discrepancy, total discrepancy, confidence and recency. This local choice adds no generation call. A draft with any adjusted question records strict_passed = false; retaining its requested target does not mean the assessed demand matched it.
 
 Pure format differences can follow a compatibility path that reparses preserved author output and still applies substantive checks. An unsupported answer, wrong question type or illegal citation is not a format exception. Where a complete failed-slot checkpoint exists, explicit “continue correction” adds three attempts to the same job while retaining prior successes and cumulative usage. Editing a request instead restores its inputs for a new job. Neither operation guarantees recovery from exhausted quotas or every incomplete exploration state.
+
+![Figure 11. Original diagram of difficulty-only candidate acceptance. The diagram omits provider and format-recovery branches for clarity. Strict and adjusted outcomes remain separate fields in the saved evidence.](figures/v0.5/difficulty-decision.png)
 
 <!-- PAGE -->
 ## 4.9  Exploration through a temporary source index
 
 Optional exploration addresses missing materials by searching for evidence rather than generating unsupported substitutes. Its default discovery provider searches a curated public-source catalog; an external search provider is optional. Catalog coverage is therefore a real limit. The machine-learning introduction incident was not primarily an English-query problem: the earlier catalog omitted the topic despite correctly generated bilingual search queries.
 
-![Figure 12. Original diagram of the implemented exploration path. Downloaded long sources enter a task-private chunk/vector index before gap-focused retrieval. The feedback loop operates only within the remaining exploration budget.](figures/exploration-flow.png)
-
 Candidate text is fetched under address, size and storage-permission checks, parsed and embedded. The temporary index lets retrieval examine evidence throughout a long source, avoiding acceptance based only on an introductory excerpt. Coverage assessment consumes actual retrieved passages and their identifiers. Selective same-section neighbor expansion can preserve a definition's surrounding explanation under a bounded budget.
 
 Only accepted sources are promoted to the owned course, with compatible vectors reused and provenance retained. Rejected candidates do not become trusted references merely because they were downloaded. If the loop cannot fill a required gap, the result remains insufficient evidence. A source's accessibility, apparent relevance and coverage-model judgment are separate conditions; none establishes that every eventual claim is correct.
+
+![Figure 12. Original diagram of the implemented exploration path. Downloaded long sources enter a task-private chunk/vector index before gap-focused retrieval. The feedback loop operates only within the remaining exploration budget.](figures/v0.5/exploration-flow.png)
 
 <!-- PAGE -->
 ## 4.10  Progress records and versioned delivery
 
 The progress page reports persisted stages and elapsed time in compact or detailed views. Its event descriptions summarize executed actions and validation outcomes; they are not a disclosure of a model's private reasoning. Both views use the same job state. Completion offers an explicit action to open the draft for review.
 
-![Figure 13. Original diagram of request, job and draft state. Dashed continuation is user initiated and subject to checkpoint compatibility and quota checks. It does not imply exactly-once upstream calls.](figures/job-lifecycle.png)
+![Figure 13. Original diagram of request, job and draft state. Dashed continuation is user initiated and subject to checkpoint compatibility and quota checks. It does not imply exactly-once upstream calls.](figures/v0.5/job-lifecycle.png)
 
-A provider interruption preserves completed work where checkpoints exist. Because an interrupted external request may already have been billed, continuation can repeat uncertain work. The September 20 provider incident is archived separately from retrieval failures: a 503 response cannot be interpreted as a difficult or ambiguous educational request.
+A provider interruption preserves completed work where checkpoints exist. Because an interrupted external request may already have been billed, continuation can repeat uncertain work. The recorded provider-outage incident is archived separately from retrieval failures: a 503 response cannot be interpreted as a difficult or ambiguous educational request.
 
 Ratings are associated with content versions and return their saved values; updating a rating does not create another independent review observation. The review section is normally collapsed. Word and PDF downloads use the saved version, can include answers and explanations, and group passages from one source into a shared bibliographic entry with location information. Passage-level evidence remains inspectable. Future audio/video downloads have an extension boundary, but no generated-media results are claimed here.
 
@@ -390,24 +390,24 @@ Ratings are associated with content versions and return their saved values; upda
 
 Review, rating and export are separate operations over a saved version. Editing creates a new version that must be reviewed in its own right. A rating is updated for its version rather than counted as a new independent assessment whenever the panel is reopened.
 
-![Figure 14. Versioned review and delivery. Exports can read a saved text version without a new generation call. The return edge represents review after editing. The dashed media branch is the future evaluated output extension; it is distinct from the implemented text-file exports. Image-assisted rendering follows a checked directed-graph specification.](figures/v0.4/review-export-generated.png)
-
 The export builder maps passage identifiers to source-level reference groups, preserving locations while avoiding repeated bibliography entries for the same document. It first uses document identity, with source URLs as a fallback; title equality alone is not sufficient because different documents can share a title. The complete passage-level record remains in evidence exports.
+
+![Figure 14. Versioned review and delivery. Exports can read a saved text version without a new generation call. The return edge represents review after editing. The dashed media branch is the planned media-output extension; it is distinct from the implemented text-file exports.](figures/v0.5/review-export-generated.png)
 
 <!-- PAGE -->
 ## 4.12  Current configuration and export interface
 
 The current settings sheet places fusion and exploration alongside model connections, with compact and detailed progress views. The export sheet exposes the file format and whether answers should be included. Both captures below show actual current controls, not proposed interface designs.
 
-!PAIR[Figure 15. Live light-mode controls captured on 20 September 2026. Left: settings with fusion, exploration and progress preferences. Right: version-specific PDF, Word and Markdown export. Provider configuration labels indicate configured connections, not successful calls or validated media outputs.](figures/v0.4/ui-settings-light.png|figures/v0.4/ui-export-light.png)
-
 Opening these controls for capture did not create a generation job, modify a stored rating or approve any content. The screenshots retain the browser's current narrow responsive layout. They document the controls that were visible at capture time; the thesis does not infer undisplayed backend behavior from appearance alone.
+
+!PAIR[Figure 15. Live light-mode controls. Left: settings with fusion, exploration and progress preferences. Right: version-specific PDF, Word and Markdown export. Provider configuration labels indicate configured connections, not successful calls or validated media outputs.](figures/v0.4/ui-settings-light.png|figures/v0.4/ui-export-light.png)
 
 <!-- PAGE -->
 # 5  Evaluation Methodology
 ## 5.1  Evidence hierarchy and dataset construction
 
-Five retrieval rounds were conducted on 12 September and preserved as configurations, outputs and comparison tables. R1 was a synthetic pilot; R2 introduced external labels; R3 isolated recursive segmentation comparisons; R4 compared budgeted retrieval configurations; R5 examined query translation. These rounds differ in data and constraints. Their scores must not be plotted as a single continuously improving accuracy curve.
+The initial five retrieval rounds, R1–R5, are preserved as configurations, outputs and comparison tables. R1 was a synthetic pilot; R2 introduced external labels; R3 isolated recursive segmentation comparisons; R4 compared budgeted retrieval configurations; R5 examined query translation. These rounds differ in data and constraints. Their scores must not be plotted as a single continuously improving accuracy curve.
 
 Table 3. Evaluation material and its principal limitation.
 
@@ -420,7 +420,7 @@ Table 3. Evaluation material and its principal limitation.
 | R4 | 184 development and 168 held-out scenarios | Answer-span benchmark; not a full course assessment corpus |
 | R5 | 96 development and 124 held-out scenarios | Paired language scenarios and source dependence |
 
-MLQA [19] supplies multilingual extractive question-answering annotations. Its original answer spans support identifying whether retrieved evidence contains an answer, but do not provide exhaustive passage-relevance judgments for this educational task. The T2Ranking [20] subset contains 339 passages with 157 positive and 182 negative query–passage pairs. Its binary labels come from the C-MTEB derivative, not a reconstruction of the original four-level scores; unjudged cross-query pairs are not confirmed negatives.
+MLQA [18] supplies multilingual extractive question-answering annotations. Its original answer spans support identifying whether retrieved evidence contains an answer, but do not provide exhaustive passage-relevance judgments for this educational task. The T2Ranking [19] subset contains 339 passages with 157 positive and 182 negative query–passage pairs. Its binary labels come from the C-MTEB derivative, not a reconstruction of the original four-level scores; unjudged cross-query pairs are not confirmed negatives.
 
 The real-course collection contains six Chinese Hello Algorithm documents and six English OpenDSA documents. These support inspection of segmentation behavior on authentic educational text. They do not yet supply a manually labeled retrieval test set. “Real course material” and “human-annotated course retrieval benchmark” must therefore remain distinct descriptions.
 
@@ -452,7 +452,7 @@ The audit is AI-assisted, non-blind and qualitative. It records a rationale and 
 
 The evaluation procedure separates ranking, semantic preservation and operational cost. Related wordings are grouped by information need because they are not independent topic samples. Any development/test split is interpreted in the context of the original experiment, including later reuse of exposed configurations.
 
-![Figure 16. Evaluation data flow. Paired arms feed three distinct records: retrieval metrics, semantic judgments and the provider ledger. Conclusions combine these records without substituting one for another. This is a methodological abstraction; the historical rounds retain their own documented split and failure policies.](figures/v0.4/evaluation-protocol.png)
+![Figure 16. Evaluation data flow. Paired arms feed three distinct records: retrieval metrics, semantic judgments and the provider ledger. Conclusions combine these records without substituting one for another. This is a methodological abstraction; the historical rounds retain their own documented split and failure policies.](figures/v0.5/evaluation-protocol.png)
 
 The graphs in Chapter 6 visualize existing tables rather than introduce new runs. Bar charts use a zero baseline. The R7 line chart uses a disclosed restricted vertical range to make wording-level changes visible, and its horizontal positions represent ordered categories rather than equal measured distances. A mean gain does not establish preserved meaning or a successful clarification.
 
@@ -539,11 +539,11 @@ Table 7. Validation evidence and permissible interpretation.
 |---|---|---|
 | Historical core live run | 3 assets; refusal case; 9 provider attempts | Small real API workflow under its recorded version |
 | Historical difficulty run | 2 allocations; 6 final questions | Count compliance and model screening on these cases |
-| September 19 core regression | 112 Python tests passed | Exercised software behaviors at the inspected revision |
-| September 19 frontend regression | 55 tests passed | Exercised frontend logic, not a learner usability study |
-| September 19 AI audit | 23 units; 10 revisions recommended | Qualitative defects in the inspected historical sample |
+| Readiness-audit backend regression | 112 Python tests passed | Exercised software behaviors at the inspected revision |
+| Readiness-audit frontend regression | 55 tests passed | Exercised frontend logic, not a learner usability study |
+| AI-assisted content audit | 23 units; 10 revisions recommended | Qualitative defects in the inspected historical sample |
 
-The September 19 preflight confirmed configured text and embedding providers, but explicitly did not verify a new live model run. Historical generation results must not be relabeled as validation of the complete present parser–retriever–generator stack. A fresh controlled demonstration of that stack remains an appropriate pre-submission check.
+The readiness-audit preflight confirmed configured text and embedding providers, but explicitly did not verify a new live model run. Historical generation results must not be relabeled as validation of the complete present parser–retriever–generator stack. A fresh controlled demonstration of that stack remains an appropriate pre-submission check.
 
 ## 6.6  AI-assisted review findings
 
@@ -584,11 +584,11 @@ These observations motivate a two-part evaluation: measure evidence ranking and 
 <!-- PAGE -->
 ### 6.8.1  Ranking across wording levels
 
-![Figure 18. R7 first-stage MRR@20 by wording level, sixteen expressions per non-ambiguous level. Lines join ordered categories only; they are not a fitted continuous response. The vertical axis begins at 0.70. Inputs share course information needs, and every plotted arm has Hit@5 = 100%. Values reproduce Table R1.](figures/v0.4/r7-colloquial-line.png)
-
 Normalization is stable between L2 and L3 in this grouping, while original-query and original-first interleaving decline. The decline at L1 shows why a rule that rewrites every informal request is not supported even by these favorable aggregate results. L4 is excluded because an under-specified request has no unique answer without an additional condition.
 
 The figure emphasizes a conditional ranking pattern, not cross-course generalization. The exact values remain in Table R1; semantic drift and uncertainty retain the qualifications in Sections 6.8 and 6.10.
+
+![Figure 18. R7 first-stage MRR@20 by wording level, sixteen expressions per non-ambiguous level. Lines join ordered categories only; they are not a fitted continuous response. The vertical axis begins at 0.70. Inputs share course information needs, and every plotted arm has Hit@5 = 100%. Values reproduce Table R1.](figures/v0.4/r7-colloquial-line.png)
 
 <!-- PAGE -->
 ## 6.9  Fixed-rewrite fusion R8A
@@ -645,11 +645,11 @@ The valid run made 132 text calls and nine embedding batches. An earlier malform
 <!-- PAGE -->
 ### 6.10.1  Sufficient and insufficient inputs
 
-![Figure 21. R8B held-out mean MRR@20, with 24 expressions per sufficiency group. The original and selective arms coincide in both groups. The insufficient cases are scored against specified simulated intents; they do not represent a unique ground truth for every reasonable interpretation. Values reproduce Table R3.](figures/v0.4/r8b-grouped-bars.png)
-
 The grouped view makes the asymmetry clear: unconditional normalization gives a small average increase when requirements are sufficient, but declines when a condition is missing. For the insufficient group, its paired change is -0.0554 with clustered bootstrap interval [-0.1179, -0.0011]. These are six held-out information needs expressed in multiple ways, not 48 independent topics.
 
 Selective processing does not improve the reported held-out retrieval metrics. This does not prove that interaction is unhelpful: only two clarification actions occurred in the full run and both simulated replies had semantic defects. The next study must examine actual user replies and the final generated material, rather than treating the present chart as a deployment success rate.
+
+![Figure 21. R8B held-out mean MRR@20, with 24 expressions per sufficiency group. The original and selective arms coincide in both groups. The insufficient cases are scored against specified simulated intents; they do not represent a unique ground truth for every reasonable interpretation. Values reproduce Table R3.](figures/v0.4/r8b-grouped-bars.png)
 
 <!-- PAGE -->
 ## 6.11  Integration evidence and current policy limits
@@ -658,7 +658,7 @@ The exploration development record contains fifteen trials while the implementat
 
 The two successful runs also freeze different requirement scopes and receive different model responses. Their durations cannot estimate an English-versus-Chinese speed difference. An AI content review remains separate from workflow completion. A controlled follow-up should freeze catalog coverage, requirements, budgets and a held-out source set, then measure evidence coverage, erroneous source acceptance, latency and cost per acceptable draft.
 
-The September 20 difficulty/export regression record reports 440 backend tests and 197 frontend tests, followed by a twenty-test API projection subset after its final change. The latter overlaps the earlier backend group and is not added as twenty new tests. These use controlled provider responses. They verify selected behavior, not the rate of pedagogically acceptable production outputs or complete current-revision performance.
+The difficulty/export regression record reports 440 backend tests and 197 frontend tests, followed by a twenty-test API projection subset after its final change. The latter overlaps the earlier backend group and is not added as twenty new tests. These use controlled provider responses. They verify selected behavior, not the rate of pedagogically acceptable production outputs or complete current-revision performance.
 
 For RQ4, the present evidence supports conditional rather than universal intervention. Strong colloquial wording can benefit from normalization, fixed-query fusion changes ranking, and interaction can still fail to supply a faithful constraint. R8B does not show a held-out metric improvement from the selective policy. A real-user study must now measure unnecessary questions, useful replies, preserved intent and final evidence support together.
 
@@ -695,30 +695,20 @@ A generation study should compare the same text model with and without retrieved
 
 ## 7.3  Multimodal extension
 
-The later thesis stage will examine transformation of generated text into at least two alternative modalities, as required by the project scope. Audio explanations and visual-aid representations are candidate directions, not completed evaluated outputs. Existing figure extraction and description can provide grounded input evidence, but should be assessed separately for extraction coverage, description fidelity and retrieval usefulness. Multimodal RAG research [15] supplies context for this extension without establishing its performance in Lumori.
+The later thesis stage will examine transformation of generated text into at least two alternative modalities, as required by the project scope. Audio explanations and visual-aid representations are candidate directions, not completed evaluated outputs. Existing figure extraction and description can provide grounded input evidence, but should be assessed separately for extraction coverage, description fidelity and retrieval usefulness. Multimodal RAG research [14] supplies context for this extension without establishing its performance in Lumori.
 
 The current manuscript therefore concludes at the text-based foundation. The literature survey, architecture, implemented prototype and traceable experiments provide substantive CA1 material. Remaining quality evaluation and fresh integration evidence are explicit, while later multimodal chapters can build on the same provenance and versioning principles without rewriting the earlier experimental record.
 
 <!-- PAGE -->
 # References
 
-{{REFERENCES_1}}
-
-<!-- PAGE -->
-# References (continued)
-
-{{REFERENCES_2}}
-
-<!-- PAGE -->
-# References continued
-
-{{REFERENCES_3}}
+{{REFERENCES}}
 
 <!-- PAGE -->
 # Appendix A  AI-Assisted Content Audit
 ## A.1  Procedure and traceability
 
-The audit was conducted on 19 September using five archived version-one assets: the explanation, assignment and quiz from the final education-v2 run, followed by the all-hard and mixed assets from education-v3. It compared each unit's actual text with its cited retrieved excerpts. File hashes, original units, citation membership, rationales and proposed revisions are retained in the accompanying JSON and CSV. No original record was rewritten.
+The retrospective audit examined five archived version-one assets: the explanation, assignment and quiz from the final education-v2 run, followed by the all-hard and mixed assets from education-v3. It compared each unit's actual text with its cited retrieved excerpts. File hashes, original units, citation membership, rationales and proposed revisions are retained in the accompanying JSON and CSV. No original record was rewritten.
 
 A unit was marked for revision when its cited excerpts did not adequately support the claim, the answer recommended an ineffective remedy, the question's state transition was ambiguous, or a historical system limitation could be mistaken for current behavior. Reasonable engineering inference was distinguished from an explicit statement in the source. “Supported” means no required correction was identified in this audit; it is not an expert endorsement.
 
@@ -730,7 +720,7 @@ Table A1. All reviewed short-answer questions. L denotes explanation, A assignme
 | Q-Q1 | Supported | Correctly separates identifier validity and support; closely repeats the source example. |
 | H-Q1 | Revise | Ratings or logs do not repair an unsupported assertion; require correction or withdrawal. |
 | H-Q2 | Revise | Preserve the old review; create and review a new draft rather than ambiguously update history. |
-| H-Q3 | Revise | Distinguish credentials from non-secret technical evidence and date the historical scenario. |
+| H-Q3 | Revise | Distinguish credentials from non-secret technical evidence and identify the historical implementation state. |
 | M-Q1 | Revise | Retrieve and cite the passage directly supporting the role of retrieval. |
 | M-Q2 | Supported | Compatibility claim is direct; rebuild is reasonable inference needing a clearer citation. |
 | M-Q3 | Revise | Specify whether edited text is an indexed source or only a generated explanation. |
@@ -761,27 +751,27 @@ The full audit record is located at docs/thesis/review/AI_Content_Review.md, wit
 <!-- PAGE -->
 # Appendix B  Evidence and Reproduction Index
 
-Paths below are relative to the research repository. The deployment-only Lumori repository intentionally omits most research artifacts; it is not a replacement for the evidence archive.
+Evidence identifiers below resolve to original repository paths and run metadata in the accompanying evidence_index_v05.json. The deployment-only Lumori repository omits most research artifacts and is not a replacement for this archive.
 
-Table B1. Principal local evidence sources.
+Table B1. Principal evidence records. IDs remain stable across manuscript revisions.
 
 | ID | Source | Use in this manuscript |
 |---|---|---|
-| E1 | docs/ca1/literature/Source_Ledger.md | Original publication inspection and literature boundaries |
-| E2 | docs/rag/daily-records/20260912/comparison-tables.md | R1–R5 numerical tables and provider ledger |
-| E3 | docs/rag/R4_RESULTS_20260912.md | R4 configuration selection and held-out results |
-| E4 | docs/rag/R5_RESULTS_20260912.md | Translation directions, failures and uncertainty |
-| E5 | docs/ca1/evidence/live-20260912T040126795872Z/ | Historical core generation and source snapshots |
-| E6 | docs/ca1/evidence/difficulty-20260912T042551358609Z/ | Historical difficulty allocations and model reviews |
-| E7 | docs/ca1/CA1_Readiness_Audit_20260919.md | Current inspection and regression-check boundaries |
-| E8 | docs/thesis/review/ | New AI-assisted unit judgments and immutable input hashes |
-| E9 | docs/thesis/figures/ | Actual light-mode screenshots and analytical figures |
+| E1 | Initial literature source ledger | Original publication inspection and literature boundaries |
+| E2 | R1–R5 comparison tables and provider ledger | R1–R5 numerical tables and provider ledger |
+| E3 | R4 retrieval report | R4 configuration selection and held-out results |
+| E4 | R5 translation report | Translation directions, failures and uncertainty |
+| E5 | Historical core-generation evidence | Historical core generation and source snapshots |
+| E6 | Historical difficulty-allocation evidence | Historical difficulty allocations and model reviews |
+| E7 | Implementation readiness inspection | Archived inspection and regression-check boundaries |
+| E8 | AI-assisted content-audit records | Unit judgments and immutable input hashes |
+| E9 | Figure assets and source provenance | Actual light-mode screenshots and analytical figures |
 
 ## B.1  Version and reconstruction
 
-The inspected research baseline is commit 3e61644a251e9e88e450463ebd57ea0d28c41238, associated with checkpoint-2026-09-18. The current working tree contains subsequent implementation and documentation changes. The baseline commit is not a frozen identifier for v0.4; source hashes are retained with this build. Individual experimental outputs retain their own historical configurations; the baseline commit does not imply that every experiment used the current runtime defaults.
+The archived research baseline is identified by a commit in the evidence index. The implementation description incorporates subsequent changes documented in the evidence archive. Manuscript and figure source hashes are retained with this build. Individual experiments preserve their own configurations; the baseline commit does not imply that every experiment used the documented runtime defaults.
 
-Editable source is docs/thesis/Manuscript.md; scripts/build_thesis_report.py builds Word. The audit builder serializes preserved judgments rather than performing a new evaluation. Final Word and PDF files use the Lumori_Thesis_Part_I_v0.4 name in output/.
+The reproduction package contains editable manuscript and figure sources, build instructions and output hashes. Rebuilding the report serializes preserved judgments and results; it does not perform a new evaluation.
 
 Reproducing numerical analysis should begin with the archived comparison tables and raw result files. Fresh external experiments should use separate output directories, retain failures and record provider identifiers and configuration. Do not overwrite old outputs or treat a replay as a new provider run. Credentials and personal account data are deliberately excluded from the manuscript and its figures.
 
@@ -791,31 +781,31 @@ Later chapters will add parsing, multimodal and educational results when availab
 
 
 <!-- PAGE -->
-# Appendix C  Additions and Figure Provenance
+# Appendix C  Extended Evidence and Figure Provenance
 
-## C.1  Evidence added in version 0.3
+## C.1  Additional evidence sources
 
-Table C1. New evidence pointers, relative to the research repository. These extend Appendix B without overwriting earlier runs.
+Table C1. Query and integration evidence. These records extend Appendix B without replacing earlier runs.
 
 | ID | Source | Purpose |
 |---|---|---|
-| E10 | docs/rag/R7_RESULTS_20260920.md | Colloquiality levels and semantic audit |
-| E11 | docs/rag/R8A_FUSION_RESULTS_20260920.md | Fixed-rewrite fusion and exposed split |
-| E12 | docs/rag/R8B_RESULTS_20260920.md | Selective clarification, failure ledger and uncertainty |
-| E13 | docs/rag/auto-exploration/ml-discovery-20260920/ | Development trials and final source-index workflow |
-| E14 | docs/Difficulty_Control.md | Current versus historical acceptance policies |
-| E15 | docs/ui/difficulty-export-polish-20260920/ | Dated regression evidence and export changes |
-| E16 | docs/thesis/literature/v0.3/ | Primary-source PDFs and numerical verification ledger |
+| E10 | R7 colloquial-query report | Colloquiality levels and semantic audit |
+| E11 | R8A fusion report | Fixed-rewrite fusion and exposed split |
+| E12 | R8B clarification report | Selective clarification, failure ledger and uncertainty |
+| E13 | Exploration development trials | Development trials and final source-index workflow |
+| E14 | Difficulty acceptance-policy record | Current versus historical acceptance policies |
+| E15 | Difficulty and export regression record | Regression evidence and export changes |
+| E16 | Primary-source literature verification archive | Primary-source PDFs and numerical verification ledger |
 
 ## C.2  Figure attribution and reproducibility
 
-Architecture and workflow figures describe the inspected implementation. Programmatic drawing sources are scripts/build_thesis_figures.py and scripts/build_thesis_visuals_v04.py; the latter retains directed-graph specifications and chart data. Three diagrams were refined through the built-in image-generation tool from these specifications and checked for node and edge consistency. Its model identifier was not exposed, so no image-model version is asserted. The overview is drawn by scripts/build_thesis_report.py. Vector companions apply to programmatic figures, while image-assisted figures retain raster originals and their source graphs.
+Architecture and workflow figures describe the inspected implementation. The twelve module diagrams use consistent typography, spacing and line weights. Solid arrows indicate the main flow; dashed arrows mark optional branches, future extensions or selected return paths, as labeled. Diamonds indicate decisions, and outlined regions distinguish execution or ownership boundaries. The reproduction package preserves editable drawing sources, vector PDF masters and high-resolution images for Word. Numerical charts retain their original data and drawing sources. Changes to figure presentation do not add experimental observations or implementation capabilities.
 
-The reproduced context-position chart is Liu et al.'s Figure 1, printed page 158, from the ACL Anthology PDF of Lost in the Middle [9]. The first-page copyright statement licenses the article under CC BY 4.0. The crop retains the complete chart, axes and legend; only surrounding text and the original caption are removed. The thesis caption provides attribution and the license link. Crop coordinates and the source SHA-256 are stored in literature-middle-provenance.json.
+The reproduced context-position chart is Liu et al.'s Figure 1, printed page 158, from the ACL Anthology PDF of Lost in the Middle [8]. The first-page copyright statement licenses the article under CC BY 4.0. The crop retains the complete chart, axes and legend; only surrounding text and the original caption are removed. The thesis caption provides attribution and the license link. Crop coordinates and the source SHA-256 are stored in literature-middle-provenance.json.
 
-The four interface screenshots in this version were captured on 20 September in light mode. Earlier September 19 captures remain archived outside this manuscript. Workflow figures describe the inspected logic. No downloaded diagram is labeled as our architecture, and no published score is merged into a Lumori improvement curve.
+The four light-mode interface screenshots represent the documented implementation snapshot. Superseded captures remain in the evidence archive. Workflow figures describe the inspected logic. No downloaded diagram is labeled as our architecture, and no published score is merged into a Lumori improvement curve.
 
-The numerical ledger records each external result's source table, sample or setting, units and limits. The references distinguish peer-reviewed venue records from arXiv versions. Sources were checked on 20 September 2026; inclusion of recent research does not make this a systematic literature review.
+The numerical ledger records each external result's source table, sample or setting, units and limits. The references distinguish peer-reviewed venue records from arXiv versions. The inspected source versions are retained; inclusion of recent research does not make this a systematic literature review.
 
 
-Version 0.4 adds current interface captures, supervisor and module diagrams, and four plots of existing R7/R8A/R8B results. Generated figure prompts, accepted assets and checked source graphs are archived in figures/v0.4/.
+The interface captures and module diagrams document implementation behavior. The R7, R8A and R8B plots visualize archived results without adding new experimental observations. Figure specifications, assets and provenance are retained in the reproduction package.

@@ -1,0 +1,89 @@
+[
+  {
+    "blind_id": "Q001",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Recognize the roles of acknowledgement, timeout, and a sequence number in stop-and-wait reliable delivery.",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "In a stop-and-wait reliable delivery protocol, the sender transmits one frame and then waits for an acknowledgment before sending the next frame. The sender uses a timeout and retransmits if no acknowledgment arrives. The receiver uses a 1-bit sequence number in the frame header to distinguish a new frame from a retransmitted copy.\n\nWhich statement best describes the role of the acknowledgment, the timeout, and the 1-bit sequence number in this stop-and-wait protocol?\n\n1. An acknowledgment is a small control frame that tells the sender an earlier frame was received.\n2. A timeout is the sender waiting a reasonable amount of time before retransmitting the original frame.\n3. The 1-bit sequence number alternates between 0 and 1 so the receiver can detect a duplicate retransmission and ignore it while still acknowledging it.\n\nSelect the option that correctly matches each mechanism to its role.",
+      "options": [
+        "The acknowledgment confirms delivery, the timeout triggers retransmission when no acknowledgment arrives, and the alternating 1-bit sequence number lets the receiver detect and ignore duplicates.",
+        "The acknowledgment confirms delivery, the timeout prevents the sender from ever retransmitting, and the 1-bit sequence number increases the window size.",
+        "The acknowledgment is only used by the receiver, the timeout is only used by the receiver, and the 1-bit sequence number is used only by the sender.",
+        "The acknowledgment carries the next data frame, the timeout is used only when the receiver sends an acknowledgment, and the 1-bit sequence number orders bytes within a frame."
+      ]
+    }
+  },
+  {
+    "blind_id": "Q002",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Explain what a context switch preserves and the role of the scheduler in xv6 CPU multiplexing.",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "The following excerpts are from course material on xv6 CPU multiplexing.\n\n\"The term 'context switch' refers to the steps involved in a CPU leaving off execution of one kernel thread (usually for later resumption), and resuming execution of a different kernel thread.\"\n\n\"Xv6 does not directly context switch from one process's kernel thread to another process's kernel thread; instead, a kernel thread gives up the CPU by context-switching to that CPU's 'scheduler thread,' and the scheduler thread picks a different process's kernel thread to run, and context-switches to that thread.\"\n\n\"The function swtch() ... saves the switched-from thread's CPU registers, and restores the previously-saved registers of the switched-to thread.\"\n\n\"swtch saves callee-saved registers (ra,sp,s0..s11) but not caller-saved registers.\"\n\nUsing only the excerpts above, answer both parts:\n\n1. State what a context switch preserves during the switch.\n2. Describe the scheduler thread's role in xv6's process switching path.\n\nWrite a short answer of a few sentences.",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q003",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "解释 xv6 的上下文切换需要保存什么，以及调度器在 CPU 复用中的作用。",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "根据提供的 xv6 操作系统资料，回答以下两问。\n\n资料要点：xv6 通过“上下文切换”实现 CPU 复用；一个内核线程不是直接切换到另一个进程的内核线程，而是先切换到本 CPU 的“调度器线程”，再由调度器线程选择另一个进程的内核线程进行切换。函数 swtch() 保存被切换出线程的 CPU 寄存器，并恢复被切换入线程的 CPU 寄存器；每个线程的 struct proc 中有 struct context，CPU 的调度器线程的 struct context 位于该 CPU 的 struct cpu 中。swtch 保存被调用者保存寄存器（ra, sp, s0..s11），不保存调用者保存寄存器。\n\n问题：\n1) xv6 在进行上下文切换时，硬件方面需要保存什么、又不需要保存什么？（请分别说明哪些需要保存、哪些不需要保存，并简述原因）\n2) 调度器线程在 CPU 复用中扮演什么角色？（请结合 xv6 的切换路径说明）",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q004",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "当读取结果决定后续写入时，评价 PostgreSQL 序列化失败后的应用重试设计。",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "某应用在 PostgreSQL 中使用 Serializable 隔离级别，一组并发事务在读取结果后决定后续写入。现在该应用收到一个错误，其 SQLSTATE 为 40001（serialization_failure）。\n\n阅读以下陈述（均在本资料范围内）：\n\n1. Serializable 隔离级别会监视可能导致并发事务执行结果与所有可能的串行执行不一致的条件；检测到这类条件会触发序列化失败。\n\n2. 当应用收到这类错误消息时，应中止当前事务，并从开头重试整个事务。第二次执行时，事务会看到先前已提交的变更作为其初始数据库视图的一部分，因此使用该行新版本作为新事务更新的起点没有逻辑冲突。\n\n3. 必须重试完整事务，包括所有决定发出哪条 SQL 以及使用哪些值的逻辑；PostgreSQL 不提供自动重试设施，因为它无法在保证正确性的前提下做到这一点。\n\n4. 重试 unique-key 失败（SQLSTATE 23505）和 exclusion constraint 失败（SQLSTATE 23P01）有时也合适，但需要更谨慎，因为它们可能代表持久性错误条件而不是暂时性故障。\n\n5. 在 Serializable 下，从事务中读取的数据在读取它的事务成功提交之前不应被视为有效，即使事务只读；唯一例外是 deferrable 只读事务中读取的数据在读取时即已知有效。\n\n\n该应用收到 40001 错误后的哪一项重试设计既符合上述条件，又能正确处理“读取结果决定后续写入”的场景？",
+      "options": [
+        "从失败点继续：捕获 40001 后保留事务中已读到的数据，只重新执行失败的那条写入语句，并在提交前再次检查读取结果是否仍有效。",
+        "整体重试：捕获 40001 后回滚并中止当前事务，重新执行包含全部读、决策逻辑和写入在内的完整事务；同时不把本次事务在提交前读到的数据当作有效结果使用。",
+        "自动重试：依赖 PostgreSQL 的自动重试设施在服务器端重新执行完整事务，应用只需等待服务器返回结果并在本地丢弃旧读取值。",
+        "统一重试：捕获 40001、23505 和 23P01 后不加区分地重试完整事务，并把提交前读取的结果直接用于后续写入以保证性能。"
+      ]
+    }
+  },
+  {
+    "blind_id": "Q005",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "描述 TCP 向应用提供的可靠、有序、全双工字节流服务，并区分字节流服务与报文段传输。",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "TCP 向应用提供可靠、有序、全双工的字节流服务，同时又与对等方交换报文段。请根据资料回答两者之间的区别。\n\n资料要点：\n1. TCP 保证将字节流可靠、按序地交付给应用。\n2. TCP 是全双工协议，每条 TCP 连接支持两条字节流，每个方向各一条。\n3. 发送方将字节写入 TCP 连接，接收方从 TCP 连接读出字节，服务表现为字节流。\n4. TCP 本身并不在 Internet 上逐字节传输；它在源主机缓冲足够字节组成一个大小合理的分组，再把该分组发送给目的主机的对等方。\n5. 目的主机的 TCP 把分组内容放入接收缓冲区，接收进程再按自己的节奏从该缓冲区读取；乱序到达的数据也可先放在接收缓冲区中。\n6. TCP 对等方之间交换的分组称为报文段（segment），因为每个报文段携带字节流的一段。\n\n请用几句话说明：TCP 提供给应用的“字节流”与 TCP 实际传输的“报文段”分别是什么，以及二者为什么不是同一层次的同一事物。",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q006",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Apply mutual exclusion to a short shared-data update scenario, distinguishing a critical section from an unsafe check-then-set lock.",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "Two CPUs, C1 and C2, both run a routine that updates a shared counter counter. The intended update is a read-modify-write: each CPU reads counter into a local register, adds 1, and writes the result back. To prevent races, the programmer has associated one lock lk with counter. The only locking code available on this system is a 'check-then-set' acquire:\n\n- Step 1: if lk->locked is zero, proceed to Step 2.\n- Step 2: set lk->locked to one.\n\nAssume shared memory is coherent, so both CPUs always see the same current value of lk->locked, but the two steps above are not executed as one indivisible operation.\n\nScenario:\nC1 and C2 reach the acquire code at nearly the same time. C1 executes Step 1 and observes lk->locked is zero. C2 then executes Step 1 and also observes lk->locked is zero. C1 then executes Step 2, setting lk->locked to one. C2 then executes Step 2, setting lk->locked to one. Both CPUs then execute the counter update as a critical section and later release lk.\n\nStatement 1: The sequence of instructions between acquire and release is called a critical section.\nStatement 2: A lock provides mutual exclusion if only one CPU at a time can hold the lock.\nStatement 3: The check-then-set code above guarantees mutual exclusion because each CPU checks lk->locked before setting it.\nStatement 4: In this scenario, C1 and C2 could both hold lk at the same time, so the counter update is not protected as intended.\n\nBased only on the supplied material and the scenario, which option best evaluates Statements 1-4?",
+      "options": [
+        "Statements 1, 2, and 4 are correct; Statement 3 is incorrect because two CPUs can both observe lk->locked as zero, both proceed to set it to one, and thus both hold the lock, violating mutual exclusion.",
+        "Statements 1, 3, and 4 are correct; Statement 2 is incorrect because a lock guarantees mutual exclusion only if the check-and-set is performed by the same instruction on all CPUs.",
+        "Statements 2, 3, and 4 are correct; Statement 1 is incorrect because a critical section is defined as any code that runs concurrently, whether or not a lock is associated with it.",
+        "Statements 1, 2, and 3 are correct; Statement 4 is incorrect because once both CPUs have set lk->locked to one, the hardware prevents either from entering the critical section until the other releases."
+      ]
+    }
+  }
+]

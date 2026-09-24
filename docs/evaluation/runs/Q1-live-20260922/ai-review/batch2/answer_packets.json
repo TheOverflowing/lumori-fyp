@@ -1,0 +1,1376 @@
+[
+  {
+    "blind_id": "Q001",
+    "answer": "First SELECT (Step 2): returns 100.\nSecond SELECT (Step 6): returns 200, because Read Committed starts each command with a new snapshot that includes transactions committed before the command began.\nUPDATE (Step 7): sees the committed value 200 as the target row and adds 50, producing 250.\nFinal committed balance: 250.",
+    "explanation": "Under Read Committed, a SELECT sees only data committed before the query began and takes a snapshot as of the instant the query begins. At Step 2, Session B has not yet committed, so A's first SELECT returns 100.\n\nBecause Read Committed starts each command with a new snapshot, Session A's second SELECT (Step 6) begins after Session B committed 200, so it returns 200.\n\nSession A's UPDATE in Step 7 searches for target rows using the updated committed version and applies balance = balance + 50 to the current value 200, giving 250.\n\nThe final committed balance is therefore 250.",
+    "citation_ids": [
+      "context_80f09f9abd69f4e4cd054fd404a1f718"
+    ],
+    "sources": [
+      {
+        "id": "context_80f09f9abd69f4e4cd054fd404a1f718",
+        "document_name": "db_read_committed.md",
+        "page": 1,
+        "text": "13.2.1. Read Committed Isolation Level #\n\nRead Committed is the default isolation level in PostgreSQL. When a transaction uses this isolation level, a SELECT query (without a FOR UPDATE/SHARE clause) sees only data committed before the query began; it never sees either uncommitted data or changes committed by concurrent transactions during the query's execution. In effect, a SELECT query sees a snapshot of the database as of the instant the query begins to run. However, SELECT does see the effects of previous updates executed within its own transaction, even though they are not yet committed. Also note that two successive SELECT commands can see different data, even though they are within a single transaction, if other transactions commit changes after the first SELECT starts and before the second SELECT starts.\n\nBecause Read Committed mode starts each command with a new snapshot that includes all transactions committed up to that instant, subsequent commands in the same transaction will see the effects of the committed concurrent transaction in any case. The point at issue above is whether or not a single command sees an absolutely consistent view of the database.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "Committed",
+            "SELECT",
+            "transaction",
+            "query",
+            "sees",
+            "Read",
+            "Isolation",
+            "Level"
+          ],
+          "token_count": 219,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 1519,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 0,
+          "page_char_start": 0,
+          "page_char_end": 1183,
+          "source_page_sha256": "4ce1374147cdfeef6d5659750e47057f4c5da0f1fa41854903b72cfabb5e21b7",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "4ce1374147cdfeef6d5659750e47057f4c5da0f1fa41854903b72cfabb5e21b7",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_read_committed",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "c722a117dd49118c4bc34c8c8464f8a7"
+          ]
+        }
+      },
+      {
+        "id": "context_a63f211488cbbbf8206c035236b6b803",
+        "document_name": "db_read_committed.md",
+        "page": 1,
+        "text": "The partial transaction isolation provided by Read Committed mode is adequate for many applications, and this mode is fast and simple to use; however, it is not sufficient for all cases. Applications that do complex queries and updates might require a more rigorously consistent view of the database than Read Committed mode provides.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "mode",
+            "Read",
+            "Committed",
+            "applications",
+            "partial",
+            "transaction",
+            "isolation",
+            "provided"
+          ],
+          "token_count": 61,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 1519,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 1,
+          "page_char_start": 1185,
+          "page_char_end": 1519,
+          "source_page_sha256": "4ce1374147cdfeef6d5659750e47057f4c5da0f1fa41854903b72cfabb5e21b7",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "4ce1374147cdfeef6d5659750e47057f4c5da0f1fa41854903b72cfabb5e21b7",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_read_committed",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "60c36c936affd864beddc75aa561d24e"
+          ]
+        }
+      },
+      {
+        "id": "context_b8c6ef176348d7351252ba5cadca8e33",
+        "document_name": "db_repeatable_read.md",
+        "page": 1,
+        "text": "13.2.2. Repeatable Read Isolation Level #\n\nThe Repeatable Read isolation level only sees data committed before the transaction began; it never sees either uncommitted data or changes committed by concurrent transactions during the transaction's execution. (However, each query does see the effects of previous updates executed within its own transaction, even though they are not yet committed.) This is a stronger guarantee than is required by the SQL standard for this isolation level, and prevents all of the phenomena described in Table 13.1 except for serialization anomalies. As mentioned above, this is specifically allowed by the standard, which only describes the minimum protections each isolation level must provide.\n\nThis level is different from Read Committed in that a query in a repeatable read transaction sees a snapshot as of the start of the first non-transaction-control statement in the transaction, not as of the start of the current statement within the transaction. Thus, successive SELECT commands within a single transaction see the same data, i.e., they do not see changes made by other transactions that committed after their own transaction started.\n\nApplications using this level must be prepared to retry transactions due to serialization failures.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "transaction",
+            "Level",
+            "committed",
+            "Read",
+            "Isolation",
+            "Repeatable",
+            "sees",
+            "data"
+          ],
+          "token_count": 233,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4177,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 0,
+          "page_char_start": 0,
+          "page_char_end": 1279,
+          "source_page_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_repeatable_read",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "7d06fe9d73894b31689d21c2a245ea9f"
+          ]
+        }
+      },
+      {
+        "id": "context_64f3e87052e573330345c37544c9849b",
+        "document_name": "db_repeatable_read.md",
+        "page": 1,
+        "text": "UPDATE, DELETE, MERGE, SELECT FOR UPDATE, and SELECT FOR SHARE commands behave the same as SELECT in terms of searching for target rows: they will only find target rows that were committed as of the transaction start time. However, such a target row might have already been updated (or deleted or locked) by another concurrent transaction by the time it is found. In this case, the repeatable read transaction will wait for the first updating transaction to commit or roll back (if it is still in progress). If the first updater rolls back, then its effects are negated and the repeatable read transaction can proceed with updating the originally found row. But if the first updater commits (and actually updated or deleted the row, not just locked it) then the repeatable read transaction will be rolled back with the message\n\nbecause a repeatable read transaction cannot modify or lock rows changed by other transactions after the repeatable read transaction began.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "transaction",
+            "repeatable",
+            "read",
+            "SELECT",
+            "target",
+            "rows",
+            "row",
+            "first"
+          ],
+          "token_count": 187,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4177,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 1,
+          "page_char_start": 1281,
+          "page_char_end": 2248,
+          "source_page_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_repeatable_read",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "8b776609220b757f853a09c19048f962"
+          ]
+        }
+      },
+      {
+        "id": "context_62bc5560e3b8e9705d4ac424255acdd1",
+        "document_name": "db_repeatable_read.md",
+        "page": 1,
+        "text": "When an application receives this error message, it should abort the current transaction and retry the whole transaction from the beginning. The second time through, the transaction will see the previously-committed change as part of its initial view of the database, so there is no logical conflict in using the new version of the row as the starting point for the new transaction's update.\n\nNote that only updating transactions might need to be retried; read-only transactions will never have serialization conflicts.\n\nThe Repeatable Read mode provides a rigorous guarantee that each transaction sees a completely stable view of the database. However, this view will not necessarily always be consistent with some serial (one at a time) execution of concurrent transactions of the same level. For example, even a read-only transaction at this level may see a control record updated to show that a batch has been completed but not see one of the detail records which is logically part of the batch because it read an earlier revision of the control record. Attempts to enforce business rules by transactions running at this isolation level are not likely to work correctly without careful use of explicit locks to block conflicting transactions.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "transaction",
+            "transactions",
+            "see",
+            "view",
+            "level",
+            "time",
+            "part",
+            "database"
+          ],
+          "token_count": 222,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4177,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 2,
+          "page_char_start": 2250,
+          "page_char_end": 3496,
+          "source_page_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "191194b8b48aa39bed9d945f7fedde8cafb8a65538835bd395ca32ec436ee171",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_repeatable_read",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "da4058e02b13cba0e2e2c65b421177f4"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "blind_id": "Q002",
+    "answer": "TCP offers applications a reliable, ordered, full-duplex byte-stream service. This means the sender writes bytes into the connection and the receiver reads bytes out of it, with TCP guaranteeing that the bytes are delivered reliably and in order, and that each connection supports a pair of byte streams flowing in opposite directions at the same time.\n\nThis differs from how TCP transmits data across the network: TCP does not send individual bytes. Instead, the source host buffers enough bytes from the sending process to fill a reasonably sized packet and sends that packet as a segment to its peer. The destination host empties the segment's contents into a receive buffer, and the receiving application reads from that buffer at its leisure.",
+    "explanation": "The answer should state that the byte stream is reliable, ordered, and full-duplex, with the sender writing bytes and the receiver reading bytes.\n\nThe answer should also explain that TCP does not transmit individual bytes; it buffers bytes and sends them in segments, which the destination places into a receive buffer for the application to read.",
+    "citation_ids": [
+      "context_adff94e0c8029b725d33d37b44f2c0f4",
+      "context_a1a476576a6737794d48ce06cea6aff3"
+    ],
+    "sources": [
+      {
+        "id": "context_adff94e0c8029b725d33d37b44f2c0f4",
+        "document_name": "net_byte_stream.md",
+        "page": 1,
+        "text": "5.2 Reliable Byte Stream (TCP)\n\nIn contrast to a simple demultiplexing protocol like UDP, a more sophisticated transport protocol is one that offers a reliable, connection-oriented, byte-stream service. Such a service has proven useful to a wide assortment of applications because it frees the application from having to worry about missing or reordered data. The Internet’s Transmission Control Protocol is probably the most widely used protocol of this type; it is also the most carefully tuned. It is for these two reasons that this section studies TCP in detail, although we identify and discuss alternative design choices at the end of the section.\n\nIn terms of the properties of transport protocols given in the problem statement at the start of this chapter, TCP guarantees the reliable, in-order delivery of a stream of bytes. It is a full-duplex protocol, meaning that each TCP connection supports a pair of byte streams, one flowing in each direction. It also includes a flow-control mechanism for each of these byte streams that allows the receiver to limit how much data the sender can transmit at a given time. Finally, like UDP, TCP supports a demultiplexing mechanism that allows multiple application programs on any given host to simultaneously carry on a conversation with their peers.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "TCP",
+            "protocol",
+            "Reliable",
+            "Byte",
+            "given",
+            "Stream",
+            "demultiplexing",
+            "like"
+          ],
+          "token_count": 249,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4198,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 0,
+          "page_char_start": 0,
+          "page_char_end": 1303,
+          "source_page_sha256": "62bdf52ca99b1f2893c5546291124394f85a9cc215af9568106a23afb10f05b4",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "62bdf52ca99b1f2893c5546291124394f85a9cc215af9568106a23afb10f05b4",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_byte_stream",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "d5a28965158f07eb62ed74b5b8ac2644"
+          ]
+        }
+      },
+      {
+        "id": "context_a1a476576a6737794d48ce06cea6aff3",
+        "document_name": "net_byte_stream.md",
+        "page": 1,
+        "text": "TCP is a byte-oriented protocol, which means that the sender writes bytes into a TCP connection and the receiver reads bytes out of the TCP connection. Although “byte stream” describes the service TCP offers to application processes, TCP does not, itself, transmit individual bytes over the Internet. Instead, TCP on the source host buffers enough bytes from the sending process to fill a reasonably sized packet and then sends this packet to its peer on the destination host. TCP on the destination host then empties the contents of the packet into a receive buffer, and the receiving process reads from this buffer at its leisure. This situation is illustrated in Figure 127, which, for simplicity, shows data flowing in only one direction. Remember that, in general, a single TCP connection supports byte streams flowing in both directions.\n\nThe packets exchanged between TCP peers in Figure 127 are called segments, since each one carries a segment of the byte stream. Each TCP segment contains the header schematically depicted in Figure 128. The relevance of most of these fields will become apparent throughout this section. For now, we simply introduce them.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "TCP",
+            "bytes",
+            "connection",
+            "byte",
+            "host",
+            "packet",
+            "Figure",
+            "reads"
+          ],
+          "token_count": 226,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4198,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 2,
+          "page_char_start": 2247,
+          "page_char_end": 3413,
+          "source_page_sha256": "62bdf52ca99b1f2893c5546291124394f85a9cc215af9568106a23afb10f05b4",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "62bdf52ca99b1f2893c5546291124394f85a9cc215af9568106a23afb10f05b4",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_byte_stream",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "e3228b9b61a332c8a1685512db153888"
+          ]
+        }
+      },
+      {
+        "id": "context_d8cd3275de18977edfbc3da18de93b0e",
+        "document_name": "net_windows.md",
+        "page": 1,
+        "text": "In terms of the properties of transport protocols given in the problem statement at the start of this chapter, TCP guarantees the reliable, in-order delivery of a stream of bytes. It is a full-duplex protocol, meaning that each TCP connection supports a pair of byte streams, one flowing in each direction. It also includes a flow-control mechanism for each of these byte streams that allows the receiver to limit how much data the sender can transmit at a given time. Finally, like UDP, TCP supports a demultiplexing mechanism that allows multiple application programs on any given host to simultaneously carry on a conversation with their peers.\n\nIn addition to the above features, TCP also implements a highly tuned congestion-control mechanism. The idea of this mechanism is to throttle how fast TCP sends data, not for the sake of keeping the sender from over-running the receiver, but so as to keep the sender from overloading the network. A description of TCP’s congestion-control mechanism is postponed until the next chapter, where we discuss it in the larger context of how network resources are fairly allocated.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "TCP",
+            "mechanism",
+            "given",
+            "sender",
+            "chapter",
+            "supports",
+            "byte",
+            "streams"
+          ],
+          "token_count": 213,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 9388,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 0,
+          "page_char_start": 0,
+          "page_char_end": 1123,
+          "source_page_sha256": "77da1fcf34a1a14abc92a95a5d32159c9087603ca018c7793f1084718cb96f3f",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "77da1fcf34a1a14abc92a95a5d32159c9087603ca018c7793f1084718cb96f3f",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_windows",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "992ba2c8ec879a8f548a057992eab95b"
+          ]
+        }
+      },
+      {
+        "id": "context_46d20324bab49880e1c1764165dd9b2b",
+        "document_name": "net_ack.md",
+        "page": 1,
+        "text": "To see how the sending and receiving sides of TCP interact with each other to implement reliable and ordered delivery, consider the situation illustrated in Figure 132. TCP on the sending side maintains a send buffer. This buffer is used to store data that has been sent but not yet acknowledged, as well as data that has been written by the sending application but not transmitted. On the receiving side, TCP maintains a receive buffer. This buffer holds data that arrives out of order, as well as data that is in the correct order (i.e., there are no missing bytes earlier in the stream) but that the application process has not yet had the chance to read.\n\nTo make the following discussion simpler to follow, we initially ignore the fact that both the buffers and the sequence numbers are of some finite size and hence will eventually wrap around. Also, we do not distinguish between a pointer into a buffer where a particular byte of data is stored and the sequence number for that byte.\n\nis true because a byte cannot be read by the application until it is received and all preceding bytes have also been received. NextByteExpected points to the byte immediately after the latest byte to meet this criterion. Second,",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "buffer",
+            "data",
+            "byte",
+            "sending",
+            "TCP",
+            "been",
+            "application",
+            "receiving"
+          ],
+          "token_count": 238,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 5767,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 3,
+          "page_char_start": 3245,
+          "page_char_end": 4466,
+          "source_page_sha256": "582dd98a80568d9156c30ad5824a3acb05577e0a5ec8a930da341c56122a00ac",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "582dd98a80568d9156c30ad5824a3acb05577e0a5ec8a930da341c56122a00ac",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_ack",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "bc874cb509b195739a4d59ecd91b8a39"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "blind_id": "Q003",
+    "answer": "A",
+    "explanation": "Option A follows both required rules: sleep_prepare(chan) is called before checking the condition (rule 1), and the condition lock is held during the check, released before sleep(chan) (rule 3), and re-acquired after sleep returns for a condition recheck (rule 5). This guarantees that if W calls wakeup(chan) between R's check and R's sleep(), the flag set by wakeup (rule 2) makes sleep() return immediately, avoiding a lost wake-up (rule 4).\n\nOption B releases the condition lock before calling sleep_prepare(chan). After the check but before sleep_prepare, W could call wakeup(chan) and find p->chan not set; then R would call sleep() and could sleep forever, exactly the lost wake-up in rule 4.\n\nOption C violates rule 3: the condition lock must be released before sleep(), so W or an interrupt handler can modify the condition and call wakeup(); holding the lock during sleep() can prevent wakeup from making progress.\n\nOption D omits sleep_prepare(chan) entirely, so wakeup cannot set the no-sleep flag before sleep(), and a wakeup arriving between the check and sleep() is lost.",
+    "citation_ids": [
+      "context_c24a632a225957eb067e40615105e0d4",
+      "context_5d8bfdf4ac0d9917b59abe4b9a423a65",
+      "context_5c240f5980676e5fc885c4419dc08f24",
+      "context_535b742a701f444a77c0c4fd651d00bf"
+    ],
+    "sources": [
+      {
+        "id": "context_c24a632a225957eb067e40615105e0d4",
+        "document_name": "os_wakeup.md",
+        "page": 1,
+        "text": "A process sleeps in order to wait for a condition to become true, and the chan argument (the wait channel) names the desired condition. sleep_prepare(chan) declares that a process might soon sleep in order to wait for the indicated wait channel; it returns right away. wakeup(chan) is called when the condition named by chan has (or might have) become true; it wakes up all processes that have called sleep_prepare(chan) and then sleep() with the same chan. sleep() returns right away if wakeup(chan) has already been called after the (required) previous call to sleep_prepare(chan); if not, sleep() marks the calling process as SLEEPING (not RUNNABLE) and releases the CPU by context-switching to the scheduler, so that other processes can run. sleep_prepare() and sleep() are called by the same process (typically within a few lines of each other); wakeup() is called by a different process or by an interrupt handler.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "chan",
+            "process",
+            "sleep",
+            "called",
+            "wait",
+            "sleep_prepare",
+            "condition",
+            "wakeup"
+          ],
+          "token_count": 194,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 7023,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 1,
+          "page_char_start": 872,
+          "page_char_end": 1792,
+          "source_page_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_wakeup",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "68d6f434324d3c712b159419de18b095"
+          ]
+        }
+      },
+      {
+        "id": "context_5d8bfdf4ac0d9917b59abe4b9a423a65",
+        "document_name": "os_wakeup.md",
+        "page": 1,
+        "text": "sleep_prepare(chan) must be called either before checking the condition, or before releasing the lock that protects the condition. The call records the fact that the process may need to sleep on the indicated chan. If another process (or interrupt) calls wakeup(chan) between the calls to sleep_prepare(chan) and sleep(), wakeup() sets a flag in the about-to-sleep process indicating that it shouldn’t actually sleep. If sleep() sees this flag, it returns rather than sleeping.\n\nWhat is the reason for sleep_prepare(chan)? There is the possibility that the condition might become true, and wakeup() called, between when the pipe reader sees that the buffer is empty, and when it calls sleep. Without some cleverness, the wakeup() would not find any sleeping processes, and would not have any effect. Then the process would call sleep() even though the pipe buffer has data to read; and if (as could be the case) the pipe writer never wrote anything more, the reader could incorrectly sleep forever. This undesirable situation is called a lost wake-up. The behavior described in the previous paragraph avoids this problem.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "sleep",
+            "chan",
+            "process",
+            "wakeup",
+            "sleep_prepare",
+            "called",
+            "condition",
+            "calls"
+          ],
+          "token_count": 222,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 7023,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 3,
+          "page_char_start": 2832,
+          "page_char_end": 3953,
+          "source_page_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_wakeup",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "28a5d0c0817d52be2f77148cdfbbd553"
+          ]
+        }
+      },
+      {
+        "id": "context_5c240f5980676e5fc885c4419dc08f24",
+        "document_name": "os_wakeup.md",
+        "page": 1,
+        "text": "In the pipe example, as in most sleeping code, there is a lock that protects the condition and prevents wakeup() from being called between when the going-to-sleep process checks the condition and when it calls sleep_prepare(). This lock is often called the condition lock. A process must release the lock before calling sleep() (so that some other process or interrupt handler can modify the condition and call wakeup()), and re-acquire the lock after sleep() returns.\n\nXv6’s sleep_prepare and sleep and wakeup implement the interface used in the example above. The basic idea is to have sleep mark the current process as SLEEPING and then call sched to release the CPU; wakeup looks for processes sleeping on the given wait channel and marks them RUNNABLE.\n\nsleep_prepare(chan) records the wait channel in p->chan and returns. If p->chan is still non-zero when sleep() is called, sleep() changes the calling process to state SLEEPING and calls sched() to let other processes run.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "sleep",
+            "lock",
+            "process",
+            "sleeping",
+            "condition",
+            "wakeup",
+            "called",
+            "sleep_prepare"
+          ],
+          "token_count": 201,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 7023,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 4,
+          "page_char_start": 3955,
+          "page_char_end": 4935,
+          "source_page_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_wakeup",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "5c356cba55979fbd0939c3f69fb7c336"
+          ]
+        }
+      },
+      {
+        "id": "context_535b742a701f444a77c0c4fd651d00bf",
+        "document_name": "os_wakeup.md",
+        "page": 1,
+        "text": "wakeup(chan) handles two situations with respect to some other process that might concurrently be in the process of going to sleep on chan. If that other process has gotten as far as marking itself as SLEEPING, then wakeup will see it in that state and change it to RUNNABLE; its call to sleep() will then return. If the other process has gotten as far as calling sleep_prepare(chan) (but its sleep() has not gotten as far as acquiring p->lock), wakeup(chan) will see that p->chan is equal to chan, and wakeup will set p->chan to zero. In that case, when the other process does call sleep, it will see the zero and return immediately. The point is to avoid a lost wakeup if wakeup() is called just as another process is about to call sleep().\n\nThe rules for use of sleep_prepare() prevent us from having to worry about the situation in which an about-to-sleep process hasn’t yet called sleep_prepare(). Either that process surrounds its condition check and sleep_prepare() with a lock that prevents any call to wakeup() for the relevant channel, or that process must call sleep_prepare() before checking the condition.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "process",
+            "wakeup",
+            "chan",
+            "sleep",
+            "call",
+            "sleep_prepare",
+            "other",
+            "gotten"
+          ],
+          "token_count": 238,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 7023,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 5,
+          "page_char_start": 4937,
+          "page_char_end": 6055,
+          "source_page_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_wakeup",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "2c8f105ee55a4227322d587d6987da2a"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "blind_id": "Q004",
+    "answer": "B",
+    "explanation": "资料指出事务把多个步骤捆绑为一个全有或全无的操作，中间状态对其他并发事务不可见，失败时已执行步骤不生效。\n在 PostgreSQL 中用 BEGIN 和 COMMIT 包围事务语句；若中途不想提交，可用 ROLLBACK 取代 COMMIT，已做的更新全部被取消。\n事务完成后更新被永久记录，并在提交时作为一个单元对其他会话同时可见。\n选项 B 同时覆盖了原子性、ROLLBACK 的取消作用和 COMMIT 的永久记录与可见性效果。\nA、C、D 与资料中“中间状态不可见”“ROLLBACK 取消全部更新”“事务块整体生效”的描述相矛盾。",
+    "citation_ids": [
+      "context_a4dbf6c57faf5ed73a3266f5fa5cc57b",
+      "context_8b7a786dd2de96c460cb7fcbe8028962",
+      "context_7e0ec95ca5933d08f0f90d4f75ff0a6d",
+      "context_2cf186cae4f79cf460678cf586054617"
+    ],
+    "sources": [
+      {
+        "id": "context_a4dbf6c57faf5ed73a3266f5fa5cc57b",
+        "document_name": "db_atomicity.md",
+        "page": 1,
+        "text": "3.4. Transactions #\n\nTransactions are a fundamental concept of all database systems. The essential point of a transaction is that it bundles multiple steps into a single, all-or-nothing operation. The intermediate states between the steps are not visible to other concurrent transactions, and if some failure occurs that prevents the transaction from completing, then none of the steps affect the database at all.\n\nThe details of these commands are not important here; the important point is that there are several separate updates involved to accomplish this rather simple operation. Our bank's officers will want to be assured that either all these updates happen, or none of them happen. It would certainly not do for a system failure to result in Bob receiving $100.00 that was not debited from Alice. Nor would Alice long remain a happy customer if she was debited without Bob being credited. We need a guarantee that if something goes wrong partway through the operation, none of the steps executed so far will take effect. Grouping the updates into a transaction gives us this guarantee. A transaction is said to be atomic: from the point of view of other transactions, it either happens completely or not at all.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "Transactions",
+            "all",
+            "transaction",
+            "steps",
+            "point",
+            "operation",
+            "none",
+            "updates"
+          ],
+          "token_count": 236,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4399,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 0,
+          "page_char_start": 0,
+          "page_char_end": 1220,
+          "source_page_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_atomicity",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "5db78ff1ace1838db8be9f257893db21"
+          ]
+        }
+      },
+      {
+        "id": "context_8b7a786dd2de96c460cb7fcbe8028962",
+        "document_name": "db_atomicity.md",
+        "page": 1,
+        "text": "We also want a guarantee that once a transaction is completed and acknowledged by the database system, it has indeed been permanently recorded and won't be lost even if a crash ensues shortly thereafter. For example, if we are recording a cash withdrawal by Bob, we do not want any chance that the debit to his account will disappear in a crash just after he walks out the bank door. A transactional database guarantees that all the updates made by a transaction are logged in permanent storage (i.e., on disk) before the transaction is reported complete.\n\nAnother important property of transactional databases is closely related to the notion of atomic updates: when multiple transactions are running concurrently, each one should not be able to see the incomplete changes made by others. For example, if one transaction is busy totalling all the branch balances, it would not do for it to include the debit from Alice's branch but not the credit to Bob's branch, nor vice versa. So transactions must be all-or-nothing not only in terms of their permanent effect on the database, but also in terms of their visibility as they happen. The updates made so far by an open transaction are invisible to other transactions until the transaction completes, whereupon all the updates become visible simultaneously.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "transaction",
+            "updates",
+            "database",
+            "all",
+            "made",
+            "transactions",
+            "branch",
+            "want"
+          ],
+          "token_count": 249,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4399,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 1,
+          "page_char_start": 1222,
+          "page_char_end": 2529,
+          "source_page_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_atomicity",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "910ac496cd6cefc8e30820610683d750"
+          ]
+        }
+      },
+      {
+        "id": "context_7e0ec95ca5933d08f0f90d4f75ff0a6d",
+        "document_name": "db_atomicity.md",
+        "page": 1,
+        "text": "In PostgreSQL, a transaction is set up by surrounding the SQL commands of the transaction with BEGIN and COMMIT commands. So our banking transaction would actually look like:\n\nIf, partway through the transaction, we decide we do not want to commit (perhaps we just noticed that Alice's balance went negative), we can issue the command ROLLBACK instead of COMMIT, and all our updates so far will be canceled.\n\nPostgreSQL actually treats every SQL statement as being executed within a transaction. If you do not issue a BEGIN command, then each individual statement has an implicit BEGIN and (if successful) COMMIT wrapped around it. A group of statements surrounded by BEGIN and COMMIT is sometimes called a transaction block.\n\nIt's possible to control the statements in a transaction in a more granular fashion through the use of savepoints. Savepoints allow you to selectively discard parts of the transaction, while committing the rest. After defining a savepoint with SAVEPOINT, you can if needed roll back to the savepoint with ROLLBACK TO. All the transaction's database changes between defining the savepoint and rolling back to it are discarded, but changes earlier than the savepoint are kept.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "transaction",
+            "COMMIT",
+            "savepoint",
+            "BEGIN",
+            "PostgreSQL",
+            "SQL",
+            "commands",
+            "actually"
+          ],
+          "token_count": 232,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4399,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 2,
+          "page_char_start": 2531,
+          "page_char_end": 3732,
+          "source_page_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_atomicity",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "c4ce122435f2e6109aca19c76fe95ba5"
+          ]
+        }
+      },
+      {
+        "id": "context_2cf186cae4f79cf460678cf586054617",
+        "document_name": "db_atomicity.md",
+        "page": 1,
+        "text": "After rolling back to a savepoint, it continues to be defined, so you can roll back to it several times. Conversely, if you are sure you won't need to roll back to a particular savepoint again, it can be released, so the system can free some resources. Keep in mind that either releasing or rolling back to a savepoint will automatically release all savepoints that were defined after it.\n\nAll this is happening within the transaction block, so none of it is visible to other database sessions. When and if you commit the transaction block, the committed actions become visible as a unit to other sessions, while the rolled-back actions never become visible at all.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "back",
+            "savepoint",
+            "all",
+            "visible",
+            "After",
+            "rolling",
+            "defined",
+            "roll"
+          ],
+          "token_count": 134,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4399,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 3,
+          "page_char_start": 3734,
+          "page_char_end": 4399,
+          "source_page_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "db_atomicity",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "60f6f558d4f025e89da6ee955f832bfb"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "blind_id": "Q005",
+    "answer": "1. AdvertisedWindow = 0 means the sender cannot transmit any data even though prior data was successfully acknowledged; the receive buffer has filled up, so TCP blocks the sending process once the send buffer also fills.\n2. The congestion window limits too much data from being injected into the network so switches or links do not become overloaded; a fast local link does not help because the sender does not know what links will be traversed and a slow shared link may be the bottleneck.\n3. MaxWindow = min(CongestionWindow, AdvertisedWindow); the maximum unacknowledged data allowed is the smaller of the two windows (a minimum operation).\n4. (a) With AdvertisedWindow = 0, min(CongestionWindow, 0) = 0, so the sender may send no data regardless of CongestionWindow. (b) With AdvertisedWindow > 0 but a small CongestionWindow, min gives the small CongestionWindow, so the sender is limited to that smaller value; the network, not the receiver, is the binding constraint, and the sender may send only up to the congestion window.",
+    "explanation": "Flow control is an end-to-end issue: the advertised window reflects the receiver's available buffer, and a window of 0 stops transmission even after acknowledgments. Congestion control is about how hosts and networks interact: the congestion window keeps too much data from being injected into the network, and it matters even on a fast local link because the sender cannot see the intermediate links and shared bottlenecks. TCP combines both by using MaxWindow = min(CongestionWindow, AdvertisedWindow), so the effective sending rate is bounded by the slowest component, whether that is the destination host or the network.",
+    "citation_ids": [
+      "context_8c0a6af1cc78516ee81069043af7aa35",
+      "context_2cd98158e15ae04bdd682e23856497e5",
+      "context_59e5349b54728369a41447059eecd6d1",
+      "context_a8ca87ed6b3ceef9eba3633d15f00fb3",
+      "context_96f28a4010472cf0a3404bd8dfb40fbd"
+    ],
+    "sources": [
+      {
+        "id": "context_8c0a6af1cc78516ee81069043af7aa35",
+        "document_name": "net_windows.md",
+        "page": 1,
+        "text": "Since many people confuse congestion control and flow control, we restate the difference. Flow control involves preventing senders from over-running the capacity of receivers. Congestion control involves preventing too much data from being injected into the network, thereby causing switches or links to become overloaded. Thus, flow control is an end-to-end issue, while congestion control is concerned with how hosts and networks interact.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "control",
+            "congestion",
+            "flow",
+            "involves",
+            "preventing",
+            "Since",
+            "many",
+            "people"
+          ],
+          "token_count": 77,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 9388,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 1,
+          "page_char_start": 1125,
+          "page_char_end": 1566,
+          "source_page_sha256": "77da1fcf34a1a14abc92a95a5d32159c9087603ca018c7793f1084718cb96f3f",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "77da1fcf34a1a14abc92a95a5d32159c9087603ca018c7793f1084718cb96f3f",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_windows",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "04da566b3c66b9d473002d3dab1d1e85"
+          ]
+        }
+      },
+      {
+        "id": "context_2cd98158e15ae04bdd682e23856497e5",
+        "document_name": "net_windows.md",
+        "page": 1,
+        "text": "Fifth, because the transmitting side of a directly connected link cannot send any faster than the bandwidth of the link allows, and only one host is pumping data into the link, it is not possible to unknowingly congest the link. Said another way, the load on the link is visible in the form of a queue of packets at the sender. In contrast, the sending side of a TCP connection has no idea what links will be traversed to reach the destination. For example, the sending machine might be directly connected to a relatively fast Ethernet—and capable of sending data at a rate of 10 Gbps—but somewhere out in the middle of the network, a 1.5-Mbps link must be traversed. And, to make matters worse, data being generated by many different sources might be trying to traverse this same slow link. This leads to the problem of network congestion. Discussion of this topic is delayed until the next chapter.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "link",
+            "data",
+            "sending",
+            "side",
+            "directly",
+            "connected",
+            "traversed",
+            "might"
+          ],
+          "token_count": 189,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 9388,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 3,
+          "page_char_start": 2487,
+          "page_char_end": 3387,
+          "source_page_sha256": "77da1fcf34a1a14abc92a95a5d32159c9087603ca018c7793f1084718cb96f3f",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "77da1fcf34a1a14abc92a95a5d32159c9087603ca018c7793f1084718cb96f3f",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_windows",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "5468fed2042ec0e04ffbe68cb141e866"
+          ]
+        }
+      },
+      {
+        "id": "context_59e5349b54728369a41447059eecd6d1",
+        "document_name": "net_windows.md",
+        "page": 1,
+        "text": "It is now possible to understand how a slow receiving process ultimately stops a fast sending process. First, the receive buffer fills up, which means the advertised window shrinks to 0. An advertised window of 0 means that the sending side cannot transmit any data, even though data it has previously sent has been successfully acknowledged. Finally, not being able to transmit any data means that the send buffer fills up, which ultimately causes TCP to block the sending process. As soon as the receiving process starts to read data again, the receive-side TCP is able to open its window back up, which allows the send-side TCP to transmit data out of its buffer. When this data is eventually acknowledged, LastByteAcked is incremented, the buffer space holding this acknowledged data becomes free, and the sending process is unblocked and allowed to proceed.\n\n6.3 TCP Congestion Control\n\nThis section describes the predominant example of end-to-end congestion control in use today, which is implemented by TCP. The essential strategy of TCP is to send packets into the network without a reservation and then to react to observable events that occur. TCP assumes only FIFO queuing in the network’s routers, but also works with other queuing strategies.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "data",
+            "TCP",
+            "process",
+            "sending",
+            "buffer",
+            "means",
+            "window",
+            "transmit"
+          ],
+          "token_count": 245,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 9388,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 7,
+          "page_char_start": 5760,
+          "page_char_end": 7016,
+          "source_page_sha256": "77da1fcf34a1a14abc92a95a5d32159c9087603ca018c7793f1084718cb96f3f",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "77da1fcf34a1a14abc92a95a5d32159c9087603ca018c7793f1084718cb96f3f",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_windows",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "db9acf806b719815a35497179ad9fb91"
+          ]
+        }
+      },
+      {
+        "id": "context_a8ca87ed6b3ceef9eba3633d15f00fb3",
+        "document_name": "net_windows.md",
+        "page": 1,
+        "text": "TCP maintains a new state variable for each connection, called CongestionWindow, which is used by the source to limit how much data it is allowed to have in transit at a given time. The congestion window is congestion control’s counterpart to flow control’s advertised window. TCP is modified such that the maximum number of bytes of unacknowledged data allowed is now the minimum of the congestion window and the advertised window. Thus, using the variables defined in the previous chapter, TCP’s effective window is revised as follows:\n\nThat is, MaxWindow replaces AdvertisedWindow in the calculation of EffectiveWindow. Thus, a TCP source is allowed to send no faster than the slowest component—the network or the destination host—can accommodate.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "window",
+            "TCP",
+            "allowed",
+            "congestion",
+            "source",
+            "data",
+            "control",
+            "advertised"
+          ],
+          "token_count": 146,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 9388,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 9,
+          "page_char_start": 7922,
+          "page_char_end": 8672,
+          "source_page_sha256": "77da1fcf34a1a14abc92a95a5d32159c9087603ca018c7793f1084718cb96f3f",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "77da1fcf34a1a14abc92a95a5d32159c9087603ca018c7793f1084718cb96f3f",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_windows",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "6e98e2799c26f3affd9bd8fb7f276ff0"
+          ]
+        }
+      },
+      {
+        "id": "context_96f28a4010472cf0a3404bd8dfb40fbd",
+        "document_name": "net_byte_stream.md",
+        "page": 1,
+        "text": "In addition to the above features, TCP also implements a highly tuned congestion-control mechanism. The idea of this mechanism is to throttle how fast TCP sends data, not for the sake of keeping the sender from over-running the receiver, but so as to keep the sender from overloading the network. A description of TCP’s congestion-control mechanism is postponed until the next chapter, where we discuss it in the larger context of how network resources are fairly allocated.\n\nSince many people confuse congestion control and flow control, we restate the difference. Flow control involves preventing senders from over-running the capacity of receivers. Congestion control involves preventing too much data from being injected into the network, thereby causing switches or links to become overloaded. Thus, flow control is an end-to-end issue, while congestion control is concerned with how hosts and networks interact.\n\n5.2.2 Segment Format",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "control",
+            "TCP",
+            "mechanism",
+            "network",
+            "congestion",
+            "flow",
+            "congestion-control",
+            "data"
+          ],
+          "token_count": 175,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 4198,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 1,
+          "page_char_start": 1305,
+          "page_char_end": 2245,
+          "source_page_sha256": "62bdf52ca99b1f2893c5546291124394f85a9cc215af9568106a23afb10f05b4",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "62bdf52ca99b1f2893c5546291124394f85a9cc215af9568106a23afb10f05b4",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "net_byte_stream",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "8fcf83e44d2ed0e3493fb7fdf1c32a66"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "blind_id": "Q006",
+    "answer": "A",
+    "explanation": "候选甲是唯一同时满足两条规则的协议：\n\n1. 条件锁保护条件检查与 sleep_prepare 的顺序，使写者不能在“发现条件不成立”和“登记睡眠意图”之间插入 wakeup 而导致丢失唤醒。\n\n2. sleep() 前必须释放条件锁，否则写者无法修改条件并调用 wakeup；sleep_prepare 已经记录了 wait channel，因此释放锁后仍能正确接收唤醒。\n\n3. 多个读者可能睡在同一通道，一次 wakeup 唤醒全部读者，其中只有一部分能读到数据；其余必须循环复查条件，即把睡眠放在 while 循环中，从而容忍虚假唤醒。\n\n候选乙缺少条件锁保护且不复查条件，可能丢失唤醒或误认为条件成立。候选丙没有 sleep_prepare，wakeup 可能在 sleep 之前找不到该进程，导致丢失唤醒；不复查条件也无法处理虚假唤醒。候选丁在持有条件锁时调用 sleep，其他进程无法获取该锁来改变条件或调用 wakeup，会造成死等，与“sleep 前必须释放条件锁”的规则矛盾。",
+    "citation_ids": [
+      "context_5d8bfdf4ac0d9917b59abe4b9a423a65",
+      "context_5c240f5980676e5fc885c4419dc08f24",
+      "context_535b742a701f444a77c0c4fd651d00bf",
+      "context_a199673d425ef31fd839f86c1f537f54"
+    ],
+    "sources": [
+      {
+        "id": "context_5d8bfdf4ac0d9917b59abe4b9a423a65",
+        "document_name": "os_wakeup.md",
+        "page": 1,
+        "text": "sleep_prepare(chan) must be called either before checking the condition, or before releasing the lock that protects the condition. The call records the fact that the process may need to sleep on the indicated chan. If another process (or interrupt) calls wakeup(chan) between the calls to sleep_prepare(chan) and sleep(), wakeup() sets a flag in the about-to-sleep process indicating that it shouldn’t actually sleep. If sleep() sees this flag, it returns rather than sleeping.\n\nWhat is the reason for sleep_prepare(chan)? There is the possibility that the condition might become true, and wakeup() called, between when the pipe reader sees that the buffer is empty, and when it calls sleep. Without some cleverness, the wakeup() would not find any sleeping processes, and would not have any effect. Then the process would call sleep() even though the pipe buffer has data to read; and if (as could be the case) the pipe writer never wrote anything more, the reader could incorrectly sleep forever. This undesirable situation is called a lost wake-up. The behavior described in the previous paragraph avoids this problem.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "sleep",
+            "chan",
+            "process",
+            "wakeup",
+            "sleep_prepare",
+            "called",
+            "condition",
+            "calls"
+          ],
+          "token_count": 222,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 7023,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 3,
+          "page_char_start": 2832,
+          "page_char_end": 3953,
+          "source_page_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_wakeup",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "28a5d0c0817d52be2f77148cdfbbd553"
+          ]
+        }
+      },
+      {
+        "id": "context_5c240f5980676e5fc885c4419dc08f24",
+        "document_name": "os_wakeup.md",
+        "page": 1,
+        "text": "In the pipe example, as in most sleeping code, there is a lock that protects the condition and prevents wakeup() from being called between when the going-to-sleep process checks the condition and when it calls sleep_prepare(). This lock is often called the condition lock. A process must release the lock before calling sleep() (so that some other process or interrupt handler can modify the condition and call wakeup()), and re-acquire the lock after sleep() returns.\n\nXv6’s sleep_prepare and sleep and wakeup implement the interface used in the example above. The basic idea is to have sleep mark the current process as SLEEPING and then call sched to release the CPU; wakeup looks for processes sleeping on the given wait channel and marks them RUNNABLE.\n\nsleep_prepare(chan) records the wait channel in p->chan and returns. If p->chan is still non-zero when sleep() is called, sleep() changes the calling process to state SLEEPING and calls sched() to let other processes run.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "sleep",
+            "lock",
+            "process",
+            "sleeping",
+            "condition",
+            "wakeup",
+            "called",
+            "sleep_prepare"
+          ],
+          "token_count": 201,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 7023,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 4,
+          "page_char_start": 3955,
+          "page_char_end": 4935,
+          "source_page_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_wakeup",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "5c356cba55979fbd0939c3f69fb7c336"
+          ]
+        }
+      },
+      {
+        "id": "context_535b742a701f444a77c0c4fd651d00bf",
+        "document_name": "os_wakeup.md",
+        "page": 1,
+        "text": "wakeup(chan) handles two situations with respect to some other process that might concurrently be in the process of going to sleep on chan. If that other process has gotten as far as marking itself as SLEEPING, then wakeup will see it in that state and change it to RUNNABLE; its call to sleep() will then return. If the other process has gotten as far as calling sleep_prepare(chan) (but its sleep() has not gotten as far as acquiring p->lock), wakeup(chan) will see that p->chan is equal to chan, and wakeup will set p->chan to zero. In that case, when the other process does call sleep, it will see the zero and return immediately. The point is to avoid a lost wakeup if wakeup() is called just as another process is about to call sleep().\n\nThe rules for use of sleep_prepare() prevent us from having to worry about the situation in which an about-to-sleep process hasn’t yet called sleep_prepare(). Either that process surrounds its condition check and sleep_prepare() with a lock that prevents any call to wakeup() for the relevant channel, or that process must call sleep_prepare() before checking the condition.",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "process",
+            "wakeup",
+            "chan",
+            "sleep",
+            "call",
+            "sleep_prepare",
+            "other",
+            "gotten"
+          ],
+          "token_count": 238,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 7023,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 5,
+          "page_char_start": 4937,
+          "page_char_end": 6055,
+          "source_page_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_wakeup",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "2c8f105ee55a4227322d587d6987da2a"
+          ]
+        }
+      },
+      {
+        "id": "context_a199673d425ef31fd839f86c1f537f54",
+        "document_name": "os_wakeup.md",
+        "page": 1,
+        "text": "Sometimes multiple processes are sleeping on the same channel; for example, more than one process reading from a pipe. A single call to wakeup will wake them all up. One of them will run first and (in the case of pipes) acquire the pipe lock and read whatever data is waiting. The other processes will find that, despite being woken up, there is no data to be read. From their point of view the wakeup was “spurious,” and they must sleep again. For this reason sleeping always occurs inside a loop that re-checks the condition, as in piperead above.\n\nNo harm is done if two uses of sleep/wakeup accidentally choose the same channel: they will see spurious wakeups, but looping as described above will tolerate this problem. Much of the charm of sleep/wakeup is that it is both lightweight (no need to create special data structures to act as wait channels) and provides a layer of indirection (callers need not know which specific process they are interacting with).",
+        "metadata": {
+          "heading_path": [],
+          "keywords": [
+            "data",
+            "processes",
+            "sleeping",
+            "same",
+            "channel",
+            "one",
+            "process",
+            "pipe"
+          ],
+          "token_count": 204,
+          "token_limit": 256,
+          "protected_block_split": false,
+          "section_start": 0,
+          "section_end": 7023,
+          "chunk_strategy": "recursive_token_v1_no_overlap",
+          "chunking_version": "recursive_token_v1",
+          "chunking_config": {
+            "strategy": "recursive_token_v1",
+            "max_chars": 1200,
+            "overlap_chars": 0,
+            "max_tokens": 256,
+            "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+            "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+          },
+          "chunk_index": 6,
+          "page_char_start": 6057,
+          "page_char_end": 7023,
+          "source_page_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "coordinate_system": "parsed_page_python_chars_v1",
+          "language": "en",
+          "split_reason": "recursive_token_budget",
+          "protected_block_types": [],
+          "source_format": ".md",
+          "source_document_sha256": "dca15a98ac6c6a86c432f833877c674eda43a1ca136fbab315bffb3d81a7c57e",
+          "parser_version": "utf8-sig-v1",
+          "benchmark_source_id": "os_wakeup",
+          "context_expansion": "none",
+          "retrieved_chunk_ids": [
+            "b623929d118845940a86a3e5f1ca0f64"
+          ]
+        }
+      }
+    ]
+  }
+]

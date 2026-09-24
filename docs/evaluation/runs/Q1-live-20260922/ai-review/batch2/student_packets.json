@@ -1,0 +1,89 @@
+[
+  {
+    "blind_id": "Q001",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Trace what ordinary SELECT statements may observe under PostgreSQL Read Committed in a two-session schedule.",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "Session A and Session B both connect to the same PostgreSQL database using READ COMMITTED isolation. The table accounts has one row (id = 1, balance = 100). The following schedule is executed.\n\n1. Session A: BEGIN;\n2. Session A: SELECT balance FROM accounts WHERE id = 1; (first SELECT)\n3. Session B: BEGIN;\n4. Session B: UPDATE accounts SET balance = 200 WHERE id = 1;\n5. Session B: COMMIT;\n6. Session A: SELECT balance FROM accounts WHERE id = 1; (second SELECT)\n7. Session A: UPDATE accounts SET balance = balance + 50 WHERE id = 1;\n8. Session A: COMMIT;\n\nSession A performs no write before its first SELECT, Session B commits before Step 6 begins, and each SELECT is a plain SELECT without FOR UPDATE or FOR SHARE.\n\nQuestion: Trace what Session A's first SELECT, second SELECT, and UPDATE each observe, and give the final committed balance. Cite which value each command returns and explain why the snapshots produce those values.",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q002",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Describe the reliable, ordered, full-duplex byte-stream service that TCP offers applications and distinguish it from segment transmission.",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "Consider the following description from the course material about the service TCP offers to applications.\n\n\"TCP guarantees the reliable, in-order delivery of a stream of bytes. It is a full-duplex protocol, meaning that each TCP connection supports a pair of byte streams, one flowing in each direction. ... TCP is a byte-oriented protocol, which means that the sender writes bytes into a TCP connection and the receiver reads bytes out of the TCP connection. Although 'byte stream' describes the service TCP offers to application processes, TCP does not, itself, transmit individual bytes over the Internet. Instead, TCP on the source host buffers enough bytes from the sending process to fill a reasonably sized packet and then sends this packet to its peer on the destination host.\"\n\n1. A sending application writes a sequence of bytes into the connection.\n2. The receiving application reads bytes from the connection.\n\nQuestion: In your own words, describe the reliable, ordered, full-duplex byte-stream service that TCP offers applications, and explain how it differs from the way TCP transmits data across the network using segments.",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q003",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Evaluate a producer-consumer wait protocol for lost wakeups and condition rechecking using the supplied xv6 sleep_prepare/sleep/wakeup interface.",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "A pipe reader process R waits for a shared buffer that a writer process W fills. R uses the xv6-style wait interface: sleep_prepare(chan), sleep(chan), and wakeup(chan). The condition lock protects the buffer state and prevents wakeup(chan) from being called between R's condition check and R's call to sleep_prepare(chan).\n\nRelevant rules from the course material:\n1. sleep_prepare(chan) must be called either before checking the condition, or before releasing the lock that protects the condition.\n2. If wakeup(chan) runs between sleep_prepare(chan) and sleep(), wakeup sets a flag indicating the process should not actually sleep; sleep() then returns instead of sleeping.\n3. A process must release the condition lock before calling sleep(), so another process or interrupt handler can modify the condition and call wakeup(); it re-acquires the lock after sleep() returns.\n4. Without this protocol, a wakeup() called after R checks the condition but before R calls sleep() would find no sleeping process, so R could sleep forever even though data is available; this is a lost wake-up.\n5. After sleep() returns, R must recheck the condition before deciding again whether to sleep.\n\nR is about to run. The buffer is still empty and no wakeup has occurred. Among the following sequences, which one correctly protects R against a lost wake-up while keeping the required lock behavior?\n\nA. R calls sleep_prepare(chan); acquires the condition lock; checks the condition (buffer empty, so R must wait); releases the condition lock; calls sleep(chan); after sleep returns, re-acquires the condition lock and rechecks the condition.\n\nB. R acquires the condition lock; checks the condition (buffer empty, so R must wait); releases the condition lock; calls sleep_prepare(chan); calls sleep(chan); after sleep returns, re-acquires the condition lock and rechecks the condition.\n\nC. R acquires the condition lock; checks the condition (buffer empty); calls sleep_prepare(chan); calls sleep(chan) while still holding the condition lock; after sleep returns, rechecks the condition without releasing the lock.\n\nD. R acquires the condition lock; checks the condition (buffer empty); calls sleep(chan) directly without sleep_prepare(chan); after sleep returns, re-acquires the condition lock and rechecks the condition.",
+      "options": [
+        "R calls sleep_prepare(chan); acquires the condition lock; checks the condition (buffer empty, so R must wait); releases the condition lock; calls sleep(chan); after sleep returns, re-acquires the condition lock and rechecks the condition.",
+        "R acquires the condition lock; checks the condition (buffer empty, so R must wait); releases the condition lock; calls sleep_prepare(chan); calls sleep(chan); after sleep returns, re-acquires the condition lock and rechecks the condition.",
+        "R acquires the condition lock; checks the condition (buffer empty); calls sleep_prepare(chan); calls sleep(chan) while still holding the condition lock; after sleep returns, rechecks the condition without releasing the lock.",
+        "R acquires the condition lock; checks the condition (buffer empty); calls sleep(chan) directly without sleep_prepare(chan); after sleep returns, re-acquires the condition lock and rechecks the condition."
+      ]
+    }
+  },
+  {
+    "blind_id": "Q004",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "识别简单 PostgreSQL 转账中的事务原子性，以及 COMMIT 和 ROLLBACK 的作用。",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "在一个 PostgreSQL 银行转账场景中，事务把从 Alice 账户扣款和向 Bob 账户存款这两个更新组合在一起，并用 BEGIN 与 COMMIT 包围。\n\n根据所给资料，下列哪一项正确描述了事务原子性以及 COMMIT 和 ROLLBACK 的作用？\n\nA. 事务的中间状态对并发事务可见，COMMIT 只记录日志，ROLLBACK 只删除日志记录而不取消更新。\nB. 事务是全有或全无的操作；若执行中决定不提交，用 ROLLBACK 取代 COMMIT，已做的全部更新将被取消；提交后更新被永久记录并在提交时对其他会话同时可见。\nC. 事务原子性只保证最终写入磁盘，不保证中间状态对并发事务不可见；COMMIT 与 ROLLBACK 仅影响当前语句而不影响整个事务块。\nD. 若发生故障导致事务无法完成，已执行的部分更新仍会生效，除非随后执行 ROLLBACK；COMMIT 用于恢复这些部分更新。",
+      "options": [
+        "事务的中间状态对并发事务可见，COMMIT 只记录日志，ROLLBACK 只删除日志记录而不取消更新。",
+        "事务是全有或全无的操作；若执行中决定不提交，用 ROLLBACK 取代 COMMIT，已做的全部更新将被取消；提交后更新被永久记录并在提交时对其他会话同时可见。",
+        "事务原子性只保证最终写入磁盘，不保证中间状态对并发事务不可见；COMMIT 与 ROLLBACK 仅影响当前语句而不影响整个事务块。",
+        "若发生故障导致事务无法完成，已执行的部分更新仍会生效，除非随后执行 ROLLBACK；COMMIT 用于恢复这些部分更新。"
+      ]
+    }
+  },
+  {
+    "blind_id": "Q005",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Compare receiver flow control and network congestion control, then justify the active sending constraint in contrasting TCP situations.",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "A TCP sender's rate is limited by two distinct mechanisms: the receiver's advertised window (flow control) and the congestion window (congestion control).\n\nThe supplied excerpt states: \"Flow control involves preventing senders from over-running the capacity of receivers. Congestion control involves preventing too much data from being injected into the network, thereby causing switches or links to become overloaded. Thus, flow control is an end-to-end issue, while congestion control is concerned with how hosts and networks interact.\" It also states that TCP's effective window uses MaxWindow = min(CongestionWindow, AdvertisedWindow), so that \"a TCP source is allowed to send no faster than the slowest component—the network or the destination host—can accommodate.\" Consider this scenario:\n\n- The sender is directly connected to a fast Ethernet and can transmit at 10 Gbps.\n- The receiver's application is slow to read data, and its advertised window has shrunk to 0.\n- Elsewhere in the path, a 1.5-Mbps link is shared by many sources and is congested.\n- The sender has previously sent data that was successfully acknowledged.\n\nFor the scenario above, decide which mechanism each of the two constraints protects against, then justify why TCP cannot safely ignore either constraint when deciding how much unacknowledged data it may have in transit.\n\nAnswer each part:\n1. In one sentence, state what the advertised window of 0 tells the sender and which sending process behavior results.\n2. In one sentence, state what the congestion window protects against and why the directly connected fast link does not remove the congestion control limit.\n3. State the formula TCP uses to compute the maximum allowed unacknowledged data (name the two windows and the operation).\n4. Using that formula, justify whether the sender may send: (a) when AdvertisedWindow = 0, and (b) when AdvertisedWindow > 0 but CongestionWindow is small due to the congested 1.5-Mbps link.",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q006",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "使用资料中的 xv6 sleep_prepare/sleep/wakeup 接口，评价生产者与消费者等待协议的丢失唤醒风险及条件复查。",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "在一个仿 xv6 的管道实现中，读者进程要等待“缓冲区非空”这一条件；写者进程在缓冲区写入数据后调用 wakeup(chan)。两个进程通过一个条件锁保护缓冲区状态与条件判断。可用接口如下：\n\n1. sleep_prepare(chan)：记录本进程可能要在 chan 上睡眠（记录在 p->chan），并在条件检查或释放条件锁之前调用。\n2. sleep()：若 p->chan 仍非零，则将调用进程置为 SLEEPING 并调用 sched；若 p->chan 已被 wakeup 置零，则立即返回、不睡眠。\n3. wakeup(chan)：若某进程已进入 SLEEPING，则将其置为 RUNNABLE；若某进程已调用 sleep_prepare(chan) 但尚未在 sleep 中获取 p->lock，则把它的 p->chan 置零，使其后续 sleep 直接返回。\n4. 条件锁必须在调用 sleep() 前释放，以便写者能修改条件并调用 wakeup()；sleep() 返回后重新获取该锁。\n5. 多个进程可能睡在同一通道上，一次 wakeup 会唤醒全部等待者，其中部分可能发现条件仍不成立。\n\n现在有四个候选协议片段，都在持有条件锁时检查“缓冲区非空”条件：\n\n候选甲：\n1) 获取条件锁，检查条件；\n2) 在锁内调用 sleep_prepare(chan)，再释放锁并调用 sleep()；\n3) 唤醒返回后重新获取锁，并再次检查条件，不成立则循环重试。\n\n候选乙：\n1) 释放条件锁，检查条件；\n2) 条件不成立时直接调用 sleep_prepare(chan) 再释放锁并调用 sleep()；\n3) 唤醒返回后不复查条件，直接返回“已读到数据”。\n\n候选丙：\n1) 获取条件锁，检查条件；\n2) 条件不成立时在锁内调用 sleep()，由 sleep 自行释放锁，且未调用 sleep_prepare(chan)；\n3) 唤醒后不重新检查条件即认为条件已成立。\n\n候选丁：\n1) 获取条件锁，检查条件；\n2) 条件不成立时在锁内调用 sleep_prepare(chan)，但不释放条件锁就直接调用 sleep()；\n3) 唤醒后释放锁并重试，但期间其他进程无法获取条件锁来改变条件。\n\n请依据上述接口规则，选出关于丢失唤醒风险与条件复查要求的最准确评价。\n\nA. 候选甲正确：sleep_prepare 在条件锁内、检查条件之后调用，睡眠在释放条件锁后进行；唤醒后循环复查条件，既避免丢失唤醒也容忍虚假唤醒。B. 候选乙正确：只要在检查条件之后调用 sleep_prepare 即可，不必持有条件锁，也不必在唤醒后复查条件。C. 候选丙正确：sleep 会自行释放条件锁，因此不需要 sleep_prepare，也不需要循环复查条件。D. 候选丁正确：在锁内调用 sleep_prepare 后必须继续持有条件锁调用 sleep，否则写者会抢先改变条件导致丢失唤醒。",
+      "options": [
+        "候选甲：sleep_prepare 在条件锁内、检查条件之后调用，睡眠在释放条件锁后进行；唤醒后循环复查条件，既避免丢失唤醒也容忍虚假唤醒。",
+        "候选乙：只要在检查条件之后调用 sleep_prepare 即可，不必持有条件锁，也不必在唤醒后复查条件。",
+        "候选丙：sleep 会自行释放条件锁，因此不需要 sleep_prepare，也不需要循环复查条件。",
+        "候选丁：在锁内调用 sleep_prepare 后必须继续持有条件锁调用 sleep，否则写者会抢先改变条件导致丢失唤醒。"
+      ]
+    }
+  }
+]

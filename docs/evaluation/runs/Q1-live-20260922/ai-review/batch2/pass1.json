@@ -1,0 +1,50 @@
+[
+  {
+    "blind_id": "Q001",
+    "independent_answer": "The first SELECT returns 100. The second SELECT returns 200 because Read Committed takes a fresh statement snapshot and B has committed before that SELECT begins. A's UPDATE reads the committed balance 200 and writes 250; its own earlier SELECT does not freeze the transaction at 100. After A commits, the balance is 250. Strictly, the UPDATE shown has no RETURNING clause, so it does not return a balance value: it reports one updated row (UPDATE 1).",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The timing, isolation level and absence of locking reads make the trace determinate. It requires applying statement-level visibility across multiple commands. The request for the value each command returns is slightly imprecise for UPDATE without RETURNING, but can be answered explicitly."
+  },
+  {
+    "blind_id": "Q002",
+    "independent_answer": "TCP presents each application with an ordered stream of bytes: bytes accepted and delivered through the connection arrive in the sending order, with TCP handling loss and duplicates rather than exposing packet delivery order to the application. Both endpoints can send and receive independently, so one connection carries a stream in each direction. On the network, TCP groups bytes into segments and the receiver reconstructs the stream; application writes and reads need not correspond one-to-one to segments or preserve message boundaries. Reliability does not mean a failed connection can guarantee eventual delivery forever.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The excerpt directly states the required service properties and the distinction between the application byte stream and buffered packet transmission; a short conceptual paraphrase suffices."
+  },
+  {
+    "blind_id": "Q003",
+    "independent_answer": "A. It prepares before checking, checks under the condition lock, releases that lock before sleeping, then reacquires it and rechecks after returning. A wakeup after preparation prevents an ensuing sleep from blocking. B leaves an unprotected check-to-prepare gap; C sleeps with the condition lock held; D omits preparation and does not supply the required release-before-sleep behavior.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "Only A satisfies all five explicitly supplied rules. The task is direct protocol-rule matching with clear violations in each distractor."
+  },
+  {
+    "blind_id": "Q004",
+    "independent_answer": "选 B。事务把扣款和存款作为整体处理：COMMIT 提交整个事务；提交前执行 ROLLBACK 会撤销该事务的更新，避免仅扣款或仅存款的部分结果。提交后的更新作为整体成为已提交状态。严格说，其他会话实际在何时读到这些更新还取决于其隔离级别和查询快照，不能把“同时可见”理解为所有已有快照立即改变。",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "B 是唯一符合基础事务语义的选项，其余选项明显混淆或否定原子性与事务控制。B 的“提交时对其他会话同时可见”是入门层面的简化，需避免解释为覆盖已有快照。"
+  },
+  {
+    "blind_id": "Q005",
+    "independent_answer": "1. AdvertisedWindow = 0 means the receiver currently offers no receive-buffer space, so the sender must stop sending new ordinary payload data until the window permits it. 2. CongestionWindow limits outstanding data to avoid overloading the network path; a fast first hop cannot remove a congested downstream 1.5-Mbps bottleneck. 3. MaxWindow = min(CongestionWindow, AdvertisedWindow), measured as the allowed outstanding unacknowledged data, not simply the local link rate. 4. With an advertised window of zero, that maximum is zero, so no new ordinary data may be sent under the window rule. With a positive advertised window and small congestion window, outstanding data must fit the smaller window; new sending is possible only to the extent that this allowance exceeds data already outstanding. Previously acknowledged data frees outstanding-data capacity but does not override either current window. Zero-window probes are a distinct mechanism, not permission to ignore flow control.",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "not_applicable",
+    "concise_rationale": "The text supplies both definitions and the minimum formula, and the requested cases follow by direct substitution. It does not specify current outstanding bytes, so permission to send in the positive-window case must remain conditional on available window space."
+  },
+  {
+    "blind_id": "Q006",
+    "independent_answer": "选 A（候选甲）。条件不成立而需要等待时，应在持有条件锁期间调用 sleep_prepare，然后释放条件锁并调用 sleep；返回后重新加锁并循环检查条件。这样，准备后、真正睡眠前发生的 wakeup 也会被记录，写者能取得锁修改条件，多个等待者被唤醒后也不会错误假定条件仍成立。乙存在未加锁检查及不复查的问题；丙缺少准备并错误假定 sleep 会释放条件锁；丁持锁睡眠阻止写者推进。",
+    "assessed_difficulty": "easy",
+    "answerability": "pass",
+    "unique_answer": "pass",
+    "concise_rationale": "明确给出的五条规则足以唯一选出 A。文字有小瑕疵：总述声称四段都持锁检查，但乙写的是先释放锁；甲也宜明确仅在条件不成立时进入等待。这些瑕疵不改变题目要求的最准确选项。"
+  }
+]

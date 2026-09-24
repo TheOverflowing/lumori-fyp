@@ -1,0 +1,181 @@
+[
+  {
+    "blind_id": "Q001",
+    "independent_answer": "The first SELECT starts before S2 commits the UPDATE, so it can see R as inserted but not in its updated form. The second SELECT starts after that commit, so it can see the updated R. In Read Committed, each ordinary SELECT uses the committed-data snapshot taken when that statement begins; the two SELECTs in one S1 transaction may therefore return different versions of R.",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "unique_answer": "not_applicable",
+    "severity": "none",
+    "concise_rationale": "两个 SELECT 的开始时点分别位于 UPDATE 提交前后；答案和解析正确应用逐语句快照，所引 Read Committed 原文直接支持。",
+    "evidence_quotes": [
+      {
+        "source_id": "context_80f09f9abd69f4e4cd054fd404a1f718",
+        "quote": "a SELECT query sees a snapshot of the database as of the instant the query begins to run."
+      },
+      {
+        "source_id": "context_80f09f9abd69f4e4cd054fd404a1f718",
+        "quote": "two successive SELECT commands can see different data, even though they are within a single transaction"
+      },
+      {
+        "source_id": "answer",
+        "quote": "First SELECT at t3: R is visible in the form committed at t1"
+      }
+    ]
+  },
+  {
+    "blind_id": "Q002",
+    "independent_answer": "TCP 向应用提供可靠、按序、双向的字节流；应用按字节写入和读取，单次写入的边界不保证在读取时保留。对等 TCP 实体交换的是 TCP 报文段，发送端可以在发送缓冲区暂存字节并合并成报文段，以减少过多小报文段的开销；但 TCP 并不普遍要求必须等缓冲到某个固定数量才发送。报文段是传输单位，不改变应用看到的字节流语义。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "unique_answer": "not_applicable",
+    "severity": "minor",
+    "concise_rationale": "核心的可靠、有序、全双工字节流及报文段区分均正确且有直接来源；“为什么等”仅以凑成合理大小分组作简略说明，未说明这不是通用固定阈值。",
+    "evidence_quotes": [
+      {
+        "source_id": "context_adff94e0c8029b725d33d37b44f2c0f4",
+        "quote": "TCP guarantees the reliable, in-order delivery of a stream of bytes. It is a full-duplex protocol"
+      },
+      {
+        "source_id": "context_a1a476576a6737794d48ce06cea6aff3",
+        "quote": "TCP on the source host buffers enough bytes from the sending process to fill a reasonably sized packet and then sends this packet to its peer on the destination host."
+      },
+      {
+        "source_id": "context_a1a476576a6737794d48ce06cea6aff3",
+        "quote": "The packets exchanged between TCP peers in Figure 127 are called segments"
+      },
+      {
+        "source_id": "answer",
+        "quote": "发送方 TCP 会缓冲足够字节组成一个大小合理的分组后再发送"
+      }
+    ]
+  },
+  {
+    "blind_id": "Q003",
+    "independent_answer": "切换出的内核线程要保存恢复执行所需的上下文，尤其是栈指针、返回位置和调用约定要求被调用者保留的寄存器；具体寄存器集合随 xv6 的架构而异。切换发生在函数调用边界，其他临时寄存器由调用约定和已有栈帧处理，用户态寄存器则另由陷阱帧保存，因此无需由上下文切换例程重复保存全部寄存器。调度器选择可运行进程，切换其上下文，让多个进程轮流占用 CPU。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "unique_answer": "not_applicable",
+    "severity": "none",
+    "concise_rationale": "生成答案按所引 RISC-V xv6 版本细化了保存的寄存器，解释了其他状态为何已在内存中及调度器线程如何转接，均与来源一致。",
+    "evidence_quotes": [
+      {
+        "source_id": "context_1070d34d22a827ac4deec45bc21d7ebb",
+        "quote": "swtch saves callee-saved registers (ra,sp,s0..s11) but not caller-saved registers."
+      },
+      {
+        "source_id": "context_fd00925c62506d1a56664d64fd3fd7e7",
+        "quote": "thread memory need not saved and restored because different threads keep their data in different areas of RAM"
+      },
+      {
+        "source_id": "context_1c12080941940825f2dc2c86c88ee465",
+        "quote": "the scheduler thread picks a different process’s kernel thread to run"
+      }
+    ]
+  },
+  {
+    "blind_id": "Q004",
+    "independent_answer": "选第 2 项。收到 SQLSTATE 40001 后应放弃失败事务并重试完整事务；新事务必须重新 SELECT 库存，并用新读数重新计算和构造 UPDATE。",
+    "assessed_difficulty": "medium",
+    "answerability": "pass",
+    "answer_correctness": "pass",
+    "explanation_correctness": "pass",
+    "citation_support": "supported",
+    "objective_alignment": "pass",
+    "unique_answer": "pass",
+    "severity": "none",
+    "concise_rationale": "B 是唯一符合 40001 完整事务重试的选项；来源还明确排除把 23505 一律视为持久错误，解析对 A、C、D 的排除成立。",
+    "evidence_quotes": [
+      {
+        "source_id": "context_1e29bb3833d7f959a0ca888af78b5236",
+        "quote": "it will always have the SQLSTATE code 40001 (serialization_failure)."
+      },
+      {
+        "source_id": "context_d295bafea7de5e32aedcdb29341b3ba0",
+        "quote": "It is important to retry the complete transaction, including all logic that decides which SQL to issue and/or which values to use."
+      },
+      {
+        "source_id": "context_d295bafea7de5e32aedcdb29341b3ba0",
+        "quote": "In some cases it is also appropriate to retry unique-key failures, which have SQLSTATE code 23505 (unique_violation)"
+      },
+      {
+        "source_id": "answer",
+        "quote": "B"
+      }
+    ]
+  },
+  {
+    "blind_id": "Q005",
+    "independent_answer": "1. R 公告的接收窗口 rwnd=0，接收端流量控制阻止发送新的常规数据，保护接收缓冲区。2. 缩小的拥塞窗口 cwnd 体现网络拥塞控制，保护路径中的链路和路由器；但只有 cwnd 小于 rwnd 且可发送额度被用尽时，它才是实际起作用的窗口限制，题面没有给出这两个数值。3. 中间路由器丢包说明路径已拥塞并限制成功交付，发送端应在观察到相应丢包信号后调整 cwnd；仅凭两个窗口都“大”，不能判定此刻是拥塞窗口、接收窗口、两者还是两者都不限制新的发送。未确认数据的通常发送额度受 min(cwnd, rwnd) 限制，不能超过其中任一窗口允许的额度。",
+    "assessed_difficulty": "hard",
+    "answerability": "fail",
+    "answer_correctness": "fail",
+    "explanation_correctness": "fail",
+    "citation_support": "partially_supported",
+    "objective_alignment": "fail",
+    "unique_answer": "not_applicable",
+    "severity": "major",
+    "concise_rationale": "第 1 种情形和未确认数据总量受 min(cwnd,rwnd) 约束正确；第 2 种缺少 cwnd<rwnd 及在途数据量，第 3 种丢包只证明路径拥塞而未证明发送端此刻受拥塞窗口限制。答案把“大窗口”推成窗口不生效，并把最大窗口误写成当前有效发送窗口；引用仅支持一般机制和最大未确认数据上限。",
+    "evidence_quotes": [
+      {
+        "source_id": "answer",
+        "quote": "R's advertised window is large, so the receiver is not the bottleneck"
+      },
+      {
+        "source_id": "answer",
+        "quote": "both the advertised window and congestion window are large, so neither receiver nor window size is the active constraint"
+      },
+      {
+        "source_id": "answer",
+        "quote": "The effective window equals min(congestion window, advertised window)"
+      },
+      {
+        "source_id": "context_a8ca87ed6b3ceef9eba3633d15f00fb3",
+        "quote": "the maximum number of bytes of unacknowledged data allowed is now the minimum of the congestion window and the advertised window."
+      },
+      {
+        "source_id": "context_a8ca87ed6b3ceef9eba3633d15f00fb3",
+        "quote": "MaxWindow replaces AdvertisedWindow in the calculation of EffectiveWindow."
+      }
+    ]
+  },
+  {
+    "blind_id": "Q006",
+    "independent_answer": "选第 2 项。两个 CPU 都可能在锁值仍为 0 时完成 L1，随后都执行 L2 并进入 L3，造成并发修改。L1 的检查和 L2 的设置不是一个原子操作；所列 acquire 的 while 条件也不能实现可靠的互斥。",
+    "assessed_difficulty": "medium",
+    "answerability": "fail",
+    "answer_correctness": "fail",
+    "explanation_correctness": "fail",
+    "citation_support": "partially_supported",
+    "objective_alignment": "fail",
+    "unique_answer": "fail",
+    "severity": "major",
+    "concise_rationale": "B 正确指出 L1/L2 的非原子检查设置竞态，但把 L1–L4 整段称为临界区；所引来源把临界区定义为获取锁与释放锁之间的指令，内联代码中 L1/L2 是获取尝试、L4 是释放，因而 B 前半句不成立，其余选项也不正确。给定 acquire 在锁已占用时还会直接退出，进一步说明代码不安全。",
+    "evidence_quotes": [
+      {
+        "source_id": "context_bbdf265863492bcef01911cca167df7b",
+        "quote": "The sequence of instructions between acquire and release is often called a critical section."
+      },
+      {
+        "source_id": "context_721949419795d5384fb58f88476a0eb7",
+        "quote": "Two CPUs could simultaneously reach line 25, see that lk->locked is zero, and then both grab the lock by executing line 26."
+      },
+      {
+        "source_id": "explanation",
+        "quote": "The sequence between acquire and release is the critical section, so L1–L4 is the critical section here."
+      }
+    ],
+    "source_based_correction": "第一阶段把 B 当作唯一可辩护选项；所引来源明确将临界区限定在获取锁与释放锁之间。精确地说，仅持锁的共享列表更新位于该区间，故 B 的首句不成立，四项没有完全正确的答案。封存的独立答案与难度保持原样。"
+  }
+]

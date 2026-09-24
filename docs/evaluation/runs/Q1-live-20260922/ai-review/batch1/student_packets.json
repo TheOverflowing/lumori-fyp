@@ -1,0 +1,118 @@
+[
+  {
+    "blind_id": "Q001",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Evaluate an application retry design after a PostgreSQL serialization failure when reads determine later writes.",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "An application uses Serializable transactions. A transaction T reads rows from permanent user tables, uses those values to decide which row to update, and then updates that row. Before T commits, the database aborts T with SQLSTATE 40001 (serialization_failure).\n\nThe team proposes the following retry design:\n1. Catch only SQLSTATE 40001.\n2. On a 40001 error, roll back the current transaction, then create a new transaction and rerun the complete transaction logic from the beginning.\n3. Reuse only the new transaction's freshly read values; never depend on values read during the aborted attempt.\n4. If a retry again gets SQLSTATE 40001, repeat steps 2 and 3.\n\nClaim: This design is correct for the described transaction and for the general retry rules.\n\nWhich option best evaluates the design?\n\nA. Correct, because retrying the complete transaction avoids depending on reads from the aborted transaction and lets the retry see a new initial view.\nB. Incorrect, because retrying the complete transaction is unnecessary; reusing the values from the first read is safe since 40001 only rolls back the update.\nC. Incorrect, because 40001 must be handled by retrying just the failed statement, not the whole transaction.\nD. Correct, but only if the retry is a deferrable read-only transaction, because read-only retries are needed after 40001.",
+      "options": [
+        "Correct, because retrying the complete transaction avoids depending on reads from the aborted transaction and lets the retry see a new initial view.",
+        "Incorrect, because retrying the complete transaction is unnecessary; reusing the values from the first read is safe since 40001 only rolls back the update.",
+        "Incorrect, because 40001 must be handled by retrying just the failed statement, not the whole transaction.",
+        "Correct, but only if the retry is a deferrable read-only transaction, because read-only retries are needed after 40001."
+      ]
+    }
+  },
+  {
+    "blind_id": "Q002",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "推演 PostgreSQL Repeatable Read 下的连续读取，并区分快照稳定与可序列化执行。",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "某应用使用 PostgreSQL 的 Repeatable Read 隔离级别。事务 T 在开始时执行了第一个非事务控制语句（例如一次 SELECT），随后在同一事务内多次执行只读 SELECT，只读取同一组行。\n\n请依据资料解释：\n1. 这些连续 SELECT 是否应看到同一份稳定快照？快照在事务内何时确定？\n2. Repeatable Read 是否等价于可串行化执行？若不是，说明资料给出的差异及一个可能出现的异常例子。\n3. 只读事务是否可能因串行化失败而需要重试？\n\n请分点作答。",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q003",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Trace consecutive reads under PostgreSQL Repeatable Read and distinguish snapshot stability from serializable execution.",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "A database application uses the Repeatable Read isolation level. Two transactions T1 and T2 run concurrently, each executing multiple statements.\n\nT1 starts and its first non-transaction-control statement is a SELECT. Later, T2 commits a change to a row that T1 already read. T1 then issues another SELECT on that same row before T1 commits.\n\nUse the supplied course evidence to answer the following.\n\n1. Under Repeatable Read, does T1's second SELECT see T2's committed change? Explain using the snapshot rule from the evidence.\n2. The evidence says Repeatable Read provides a rigorous guarantee that each transaction sees a completely stable view of the database. Does that guarantee mean Repeatable Read execution is necessarily equivalent to some serial execution of the same transactions? Justify your answer using the evidence.\n3. The evidence also states that read-only transactions will never have serialization conflicts and that applications must be prepared to retry transactions due to serialization failures. Given those two statements, under what condition could a read-only Repeatable Read transaction still observe a result that is not consistent with any serial execution?\n\nWrite your answer as a short paragraph or bullet points.",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q004",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "分析内核线程与中断处理程序共享自旋锁时的同步设计，并论证本 CPU 与多处理器情况下的影响。",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "考虑一个多处理器系统（类似 xv6 的 RISC-V 多核环境），内核线程与定时器中断处理程序共享一个自旋锁 tickslock。\n\n背景：内核线程在 sys_pause 中读取 ticks，定时器中断处理程序 clockintr 递增 ticks，两者通过 tickslock 保护对 ticks 的访问。系统可能在同一 CPU 上发生线程执行与中断的交错，也可能在不同 CPU 上并行执行。\n\n根据所给材料，回答以下问题：\n\n1. 假设内核线程在 CPU0 上持有 tickslock 时，CPU0 发生了定时器中断，中断处理程序试图获取 tickslock。描述此时可能发生的情况，并说明为什么这会导致系统死锁。\n2. 为避免第1问中的死锁，材料指出 xv6 采取了什么通用策略？该策略在单 CPU 和多 CPU 情况下分别有何影响？\n3. 该策略要求获取锁时严格按照特定顺序操作：acquire 必须先调用 push_off 再设置锁变量，release 必须先在释放锁后调用 pop_off。请分别解释为什么这两个顺序至关重要，并说明如果顺序颠倒可能引发什么问题。\n4. push_off 和 pop_off 通过维护嵌套计数来处理嵌套临界区。描述该计数如何工作，以及当计数归零时 pop_off 执行什么操作。",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q005",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Analyze and justify a synchronization design when a kernel thread and an interrupt handler share a spinlock, including local and multiprocessor effects.",
+    "sections": [],
+    "question": {
+      "kind": "short_answer",
+      "stem": "In xv6, the spinlock tickslock protects ticks, which is incremented by the clockintr timer interrupt handler and read by a kernel thread executing sys_pause.\n\n1. sys_pause holds tickslock while reading ticks.\n2. The same CPU is then interrupted by a timer interrupt, so clockintr runs and tries to acquire tickslock.\n3. clockintr sees that tickslock is already held and waits for it to be released.\n4. On that same CPU, no interrupt occurs while interrupts are disabled, and xv6 disables interrupts on a CPU whenever it acquires any lock.\n5. On other CPUs, interrupts and lock acquisitions may still occur.\n\nAnalyze this scenario and justify two design decisions: (a) why allowing a CPU to hold tickslock with interrupts enabled would deadlock this CPU, and (b) why, in the design used by xv6, acquiring any lock disables interrupts on that CPU but does not stop interrupts on other CPUs.\n\nGive a short, step-by-step justification that refers to the actors, the lock state, and the local versus multiprocessor effects.",
+      "options": []
+    }
+  },
+  {
+    "blind_id": "Q006",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Apply TCP byte sequence numbers and cumulative acknowledgements to a short arrival sequence with a missing range.",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "A TCP sender transmits three segments carrying application-layer data to a receiver. The initial sequence number for this byte stream is 100. The segments arrive as follows:\n\n1. Segment 1: SequenceNum = 100, length = 80 bytes\n2. Segment 2: SequenceNum = 180, length = 60 bytes\n3. Segment 3: SequenceNum = 240, length = 50 bytes\n\nSegment 2 is lost and never reaches the receiver; Segments 1 and 3 arrive correctly. The receiver immediately returns an acknowledgement after each correctly received segment. The Acknowledgement field identifies the next sequence number expected.\n\nWhat acknowledgement number does the receiver send after receiving Segment 3, and why?",
+      "options": [
+        "ACK = 180, because the receiver only acknowledges the last in-order byte received (179).",
+        "ACK = 290, because the receiver acknowledges the highest in-order byte received, which is the end of Segment 1 (179).",
+        "ACK = 180, because the receiver is still expecting the missing bytes starting at 180.",
+        "ACK = 240, because the receiver acknowledges the start of the highest-numbered segment received."
+      ]
+    }
+  },
+  {
+    "blind_id": "Q007",
+    "language": "en",
+    "learner_profile": "Undergraduate computer science student who has studied the supplied course material and introductory concepts; no unstated implementation-specific knowledge is assumed.",
+    "learning_objective": "Recognize transaction atomicity and the effect of COMMIT versus ROLLBACK in a simple PostgreSQL transfer.",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "In PostgreSQL, a transfer transaction is set up with BEGIN and then performs two steps: it debits Alice's account and credits Bob's account. Suppose the debit step has already executed, and then the ROLLBACK command is issued instead of COMMIT.\n\nWhich statement describes the resulting effect?\n\n1. The transaction bundles the debit and credit into a single all-or-nothing operation.\n2. ROLLBACK is issued after the debit step but before COMMIT.\n3. ROLLBACK cancels all updates made so far in the transaction.",
+      "options": [
+        "The debit to Alice is undone, so neither account change takes effect.",
+        "The debit to Alice remains and only the credit to Bob is undone.",
+        "Both the debit and the credit take effect immediately for other sessions.",
+        "The debit is visible to other sessions until a later COMMIT is issued."
+      ]
+    }
+  },
+  {
+    "blind_id": "Q008",
+    "language": "zh",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "learning_objective": "识别停止等待可靠传输中确认、超时和序号各自的作用。",
+    "sections": [],
+    "question": {
+      "kind": "mcq",
+      "stem": "停止等待算法中，确认、超时和序号各自的核心作用是什么？\n\n背景：在停止等待可靠传输中，发送方每发送一帧后都要等待接收方的反馈。\n\n1. 发送方发送一帧后，在收到确认之前不会发送下一帧。\n2. 若确认在一段时间内没有到达，发送方超时并重传原来的帧。\n3. 停止等待协议的帧头通常包含1位序号，序号取值为0和1，且每帧交替使用。\n\n请从下列作用描述中选择最符合资料的一项。",
+      "options": [
+        "确认告知发送方帧已成功交付；超时触发未收到确认时的重传；序号使接收方能识别并忽略重复帧。",
+        "确认用于协商连接参数；超时用于决定接收窗口大小；序号用于标识TCP字节流中的第一个字节。",
+        "确认用于在反向数据帧中携带流量控制信息；超时用于调整广告窗口；序号用于表示下一个期望的序号。",
+        "确认用于选择下一次发送的帧；超时用于合并连续帧；序号用于计算端到端往返时间。"
+      ]
+    }
+  }
+]
