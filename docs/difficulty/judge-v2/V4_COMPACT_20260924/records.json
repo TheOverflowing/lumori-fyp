@@ -1,0 +1,3307 @@
+[
+  {
+    "id": "divisibility_base_v4_1",
+    "case_id": "divisibility_base",
+    "domain": "mathematics",
+    "arm": "v4",
+    "repeat": 1,
+    "status": "valid",
+    "label": "hard",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明存在整除关系，并说明分组方法对任意 n 适用。学习者已具备整除、奇偶性、证明和抽屉原理基础，虽未学过按奇数部分分组，但题目本身可解且可评估。",
+      "cognitive_demand": "strategic_reasoning",
+      "tasks": [
+        {
+          "request_ids": [
+            "S003",
+            "S004"
+          ],
+          "condition_ids": [
+            "S001",
+            "S002"
+          ],
+          "solution_ids": [],
+          "residual_work": "需要独立构造分组：把每个整数写成 2^k·m（m 为奇数），按奇数部分 m 分组；证明共有 n 个组，n+1 个数放入 n 组必有两数同组；再说明同组两数中较小者整除较大者。这些构造与推理均未在题面中给出。",
+          "mode": "construct_argument"
+        }
+      ],
+      "minimum_answer": "把 1,2,…,2n 中的每个整数唯一写成 2^k·m，其中 m 为奇数，k≥0。按奇数部分 m 分组：奇数部分相同的数归为一组。1 到 2n 中的奇数 m 共有 n 个（1,3,5,…,2n−1），所以共有 n 个组。任取 n+1 个不同整数，由抽屉原理，必有两个数落在同一组，即它们有相同的奇数部分 m，形如 2^a·m 与 2^b·m。若 a<b，则 2^a·m 整除 2^b·m；若 b<a，则 2^b·m 整除 2^a·m。因此这两个不同数中一个整除另一个。该分组对任意正整数 n 都成立，因为 1 到 2n 中奇数恰有 n 个，抽屉原理保证 n+1 个数放入 n 组必有同组。",
+      "decision": {
+        "candidates": [
+          "hard"
+        ],
+        "hard_task_index": 0,
+        "reason": "该题的核心瓶颈是构造按奇数部分分组的映射，并把它与抽屉原理结合。学习者已会整除、奇偶性和抽屉原理，但未学过按奇数部分分组的技巧；题面只给出条件和证明要求，没有给出分组方法或同组整除的推理。因此这不是简单复述已给论证，也不是仅套用熟悉类别，而是需要独立发现并验证一个非平凡构造，属于 hard。最近边界是 medium：若学生已熟悉按奇数部分分组，则只需应用该熟悉方法即可，但当前画像明确未学过，故不能判为 medium。"
+      },
+      "estimated_difficulty": "hard",
+      "resolved_evidence": [
+        {
+          "request_ids": [
+            {
+              "id": "S003",
+              "start": 36,
+              "end": 59,
+              "text": "证明其中一定存在两个不同数，使一个整除另一个。"
+            },
+            {
+              "id": "S004",
+              "start": 59,
+              "end": 106,
+              "text": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 11,
+              "text": "设 n 为任意正整数。"
+            },
+            {
+              "id": "S002",
+              "start": 11,
+              "end": 36,
+              "text": "从 1,2,…,2n 中任取 n+1 个不同整数。"
+            }
+          ],
+          "solution_ids": []
+        }
+      ],
+      "reviewer_type": "AI",
+      "human_validated": false
+    }
+  },
+  {
+    "id": "m_missing_v3_0",
+    "case_id": "m_missing",
+    "domain": "mathematics",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "uncertain",
+    "eligibility": "invalid_question",
+    "result": {
+      "eligibility": "invalid_question",
+      "eligibility_reason": "题目只给出“x、y 为非负实数”，没有任何关于 x、y 的附加条件、方程或不等式，因此 xy 并不唯一确定。例如 x=0,y=1 得 xy=0，x=1,y=1 得 xy=1，均满足题设但结果不同。要求“给出 xy 唯一确定的数值”在现有条件下无法完成，属于条件缺失且要求不可满足。",
+      "cognitive_demand": "uncertain",
+      "supplied_support": [],
+      "remaining_demands": [
+        {
+          "quote": "设 x、y 为非负实数。请给出 xy 唯一确定的数值。",
+          "finding": "该要求缺少使 xy 唯一确定所必需的条件；仅凭 x、y 非负无法推出 xy 的值，因此不存在可满足的求解任务。"
+        }
+      ],
+      "knowledge_integration": "无需整合任何知识即可发现题目条件不足；若补充条件，才可能涉及一元二次式、配方法或平方非负等工具。",
+      "strategy_selection": "面对该题，合理策略是检验条件是否充分，并构造反例说明 xy 不唯一；而不是选择某种代数变形去求一个并不存在的确定值。",
+      "justification_required": "需要说明为什么仅凭“x、y 为非负实数”不能确定 xy，并给出至少两个满足条件但 xy 不同的实例。",
+      "estimated_difficulty": "uncertain",
+      "adjacent_level_reason": "由于题目本身无效，无法按认知需求或学习者相对难度可靠定位；不能把条件缺失误判为 hard 或 easy。",
+      "uncertainty_reasons": [
+        "题目缺少使 xy 唯一确定的关键条件。",
+        "不存在可满足的求解目标，因此无法评估真实认知需求。",
+        "若原题本应包含额外条件，需补充后才能重新评估。"
+      ],
+      "confidence": "high",
+      "demand_audit": [
+        {
+          "quote": "设 x、y 为非负实数。请给出 xy 唯一确定的数值。",
+          "finding": "该任务在给定条件下不可解；没有提供任何能确定 xy 的方程、不等式或附加关系。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "指出条件不足并构造反例，说明 xy 不唯一；无法给出题目所要求的唯一数值。"
+        }
+      ],
+      "minimum_sufficient_response": "题目条件不足，无法给出 xy 唯一确定的数值。反例：取 x=0、y=1，则 x、y 均为非负实数，xy=0；取 x=1、y=1，则 x、y 也均为非负实数，xy=1。两种情况都满足题设，但 xy 不同，所以 xy 不是唯一确定的。",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "该题对任何学生都不是可解的数学任务，因为缺少确定 xy 的条件；这不是学习者准备不足，而是题目本身无效。"
+    }
+  },
+  {
+    "id": "divisibility_base_v3_0",
+    "case_id": "divisibility_base",
+    "domain": "mathematics",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "hard",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目完整明确：给定 n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明必有两个不同数成整除关系，并明确要求说明构造/分组对任意 n 的适用性及整除原因，不允许只检验例子。条件充分，无矛盾，学生可见文本中无缺失关键条件。",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [],
+      "remaining_demands": [
+        {
+          "quote": "证明其中一定存在两个不同数，使一个整除另一个。",
+          "finding": "需要给出完整的存在性证明，而非举例或验证有限情形。"
+        },
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n",
+          "finding": "需要设计或选用一个对任意 n 都成立的分组/构造，并论证其普遍性。"
+        },
+        {
+          "quote": "并解释由它得到整除关系的原因",
+          "finding": "需要说明同一组内任意两数为何必有一个整除另一个。"
+        },
+        {
+          "quote": "不能只检验几个例子。",
+          "finding": "排除仅靠特例验证，要求一般性论证。"
+        }
+      ],
+      "knowledge_integration": "需要把抽屉原理与一个非平凡的分组方式结合：按奇数部分分组，每组形如 {m·2^k}，其中 m 为奇数。还需知道 1 到 2n 中奇数部分不超过 2n 的奇数个数为 n，从而只有 n 个组，而取 n+1 个数必有两个落入同一组。",
+      "strategy_selection": "关键策略是构造 n 个类别（按奇数部分分组），使每个类别内部天然具有整除链性质，然后应用抽屉原理。学生已会抽屉原理，但未学过按奇数部分分组的技巧，因此策略选择本身是非例行的。",
+      "justification_required": "必须证明两点：一是分组覆盖 1 到 2n 且组数为 n；二是同一组内任意两个不同数中较小者整除较大者。还需说明 n+1 个数放入 n 组必有同组两个数。",
+      "estimated_difficulty": "hard",
+      "adjacent_level_reason": "该题不是常规应用抽屉原理的简单题：学生需要自行发现按奇数部分分组这一非平凡构造，并证明组内整除链和组数恰为 n。若仅比较 medium，则低估了构造发现与普遍性论证的独立整合要求；若比较 easy，则更不成立，因为学生未学过该分组技巧，无法直接套用熟悉模板。",
+      "uncertainty_reasons": [
+        "学生已学抽屉原理，若其曾接触过类似‘按奇数部分分组’的竞赛题，则难度可能降为 medium；但给定画像明确未学过该技巧。",
+        "不同教学背景下，构造分组可能被视为可提示的常规技巧，但本题未提供任何提示。"
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "证明其中一定存在两个不同数，使一个整除另一个。",
+          "finding": "题目只给出待证结论，未提供证明思路、分组方式或中间结论。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "构造或选择合适的分组，并证明由抽屉原理可推出存在两个不同数成整除关系。"
+        },
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n",
+          "finding": "题目要求普遍性论证，但未给出任何具体构造或分组方法。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "给出对任意 n 都成立的分组方法，并证明该分组覆盖 1 到 2n 且组数不超过 n。"
+        },
+        {
+          "quote": "并解释由它得到整除关系的原因",
+          "finding": "题目要求解释整除关系来源，但未说明同一组内两数为何成整除关系。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "证明同一组内任意两个不同数中，较小者整除较大者。"
+        },
+        {
+          "quote": "不能只检验几个例子。",
+          "finding": "这是对证明方式的限制，排除特例验证，但未提供一般性证明。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "提供适用于任意 n 的一般性证明，而非仅检验若干 n 的例子。"
+        }
+      ],
+      "minimum_sufficient_response": "对每个整数 a∈{1,2,…,2n}，把它写成 a=2^k m，其中 m 为奇数，k≥0。称 m 为 a 的奇数部分。按奇数部分分组：所有奇数部分相同的数放在同一组。由于 a≤2n，其奇数部分 m≤2n，且 m 为奇数，所以可能的奇数部分只有 1,3,5,…,2n-1（若 2n 为偶数）或 1,3,…,2n（若 2n 为奇数），总之不超过 n 个。因此 1 到 2n 被分成至多 n 组。现在任取 n+1 个不同整数，由抽屉原理，必有两个数落在同一组。设这两个数为 2^r m 和 2^s m，其中 m 为奇数，r<s。则 2^r m 整除 2^s m，因为 2^s m = 2^{s-r}·(2^r m)。所以这两个不同数中一个整除另一个。由于分组方法对任意 n 都成立，结论对任意正整数 n 成立。",
+      "hard_basis_quote": "你需要说明构造或分组方法为何适用于任意 n",
+      "learner_relative_basis": "该学生已掌握抽屉原理，但未学过按奇数部分分组的技巧。本题的瓶颈不是抽屉原理本身，而是需要独立发现一个非平凡分组：把每个数写成 2^k 乘奇数，并按奇数部分归类，再证明组数不超过 n 且组内成整除链。这一构造与普遍性论证无法从已学内容直接套用，因此对给定学生属于 hard。"
+    }
+  },
+  {
+    "id": "editor_base_v3_1",
+    "case_id": "editor_base",
+    "domain": "humanities",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained with fictional records, asks for evaluation, explanation, distinction, evidence, and a qualified conclusion, and does not require external historical facts. The learner profile is specified, so the task can be judged.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "The published submission policy says: \"All submissions received before Friday are printed without editorial changes.\"",
+          "finding": "Supplies the policy text that must be interpreted and applied to the contributor's concern."
+        },
+        {
+          "quote": "A student contributor writes: \"My essay appeared unchanged. I deleted a paragraph before I sent it because I worried about losing my club role. Nobody asked me to delete it.\"",
+          "finding": "Supplies the contributor's account, including the admission that the deletion was self-initiated and the stated worry."
+        },
+        {
+          "quote": "A student editor writes: \"We printed every submission received before Friday. The printed issue proves that everyone could speak freely.\"",
+          "finding": "Supplies the editor's claim and the evidence the editor offers for it."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "The learner must select a relevant detail from each account and use it to assess whether the editor's claim is supported."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "The learner must interpret the policy and determine whether it addresses the contributor's worry about losing a club role."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "The learner must generate two explanations, classify the established versus possible elements, and propose discriminating evidence."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "The learner must formulate a conclusion that is appropriately limited by the available records."
+        }
+      ],
+      "knowledge_integration": "The learner must integrate the editor's claim, the contributor's account, and the policy text, while separating what the records establish from what they merely permit.",
+      "strategy_selection": "The learner must choose a method for evaluating a claim under incomplete evidence: identify relevant details, test the policy against the concern, generate alternative explanations, and qualify the conclusion.",
+      "justification_required": "The learner must justify the evaluation and the qualified conclusion by reference to the records, not by inventing facts.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "The task is more than routine application because it requires adjudicating an incomplete evidence base and generating alternative explanations, but it is not hard for these learners because the records are short, the required distinctions are explicitly prompted, and no extended independent investigation or complex proof is needed.",
+      "uncertainty_reasons": [
+        "The boundary between routine_application and strategic_reasoning is close because the task supplies clear prompts for each step.",
+        "The learner profile states practice with observations versus interpretations, which may make the distinction easier than the task alone suggests."
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "The editor's claim and both accounts are supplied, but the learner must select details and assess whether they support the claim.",
+          "support_quotes": [
+            "A student editor writes: \"We printed every submission received before Friday. The printed issue proves that everyone could speak freely.\"",
+            "A student contributor writes: \"My essay appeared unchanged. I deleted a paragraph before I sent it because I worried about losing my club role. Nobody asked me to delete it.\""
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Choose a detail from each account and explain how it bears on the editor's claim."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "The policy text and the contributor's concern are supplied, but the learner must interpret whether the policy addresses the concern.",
+          "support_quotes": [
+            "The published submission policy says: \"All submissions received before Friday are printed without editorial changes.\"",
+            "A student contributor writes: \"My essay appeared unchanged. I deleted a paragraph before I sent it because I worried about losing my club role. Nobody asked me to delete it.\""
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Explain that the policy addresses editorial changes after submission but does not address the contributor's self-censorship before submission."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "The contributor's account supplies one possible explanation, but the learner must generate a second, classify established versus possible, and propose discriminating evidence.",
+          "support_quotes": [
+            "A student contributor writes: \"My essay appeared unchanged. I deleted a paragraph before I sent it because I worried about losing my club role. Nobody asked me to delete it.\""
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Generate a second plausible explanation, distinguish what is established from what is only possible, and state what additional evidence could distinguish the explanations."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "The records are supplied, but the learner must formulate a conclusion that is qualified by the limits of the evidence.",
+          "support_quotes": [
+            "There are no other records."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Propose a conclusion that is supported by the records and appropriately qualified by the absence of further evidence."
+        }
+      ],
+      "minimum_sufficient_response": "The editor's claim is not fully supported. The editor says every submission before Friday was printed, and the contributor says the essay appeared unchanged, which supports the claim that the issue printed submissions without editorial changes. But the contributor also says, \"I deleted a paragraph before I sent it because I worried about losing my club role. Nobody asked me to delete it.\" That shows the contributor self-censored before submission, so the printed issue does not prove everyone could speak freely. The policy says submissions received before Friday are printed without editorial changes, but it does not resolve the contributor's concern because the deletion happened before submission and was not an editorial change. Two plausible explanations for the deletion are: (1) the contributor deleted the paragraph because of the stated worry about losing the club role, and (2) the contributor deleted it for some other reason, such as believing the paragraph was weak or irrelevant. What is established is that the contributor deleted a paragraph before sending the essay and that nobody asked them to delete it. What is only possible is the reason for the deletion. Additional evidence that could distinguish the explanations includes messages, notes, or testimony from the contributor at the time of deletion, or evidence that the club role was actually at risk. A qualified conclusion is that the records support the claim that the issue printed submissions without editorial changes, but they do not support the stronger claim that everyone could speak freely, because the contributor's self-censorship shows that at least one person did not speak freely before submission.",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "For undergraduates who have practised distinguishing observations from interpretations, the main remaining challenge is applying that skill to a short fictional case with incomplete evidence. The task is not a familiar routine because it requires generating alternative explanations and a qualified conclusion, but the prompts and short records keep it within medium difficulty."
+    }
+  },
+  {
+    "id": "h_hint_v3_0",
+    "case_id": "h_hint",
+    "domain": "humanities",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: it supplies three fictional excerpts, a teaching note on perspective, two competing claims, and six explicit constraints plus three follow-up tasks. All people, places, and events are fictional teaching material, and the task explicitly permits multiple defensible interpretations. No missing condition, contradiction, or unanswerable demand is present.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "A first-person account gives access to a situated viewpoint, not automatic knowledge of every participant's motives. Distinguish a narrator's explicit statement from an inference based on an image, omission or contrast.",
+          "finding": "The note supplies the core interpretive method: treating first-person narration as situated and separating explicit statement from inference."
+        },
+        {
+          "quote": "The curator's collective we can be read as an aspiration to shared ownership or as a phrase that leaves differences within the group unstated.",
+          "finding": "The note supplies two competing readings of the curator's 'we,' so the learner need not invent the alternative interpretation from scratch."
+        },
+        {
+          "quote": "The volunteer's applause and unopened letter can support readings of tentative belonging, unresolved exclusion, or a mixture, but the text does not establish censorship or identify the letter's contents.",
+          "finding": "The note supplies the range of defensible readings of the volunteer's behavior and explicitly rules out censorship and letter-content claims."
+        },
+        {
+          "quote": "A defensible interpretation compares details from both passages, acknowledges a plausible competing reading, and explains the limits of its claim.",
+          "finding": "The note supplies the success criteria for a defensible interpretation, reducing uncertainty about what the task expects."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Distinguish what each passage explicitly states from inferences about motives, selection, rejection, or withheld information.",
+          "finding": "The learner must apply the supplied distinction to specific sentences in both passages, sorting stated facts from inferences."
+        },
+        {
+          "quote": "Use at least one concrete detail from each account as textual support.",
+          "finding": "The learner must select and quote or paraphrase concrete details from both passages and connect them to the interpretation."
+        },
+        {
+          "quote": "Compare how the curator's collective language and the volunteer's applause coexist with hesitation or unstated difference.",
+          "finding": "The learner must construct a comparison showing how collective language and applause coexist with the volunteer's hesitation, rather than treating them as simply contradictory."
+        },
+        {
+          "quote": "Address a plausible competing reading drawn from the same passages.",
+          "finding": "The learner must articulate a rival reading grounded in the passages and explain why it is plausible, even if ultimately rejected."
+        },
+        {
+          "quote": "Limit claims to what the passages establish; do not assert censorship, the letter's contents, or unstated visitor reactions.",
+          "finding": "The learner must police the boundary of the evidence and avoid overclaiming beyond what the excerpts establish."
+        },
+        {
+          "quote": "Explain how a specific omission or ambiguity shapes your interpretation and state the uncertainty that remains.",
+          "finding": "The learner must identify a specific omission or ambiguity and explain its interpretive effect and the residual uncertainty."
+        }
+      ],
+      "knowledge_integration": "The learner must integrate close-reading skills across two passages, the supplied perspective note, and the two competing claims. This requires coordinating explicit statements, inferences, omissions, and the limits of evidence into a single defensible interpretation.",
+      "strategy_selection": "The learner must choose which details to cite, which competing reading to address, which omission or ambiguity to foreground, and whether to endorse, reject, or revise the claims. The note supplies the method, but the learner must select and apply it to specific textual moments.",
+      "justification_required": "The learner must justify the judgment about the two claims, justify the revised claim if neither is fully defensible, and justify what additional evidence would be needed to support the rejected stronger claim. Each justification must be tied to specific passages and constrained by the no-invention rule.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "The task is more than routine application because the learner must adjudicate between competing claims, construct a qualified interpretation, and manage evidentiary limits. However, the teaching note supplies the interpretive framework, the two competing readings of the 'we,' the range of readings of the volunteer's behavior, and the success criteria, so the learner is not inventing a nonroutine method. For prepared undergraduates in an introductory humanities seminar, this is a meaningful familiar application of close-reading and evidence-weighing skills rather than a hard independent integration. The boundary with hard is that the learner must still coordinate multiple constraints and produce a qualified revision, but the supplied scaffolding makes the task tractable within the seminar's stated preparation.",
+      "uncertainty_reasons": [
+        "The line between medium and hard depends on how much the teaching note's supplied readings reduce the learner's independent interpretive work; reasonable evaluators could differ.",
+        "The learner profile specifies close-reading and viewpoint-comparison skills but does not specify prior experience with adjudicating competing claims under explicit evidentiary constraints."
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "Distinguish what each passage explicitly states from inferences about motives, selection, rejection, or withheld information.",
+          "finding": "The note supplies the general distinction between explicit statement and inference, but the learner must apply it to specific sentences in both passages.",
+          "support_quotes": [
+            "A first-person account gives access to a situated viewpoint, not automatic knowledge of every participant's motives. Distinguish a narrator's explicit statement from an inference based on an image, omission or contrast."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Apply the distinction to specific sentences in Passage A and Passage B, identifying which claims are explicit and which are inferential."
+        },
+        {
+          "quote": "Use at least one concrete detail from each account as textual support.",
+          "finding": "No specific detail is supplied as the required support; the learner must select details from both passages.",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "Select and cite at least one concrete detail from each passage and connect it to the interpretation."
+        },
+        {
+          "quote": "Compare how the curator's collective language and the volunteer's applause coexist with hesitation or unstated difference.",
+          "finding": "The note supplies the two readings of the 'we' and the range of readings of the volunteer's behavior, but the learner must construct the comparison.",
+          "support_quotes": [
+            "The curator's collective we can be read as an aspiration to shared ownership or as a phrase that leaves differences within the group unstated.",
+            "The volunteer's applause and unopened letter can support readings of tentative belonging, unresolved exclusion, or a mixture, but the text does not establish censorship or identify the letter's contents."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Build a comparison showing how the collective language and the applause coexist with hesitation or unstated difference, using specific textual details."
+        },
+        {
+          "quote": "Address a plausible competing reading drawn from the same passages.",
+          "finding": "The note supplies the success criterion of acknowledging a competing reading but does not supply the specific competing reading the learner must address.",
+          "support_quotes": [
+            "A defensible interpretation compares details from both passages, acknowledges a plausible competing reading, and explains the limits of its claim."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Articulate a specific plausible competing reading grounded in the passages and explain why it is plausible."
+        },
+        {
+          "quote": "Limit claims to what the passages establish; do not assert censorship, the letter's contents, or unstated visitor reactions.",
+          "finding": "The note explicitly rules out censorship and letter-content claims, supplying the boundary, but the learner must apply it throughout the interpretation.",
+          "support_quotes": [
+            "The volunteer's applause and unopened letter can support readings of tentative belonging, unresolved exclusion, or a mixture, but the text does not establish censorship or identify the letter's contents."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Apply the evidentiary boundary consistently, avoiding assertions about censorship, letter contents, or unstated visitor reactions."
+        },
+        {
+          "quote": "Explain how a specific omission or ambiguity shapes your interpretation and state the uncertainty that remains.",
+          "finding": "The note identifies some omissions and ambiguities but does not supply the learner's specific interpretive explanation or residual uncertainty.",
+          "support_quotes": [
+            "The passage is narrated by someone responsible for the exhibition. It does not identify who selected the photographs, list rejected contributions, or report every visitor's reaction.",
+            "The narrator reports gratitude and hesitation but does not state why the letter was withheld, whether anybody rejected it, or what it contained."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Select a specific omission or ambiguity, explain how it shapes the interpretation, and state the uncertainty that remains."
+        }
+      ],
+      "minimum_sufficient_response": "Claim 1 overstates the evidence: the curator's 'we' and the volunteer's applause are explicit, but the passage does not establish that everyone experienced belonging. Passage A states that volunteers carried boxes and children stopped before the photographs, and the curator says the opening 'felt like a beginning, not a finished history.' Passage B states that the volunteer recognized her father's coat, was glad someone kept the picture, applauded when the curator thanked the volunteers, but kept the letter inside her bag. The applause is explicit; the hesitation is also explicit. Claim 2 is not defensible: the text does not establish censorship or the letter's contents. A qualified revision of Claim 1 could be: 'The curator's collective language and the volunteer's applause suggest a shared public occasion, but the volunteer's unopened letter leaves open whether that belonging was fully experienced by everyone.' A plausible competing reading is that the 'we' is aspirational and the applause is social courtesy rather than evidence of belonging; this reading is supported by the volunteer's decision to keep the letter private. The specific omission of why the letter was withheld shapes the interpretation: it prevents any claim about rejection or censorship and leaves the volunteer's motive uncertain. Additional evidence needed to support the stronger original claim would include the volunteer's own statement that she felt full belonging, or a curator's account confirming that all contributions were welcomed and that no one withheld anything.",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "For undergraduates who can closely read supplied passages and compare narrative viewpoints, the remaining bottleneck is adjudicating between two competing claims under explicit evidentiary constraints and producing a qualified revision. The teaching note supplies the interpretive framework, the competing readings of the 'we,' the range of readings of the volunteer's behavior, and the success criteria, so the learner is applying familiar close-reading skills to a structured task rather than inventing a nonroutine method. The task is therefore medium rather than hard for this profile."
+    }
+  },
+  {
+    "id": "editor_hint_v3_1",
+    "case_id": "editor_hint",
+    "domain": "humanities",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "failed",
+    "error": {
+      "type": "ValidationError"
+    }
+  },
+  {
+    "id": "divisibility_base_v3_1",
+    "case_id": "divisibility_base",
+    "domain": "mathematics",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "valid",
+    "label": "hard",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目完整明确：给定 n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明必有两个不同数成整除关系，并明确要求说明构造/分组对任意 n 的适用性及整除原因，不允许只检验例子。条件充分，无矛盾，学生可见文本中无缺失关键条件。",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [],
+      "remaining_demands": [
+        {
+          "quote": "证明其中一定存在两个不同数，使一个整除另一个。",
+          "finding": "需要给出完整的存在性证明，而非举例或验证有限情形。"
+        },
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n",
+          "finding": "需要设计或选用一个对任意 n 都成立的分组/构造，并论证其普遍性。"
+        },
+        {
+          "quote": "并解释由它得到整除关系的原因",
+          "finding": "需要解释同一组内两个数为何必有一个整除另一个。"
+        },
+        {
+          "quote": "不能只检验几个例子。",
+          "finding": "排除仅靠特例验证，要求一般性论证。"
+        }
+      ],
+      "knowledge_integration": "需要把抽屉原理与正整数分解（每个正整数唯一写成奇数部分乘以 2 的幂）结合：按奇数部分把 1 到 2n 分成 n 个类，每类形如 {m, 2m, 4m, …} 且 m 为奇数；n+1 个数落入 n 类，必有两个同属一类，从而较小者整除较大者。学生已学抽屉原理和整除、奇偶性，但未学按奇数部分分组，因此需要自行构造分类并验证类数与类内整除性。",
+      "strategy_selection": "关键策略是选择按“奇数部分”分组，而不是按大小、奇偶或其他常规分类。该选择非例行：需要意识到每个数可唯一写成 2^k·m（m 为奇数），且 1 到 2n 中奇数部分只有 n 种，从而类数为 n，恰好配合 n+1 个对象。",
+      "justification_required": "必须证明两点：(1) 1 到 2n 中每个数的奇数部分属于 {1,3,…,2n−1}，共 n 个，因此分组覆盖全部数且只有 n 组；(2) 同一组内任意两个数形如 2^a m 与 2^b m，若 a<b，则前者整除后者。由此用抽屉原理得到存在两个不同数成整除关系。",
+      "estimated_difficulty": "hard",
+      "adjacent_level_reason": "该题不是简单套用抽屉原理：学生已会“把对象放入已给定类别”的简单题，但本题未给出类别，需要自行发现按奇数部分分组这一非例行构造，并证明其普遍性与类内整除性。与 medium 的差别在于，medium 通常只需在熟悉分类或熟悉结论上做常规应用；这里的关键分类本身是解题难点。与 extended_inquiry 的差别在于，本题不需要长期迭代探究，而是一次性构造与证明。",
+      "uncertainty_reasons": [
+        "学生已学抽屉原理，若其此前接触过“奇数部分分组”的经典模型，则本题可能降为 medium；但学习者画像明确说未学过该技巧。",
+        "难度依赖学生对“唯一写成奇数部分乘 2 的幂”这一事实的熟练程度，画像未说明其数论分解熟练度。"
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "证明其中一定存在两个不同数，使一个整除另一个。",
+          "finding": "题目只给出待证结论，没有给出分组方法或证明步骤，因此该证明任务基本未被供给。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "构造或选择合适分组，并证明由抽屉原理可推出存在两个不同数成整除关系。"
+        },
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n",
+          "finding": "题目明确要求普遍性论证，但未提供任何分组方案，因此需要学生自行给出对任意 n 成立的分组并说明类数。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "说明按奇数部分分组时，1 到 2n 中恰有 n 个奇数部分，因此分组对任意 n 都适用。"
+        },
+        {
+          "quote": "并解释由它得到整除关系的原因",
+          "finding": "题目要求解释整除原因，但未给出同组两数成倍数关系的理由。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "证明同一奇数部分组内两个不同数中较小者整除较大者。"
+        },
+        {
+          "quote": "不能只检验几个例子。",
+          "finding": "这是对证明方式的限制，排除特例验证，但没有提供一般性证明。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "给出适用于任意 n 的一般性论证，而非仅检验若干 n 或若干组数。"
+        }
+      ],
+      "minimum_sufficient_response": "把 1,2,…,2n 中的每个数写成 2^k·m，其中 m 为奇数，k≥0。由于 1≤2^k·m≤2n，奇数 m 只能是 1,3,5,…,2n−1，共 n 个。按这个奇数 m 分组：所有奇数部分相同的数放在同一组。于是共有 n 组，而任取 n+1 个数，由抽屉原理，必有两个数落在同一组。设这两个数为 2^a m 与 2^b m，且 a<b，则 2^a m 整除 2^b m。又因为它们是不同整数，所以 a≠b，故其中一个整除另一个。该分组对任意正整数 n 都成立，因为奇数部分只有 n 种，且同组两数必为倍数关系。",
+      "hard_basis_quote": "你需要说明构造或分组方法为何适用于任意 n",
+      "learner_relative_basis": "该学习者已学抽屉原理，但只做过“对象放入已给定类别”的简单题，未学过按奇数部分分组的技巧。本题的瓶颈不是抽屉原理本身，而是必须自行发现并构造“按奇数部分分组”这一非例行分类，并证明奇数部分恰有 n 种、同组两数成倍数关系。对未接触该技巧的高中生而言，这需要独立整合数论分解与抽屉原理，不能视为熟悉应用。"
+    }
+  },
+  {
+    "id": "editor_hint_v4_1",
+    "case_id": "editor_hint",
+    "domain": "humanities",
+    "arm": "v4",
+    "repeat": 1,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The fictional case supplies all needed facts (editor's claim, contributor's account, policy, absence of other records) and the learner profile matches the task: undergraduates practised in distinguishing observation from interpretation and supporting comparisons with quotations. No external historical facts are required, and the teaching note supplies the interpretive framework. The task is a short seminar response, consistent with the profile.",
+      "cognitive_demand": "strategic_reasoning",
+      "tasks": [
+        {
+          "request_ids": [
+            "S009"
+          ],
+          "condition_ids": [
+            "S002",
+            "S003",
+            "S004",
+            "S005",
+            "S007"
+          ],
+          "solution_ids": [
+            "S014"
+          ],
+          "residual_work": "Select a specific detail from each account (e.g., editor's 'printed every submission received before Friday' and contributor's 'essay appeared unchanged') and connect them to the claim's scope. The teaching note supplies the key distinction, but the learner must apply it to the actual quotations.",
+          "mode": "apply_familiar"
+        },
+        {
+          "request_ids": [
+            "S010"
+          ],
+          "condition_ids": [
+            "S005",
+            "S007"
+          ],
+          "solution_ids": [
+            "S014",
+            "S016"
+          ],
+          "residual_work": "Explain that the policy governs editorial alteration after receipt, not pre-submission social pressure, so it does not resolve the contributor's worry. Requires articulating the scope mismatch in the learner's own words.",
+          "mode": "apply_familiar"
+        },
+        {
+          "request_ids": [
+            "S011"
+          ],
+          "condition_ids": [
+            "S005",
+            "S006",
+            "S008"
+          ],
+          "solution_ids": [
+            "S015",
+            "S016",
+            "S017"
+          ],
+          "residual_work": "Generate two plausible explanations (credible informal threat vs. unsupported personal expectation), separate established facts (deletion occurred, no explicit request) from possibilities, and propose distinguishing evidence such as independent club accounts. The teaching note sketches these, but the learner must instantiate them with textual evidence.",
+          "mode": "construct_argument"
+        },
+        {
+          "request_ids": [
+            "S012",
+            "S013"
+          ],
+          "condition_ids": [
+            "S002",
+            "S004",
+            "S007",
+            "S008"
+          ],
+          "solution_ids": [
+            "S018"
+          ],
+          "residual_work": "Formulate a qualified conclusion that affirms unchanged publication while leaving pre-submission freedom unresolved, grounded in the records and avoiding invented facts.",
+          "mode": "construct_argument"
+        }
+      ],
+      "minimum_answer": "The editor's claim overreaches. The editor's detail ('we printed every submission received before Friday') and the contributor's detail ('my essay appeared unchanged') together with the policy ('printed without editorial changes') establish only that received submissions were published unaltered. That is freedom from editorial alteration at the printing stage, not freedom to speak freely before submission. The policy does not resolve the contributor's concern: it governs what happens after receipt, whereas the contributor's worry ('I worried about losing my club role') concerns anticipated social consequences before sending. The contributor's deletion is established; 'nobody asked me to delete it' rules out an explicit request but not informal pressure. Two plausible explanations: (1) a credible informal threat or expectation from club members; (2) an unsupported personal expectation or anxiety. Established: the deletion happened and no explicit request was made. Only possible: informal pressure or mere personal worry. Additional evidence that could distinguish them: independent accounts of club reactions, messages, or testimony about whether pressure was communicated. A qualified conclusion: the records support that received submissions were printed unchanged, but they leave pre-submission freedom of expression unresolved.",
+      "decision": {
+        "candidates": [
+          "medium"
+        ],
+        "hard_task_index": null,
+        "reason": "The task is a familiar application for this profile: undergraduates have practised distinguishing observation from interpretation and supporting comparisons with quotations, and the teaching note supplies the interpretive framework (scope of the policy, two explanations, distinguishing evidence, qualified conclusion). The learner must select textual details, apply the supplied distinction, and construct a short argument, but no nonroutine strategy or unfamiliar integration bottleneck remains. The nearest boundary is easy: the minimum answer is not mere reproduction of a supplied argument, since the learner must instantiate the two explanations and the qualified conclusion with specific evidence and articulate the scope mismatch independently. It falls short of hard because the teaching note already identifies the key distinction and the plausible explanations, leaving only familiar application and evidence selection."
+      },
+      "estimated_difficulty": "medium",
+      "resolved_evidence": [
+        {
+          "request_ids": [
+            {
+              "id": "S009",
+              "start": 486,
+              "end": 547,
+              "text": "Evaluate the editor's claim using a detail from each account."
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S002",
+              "start": 27,
+              "end": 104,
+              "text": "A student editor writes: \"We printed every submission received before Friday."
+            },
+            {
+              "id": "S003",
+              "start": 105,
+              "end": 163,
+              "text": "The printed issue proves that everyone could speak freely."
+            },
+            {
+              "id": "S004",
+              "start": 163,
+              "end": 224,
+              "text": "\" A student contributor writes: \"My essay appeared unchanged."
+            },
+            {
+              "id": "S005",
+              "start": 225,
+              "end": 308,
+              "text": "I deleted a paragraph before I sent it because I worried about losing my club role."
+            },
+            {
+              "id": "S007",
+              "start": 338,
+              "end": 456,
+              "text": "\" The published submission policy says: \"All submissions received before Friday are printed without editorial changes."
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S014",
+              "start": 932,
+              "end": 1133,
+              "text": "Teaching note: Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission."
+            }
+          ]
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S010",
+              "start": 548,
+              "end": 610,
+              "text": "Explain whether the policy resolves the contributor's concern."
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S005",
+              "start": 225,
+              "end": 308,
+              "text": "I deleted a paragraph before I sent it because I worried about losing my club role."
+            },
+            {
+              "id": "S007",
+              "start": 338,
+              "end": 456,
+              "text": "\" The published submission policy says: \"All submissions received before Friday are printed without editorial changes."
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S014",
+              "start": 932,
+              "end": 1133,
+              "text": "Teaching note: Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission."
+            },
+            {
+              "id": "S016",
+              "start": 1239,
+              "end": 1366,
+              "text": "Nobody requesting deletion rules out that particular explicit request but does not establish whether informal pressure existed."
+            }
+          ]
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S011",
+              "start": 611,
+              "end": 807,
+              "text": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations."
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S005",
+              "start": 225,
+              "end": 308,
+              "text": "I deleted a paragraph before I sent it because I worried about losing my club role."
+            },
+            {
+              "id": "S006",
+              "start": 309,
+              "end": 338,
+              "text": "Nobody asked me to delete it."
+            },
+            {
+              "id": "S008",
+              "start": 456,
+              "end": 485,
+              "text": "\" There are no other records."
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S015",
+              "start": 1134,
+              "end": 1238,
+              "text": "The contributor's worry might reflect a credible informal threat or an unsupported personal expectation."
+            },
+            {
+              "id": "S016",
+              "start": 1239,
+              "end": 1366,
+              "text": "Nobody requesting deletion rules out that particular explicit request but does not establish whether informal pressure existed."
+            },
+            {
+              "id": "S017",
+              "start": 1367,
+              "end": 1446,
+              "text": "Independent accounts of club reactions could help distinguish the explanations."
+            }
+          ]
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S012",
+              "start": 808,
+              "end": 866,
+              "text": "Propose one qualified conclusion supported by the records."
+            },
+            {
+              "id": "S013",
+              "start": 867,
+              "end": 931,
+              "text": "Multiple supported conclusions are allowed; do not invent facts."
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S002",
+              "start": 27,
+              "end": 104,
+              "text": "A student editor writes: \"We printed every submission received before Friday."
+            },
+            {
+              "id": "S004",
+              "start": 163,
+              "end": 224,
+              "text": "\" A student contributor writes: \"My essay appeared unchanged."
+            },
+            {
+              "id": "S007",
+              "start": 338,
+              "end": 456,
+              "text": "\" The published submission policy says: \"All submissions received before Friday are printed without editorial changes."
+            },
+            {
+              "id": "S008",
+              "start": 456,
+              "end": 485,
+              "text": "\" There are no other records."
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S018",
+              "start": 1447,
+              "end": 1551,
+              "text": "A qualified conclusion may affirm unchanged publication while leaving pre-submission freedom unresolved."
+            }
+          ]
+        }
+      ],
+      "reviewer_type": "AI",
+      "human_validated": false
+    }
+  },
+  {
+    "id": "divisibility_hint_v4_1",
+    "case_id": "divisibility_hint",
+    "domain": "mathematics",
+    "arm": "v4",
+    "repeat": 1,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：n 为任意正整数，从 1 到 2n 取 n+1 个不同整数，要求证明存在整除关系。提示给出了唯一分解与按奇数部分分组的完整思路，问题可解且无矛盾。学习者已具备整除、奇偶性、证明与抽屉原理基础，虽未学过按奇数部分分组，但提示已提供该方法，故可评估。",
+      "cognitive_demand": "strategic_reasoning",
+      "tasks": [
+        {
+          "request_ids": [
+            "S003",
+            "S004",
+            "S008"
+          ],
+          "condition_ids": [
+            "S001",
+            "S002",
+            "S005",
+            "S006"
+          ],
+          "solution_ids": [
+            "S007"
+          ],
+          "residual_work": "需把提示中的分组思路组织成完整证明：说明每个数唯一写成 2^k·u 且 u 为奇数；说明 1 到 2n 中奇数部分只有 n 个（1,3,…,2n−1）；由抽屉原理，n+1 个数放入 n 组必有两数同组；设同组两数为 2^a·u 与 2^b·u 且 a<b，则 2^a·u 整除 2^b·u；最后说明该论证对任意 n 和任意选取都成立。提示已给出关键步骤，但学习者仍需理解并写出覆盖任意 n 的完整推理。",
+          "mode": "select_or_adapt"
+        }
+      ],
+      "minimum_answer": "对任意正整数 n，任取 1,2,…,2n 中 n+1 个不同整数。每个正整数可唯一写成 2^k·u，其中 k≥0，u 为奇数。在 1 到 2n 中，可能的奇数部分 u 只能是 1,3,5,…,2n−1，共 n 个。把选出的 n+1 个数按它们的奇数部分 u 分成 n 组。由抽屉原理，n+1 个数放入 n 组，必有两个数属于同一组，即它们有相同的奇数部分 u，可写成 2^a·u 和 2^b·u。若 a<b，则 2^b·u = 2^(b−a)·(2^a·u)，所以 2^a·u 整除 2^b·u；若 b<a 则另一个整除另一个。因此必存在两个不同数，一个整除另一个。该分组只依赖 1 到 2n 中奇数部分的个数为 n，与具体选取无关，故对任意 n 和任意选取都成立。",
+      "decision": {
+        "candidates": [
+          "medium"
+        ],
+        "hard_task_index": null,
+        "reason": "题目要求证明任意 n 下存在整除关系，核心方法是按奇数部分分组并用抽屉原理。学习者已掌握整除、奇偶性、证明和抽屉原理，但未学过按奇数部分分组这一技巧；不过提示 S005–S007 已完整给出唯一分解、奇数部分只有 n 种、同组两数成倍数关系的关键步骤。因此学习者的主要工作是理解并复述这一已给出的论证，并说明其覆盖任意 n，属于对熟悉工具（抽屉原理）在新情境中的有意义应用，而非独立发现非平凡策略。最近边界：若提示未给出分组方法，则需自行构造分组，可能达到 hard；但此处方法已提供，故定为 medium。"
+      },
+      "estimated_difficulty": "medium",
+      "resolved_evidence": [
+        {
+          "request_ids": [
+            {
+              "id": "S003",
+              "start": 36,
+              "end": 59,
+              "text": "证明其中一定存在两个不同数，使一个整除另一个。"
+            },
+            {
+              "id": "S004",
+              "start": 59,
+              "end": 106,
+              "text": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。"
+            },
+            {
+              "id": "S008",
+              "start": 236,
+              "end": 260,
+              "text": "请解释这些步骤为何覆盖所有 n 及所有选取方式。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 11,
+              "text": "设 n 为任意正整数。"
+            },
+            {
+              "id": "S002",
+              "start": 11,
+              "end": 36,
+              "text": "从 1,2,…,2n 中任取 n+1 个不同整数。"
+            },
+            {
+              "id": "S005",
+              "start": 107,
+              "end": 139,
+              "text": "提示：每个正整数唯一写成 2^k·u，其中 k≥0，u 为奇数。"
+            },
+            {
+              "id": "S006",
+              "start": 139,
+              "end": 175,
+              "text": "1 到 2n 中只有 n 种可能的奇数部分 u（1,3,…,2n−1）。"
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S007",
+              "start": 175,
+              "end": 236,
+              "text": "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。"
+            }
+          ]
+        }
+      ],
+      "reviewer_type": "AI",
+      "human_validated": false
+    }
+  },
+  {
+    "id": "editor_base_v4_1",
+    "case_id": "editor_base",
+    "domain": "humanities",
+    "arm": "v4",
+    "repeat": 1,
+    "status": "failed",
+    "error": {
+      "type": "ValidationError"
+    }
+  },
+  {
+    "id": "transfer_hint_v4_0",
+    "case_id": "transfer_hint",
+    "domain": "computing",
+    "arm": "v4",
+    "repeat": 0,
+    "status": "valid",
+    "label": "easy",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：账户、ID、余额、锁、转账语义、公平排队与原子获取均已给出；要求明确（伪代码、锁保护说明、正确性论证、死锁反例），且明确允许采用所给完整方案，不存在矛盾或不可解要求。学习者画像提供了先修知识（互斥锁、竞态、死锁含义、单计数器锁分析），足以判定相对难度。",
+      "cognitive_demand": "routine_application",
+      "tasks": [
+        {
+          "request_ids": [
+            "S006",
+            "S016"
+          ],
+          "condition_ids": [
+            "S001",
+            "S002",
+            "S003",
+            "S004",
+            "S005",
+            "S007"
+          ],
+          "solution_ids": [
+            "S009",
+            "S010",
+            "S011",
+            "S012"
+          ],
+          "residual_work": "把已给出的按 ID 升序加两锁、持锁检查与扣加、成败均释放的步骤转写为规范伪代码（含加锁顺序、失败返回、释放路径），无需自行设计新方案。",
+          "mode": "reproduce"
+        },
+        {
+          "request_ids": [
+            "S008"
+          ],
+          "condition_ids": [
+            "S001",
+            "S004",
+            "S005"
+          ],
+          "solution_ids": [
+            "S013"
+          ],
+          "residual_work": "将已给出的“读、检查、扣款、加款均在两锁保护内”对应到具体语句，说明各操作分别由哪把/哪些锁保护，并指出检查与更新不可被其他转账插入。",
+          "mode": "reproduce"
+        },
+        {
+          "request_ids": [
+            "S008"
+          ],
+          "condition_ids": [
+            "S002",
+            "S003",
+            "S004",
+            "S005"
+          ],
+          "solution_ids": [
+            "S013",
+            "S014"
+          ],
+          "residual_work": "把已给出的两条理由（成功时扣加相等、失败不改余额；等待只从较小 ID 指向较大 ID 故无等待环）展开为覆盖任意交错的不变量论证，需自行组织“总余额不变、不透支、无死锁”三部分的推理链条。",
+          "mode": "construct_argument"
+        },
+        {
+          "request_ids": [
+            "S008"
+          ],
+          "condition_ids": [
+            "S002",
+            "S005"
+          ],
+          "solution_ids": [
+            "S015"
+          ],
+          "residual_work": "把已给出的 A→B 与 B→A 各持一锁再互等的反例具体化为可执行的并发交错序列，说明为何形成等待环而无法推进。",
+          "mode": "reproduce"
+        }
+      ],
+      "minimum_answer": "伪代码：transfer(s,d,amt){ if s.id<d.id {lock(s.lock); lock(d.lock);} else {lock(d.lock); lock(s.lock);} if s.balance>=amt { s.balance-=amt; d.balance+=amt; ok=true; } else ok=false; unlock both; return ok; }。锁保护：读 s.balance、比较 amt、扣款、加款全部在两把锁持有期间完成，故检查与更新原子，其他转账无法在检查与扣款之间插入。正确性：成功时扣加相等，失败时余额不变，故总余额恒等于初始总额；扣款前检查余额足够且扣款在锁内，故任何账户余额非负；等待关系只从较小 ID 指向较大 ID，是严格偏序，不可能出现等待环，故无死锁。反例：若统一先锁 source，则 A→B 持 A 等 B，B→A 持 B 等 A，形成环而永久阻塞。",
+      "decision": {
+        "candidates": [
+          "easy"
+        ],
+        "hard_task_index": null,
+        "reason": "题目已给出完整方案（按 ID 升序加两锁、持锁检查与扣加、成败均释放）以及正确性理由（扣加相等、失败不改、等待只从小 ID 指向大 ID）和死锁反例（A→B 与 B→A 各持一锁互等）。学习者已掌握互斥锁、竞态、死锁含义并能分析单计数器加锁代码，因此最低要求是把方案转写为伪代码、把已给理由对应到具体语句并展开为覆盖所有交错的说明、把反例具体化——属于对已提供论证的复述与整理，而非发现新策略或新证明。最近边界：若要求自行发现加锁顺序方案或独立构造无死锁证明，则需非平凡策略整合，会升为 medium/hard；但本题明确“无需发现另一种方案”，故判为 easy。"
+      },
+      "estimated_difficulty": "easy",
+      "resolved_evidence": [
+        {
+          "request_ids": [
+            {
+              "id": "S006",
+              "start": 227,
+              "end": 285,
+              "text": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。"
+            },
+            {
+              "id": "S016",
+              "start": 613,
+              "end": 653,
+              "text": "请把该方案写成伪代码，并解释上述理由如何覆盖所有允许的交错；无需发现另一种方案。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 41,
+              "text": "系统有有限个账户，每个账户有不同且固定的整数 ID、初始非负整数余额和一把互斥锁。"
+            },
+            {
+              "id": "S002",
+              "start": 41,
+              "end": 124,
+              "text": "可同时执行有限次 transfer(source, destination, amount)，source 与 destination 不同，amount 为正整数。"
+            },
+            {
+              "id": "S003",
+              "start": 124,
+              "end": 148,
+              "text": "余额足够时转账恰好一次，否则返回失败且不改余额。"
+            },
+            {
+              "id": "S004",
+              "start": 148,
+              "end": 184,
+              "text": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            },
+            {
+              "id": "S007",
+              "start": 285,
+              "end": 301,
+              "text": "不允许使用覆盖整个系统的全局锁。"
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S009",
+              "start": 355,
+              "end": 400,
+              "text": "可采用以下完整方案：对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source."
+            },
+            {
+              "id": "S010",
+              "start": 400,
+              "end": 435,
+              "text": "balance≥amount，成立则在仍持有两锁时执行 source."
+            },
+            {
+              "id": "S011",
+              "start": 435,
+              "end": 465,
+              "text": "balance-=amount 与 destination."
+            },
+            {
+              "id": "S012",
+              "start": 465,
+              "end": 498,
+              "text": "balance+=amount，否则不修改；无论成败都释放两把锁。"
+            }
+          ]
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S008",
+              "start": 301,
+              "end": 354,
+              "text": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 41,
+              "text": "系统有有限个账户，每个账户有不同且固定的整数 ID、初始非负整数余额和一把互斥锁。"
+            },
+            {
+              "id": "S004",
+              "start": 148,
+              "end": 184,
+              "text": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S013",
+              "start": 498,
+              "end": 548,
+              "text": "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。"
+            }
+          ]
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S008",
+              "start": 301,
+              "end": 354,
+              "text": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S002",
+              "start": 41,
+              "end": 124,
+              "text": "可同时执行有限次 transfer(source, destination, amount)，source 与 destination 不同，amount 为正整数。"
+            },
+            {
+              "id": "S003",
+              "start": 124,
+              "end": 148,
+              "text": "余额足够时转账恰好一次，否则返回失败且不改余额。"
+            },
+            {
+              "id": "S004",
+              "start": 148,
+              "end": 184,
+              "text": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S013",
+              "start": 498,
+              "end": 548,
+              "text": "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。"
+            },
+            {
+              "id": "S014",
+              "start": 548,
+              "end": 576,
+              "text": "所有等待只从较小 ID 指向较大 ID，不能形成等待环。"
+            }
+          ]
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S008",
+              "start": 301,
+              "end": 354,
+              "text": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S002",
+              "start": 41,
+              "end": 124,
+              "text": "可同时执行有限次 transfer(source, destination, amount)，source 与 destination 不同，amount 为正整数。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S015",
+              "start": 576,
+              "end": 613,
+              "text": "反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁。"
+            }
+          ]
+        }
+      ],
+      "reviewer_type": "AI",
+      "human_validated": false
+    }
+  },
+  {
+    "id": "m_missing_v4_1",
+    "case_id": "m_missing",
+    "domain": "mathematics",
+    "arm": "v4",
+    "repeat": 1,
+    "status": "valid",
+    "label": "uncertain",
+    "eligibility": "invalid_question",
+    "result": {
+      "eligibility": "invalid_question",
+      "eligibility_reason": "题目只给出 x、y 为非负实数，并要求给出 xy 唯一确定的数值，但没有任何附加条件（如等式、不等式、最值条件等）能确定 xy。对任意非负实数 x、y，xy 可取任意非负值，因此该请求无法回答，属于缺失必要条件的无效问题。",
+      "cognitive_demand": "uncertain",
+      "tasks": [
+        {
+          "request_ids": [
+            "S002"
+          ],
+          "condition_ids": [
+            "S001"
+          ],
+          "solution_ids": [],
+          "residual_work": "需要题目补充能唯一确定 xy 的条件；在现有条件下无法进行任何有意义的求解。",
+          "mode": "unanswerable"
+        }
+      ],
+      "minimum_answer": "无法给出唯一数值。仅由“x、y 为非负实数”不能确定 xy；例如 x=0,y=0 时 xy=0，x=1,y=1 时 xy=1，均满足条件但结果不同。因此题目缺少必要条件，xy 不唯一确定。",
+      "decision": {
+        "candidates": [],
+        "hard_task_index": null,
+        "reason": "题目缺少确定 xy 所必需的条件，属于不可回答的无效问题，因此不给出任何难度候选。若补充条件（如 x+y=1 或某等式）后才可能形成可评分的任务。"
+      },
+      "estimated_difficulty": "uncertain",
+      "resolved_evidence": [
+        {
+          "request_ids": [
+            {
+              "id": "S002",
+              "start": 12,
+              "end": 27,
+              "text": "请给出 xy 唯一确定的数值。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 12,
+              "text": "设 x、y 为非负实数。"
+            }
+          ],
+          "solution_ids": []
+        }
+      ],
+      "reviewer_type": "AI",
+      "human_validated": false
+    }
+  },
+  {
+    "id": "transfer_base_v3_0",
+    "case_id": "transfer_base",
+    "domain": "computing",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "hard",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目给出了完整的系统模型（有限账户、固定ID、非负余额、每账户一把锁、公平锁竞争、原子加锁、无溢出无崩溃），并明确要求设计伪代码、说明锁保护范围、论证正确性、给出错误加锁导致死锁的具体并发例子。条件充分且无矛盾，可解。",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。",
+          "finding": "提供了锁语义与公平性/进展假设，学生无需自行假设或证明锁实现，可直接用于死锁与活锁论证。"
+        },
+        {
+          "quote": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。",
+          "finding": "限定了干扰源与故障模型，排除了外部读写、崩溃和溢出等额外情形，缩小了正确性论证范围。"
+        },
+        {
+          "quote": "不允许使用覆盖整个系统的全局锁。",
+          "finding": "明确排除最直接的全局锁方案，从而把设计空间约束到细粒度/有序加锁，属于对解法的方向性约束而非完整方案。"
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。",
+          "finding": "需要自行设计每账户锁的获取/释放顺序与临界区结构，同时满足原子性、非负性与无死锁三个目标。"
+        },
+        {
+          "quote": "解释读余额、检查与更新分别受哪些锁保护",
+          "finding": "需要把伪代码中的每个读写点映射到具体锁，并说明为何该保护足以维持不变量。"
+        },
+        {
+          "quote": "论证正确性",
+          "finding": "需要给出覆盖所有交错的不变量论证，而非仅举例说明。"
+        },
+        {
+          "quote": "给出一个具体并发例子说明错误的加锁方式为什么可能死锁",
+          "finding": "需要构造两个并发转账以相反顺序获取两把锁的具体交错，并指出循环等待。"
+        }
+      ],
+      "knowledge_integration": "需要把互斥锁、临界区、竞态、死锁（循环等待）等已学概念与多对象加锁顺序、全局不变量（总余额守恒、非负）结合，形成细粒度并发转账协议。",
+      "strategy_selection": "核心策略是全局锁序（按账户ID排序）加锁，或等价的原子性两账户同时加锁；学生需在无全局锁约束下自行选择该非平凡策略，而非套用单计数器加锁模板。",
+      "justification_required": "需要不变量式正确性论证（总余额守恒、非负性、无死锁）以及一个反例式死锁场景，属于证据与论证要求。",
+      "estimated_difficulty": "hard",
+      "adjacent_level_reason": "与medium的区别：medium通常是熟悉模式（单锁保护单对象）的直接应用；本题要求学生在无全局锁约束下自行发明多对象加锁顺序协议，并对所有交错给出不变量证明，还须构造反例，超出已练习范围。与extended_inquiry的区别：本题不需要长期迭代实验或开放式调查，一次性设计加论证即可完成，故不升为extended_inquiry。",
+      "uncertainty_reasons": [
+        "学生已学死锁含义，可能已接触过“按序加锁”这一经典结论，若如此则策略选择部分接近routine_application；但题目未提供该结论，且要求完整证明与反例，仍偏hard。",
+        "难度依赖学生是否把“公平排队”正确用于进展论证，若忽略该假设，论证负担会变化。"
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。",
+          "finding": "题目只给出目标与约束，未给出任何伪代码、加锁顺序或协议结构。",
+          "support_quotes": [
+            "不允许使用覆盖整个系统的全局锁。",
+            "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "自行设计按账户ID排序（或等价）的两账户加锁协议，确定加锁/检查/扣款/入账/释放的顺序，并保证失败路径也正确释放锁。"
+        },
+        {
+          "quote": "解释读余额、检查与更新分别受哪些锁保护",
+          "finding": "题目未指明任何读写点与锁的对应关系。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "逐一说明source与destination余额的读取、充足性检查、扣减与增加分别在哪把锁的临界区内完成，并解释为何这样保护能避免竞态。"
+        },
+        {
+          "quote": "论证正确性",
+          "finding": "题目未提供不变量或证明框架。",
+          "support_quotes": [
+            "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "建立并证明全局不变量：总余额恒等于初始总额（成功转账等量扣增，失败不改），且每账户余额非负；论证对所有交错成立，并说明无死锁（锁序无环）与进展（公平排队保证持锁线程最终释放）。"
+        },
+        {
+          "quote": "给出一个具体并发例子说明错误的加锁方式为什么可能死锁",
+          "finding": "题目未给出任何错误示例或死锁场景。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "构造两个并发转账（如A→B与B→A）各自先锁自己source再锁对方destination的具体交错，指出两线程各持一锁并互相等待，形成循环等待而死锁。"
+        }
+      ],
+      "minimum_sufficient_response": "伪代码（按ID排序加锁）：\n```\ntransfer(s, d, amt):\n  if s.id < d.id: first, second = s, d\n  else: first, second = d, s\n  lock(first); lock(second)\n  if s.balance >= amt:\n      s.balance -= amt\n      d.balance += amt\n      ok = true\n  else: ok = false\n  unlock(second); unlock(first)\n  return ok\n```\n锁保护说明：source与destination余额的读取、充足性检查、扣减与增加全部在同时持有两把锁的临界区内完成，因此检查与更新之间无其他转账可插入，避免竞态。\n正确性：设不变量I为“所有账户余额之和等于初始总额且每个余额≥0”。成功转账扣增等量，和不变；失败不改余额。每次操作在持有两账户锁的临界区内原子完成，故任意交错下I保持。非负性由检查-更新在同一临界区内保证。无死锁：所有线程按全局ID升序获取锁，锁等待图无环，故无循环等待；公平排队保证持锁线程最终释放，系统有进展。\n错误加锁反例：若A→B先锁A再锁B，B→A先锁B再锁A。交错：线程1锁A，线程2锁B，随后线程1等B、线程2等A，互相持有对方所需锁，形成循环等待，死锁。",
+      "hard_basis_quote": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。",
+      "learner_relative_basis": "该生只会单锁保护单计数器的分析，尚未练习多对象加锁顺序及其正确性证明。本题要求在禁用全局锁的前提下自行发明两账户有序加锁协议，并对所有交错给出总余额守恒与非负性的不变量证明，还要构造循环等待反例；这些都不是已学单锁模板的熟悉应用，构成实质性独立整合与非平凡策略选择。"
+    }
+  },
+  {
+    "id": "transfer_base_v3_1",
+    "case_id": "transfer_base",
+    "domain": "computing",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "failed",
+    "error": {
+      "type": "ValidationError"
+    }
+  },
+  {
+    "id": "transfer_base_v4_1",
+    "case_id": "transfer_base",
+    "domain": "computing",
+    "arm": "v4",
+    "repeat": 1,
+    "status": "valid",
+    "label": "hard",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目给出了账户、锁、转账语义、公平调度、无溢出等完整条件，要求明确（伪代码、锁保护说明、正确性论证、错误加锁死锁例子），且与学习者已学互斥锁/死锁知识衔接；缺少多对象加锁顺序经验不构成题目缺失，只影响难度判断。",
+      "cognitive_demand": "strategic_reasoning",
+      "tasks": [
+        {
+          "request_ids": [
+            "S006"
+          ],
+          "condition_ids": [
+            "S001",
+            "S002",
+            "S003",
+            "S004",
+            "S005",
+            "S007"
+          ],
+          "solution_ids": [],
+          "residual_work": "需要自行设计按账户 ID 排序获取两把锁的转账伪代码，并保证余额检查与更新在同一临界区内完成；题目未提供任何伪代码或加锁顺序方案。",
+          "mode": "select_or_adapt"
+        },
+        {
+          "request_ids": [
+            "S008"
+          ],
+          "condition_ids": [
+            "S001",
+            "S004",
+            "S005"
+          ],
+          "solution_ids": [],
+          "residual_work": "需要说明 source/destination 余额的读取、充足性检查、扣减与增加分别由哪把锁保护，并解释为何检查与更新必须原子地处于同一临界区。",
+          "mode": "construct_argument"
+        },
+        {
+          "request_ids": [
+            "S008"
+          ],
+          "condition_ids": [
+            "S003",
+            "S004",
+            "S005",
+            "S007"
+          ],
+          "solution_ids": [],
+          "residual_work": "需要给出正确性论证：总余额不变、不透支、无死锁，并说明公平排队与有限步释放如何排除活锁/饥饿。",
+          "mode": "construct_argument"
+        },
+        {
+          "request_ids": [
+            "S008"
+          ],
+          "condition_ids": [
+            "S001",
+            "S002",
+            "S005"
+          ],
+          "solution_ids": [],
+          "residual_work": "需要构造一个具体并发交错例子，展示两个转账以相反顺序获取两把锁时如何形成循环等待而死锁。",
+          "mode": "construct_argument"
+        }
+      ],
+      "minimum_answer": "伪代码：transfer(s,d,a){ if s==d or a<=0 return fail; first=min(s,d); second=max(s,d); lock(first); lock(second); if balance[s]>=a { balance[s]-=a; balance[d]+=a; unlock(second); unlock(first); return ok } else { unlock(second); unlock(first); return fail } }。锁保护：balance[s] 的读取、检查与扣减由 s 的锁保护；balance[d] 的读取与增加由 d 的锁保护；由于两把锁都持有，检查与更新在同一临界区内原子完成。正确性：每次成功转账从 s 扣 a 并向 d 加 a，总余额不变；失败路径不修改余额；任何账户余额不会低于 0，因为扣减前在 s 锁内检查 balance[s]>=a。无死锁：所有转账按账户 ID 全局一致顺序获取两把锁，不会出现循环等待；公平排队保证等待者最终获得锁，持有者有限步释放，故不会饥饿。错误加锁例子：T1 从 A 转 B 先 lock(A) 再 lock(B)，T2 从 B 转 A 先 lock(B) 再 lock(A)；若 T1 持有 A、T2 持有 B，二者互相等待对方释放，形成死锁。",
+      "decision": {
+        "candidates": [
+          "hard"
+        ],
+        "hard_task_index": 0,
+        "reason": "该学习者已能分析单锁保护单计数器的代码，但尚未练习多对象加锁顺序及其正确性证明。本题的核心瓶颈不是复述互斥锁定义，而是自行设计一个非全局锁的两账户转账协议：必须发现并采用按账户 ID 排序获取两把锁这一非平凡策略，同时把余额检查与更新放入同一临界区，再论证总余额不变、不透支、无死锁，并构造相反加锁顺序导致循环等待的具体例子。这些步骤需要把已知的锁、竞态、死锁概念整合到一个新的多锁协议中，属于相对其先前准备的特定非routine策略瓶颈，因此判为 hard。最近边界是 medium：若学习者已练习过锁排序或资源层次协议，则本题更接近熟悉应用；但当前画像明确缺少该经验，故不能仅凭熟悉互斥锁概念判为 medium。"
+      },
+      "estimated_difficulty": "hard",
+      "resolved_evidence": [
+        {
+          "request_ids": [
+            {
+              "id": "S006",
+              "start": 227,
+              "end": 285,
+              "text": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 41,
+              "text": "系统有有限个账户，每个账户有不同且固定的整数 ID、初始非负整数余额和一把互斥锁。"
+            },
+            {
+              "id": "S002",
+              "start": 41,
+              "end": 124,
+              "text": "可同时执行有限次 transfer(source, destination, amount)，source 与 destination 不同，amount 为正整数。"
+            },
+            {
+              "id": "S003",
+              "start": 124,
+              "end": 148,
+              "text": "余额足够时转账恰好一次，否则返回失败且不改余额。"
+            },
+            {
+              "id": "S004",
+              "start": 148,
+              "end": 184,
+              "text": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            },
+            {
+              "id": "S007",
+              "start": 285,
+              "end": 301,
+              "text": "不允许使用覆盖整个系统的全局锁。"
+            }
+          ],
+          "solution_ids": []
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S008",
+              "start": 301,
+              "end": 354,
+              "text": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 41,
+              "text": "系统有有限个账户，每个账户有不同且固定的整数 ID、初始非负整数余额和一把互斥锁。"
+            },
+            {
+              "id": "S004",
+              "start": 148,
+              "end": 184,
+              "text": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            }
+          ],
+          "solution_ids": []
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S008",
+              "start": 301,
+              "end": 354,
+              "text": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S003",
+              "start": 124,
+              "end": 148,
+              "text": "余额足够时转账恰好一次，否则返回失败且不改余额。"
+            },
+            {
+              "id": "S004",
+              "start": 148,
+              "end": 184,
+              "text": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            },
+            {
+              "id": "S007",
+              "start": 285,
+              "end": 301,
+              "text": "不允许使用覆盖整个系统的全局锁。"
+            }
+          ],
+          "solution_ids": []
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S008",
+              "start": 301,
+              "end": 354,
+              "text": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 41,
+              "text": "系统有有限个账户，每个账户有不同且固定的整数 ID、初始非负整数余额和一把互斥锁。"
+            },
+            {
+              "id": "S002",
+              "start": 41,
+              "end": 124,
+              "text": "可同时执行有限次 transfer(source, destination, amount)，source 与 destination 不同，amount 为正整数。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            }
+          ],
+          "solution_ids": []
+        }
+      ],
+      "reviewer_type": "AI",
+      "human_validated": false
+    }
+  },
+  {
+    "id": "transfer_hint_v3_0",
+    "case_id": "transfer_hint",
+    "domain": "computing",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: it specifies finite accounts with distinct fixed IDs, nonnegative integer balances, per-account mutexes, finite concurrent transfers with distinct source/destination and positive amounts, atomic lock acquisition, fair queuing, no crashes, no overflow, and a prohibition on a single global lock. It asks for pseudocode, lock-protection explanation, correctness argument, and a concrete deadlock example. The supplied complete solution does not make the question unanswerable; it makes the task a guided write-up and explanation.",
+      "cognitive_demand": "routine_application",
+      "supplied_support": [
+        {
+          "quote": "可采用以下完整方案：对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。",
+          "finding": "The entire locking and update strategy is supplied, including lock ordering, check, update, and release."
+        },
+        {
+          "quote": "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+          "finding": "The key correctness invariants and the reason the check cannot be invalidated are supplied."
+        },
+        {
+          "quote": "所有等待只从较小 ID 指向较大 ID，不能形成等待环。",
+          "finding": "The deadlock-freedom argument is supplied as a waiting-graph acyclicity claim."
+        },
+        {
+          "quote": "反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁。",
+          "finding": "A concrete deadlock counterexample for the wrong locking order is supplied."
+        },
+        {
+          "quote": "请把该方案写成伪代码，并解释上述理由如何覆盖所有允许的交错；无需发现另一种方案。",
+          "finding": "The remaining task is explicitly limited to writing pseudocode and explaining how the supplied reasons cover all interleavings; no new strategy is required."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。",
+          "finding": "The learner must produce pseudocode that implements the supplied ordered-locking scheme and preserves the stated invariants."
+        },
+        {
+          "quote": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。",
+          "finding": "The learner must explain lock coverage, justify correctness, and present a concrete deadlock example for a wrong locking order."
+        },
+        {
+          "quote": "请把该方案写成伪代码，并解释上述理由如何覆盖所有允许的交错；无需发现另一种方案。",
+          "finding": "The learner must connect the supplied reasoning to arbitrary interleavings, but is not required to discover a new algorithm."
+        }
+      ],
+      "knowledge_integration": "The learner must combine mutual exclusion, atomic lock acquisition, fair queuing, lock ordering, balance invariants, and interleaving analysis. The concepts are familiar from prior learning, but the multi-object lock-order argument is new and must be applied rather than merely recalled.",
+      "strategy_selection": "The strategy is fully specified: acquire the two account locks in ascending ID order, check and update while holding both, then release both. The learner does not choose among competing designs.",
+      "justification_required": "The learner must justify that reads, checks, and updates are protected by both locks; that successful transfers preserve the total balance; that failed transfers do not change balances; that no account becomes negative; and that ascending-ID lock acquisition prevents a wait cycle. A concrete A→B and B→A counterexample must be given for the wrong source-first order.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "It is above easy because the learner must write correct pseudocode and explain why the supplied ordered-locking argument covers all interleavings, which requires integrating several concepts. It is below hard because the complete algorithm, the key invariants, the deadlock-freedom argument, and the counterexample are all supplied; the learner mainly restates and applies them rather than discovering a nonroutine strategy or adjudicating competing designs.",
+      "uncertainty_reasons": [
+        "The learner has not practised multi-object lock ordering or its correctness proof, so the explanation may require more independent integration than a typical routine application.",
+        "The supplied solution is very complete, which strongly lowers the residual demand, but the learner still must produce a correct pseudocode and a coherent all-interleavings argument."
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。",
+          "finding": "The algorithm is supplied, but the learner must still write pseudocode that implements it correctly and preserves the stated invariants.",
+          "support_quotes": [
+            "可采用以下完整方案：对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。",
+            "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+            "所有等待只从较小 ID 指向较大 ID，不能形成等待环。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Translate the supplied ordered-locking scheme into correct pseudocode, including lock acquisition, balance check, conditional update, and release in all paths."
+        },
+        {
+          "quote": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。",
+          "finding": "The lock coverage, correctness invariants, and deadlock counterexample are supplied, but the learner must explain them in their own coherent argument.",
+          "support_quotes": [
+            "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+            "所有等待只从较小 ID 指向较大 ID，不能形成等待环。",
+            "反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Explain which locks protect reads, checks, and updates; justify total-balance and nonnegative-balance invariants; and present the supplied A→B/B→A deadlock example concretely."
+        },
+        {
+          "quote": "请把该方案写成伪代码，并解释上述理由如何覆盖所有允许的交错；无需发现另一种方案。",
+          "finding": "The learner must connect the supplied reasoning to arbitrary interleavings, but the strategy itself is fully given.",
+          "support_quotes": [
+            "可采用以下完整方案：对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。",
+            "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+            "所有等待只从较小 ID 指向较大 ID，不能形成等待环。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Write an explanation that maps the supplied lock-ordering and mutual-exclusion reasons onto arbitrary interleavings of concurrent transfers."
+        }
+      ],
+      "minimum_sufficient_response": "伪代码：\n\ntransfer(source, destination, amount):\n  if source.id < destination.id:\n    first = source; second = destination\n  else:\n    first = destination; second = source\n  lock(first.mutex)\n  lock(second.mutex)\n  if source.balance >= amount:\n    source.balance -= amount\n    destination.balance += amount\n    success = true\n  else:\n    success = false\n  unlock(second.mutex)\n  unlock(first.mutex)\n  return success\n\n解释：读 source.balance、检查 source.balance >= amount、扣款和加款都在同时持有两把账户锁时进行，因此其他转账不能在这些步骤之间插入并破坏检查结果。成功时扣款和加款相等，所以总余额不变；失败时不修改余额，所以总余额也不变。余额只在 source.balance >= amount 时扣减，因此不会透支。\n\n死锁论证：每个线程按账户 ID 从小到大获取锁，所以等待关系只能从较小 ID 指向较大 ID，不可能形成等待环。反例：若总先锁 source，则 A→B 持有 A 锁等待 B 锁，同时 B→A 持有 B 锁等待 A 锁，形成环而可能死锁。",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "For this learner, the bottleneck is not discovering the algorithm but correctly writing the ordered-locking pseudocode and explaining why the supplied invariant and wait-cycle arguments cover all interleavings. The prior learning covers mutexes, races, and deadlock concepts, but not multi-object lock ordering, so the task is a meaningful familiar application rather than direct retrieval; however, because the full solution and proof sketch are supplied, it does not require substantial independent integration or nonroutine strategy."
+    }
+  },
+  {
+    "id": "m_missing_v3_1",
+    "case_id": "m_missing",
+    "domain": "mathematics",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "valid",
+    "label": "uncertain",
+    "eligibility": "invalid_question",
+    "result": {
+      "eligibility": "invalid_question",
+      "eligibility_reason": "题目只给出“x、y 为非负实数”，没有任何关于 x、y 的附加条件、方程或不等式，因此 xy 并不唯一确定。例如 x=0,y=1 得 xy=0，x=1,y=1 得 xy=1，均满足题设但结果不同。要求“给出 xy 唯一确定的数值”在现有条件下无法完成，属于条件缺失且要求不可满足。",
+      "cognitive_demand": "uncertain",
+      "supplied_support": [],
+      "remaining_demands": [
+        {
+          "quote": "设 x、y 为非负实数。请给出 xy 唯一确定的数值。",
+          "finding": "该要求缺少使 xy 唯一确定所必需的条件；仅凭非负性无法推出唯一数值，因此不存在可满足的解答任务。"
+        }
+      ],
+      "knowledge_integration": "无有效可整合条件；题目未提供方程、不等式或函数关系，无法把非负性与任何约束结合来确定 xy。",
+      "strategy_selection": "无可用策略：既不能通过配方、平方非负，也不能通过代入或放缩得到唯一值，因为反例已表明 xy 可取不同值。",
+      "justification_required": "若要使题目有效，必须补充能唯一确定 xy 的条件，例如给定 x+y 与 x^2+y^2 的具体值，或给出关于 x、y 的方程/不等式组。",
+      "estimated_difficulty": "uncertain",
+      "adjacent_level_reason": "题目无效，不能按认知难度分级；若强行补全条件，难度将取决于补充条件的形式，当前无法判断。",
+      "uncertainty_reasons": [
+        "题目缺少使 xy 唯一确定的关键条件。",
+        "存在多个满足题设但给出不同 xy 的实例，因此要求不可满足。",
+        "无法在无效题目上可靠区分 easy/medium/hard。"
+      ],
+      "confidence": "high",
+      "demand_audit": [
+        {
+          "quote": "设 x、y 为非负实数。请给出 xy 唯一确定的数值。",
+          "finding": "该任务本身不可满足；非负性不足以确定乘积，且题目未提供任何附加约束。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "需要补充能唯一确定 xy 的条件；在现有文本下无法给出唯一数值。"
+        }
+      ],
+      "minimum_sufficient_response": "无法给出唯一数值。因为仅知道 x、y 为非负实数时，xy 不唯一：取 x=0,y=1，则 xy=0；取 x=1,y=1，则 xy=1。两组都满足“非负实数”的条件，却得到不同的乘积。因此题目缺少条件，不能确定 xy 的唯一值。",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "该题对任何学生都无效，不是因学生准备不足而难；缺少的是题目条件本身，而非学习者的知识或技能。"
+    }
+  },
+  {
+    "id": "h_hint_v4_1",
+    "case_id": "h_hint",
+    "domain": "humanities",
+    "arm": "v4",
+    "repeat": 1,
+    "status": "failed",
+    "error": {
+      "type": "ValidationError"
+    }
+  },
+  {
+    "id": "divisibility_base_v4_0",
+    "case_id": "divisibility_base",
+    "domain": "mathematics",
+    "arm": "v4",
+    "repeat": 0,
+    "status": "valid",
+    "label": "hard",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明存在整除关系，并说明分组方法对任意 n 成立。学习者已具备整除、奇偶性、证明和抽屉原理基础，虽未学过按奇数部分分组，但题目本身可解且可评估。",
+      "cognitive_demand": "strategic_reasoning",
+      "tasks": [
+        {
+          "request_ids": [
+            "S003",
+            "S004"
+          ],
+          "condition_ids": [
+            "S001",
+            "S002"
+          ],
+          "solution_ids": [],
+          "residual_work": "需要独立构造分组：把每个整数写成 2^k·m（m 为奇数），按奇数部分 m 分组；证明每组内任意两数成倍数关系；说明 1 到 2n 中奇数部分只有 n 种可能，从而 n+1 个数落入 n 组，由抽屉原理得两数同组，进而一个整除另一个。还需解释该构造对任意 n 成立。",
+          "mode": "construct_argument"
+        }
+      ],
+      "minimum_answer": "将 1,2,…,2n 中每个整数唯一写成 2^k·m，其中 m 为奇数，k≥0。按奇数部分 m 分组。1 到 2n 中的奇数 m 只能是 1,3,5,…,2n−1，共 n 个，所以共有 n 个组。任取 n+1 个数，由抽屉原理，必有两个数落在同一组，即它们有相同的奇数部分 m，形如 2^a·m 与 2^b·m。若 a<b，则 2^a·m 整除 2^b·m；若 b<a，则 2^b·m 整除 2^a·m。因此这两个不同数中一个整除另一个。该分组只依赖每个整数唯一分解为 2 的幂与奇数之积，对任意正整数 n 都成立。",
+      "decision": {
+        "candidates": [
+          "hard"
+        ],
+        "hard_task_index": 0,
+        "reason": "该题的核心瓶颈是构造一个非显然的分组：按奇数部分把 1 到 2n 分成 n 组，再用抽屉原理。学习者已会抽屉原理和整除、奇偶性，但未学过按奇数部分分组的技巧；题目也没有提供任何分组方法或中间结论，因此不是对已给方法的熟悉套用，而是需要独立发现并验证构造。最近边界是 medium：若学生已熟悉“写成 2^k 乘奇数”的分组技巧，则本题会退化为常规应用；但按给定画像，该技巧未学，故判为 hard。"
+      },
+      "estimated_difficulty": "hard",
+      "resolved_evidence": [
+        {
+          "request_ids": [
+            {
+              "id": "S003",
+              "start": 36,
+              "end": 59,
+              "text": "证明其中一定存在两个不同数，使一个整除另一个。"
+            },
+            {
+              "id": "S004",
+              "start": 59,
+              "end": 106,
+              "text": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 11,
+              "text": "设 n 为任意正整数。"
+            },
+            {
+              "id": "S002",
+              "start": 11,
+              "end": 36,
+              "text": "从 1,2,…,2n 中任取 n+1 个不同整数。"
+            }
+          ],
+          "solution_ids": []
+        }
+      ],
+      "reviewer_type": "AI",
+      "human_validated": false
+    }
+  },
+  {
+    "id": "transfer_hint_v4_1",
+    "case_id": "transfer_hint",
+    "domain": "computing",
+    "arm": "v4",
+    "repeat": 1,
+    "status": "valid",
+    "label": "easy",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：账户、ID、余额、锁、转账语义、公平排队与原子获取均已给出；要求明确（伪代码、锁保护说明、正确性论证、死锁反例），且明确允许采用所给完整方案，不存在矛盾或不可答要求。学习者已具备锁、竞态、死锁基础，虽未练习多对象加锁顺序，但题目已提供完整方案与论证要点，可据此完成。",
+      "cognitive_demand": "routine_application",
+      "tasks": [
+        {
+          "request_ids": [
+            "S006",
+            "S016"
+          ],
+          "condition_ids": [
+            "S001",
+            "S002",
+            "S003",
+            "S004",
+            "S005",
+            "S007"
+          ],
+          "solution_ids": [
+            "S009",
+            "S010",
+            "S011",
+            "S012"
+          ],
+          "residual_work": "把已给出的按 ID 升序加锁、持两锁检查与更新、成败均释放的步骤转写为结构清晰的伪代码，并保证 source/destination 不同、失败不改余额等条件在代码中体现。",
+          "mode": "reproduce"
+        },
+        {
+          "request_ids": [
+            "S008"
+          ],
+          "condition_ids": [
+            "S001",
+            "S004",
+            "S005"
+          ],
+          "solution_ids": [
+            "S013"
+          ],
+          "residual_work": "将“读、检查、扣款、加款均在两锁保护内”对应到伪代码的具体语句，说明每步由哪把/哪些锁保护，并解释为何检查不会被其他转账破坏。",
+          "mode": "apply_familiar"
+        },
+        {
+          "request_ids": [
+            "S008",
+            "S016"
+          ],
+          "condition_ids": [
+            "S002",
+            "S003",
+            "S004",
+            "S005"
+          ],
+          "solution_ids": [
+            "S013",
+            "S014"
+          ],
+          "residual_work": "把“成功扣加相等、失败不改余额”与“等待只从较小 ID 指向较大 ID、无等待环”组织成覆盖所有允许交错的正确性论证，说明总余额不变、不透支、无死锁。",
+          "mode": "construct_argument"
+        },
+        {
+          "request_ids": [
+            "S008"
+          ],
+          "condition_ids": [
+            "S001",
+            "S002",
+            "S005"
+          ],
+          "solution_ids": [
+            "S015"
+          ],
+          "residual_work": "把“总先锁 source”的反例展开为具体并发场景：A→B 与 B→A 各持一锁再互相等待，说明为何形成死锁。",
+          "mode": "reproduce"
+        }
+      ],
+      "minimum_answer": "伪代码：transfer(s,d,amt){ if s==d return fail; first=min(id(s),id(d)); second=max(id(s),id(d)); lock(first); lock(second); if balance(s)>=amt { balance(s)-=amt; balance(d)+=amt; ok=true } else ok=false; unlock(second); unlock(first); return ok?success:fail }。锁保护：读 balance(s)、检查 balance(s)>=amt、扣 balance(s)、加 balance(d) 都在持有两把锁期间进行，因此检查与更新是原子的，不会被其他转账插入破坏。正确性：成功时扣加相等，总余额不变；失败时不修改，总余额不变；检查在锁内保证不透支。死锁：所有等待边从较小 ID 指向较大 ID，ID 全序无环，故无等待环。反例：若总先锁 source，A→B 持 A 等 B，B→A 持 B 等 A，形成环而死锁。",
+      "decision": {
+        "candidates": [
+          "easy"
+        ],
+        "hard_task_index": null,
+        "reason": "题目已给出完整方案、锁保护要点、正确性理由和死锁反例，学习者只需将其转写为伪代码并复述/组织这些已提供的论证，属于对已给材料的直接再现与熟悉概念的应用。最近边界是 easy 与 medium：这里没有要求独立选择或设计新策略，也没有需要学习者自行补足的非平凡证明瓶颈，因此判为 easy。"
+      },
+      "estimated_difficulty": "easy",
+      "resolved_evidence": [
+        {
+          "request_ids": [
+            {
+              "id": "S006",
+              "start": 227,
+              "end": 285,
+              "text": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。"
+            },
+            {
+              "id": "S016",
+              "start": 613,
+              "end": 653,
+              "text": "请把该方案写成伪代码，并解释上述理由如何覆盖所有允许的交错；无需发现另一种方案。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 41,
+              "text": "系统有有限个账户，每个账户有不同且固定的整数 ID、初始非负整数余额和一把互斥锁。"
+            },
+            {
+              "id": "S002",
+              "start": 41,
+              "end": 124,
+              "text": "可同时执行有限次 transfer(source, destination, amount)，source 与 destination 不同，amount 为正整数。"
+            },
+            {
+              "id": "S003",
+              "start": 124,
+              "end": 148,
+              "text": "余额足够时转账恰好一次，否则返回失败且不改余额。"
+            },
+            {
+              "id": "S004",
+              "start": 148,
+              "end": 184,
+              "text": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            },
+            {
+              "id": "S007",
+              "start": 285,
+              "end": 301,
+              "text": "不允许使用覆盖整个系统的全局锁。"
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S009",
+              "start": 355,
+              "end": 400,
+              "text": "可采用以下完整方案：对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source."
+            },
+            {
+              "id": "S010",
+              "start": 400,
+              "end": 435,
+              "text": "balance≥amount，成立则在仍持有两锁时执行 source."
+            },
+            {
+              "id": "S011",
+              "start": 435,
+              "end": 465,
+              "text": "balance-=amount 与 destination."
+            },
+            {
+              "id": "S012",
+              "start": 465,
+              "end": 498,
+              "text": "balance+=amount，否则不修改；无论成败都释放两把锁。"
+            }
+          ]
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S008",
+              "start": 301,
+              "end": 354,
+              "text": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 41,
+              "text": "系统有有限个账户，每个账户有不同且固定的整数 ID、初始非负整数余额和一把互斥锁。"
+            },
+            {
+              "id": "S004",
+              "start": 148,
+              "end": 184,
+              "text": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S013",
+              "start": 498,
+              "end": 548,
+              "text": "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。"
+            }
+          ]
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S008",
+              "start": 301,
+              "end": 354,
+              "text": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。"
+            },
+            {
+              "id": "S016",
+              "start": 613,
+              "end": 653,
+              "text": "请把该方案写成伪代码，并解释上述理由如何覆盖所有允许的交错；无需发现另一种方案。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S002",
+              "start": 41,
+              "end": 124,
+              "text": "可同时执行有限次 transfer(source, destination, amount)，source 与 destination 不同，amount 为正整数。"
+            },
+            {
+              "id": "S003",
+              "start": 124,
+              "end": 148,
+              "text": "余额足够时转账恰好一次，否则返回失败且不改余额。"
+            },
+            {
+              "id": "S004",
+              "start": 148,
+              "end": 184,
+              "text": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S013",
+              "start": 498,
+              "end": 548,
+              "text": "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。"
+            },
+            {
+              "id": "S014",
+              "start": 548,
+              "end": 576,
+              "text": "所有等待只从较小 ID 指向较大 ID，不能形成等待环。"
+            }
+          ]
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S008",
+              "start": 301,
+              "end": 354,
+              "text": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 41,
+              "text": "系统有有限个账户，每个账户有不同且固定的整数 ID、初始非负整数余额和一把互斥锁。"
+            },
+            {
+              "id": "S002",
+              "start": 41,
+              "end": 124,
+              "text": "可同时执行有限次 transfer(source, destination, amount)，source 与 destination 不同，amount 为正整数。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S015",
+              "start": 576,
+              "end": 613,
+              "text": "反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁。"
+            }
+          ]
+        }
+      ],
+      "reviewer_type": "AI",
+      "human_validated": false
+    }
+  },
+  {
+    "id": "m_missing_v4_0",
+    "case_id": "m_missing",
+    "domain": "mathematics",
+    "arm": "v4",
+    "repeat": 0,
+    "status": "valid",
+    "label": "uncertain",
+    "eligibility": "invalid_question",
+    "result": {
+      "eligibility": "invalid_question",
+      "eligibility_reason": "题目只给出 x、y 为非负实数，并要求给出 xy 唯一确定的数值，但没有任何附加条件（如 x+y、x²+y² 等）能确定 xy。对任意非负 x、y，xy 可取不同值，因此该请求不可能有唯一答案，属于条件缺失/不可解问题。",
+      "cognitive_demand": "uncertain",
+      "tasks": [
+        {
+          "request_ids": [
+            "S002"
+          ],
+          "condition_ids": [
+            "S001"
+          ],
+          "solution_ids": [],
+          "residual_work": "需要额外条件才能确定 xy；在现有条件下无法完成求值。",
+          "mode": "unanswerable"
+        }
+      ],
+      "minimum_answer": "无法给出唯一数值。仅由“x、y 为非负实数”不能确定 xy；例如 x=0,y=1 时 xy=0，而 x=1,y=1 时 xy=1，均满足条件但结果不同。因此题目缺少必要信息，xy 不唯一确定。",
+      "decision": {
+        "candidates": [],
+        "hard_task_index": null,
+        "reason": "题目缺少确定 xy 所必需的条件，且要求“唯一确定的数值”与已知信息矛盾，故为 invalid_question，不进行难度分级。若补充如 x+y 或 x²+y² 等条件，才可能成为可解问题。"
+      },
+      "estimated_difficulty": "uncertain",
+      "resolved_evidence": [
+        {
+          "request_ids": [
+            {
+              "id": "S002",
+              "start": 12,
+              "end": 27,
+              "text": "请给出 xy 唯一确定的数值。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 12,
+              "text": "设 x、y 为非负实数。"
+            }
+          ],
+          "solution_ids": []
+        }
+      ],
+      "reviewer_type": "AI",
+      "human_validated": false
+    }
+  },
+  {
+    "id": "editor_base_v4_0",
+    "case_id": "editor_base",
+    "domain": "humanities",
+    "arm": "v4",
+    "repeat": 0,
+    "status": "failed",
+    "error": {
+      "type": "ValidationError"
+    }
+  },
+  {
+    "id": "h_hint_v3_1",
+    "case_id": "h_hint",
+    "domain": "humanities",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: it supplies three fictional excerpts, a teaching note on perspective, two competing claims, and six explicit constraints plus three follow-up tasks. All people, places, and events are fictional teaching material, and the task explicitly permits multiple defensible interpretations. No missing condition, contradiction, or unanswerable demand is present.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "A first-person account gives access to a situated viewpoint, not automatic knowledge of every participant's motives. Distinguish a narrator's explicit statement from an inference based on an image, omission or contrast.",
+          "finding": "The note supplies the core interpretive method: treating first-person narration as situated and separating explicit statement from inference."
+        },
+        {
+          "quote": "The curator's collective we can be read as an aspiration to shared ownership or as a phrase that leaves differences within the group unstated.",
+          "finding": "The note supplies two competing readings of the curator's 'we,' so the learner need not invent the alternative interpretation from scratch."
+        },
+        {
+          "quote": "The volunteer's applause and unopened letter can support readings of tentative belonging, unresolved exclusion, or a mixture, but the text does not establish censorship or identify the letter's contents.",
+          "finding": "The note supplies the range of defensible readings of the volunteer's behavior and explicitly rules out censorship and letter contents as unsupported."
+        },
+        {
+          "quote": "A defensible interpretation compares details from both passages, acknowledges a plausible competing reading, and explains the limits of its claim.",
+          "finding": "The note supplies the success criteria for a defensible interpretation, including comparison, counterreading, and limitation."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Distinguish what each passage explicitly states from inferences about motives, selection, rejection, or withheld information.",
+          "finding": "The learner must apply the supplied distinction to the specific details of both passages rather than merely restating the method."
+        },
+        {
+          "quote": "Use at least one concrete detail from each account as textual support.",
+          "finding": "The learner must select and cite specific details from each passage and connect them to the interpretation."
+        },
+        {
+          "quote": "Compare how the curator's collective language and the volunteer's applause coexist with hesitation or unstated difference.",
+          "finding": "The learner must construct a comparison that holds collective belonging and hesitation together rather than collapsing one into the other."
+        },
+        {
+          "quote": "Address a plausible competing reading drawn from the same passages.",
+          "finding": "The learner must articulate a rival reading grounded in the passages and respond to it, not merely mention that alternatives exist."
+        },
+        {
+          "quote": "Explain how a specific omission or ambiguity shapes your interpretation and state the uncertainty that remains.",
+          "finding": "The learner must identify a specific omission or ambiguity, explain its interpretive effect, and state residual uncertainty."
+        },
+        {
+          "quote": "Decide which claim, if either, better fits the evidence and the constraints, and justify your judgment.",
+          "finding": "The learner must adjudicate between the two claims and justify the verdict against the evidence and constraints."
+        }
+      ],
+      "knowledge_integration": "The learner must integrate the perspective note's method with concrete details from both passages, the two competing claims, and the six constraints into a single coherent interpretation. The note supplies the interpretive framework, but the learner must apply it to specific textual details and adjudicate between claims.",
+      "strategy_selection": "The learner must choose which details to cite, which competing reading to address, which omission or ambiguity to foreground, and how to qualify or revise a claim. The note narrows the space of defensible readings but does not dictate the specific interpretive path.",
+      "justification_required": "The learner must justify the verdict on the two claims, support the interpretation with concrete details from both passages, address a competing reading, and explain how a specific omission or ambiguity shapes the interpretation and what uncertainty remains.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "The task is not easy: it requires applying the perspective note to specific details, constructing a comparison, addressing a counterreading, and adjudicating between claims. However, the note supplies the interpretive method, the two competing readings of the curator's 'we,' the range of defensible readings of the volunteer's behavior, and the success criteria, so the learner is not inventing a nonroutine strategy or conducting independent inquiry. The remaining work is meaningful familiar application and analysis for the stated learner profile, which fits medium better than hard. It is more demanding than reproduction because the learner must select and integrate specific evidence rather than restate a taught procedure.",
+      "uncertainty_reasons": [
+        "The boundary between medium and hard depends on how much independent interpretive construction is required beyond applying the supplied note; reasonable evaluators could differ.",
+        "The learner profile specifies close reading and comparison skills but does not specify prior experience with adjudicating competing interpretive claims, so the difficulty is conditional and provisional."
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "Distinguish what each passage explicitly states from inferences about motives, selection, rejection, or withheld information.",
+          "finding": "The note supplies the general distinction between explicit statement and inference, but the learner must apply it to the specific details of both passages.",
+          "support_quotes": [
+            "A first-person account gives access to a situated viewpoint, not automatic knowledge of every participant's motives. Distinguish a narrator's explicit statement from an inference based on an image, omission or contrast."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Apply the distinction to specific details in Passage A and Passage B, identifying what each explicitly states versus what would be inferred about motives, selection, rejection, or withheld information."
+        },
+        {
+          "quote": "Use at least one concrete detail from each account as textual support.",
+          "finding": "No specific details are supplied as the required support; the learner must select them from the passages.",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "Select at least one concrete detail from Passage A and one from Passage B and connect each to the interpretation."
+        },
+        {
+          "quote": "Compare how the curator's collective language and the volunteer's applause coexist with hesitation or unstated difference.",
+          "finding": "The note supplies the two readings of the curator's 'we' and the range of readings of the volunteer's applause and letter, but the learner must construct the comparison.",
+          "support_quotes": [
+            "The curator's collective we can be read as an aspiration to shared ownership or as a phrase that leaves differences within the group unstated.",
+            "The volunteer's applause and unopened letter can support readings of tentative belonging, unresolved exclusion, or a mixture, but the text does not establish censorship or identify the letter's contents."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Build a comparison showing how collective language and applause coexist with hesitation or unstated difference, using specific details from both passages."
+        },
+        {
+          "quote": "Address a plausible competing reading drawn from the same passages.",
+          "finding": "The note supplies candidate competing readings, but the learner must select one, ground it in the passages, and respond to it.",
+          "support_quotes": [
+            "The curator's collective we can be read as an aspiration to shared ownership or as a phrase that leaves differences within the group unstated.",
+            "The volunteer's applause and unopened letter can support readings of tentative belonging, unresolved exclusion, or a mixture, but the text does not establish censorship or identify the letter's contents."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Choose a plausible competing reading, support it with passage details, and explain why the learner's interpretation is preferable or how the two can be reconciled."
+        },
+        {
+          "quote": "Explain how a specific omission or ambiguity shapes your interpretation and state the uncertainty that remains.",
+          "finding": "The note identifies some omissions and ambiguities but does not explain their interpretive effect or state residual uncertainty for the learner's specific interpretation.",
+          "support_quotes": [
+            "The volunteer's applause and unopened letter can support readings of tentative belonging, unresolved exclusion, or a mixture, but the text does not establish censorship or identify the letter's contents."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Identify a specific omission or ambiguity, explain how it shapes the interpretation, and state what uncertainty remains."
+        },
+        {
+          "quote": "Decide which claim, if either, better fits the evidence and the constraints, and justify your judgment.",
+          "finding": "The note supplies the constraints and the range of defensible readings but does not adjudicate between Claim 1 and Claim 2.",
+          "support_quotes": [
+            "A defensible interpretation compares details from both passages, acknowledges a plausible competing reading, and explains the limits of its claim."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Evaluate Claim 1 and Claim 2 against the evidence and constraints, decide which if either better fits, and justify the verdict."
+        }
+      ],
+      "minimum_sufficient_response": "Neither claim is fully defensible. Claim 1 overstates: the curator's 'we' explicitly describes collective action ('We finally opened the exhibition together'), but the passage does not establish that everyone experienced belonging, and the volunteer's applause coexists with hesitation ('I kept the letter I had brought inside my bag'). Claim 2 overstates: the volunteer's unopened letter shows hesitation, but the passage does not establish censorship or exclusion, and the note states the text does not establish censorship or the letter's contents. A qualified revision of Claim 1: 'The curator's collective language and the volunteer's applause suggest an aspiration to shared ownership, but the volunteer's withheld letter indicates that belonging remained tentative and unstated differences persisted.' This is supported by the curator's 'We finally opened the exhibition together' and the volunteer's 'I kept the letter I had brought inside my bag.' A plausible competing reading is that the volunteer's applause signals genuine belonging and the letter is simply private, not withheld; this reading is possible but less supported because the passage contrasts applause with keeping the letter hidden. The specific omission of why the letter was withheld shapes the interpretation: it prevents any claim about rejection or censorship and leaves uncertainty about whether the volunteer felt excluded or merely reserved. Additional evidence needed to support Claim 2 would include explicit statements about rejection, censorship, or the letter's contents, none of which the passages provide.",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "For undergraduates who can closely read and compare narrative viewpoints, the note supplies the interpretive method, the competing readings, and the success criteria. The remaining work is applying these to specific details, constructing a comparison, addressing a counterreading, and adjudicating claims. This is meaningful familiar application and analysis rather than substantial independent integration or nonroutine strategy, so medium fits better than hard."
+    }
+  },
+  {
+    "id": "transfer_hint_v3_1",
+    "case_id": "transfer_hint",
+    "domain": "computing",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "valid",
+    "label": "easy",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: it specifies finite accounts with distinct fixed IDs, nonnegative integer balances, per-account mutexes, finite concurrent transfers with distinct source/destination and positive amounts, atomic lock acquisition, fair queuing, no crashes, no overflow, and a prohibition on a single global lock. It asks for pseudocode, lock-protection explanation, correctness argument, and a concrete deadlock example. All required conditions are visible; the supplied complete solution does not make the request contradictory.",
+      "cognitive_demand": "reproduction",
+      "supplied_support": [
+        {
+          "quote": "可采用以下完整方案：对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。",
+          "finding": "The entire algorithm is supplied: lock ordering by ID, acquiring both locks, checking balance, updating both balances while holding both locks, and releasing both locks on success or failure."
+        },
+        {
+          "quote": "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+          "finding": "The lock-protection explanation and the core correctness invariants (atomic check-and-update, conservation on success, no change on failure) are supplied."
+        },
+        {
+          "quote": "所有等待只从较小 ID 指向较大 ID，不能形成等待环。",
+          "finding": "The deadlock-freedom argument is supplied as a direct consequence of the global lock ordering."
+        },
+        {
+          "quote": "反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁。",
+          "finding": "A concrete deadlock counterexample for the wrong locking discipline is supplied."
+        },
+        {
+          "quote": "请把该方案写成伪代码，并解释上述理由如何覆盖所有允许的交错；无需发现另一种方案。",
+          "finding": "The task is explicitly limited to transcribing the supplied scheme into pseudocode and explaining how the supplied reasons cover all interleavings; discovering another scheme is not required."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "请把该方案写成伪代码",
+          "finding": "The learner must translate the supplied prose algorithm into concrete pseudocode with lock acquisition, balance check, update, and release in the correct order."
+        },
+        {
+          "quote": "解释上述理由如何覆盖所有允许的交错",
+          "finding": "The learner must connect the supplied invariants and lock-ordering argument to arbitrary interleavings, including failed transfers and concurrent transfers on disjoint or overlapping accounts."
+        }
+      ],
+      "knowledge_integration": "The learner must integrate the supplied lock-ordering rule, the per-account mutex semantics, the atomic check-and-update requirement, and the fair-queuing assumption into a single pseudocode procedure and an interleaving argument. No new algorithmic insight is required beyond the supplied scheme.",
+      "strategy_selection": "Strategy selection is minimal: the question explicitly supplies the only required strategy (order locks by account ID) and states that no alternative scheme needs to be discovered. The learner selects the supplied strategy rather than comparing or inventing strategies.",
+      "justification_required": "The learner must justify that the pseudocode preserves the total-balance invariant, prevents overdrafts, and cannot deadlock. The justification can reuse the supplied reasons: both locks protect read/check/update, successful transfers subtract and add equal amounts, failed transfers do not modify balances, and waiting edges follow increasing ID order so no cycle can form.",
+      "estimated_difficulty": "easy",
+      "adjacent_level_reason": "The task is close to reproduction because the complete algorithm, its invariants, the deadlock-freedom argument, and a counterexample are all supplied. The learner mainly transcribes the scheme into pseudocode and restates how the supplied reasons cover interleavings. It is slightly above pure recall because the pseudocode must correctly place lock acquisition, check, update, and release, and the interleaving explanation must mention failed transfers and disjoint accounts, but these are direct applications of the supplied text rather than independent strategic reasoning.",
+      "uncertainty_reasons": [
+        "The learner has not practised multi-object lock ordering or correctness proofs, so the interleaving explanation may require some care even though the argument is supplied.",
+        "The boundary between easy and medium depends on how much independent reconstruction is expected when translating prose into pseudocode; the question supplies enough that easy is the better fit."
+      ],
+      "confidence": "high",
+      "demand_audit": [
+        {
+          "quote": "请把该方案写成伪代码",
+          "finding": "The prose algorithm is fully supplied, but the learner must still produce syntactically and semantically correct pseudocode that acquires locks in ID order, checks the balance under both locks, updates both balances on success, and releases both locks on all paths.",
+          "support_quotes": [
+            "可采用以下完整方案：对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Translate the supplied prose steps into a concrete pseudocode procedure with correct lock acquisition order, conditional update, and unconditional release."
+        },
+        {
+          "quote": "解释上述理由如何覆盖所有允许的交错",
+          "finding": "The correctness and deadlock-freedom reasons are supplied, but the learner must still articulate how they apply to arbitrary interleavings, including failed transfers, disjoint-account transfers, and overlapping-account transfers.",
+          "support_quotes": [
+            "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+            "所有等待只从较小 ID 指向较大 ID，不能形成等待环。",
+            "反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Connect the supplied invariants and lock-ordering argument to all allowed interleavings, explaining why no partial transfer is visible, no overdraft occurs, and no wait cycle can form."
+        }
+      ],
+      "minimum_sufficient_response": "伪代码：\n\ntransfer(source, destination, amount):\n    if source.id < destination.id:\n        first, second = source, destination\n    else:\n        first, second = destination, source\n    lock(first)\n    lock(second)\n    if source.balance >= amount:\n        source.balance -= amount\n        destination.balance += amount\n        success = true\n    else:\n        success = false\n    unlock(second)\n    unlock(first)\n    return success\n\n解释：读 source.balance、检查 source.balance >= amount、扣款和加款都在两把锁内完成，因此其他转账不能在这几步之间插入并破坏检查结果。成功时扣款与加款相等，总余额不变；失败时不修改余额，总余额也不变。任意时刻余额不会变成负数，因为只有检查通过才扣款。死锁方面，每个线程按账户 ID 从小到大获取锁，等待边只从较小 ID 指向较大 ID，因此不可能出现等待环；若所有线程都先锁 source，则 A→B 与 B→A 可能各持一把锁并互相等待，形成死锁。公平排队保证已获得锁的线程最终释放锁，因此上述论证覆盖所有允许的交错。",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "For this learner, the remaining work is transcription and explanation of a fully supplied scheme. The learner already understands mutexes, races, and deadlock definitions, so the only new element is applying the supplied ID-ordering rule; because the rule, invariants, and counterexample are all given, this is a familiar application rather than substantial independent integration."
+    }
+  },
+  {
+    "id": "transfer_base_v4_0",
+    "case_id": "transfer_base",
+    "domain": "computing",
+    "arm": "v4",
+    "repeat": 0,
+    "status": "valid",
+    "label": "uncertain",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：账户、锁、转账语义、公平调度与无溢出等均已给出，且要求明确（伪代码、锁保护说明、正确性论证、死锁反例）。学习者已具备互斥锁、竞态、死锁基础，仅缺多对象加锁顺序经验，属于可评分的边界情形。",
+      "cognitive_demand": "strategic_reasoning",
+      "tasks": [
+        {
+          "request_ids": [
+            "S006"
+          ],
+          "condition_ids": [
+            "S001",
+            "S002",
+            "S003",
+            "S004",
+            "S005",
+            "S007"
+          ],
+          "solution_ids": [],
+          "residual_work": "需自行设计按账户 ID 排序加锁的转账伪代码：先比较 source/destination 的 ID，按固定全序依次获取两把锁，再在锁内读余额、检查、更新或返回失败，最后逆序释放。题目未提供任何伪代码或加锁顺序方案。",
+          "mode": "select_or_adapt"
+        },
+        {
+          "request_ids": [
+            "S008"
+          ],
+          "condition_ids": [
+            "S001",
+            "S004"
+          ],
+          "solution_ids": [],
+          "residual_work": "需说明读余额、检查与更新都在同一临界区内、由两把账户锁共同保护，并解释为何不能只锁一个账户或先读后锁。",
+          "mode": "apply_familiar"
+        },
+        {
+          "request_ids": [
+            "S008"
+          ],
+          "condition_ids": [
+            "S003",
+            "S004",
+            "S005"
+          ],
+          "solution_ids": [],
+          "residual_work": "需给出正确性论证：总余额守恒（转账是同一临界区内一减一加）、不透支（检查与更新原子）、无死锁（全序加锁破坏循环等待）。",
+          "mode": "construct_argument"
+        },
+        {
+          "request_ids": [
+            "S008"
+          ],
+          "condition_ids": [
+            "S005"
+          ],
+          "solution_ids": [],
+          "residual_work": "需构造具体并发反例：两个线程分别以相反顺序获取 A、B 两把锁，各自持有第一把并等待第二把，形成循环等待而死锁。",
+          "mode": "construct_argument"
+        }
+      ],
+      "minimum_answer": "伪代码：transfer(s,d,amt){ if s.id<d.id {lock(s);lock(d);} else {lock(d);lock(s);} if s.balance>=amt {s.balance-=amt; d.balance+=amt; ok=true;} else ok=false; unlock both; return ok;} 读余额、检查与更新都在两把账户锁的同一临界区内完成，由 s 与 d 的锁共同保护；不使用全局锁。正确性：转账在临界区内一减一加，总额不变；检查与更新原子，故不透支；所有线程按账户 ID 全序加锁，破坏循环等待，故无死锁。反例：线程1 先锁 A 再等 B，线程2 先锁 B 再等 A，二者互相等待形成死锁。",
+      "decision": {
+        "candidates": [
+          "medium",
+          "hard"
+        ],
+        "hard_task_index": 0,
+        "reason": "学习者已掌握单锁保护计数器的分析，但尚未练习多对象加锁顺序及其正确性证明。本题核心瓶颈是自行设计按 ID 全序加锁的转账方案并论证其无死锁，这属于相对既有准备的非例行策略选择，而非单纯复述已知论证，故存在 hard 候选。另一方面，若学习者能把单锁临界区经验直接迁移到两把锁并按固定顺序获取，则任务接近熟悉的互斥应用，故 medium 亦合理。边界在于：题目未提供任何加锁顺序方案或正确性证明，需独立构造，因此不能仅判为 easy；但所需概念（互斥、临界区、循环等待）均为已学内容，故不排除 medium。hard_task_index=0 指向伪代码设计这一具体瓶颈。"
+      },
+      "estimated_difficulty": "uncertain",
+      "resolved_evidence": [
+        {
+          "request_ids": [
+            {
+              "id": "S006",
+              "start": 227,
+              "end": 285,
+              "text": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 41,
+              "text": "系统有有限个账户，每个账户有不同且固定的整数 ID、初始非负整数余额和一把互斥锁。"
+            },
+            {
+              "id": "S002",
+              "start": 41,
+              "end": 124,
+              "text": "可同时执行有限次 transfer(source, destination, amount)，source 与 destination 不同，amount 为正整数。"
+            },
+            {
+              "id": "S003",
+              "start": 124,
+              "end": 148,
+              "text": "余额足够时转账恰好一次，否则返回失败且不改余额。"
+            },
+            {
+              "id": "S004",
+              "start": 148,
+              "end": 184,
+              "text": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            },
+            {
+              "id": "S007",
+              "start": 285,
+              "end": 301,
+              "text": "不允许使用覆盖整个系统的全局锁。"
+            }
+          ],
+          "solution_ids": []
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S008",
+              "start": 301,
+              "end": 354,
+              "text": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 41,
+              "text": "系统有有限个账户，每个账户有不同且固定的整数 ID、初始非负整数余额和一把互斥锁。"
+            },
+            {
+              "id": "S004",
+              "start": 148,
+              "end": 184,
+              "text": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。"
+            }
+          ],
+          "solution_ids": []
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S008",
+              "start": 301,
+              "end": 354,
+              "text": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S003",
+              "start": 124,
+              "end": 148,
+              "text": "余额足够时转账恰好一次，否则返回失败且不改余额。"
+            },
+            {
+              "id": "S004",
+              "start": 148,
+              "end": 184,
+              "text": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。"
+            },
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            }
+          ],
+          "solution_ids": []
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S008",
+              "start": 301,
+              "end": 354,
+              "text": "解释读余额、检查与更新分别受哪些锁保护；论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S005",
+              "start": 184,
+              "end": 226,
+              "text": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。"
+            }
+          ],
+          "solution_ids": []
+        }
+      ],
+      "reviewer_type": "AI",
+      "human_validated": false
+    }
+  },
+  {
+    "id": "editor_base_v3_0",
+    "case_id": "editor_base",
+    "domain": "humanities",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "failed",
+    "error": {
+      "type": "ValidationError"
+    }
+  },
+  {
+    "id": "divisibility_hint_v3_0",
+    "case_id": "divisibility_hint",
+    "domain": "mathematics",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明存在一个整除另一个，并明确要求说明构造/分组对任意 n 和任意选取方式成立。提示给出了唯一分解、奇数部分种类数和分组论证，因此问题可解且无矛盾。",
+      "cognitive_demand": "routine_application",
+      "supplied_support": [
+        {
+          "quote": "提示：每个正整数唯一写成 2^k·u，其中 k≥0，u 为奇数。",
+          "finding": "提示直接提供了唯一分解这一关键事实，学生无需自行发现或证明该分解。"
+        },
+        {
+          "quote": "1 到 2n 中只有 n 种可能的奇数部分 u（1,3,…,2n−1）。",
+          "finding": "提示直接给出了奇数部分只有 n 种这一计数结论，学生无需自行推导。"
+        },
+        {
+          "quote": "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。",
+          "finding": "提示已经给出分组方法、抽屉原理的应用以及整除关系的核心推理，学生只需解释和验证其普遍性。"
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。",
+          "finding": "学生仍需把提示中的分组方法一般化说明：对任意 n，奇数部分恰有 n 种，n+1 个数放入 n 组必有一组含两个，并解释同组两数的指数大小关系导致整除。"
+        },
+        {
+          "quote": "请解释这些步骤为何覆盖所有 n 及所有选取方式。",
+          "finding": "学生仍需论证该分组不依赖于具体选取，且对任意 n 都成立，即说明论证的普遍性而非仅验证例子。"
+        }
+      ],
+      "knowledge_integration": "需要整合正整数唯一分解、奇数部分计数、抽屉原理和整除定义。提示已给出这些要素，学生主要做的是把它们组织成对任意 n 和任意选取都成立的证明。",
+      "strategy_selection": "策略已由提示指定：按奇数部分 u 分组，再用抽屉原理。学生不需要自行选择非平凡策略，只需理解并说明该策略为何有效。",
+      "justification_required": "需要解释：1 到 2n 中奇数部分只有 n 种；选出的 n+1 个数按奇数部分分成至多 n 组；抽屉原理保证同组两数；同组两数写成 2^a·u 和 2^b·u 后，指数较小者整除指数较大者。",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "对已学抽屉原理但未学按奇数部分分组技巧的学生，本题不是纯记忆复述，因为需要理解唯一分解与分组计数如何配合；但提示已给出核心构造和整除推理，剩余工作主要是解释普遍性，因此达不到需要独立发现非平凡策略的 hard。相比 easy，它仍要求把多个已给事实组织成一般性证明，故定为 medium。",
+      "uncertainty_reasons": [
+        "学生未学过按奇数部分分组的技巧，但提示已完整给出该技巧，因此其独立发现难度被大幅降低。",
+        "若严格按“已给提示后只需解释”评估，可能接近 easy；若强调学生需自行组织普遍性证明，则可能为 medium。"
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。",
+          "finding": "提示已给出分组方法和整除关系，但未展开成对任意 n 的完整普遍性说明；学生需补足一般性论证。",
+          "support_quotes": [
+            "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "把提示中的分组和整除推理写成对任意 n 都成立的证明，说明奇数部分种类数为 n、抽屉原理保证同组、同组两数指数关系导致整除。"
+        },
+        {
+          "quote": "请解释这些步骤为何覆盖所有 n 及所有选取方式。",
+          "finding": "提示给出了步骤，但没有显式论证任意选取都落入同一分组框架；学生需说明分组只依赖奇数部分，因此对任意选取都适用。",
+          "support_quotes": [
+            "1 到 2n 中只有 n 种可能的奇数部分 u（1,3,…,2n−1）。",
+            "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "解释任意选取的 n+1 个数都可按奇数部分归入这 n 类，因此抽屉原理对任意选取都适用，且 n 任意时结论不变。"
+        }
+      ],
+      "minimum_sufficient_response": "对任意正整数 n，把 1 到 2n 中每个数写成 2^k·u，其中 u 为奇数。这样的写法唯一。1 到 2n 中的奇数部分 u 只能是 1,3,5,…,2n−1，共 n 个。任取 n+1 个不同整数，按它们的奇数部分 u 分成至多 n 组。因为取了 n+1 个数而只有 n 个可能的奇数部分，由抽屉原理，必有两个数属于同一组，即它们有相同的奇数部分 u，可写成 2^a·u 和 2^b·u。若 a<b，则 2^a·u 整除 2^b·u；若 b<a，则 2^b·u 整除 2^a·u。因此这两个不同数中必有一个整除另一个。该分组只依赖每个数的奇数部分，而每个数都有唯一的奇数部分，所以对任意 n 和任意选取方式都成立。",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "该学生已学抽屉原理和整除，但未学按奇数部分分组。提示已把这一非平凡分组技巧和整除推理直接给出，因此剩余瓶颈不是发现策略，而是把已给步骤组织成对任意 n、任意选取都成立的普遍性证明；这属于熟悉的证明组织与解释，不构成需要独立整合非平凡策略的 hard。"
+    }
+  },
+  {
+    "id": "editor_hint_v3_0",
+    "case_id": "editor_hint",
+    "domain": "humanities",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained with fictional records, asks for evidence-based evaluation, two explanations, a distinction between established and possible, additional evidence, and a qualified conclusion. The teaching note supplies interpretive guidance but does not make the task unanswerable or contradictory.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission.",
+          "finding": "Supplies the central distinction between post-submission editorial freedom and pre-submission social freedom."
+        },
+        {
+          "quote": "The contributor's worry might reflect a credible informal threat or an unsupported personal expectation.",
+          "finding": "Supplies the two plausible explanations the learner is asked to give."
+        },
+        {
+          "quote": "Nobody requesting deletion rules out that particular explicit request but does not establish whether informal pressure existed.",
+          "finding": "Supplies the interpretation of the contributor's statement that no one asked for deletion."
+        },
+        {
+          "quote": "Independent accounts of club reactions could help distinguish the explanations.",
+          "finding": "Supplies a type of additional evidence that could distinguish the explanations."
+        },
+        {
+          "quote": "A qualified conclusion may affirm unchanged publication while leaving pre-submission freedom unresolved.",
+          "finding": "Supplies a model qualified conclusion."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "The learner must select and apply a detail from the editor's account and a detail from the contributor's account to assess the editor's claim."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "The learner must explain that the policy addresses editorial changes after submission but not the contributor's pre-submission worry."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "The learner must articulate two explanations, classify claims as established or possible, and propose distinguishing evidence."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "The learner must formulate a conclusion that is qualified and tied to the records."
+        }
+      ],
+      "knowledge_integration": "The learner must integrate the editor's claim, the contributor's account, and the published policy, then apply the teaching note's distinction between editorial alteration and anticipated social consequences. This requires coordinating textual evidence with epistemic categories.",
+      "strategy_selection": "The learner must choose relevant details from each account, decide which claims are established versus possible, and select additional evidence that would discriminate between the two explanations.",
+      "justification_required": "The learner must justify the evaluation and qualified conclusion with specific textual evidence and explain why the policy does or does not resolve the contributor's concern.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "The task is not easy because it requires applying a supplied distinction to new fictional evidence and constructing a qualified conclusion. It is not hard because the teaching note supplies the key interpretive framework, the two explanations, the additional evidence type, and a model conclusion, leaving mainly selection and application rather than independent discovery or adjudication.",
+      "uncertainty_reasons": [
+        "The teaching note supplies substantial scaffolding, which may reduce difficulty for prepared undergraduates.",
+        "The boundary between routine application and strategic reasoning is blurred because the task requires some evidence selection and qualification but within a supplied framework."
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "The teaching note supplies the evaluative framework but not the specific details from each account.",
+          "support_quotes": [
+            "Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Select a detail from the editor's account and a detail from the contributor's account and use them to assess the editor's claim."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "The teaching note supplies the distinction needed to answer, but the learner must apply it to the policy and concern.",
+          "support_quotes": [
+            "Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Explain that the policy addresses editorial changes after submission but does not resolve the contributor's pre-submission concern about social consequences."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "The teaching note supplies the two explanations and a type of additional evidence, but the learner must still distinguish established from possible and apply the evidence.",
+          "support_quotes": [
+            "The contributor's worry might reflect a credible informal threat or an unsupported personal expectation.",
+            "Independent accounts of club reactions could help distinguish the explanations."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "State the two explanations, classify what is established versus possible, and explain how independent accounts of club reactions could distinguish them."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "The teaching note supplies a model qualified conclusion, but the learner must still formulate one supported by the records.",
+          "support_quotes": [
+            "A qualified conclusion may affirm unchanged publication while leaving pre-submission freedom unresolved."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Formulate a qualified conclusion that affirms unchanged publication while leaving pre-submission freedom unresolved, supported by the records."
+        }
+      ],
+      "minimum_sufficient_response": "The editor's claim that the printed issue proves everyone could speak freely is not fully supported. The editor says every submission received before Friday was printed, and the policy says submissions received before Friday are printed without editorial changes. This establishes that the contributor's essay appeared unchanged, as the contributor confirms: 'My essay appeared unchanged.' However, the contributor also says, 'I deleted a paragraph before I sent it because I worried about losing my club role. Nobody asked me to delete it.' The policy does not resolve this concern because it only governs what happens after submission; it does not address whether the contributor felt free before submitting. Two plausible explanations for the deletion are: (1) the contributor faced a credible informal threat or pressure from club members, or (2) the contributor had an unsupported personal expectation of negative consequences. What is established is that the essay was printed unchanged and that no one explicitly asked for deletion. What is only possible is that informal pressure existed or that the contributor's worry was unfounded. Additional evidence that could distinguish these explanations includes independent accounts of club reactions, such as messages or testimony showing whether club members discussed consequences for the contributor's essay. A qualified conclusion is that the records support freedom from editorial alteration after submission, but they do not establish that everyone could speak freely before submission.",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "For undergraduates who have practised distinguishing observations from interpretations and supporting comparisons with quotations, the remaining work is to apply a supplied framework to new fictional evidence. The teaching note supplies the key distinction, the two explanations, the additional evidence type, and a model conclusion, so the task is a familiar application rather than a nonroutine integration."
+    }
+  },
+  {
+    "id": "divisibility_hint_v4_0",
+    "case_id": "divisibility_hint",
+    "domain": "mathematics",
+    "arm": "v4",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明存在整除关系。提示给出了唯一分解与按奇数部分分组的完整思路，学生已学整除、奇偶性、证明和抽屉原理，具备理解该证明的准备知识，仅未学过按奇数部分分组的技巧。",
+      "cognitive_demand": "strategic_reasoning",
+      "tasks": [
+        {
+          "request_ids": [
+            "S003",
+            "S004",
+            "S008"
+          ],
+          "condition_ids": [
+            "S001",
+            "S002",
+            "S005",
+            "S006"
+          ],
+          "solution_ids": [
+            "S007"
+          ],
+          "residual_work": "提示已给出分组对象（奇数部分 u）、组数 n、抽屉原理推出同组、以及同组两数写成 2^a·u 与 2^b·u 后较小者整除较大者。学生仍需把这些片段组织成完整证明：说明 1 到 2n 中奇数部分恰为 1,3,…,2n−1 共 n 种，因此 n+1 个数落入 n 组必有两数同组；说明同组两数指数不同故为不同数；说明 a<b 时 2^a·u 整除 2^b·u；并说明该论证对任意 n 和任意选取都成立。",
+          "mode": "construct_argument"
+        }
+      ],
+      "minimum_answer": "把每个选出的数写成 2^k·u，其中 u 为奇数。1 到 2n 中的数，其奇数部分只能是 1,3,…,2n−1，共 n 种。选出的 n+1 个数按奇数部分 u 分成 n 组，由抽屉原理，必有两个数属于同一组，即形如 2^a·u 与 2^b·u。二者不同，故 a≠b；不妨设 a<b，则 2^b·u = 2^(b−a)·(2^a·u)，所以 2^a·u 整除 2^b·u。由于分组只依赖奇数部分且组数恒为 n，而选取个数恒为 n+1，该论证对任意 n 和任意选取都成立。",
+      "decision": {
+        "candidates": [
+          "medium"
+        ],
+        "hard_task_index": null,
+        "reason": "题目本身是经典抽屉原理证明，但提示已把关键非平凡步骤（唯一分解、奇数部分只有 n 种、按 u 分组、同组两数成倍数）全部给出，学生只需理解并把这些片段组织成完整论证。对已学抽屉原理和整除、但未学过按奇数部分分组技巧的高中生而言，这属于在熟悉框架下应用给定方法并作解释，而非独立发现非平凡策略，故定为 medium。最近边界：若提示只给唯一分解而不给分组与组数，则需学生自行选择分组方式，会偏向 hard；若仅要求复述提示结论，则偏向 easy。此处提示完整，故取 medium。"
+      },
+      "estimated_difficulty": "medium",
+      "resolved_evidence": [
+        {
+          "request_ids": [
+            {
+              "id": "S003",
+              "start": 36,
+              "end": 59,
+              "text": "证明其中一定存在两个不同数，使一个整除另一个。"
+            },
+            {
+              "id": "S004",
+              "start": 59,
+              "end": 106,
+              "text": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。"
+            },
+            {
+              "id": "S008",
+              "start": 236,
+              "end": 260,
+              "text": "请解释这些步骤为何覆盖所有 n 及所有选取方式。"
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S001",
+              "start": 0,
+              "end": 11,
+              "text": "设 n 为任意正整数。"
+            },
+            {
+              "id": "S002",
+              "start": 11,
+              "end": 36,
+              "text": "从 1,2,…,2n 中任取 n+1 个不同整数。"
+            },
+            {
+              "id": "S005",
+              "start": 107,
+              "end": 139,
+              "text": "提示：每个正整数唯一写成 2^k·u，其中 k≥0，u 为奇数。"
+            },
+            {
+              "id": "S006",
+              "start": 139,
+              "end": 175,
+              "text": "1 到 2n 中只有 n 种可能的奇数部分 u（1,3,…,2n−1）。"
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S007",
+              "start": 175,
+              "end": 236,
+              "text": "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。"
+            }
+          ]
+        }
+      ],
+      "reviewer_type": "AI",
+      "human_validated": false
+    }
+  },
+  {
+    "id": "h_hint_v4_0",
+    "case_id": "h_hint",
+    "domain": "humanities",
+    "arm": "v4",
+    "repeat": 0,
+    "status": "failed",
+    "error": {
+      "type": "ValidationError"
+    }
+  },
+  {
+    "id": "editor_hint_v4_0",
+    "case_id": "editor_hint",
+    "domain": "humanities",
+    "arm": "v4",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The fictional case supplies all needed facts (editor's claim, contributor's account, policy, absence of other records) and the prompt is self-contained. The learner profile matches the task: undergraduates practised in distinguishing observation from interpretation and supporting comparisons with quotations. No external historical facts are required, and the teaching note supplies the interpretive framework, so the question is answerable without private reference knowledge.",
+      "cognitive_demand": "strategic_reasoning",
+      "tasks": [
+        {
+          "request_ids": [
+            "S009"
+          ],
+          "condition_ids": [
+            "S002",
+            "S003",
+            "S004",
+            "S005",
+            "S006",
+            "S007"
+          ],
+          "solution_ids": [
+            "S014"
+          ],
+          "residual_work": "Learner must select one detail from each account (e.g., editor's 'printed every submission received before Friday' and contributor's 'essay appeared unchanged') and connect them to the claim, rather than merely restating the teaching note.",
+          "mode": "apply_familiar"
+        },
+        {
+          "request_ids": [
+            "S010"
+          ],
+          "condition_ids": [
+            "S007",
+            "S005"
+          ],
+          "solution_ids": [
+            "S014",
+            "S016"
+          ],
+          "residual_work": "Learner must explain that the policy governs editorial alteration after receipt, not pre-submission social pressure, so it does not resolve the contributor's worry; this requires articulating the scope limit, not just citing the policy.",
+          "mode": "apply_familiar"
+        },
+        {
+          "request_ids": [
+            "S011"
+          ],
+          "condition_ids": [
+            "S005",
+            "S006",
+            "S008"
+          ],
+          "solution_ids": [
+            "S015",
+            "S016",
+            "S017"
+          ],
+          "residual_work": "Learner must generate two distinct plausible explanations (credible informal threat vs. unsupported personal expectation), sort established facts (deletion occurred, no explicit request) from possibilities, and name evidence (independent club accounts) that would discriminate them.",
+          "mode": "construct_argument"
+        },
+        {
+          "request_ids": [
+            "S012",
+            "S013"
+          ],
+          "condition_ids": [
+            "S002",
+            "S004",
+            "S007",
+            "S008"
+          ],
+          "solution_ids": [
+            "S018"
+          ],
+          "residual_work": "Learner must formulate a qualified conclusion that affirms unchanged publication while leaving pre-submission freedom unresolved, grounded in the records and avoiding invented facts.",
+          "mode": "construct_argument"
+        }
+      ],
+      "minimum_answer": "The editor's claim overreaches. The editor's detail ('we printed every submission received before Friday') and the contributor's detail ('my essay appeared unchanged') together support only that received submissions were printed without editorial alteration. The policy confirms this stage-specific guarantee but does not resolve the contributor's concern, because the contributor deleted a paragraph before sending it, out of worry about losing a club role; the policy governs post-receipt editing, not pre-submission social pressure. Two plausible explanations for the deletion: (1) a credible informal threat or expectation of consequences from club members, or (2) an unsupported personal expectation or anxiety with no external pressure. What is established: the contributor deleted a paragraph, the essay appeared unchanged, no one explicitly asked for deletion, and no other records exist. What is only possible: that informal pressure existed, or that it did not. Additional evidence that could distinguish them: independent accounts of club reactions, communications, or testimony about whether anyone signalled consequences. A qualified conclusion: the records support that received submissions were published unchanged, but they do not establish that everyone could speak freely before submission; pre-submission freedom remains unresolved.",
+      "decision": {
+        "candidates": [
+          "medium"
+        ],
+        "hard_task_index": null,
+        "reason": "The task is a short seminar response for undergraduates already practised in distinguishing observations from interpretations and supporting comparisons with quotations. The teaching note supplies the key interpretive moves (stage-specific freedom, two explanations, evidence to discriminate, qualified conclusion), so the learner is not discovering a nonroutine strategy; the work is meaningful familiar application: selecting textual details, applying the supplied distinction between established and possible, and assembling a qualified conclusion. This sits above easy because it requires integrating several supplied ideas into a coherent argument with evidence, but below hard because no unfamiliar bottleneck or independent proof/design is required. Nearest boundary: easy would be mere retrieval of the policy or restating the teaching note; the learner must instead apply the distinction to specific details and construct the two-explanation analysis, which is routine application rather than reproduction."
+      },
+      "estimated_difficulty": "medium",
+      "resolved_evidence": [
+        {
+          "request_ids": [
+            {
+              "id": "S009",
+              "start": 486,
+              "end": 547,
+              "text": "Evaluate the editor's claim using a detail from each account."
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S002",
+              "start": 27,
+              "end": 104,
+              "text": "A student editor writes: \"We printed every submission received before Friday."
+            },
+            {
+              "id": "S003",
+              "start": 105,
+              "end": 163,
+              "text": "The printed issue proves that everyone could speak freely."
+            },
+            {
+              "id": "S004",
+              "start": 163,
+              "end": 224,
+              "text": "\" A student contributor writes: \"My essay appeared unchanged."
+            },
+            {
+              "id": "S005",
+              "start": 225,
+              "end": 308,
+              "text": "I deleted a paragraph before I sent it because I worried about losing my club role."
+            },
+            {
+              "id": "S006",
+              "start": 309,
+              "end": 338,
+              "text": "Nobody asked me to delete it."
+            },
+            {
+              "id": "S007",
+              "start": 338,
+              "end": 456,
+              "text": "\" The published submission policy says: \"All submissions received before Friday are printed without editorial changes."
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S014",
+              "start": 932,
+              "end": 1133,
+              "text": "Teaching note: Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission."
+            }
+          ]
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S010",
+              "start": 548,
+              "end": 610,
+              "text": "Explain whether the policy resolves the contributor's concern."
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S007",
+              "start": 338,
+              "end": 456,
+              "text": "\" The published submission policy says: \"All submissions received before Friday are printed without editorial changes."
+            },
+            {
+              "id": "S005",
+              "start": 225,
+              "end": 308,
+              "text": "I deleted a paragraph before I sent it because I worried about losing my club role."
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S014",
+              "start": 932,
+              "end": 1133,
+              "text": "Teaching note: Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission."
+            },
+            {
+              "id": "S016",
+              "start": 1239,
+              "end": 1366,
+              "text": "Nobody requesting deletion rules out that particular explicit request but does not establish whether informal pressure existed."
+            }
+          ]
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S011",
+              "start": 611,
+              "end": 807,
+              "text": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations."
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S005",
+              "start": 225,
+              "end": 308,
+              "text": "I deleted a paragraph before I sent it because I worried about losing my club role."
+            },
+            {
+              "id": "S006",
+              "start": 309,
+              "end": 338,
+              "text": "Nobody asked me to delete it."
+            },
+            {
+              "id": "S008",
+              "start": 456,
+              "end": 485,
+              "text": "\" There are no other records."
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S015",
+              "start": 1134,
+              "end": 1238,
+              "text": "The contributor's worry might reflect a credible informal threat or an unsupported personal expectation."
+            },
+            {
+              "id": "S016",
+              "start": 1239,
+              "end": 1366,
+              "text": "Nobody requesting deletion rules out that particular explicit request but does not establish whether informal pressure existed."
+            },
+            {
+              "id": "S017",
+              "start": 1367,
+              "end": 1446,
+              "text": "Independent accounts of club reactions could help distinguish the explanations."
+            }
+          ]
+        },
+        {
+          "request_ids": [
+            {
+              "id": "S012",
+              "start": 808,
+              "end": 866,
+              "text": "Propose one qualified conclusion supported by the records."
+            },
+            {
+              "id": "S013",
+              "start": 867,
+              "end": 931,
+              "text": "Multiple supported conclusions are allowed; do not invent facts."
+            }
+          ],
+          "condition_ids": [
+            {
+              "id": "S002",
+              "start": 27,
+              "end": 104,
+              "text": "A student editor writes: \"We printed every submission received before Friday."
+            },
+            {
+              "id": "S004",
+              "start": 163,
+              "end": 224,
+              "text": "\" A student contributor writes: \"My essay appeared unchanged."
+            },
+            {
+              "id": "S007",
+              "start": 338,
+              "end": 456,
+              "text": "\" The published submission policy says: \"All submissions received before Friday are printed without editorial changes."
+            },
+            {
+              "id": "S008",
+              "start": 456,
+              "end": 485,
+              "text": "\" There are no other records."
+            }
+          ],
+          "solution_ids": [
+            {
+              "id": "S018",
+              "start": 1447,
+              "end": 1551,
+              "text": "A qualified conclusion may affirm unchanged publication while leaving pre-submission freedom unresolved."
+            }
+          ]
+        }
+      ],
+      "reviewer_type": "AI",
+      "human_validated": false
+    }
+  },
+  {
+    "id": "divisibility_hint_v3_1",
+    "case_id": "divisibility_hint",
+    "domain": "mathematics",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明存在一个整除另一个，并明确要求说明构造/分组对任意 n 和任意选取方式成立。提示给出了唯一分解、奇数部分种类数和分组论证，因此问题可解且无矛盾。",
+      "cognitive_demand": "routine_application",
+      "supplied_support": [
+        {
+          "quote": "提示：每个正整数唯一写成 2^k·u，其中 k≥0，u 为奇数。",
+          "finding": "提示直接提供了唯一分解这一关键表示，学生无需自行发现或证明该分解。"
+        },
+        {
+          "quote": "1 到 2n 中只有 n 种可能的奇数部分 u（1,3,…,2n−1）。",
+          "finding": "提示直接给出奇数部分只有 n 种这一计数事实，学生无需自行推导。"
+        },
+        {
+          "quote": "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。",
+          "finding": "提示完整给出了分组方法、抽屉原理的应用以及同组两数之间的整除关系，核心证明骨架已提供。"
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。",
+          "finding": "学生仍需把提示中的分组方法组织成对任意 n 成立的证明，并解释同组两数为何一个整除另一个。"
+        },
+        {
+          "quote": "请解释这些步骤为何覆盖所有 n 及所有选取方式。",
+          "finding": "学生仍需说明唯一分解、奇数部分种类数、抽屉原理和整除结论对任意 n 与任意 n+1 个数的选取都成立。"
+        }
+      ],
+      "knowledge_integration": "需要整合正整数唯一分解为 2^k·u、1 到 2n 中奇数部分只有 n 种、抽屉原理以及同底幂的整除关系。提示已给出这些要素，学生主要进行组织与解释。",
+      "strategy_selection": "策略已由提示指定：按奇数部分 u 分组，再用抽屉原理。学生不需要在多种方法中选择或发明非例行策略。",
+      "justification_required": "需要给出一般性论证：每个数唯一对应一个奇数部分；1 到 2n 中奇数部分至多 n 种；n+1 个数放入 n 组必有两数同组；同组两数写成 2^a·u 与 2^b·u，指数较小者整除指数较大者。",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "对已学抽屉原理但未学按奇数部分分组技巧的学生，本题不是纯记忆复述，因为需要理解唯一分解并把它与抽屉原理结合；但提示已给出分组方法、计数事实和整除结论，核心策略无需自行发现，因此低于需要独立构造非例行证明的 hard，高于直接套用熟悉模板的 easy。",
+      "uncertainty_reasons": [
+        "学生未学过按奇数部分分组的技巧，但提示已完整给出该技巧，实际独立发现成分较低。",
+        "若学生能熟练使用唯一分解和抽屉原理，本题可能接近 easy；若对唯一分解不熟，则可能接近 hard。"
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。",
+          "finding": "提示已给出分组方法和整除关系，但学生仍需将其表述为对任意 n 成立的一般性解释，并说明不能只靠例子。",
+          "support_quotes": [
+            "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "把提示中的分组与整除关系写成一般性证明，说明对任意 n 都成立，而非仅验证例子。"
+        },
+        {
+          "quote": "请解释这些步骤为何覆盖所有 n 及所有选取方式。",
+          "finding": "提示给出了唯一分解、奇数部分种类数和抽屉原理，但学生仍需解释这些步骤对任意 n 和任意选取方式都适用。",
+          "support_quotes": [
+            "每个正整数唯一写成 2^k·u，其中 k≥0，u 为奇数。",
+            "1 到 2n 中只有 n 种可能的奇数部分 u（1,3,…,2n−1）。",
+            "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "说明唯一分解对每个正整数成立、奇数部分种类数对任意 n 成立、抽屉原理对任意 n+1 个数的选取成立，从而结论覆盖所有情况。"
+        }
+      ],
+      "minimum_sufficient_response": "对任意正整数 m，唯一写成 m=2^k·u，其中 k≥0，u 为奇数。在 1,2,…,2n 中，每个数的奇数部分 u 只能是 1,3,5,…,2n−1，共 n 个。把选出的 n+1 个数按奇数部分 u 分成 n 组。由抽屉原理，n+1 个数放入 n 组，必有两个数在同一组，即它们有相同奇数部分 u，分别写成 2^a·u 和 2^b·u。若 a<b，则 2^a·u 整除 2^b·u；若 b<a，则 2^b·u 整除 2^a·u。因此这两个不同数中必有一个整除另一个。上述分组对任意 n 都只有 n 组，抽屉原理对任意 n+1 个数的选取都适用，所以结论对任意 n 和任意选取方式成立。",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "该学生已学抽屉原理和数学证明，但未学按奇数部分分组。提示已把分组方法、奇数部分种类数和整除结论直接给出，因此剩余瓶颈主要是理解唯一分解并组织一般性解释，而不是独立发现非例行策略；对已学抽屉原理的学生属于中等难度的熟悉应用。"
+    }
+  }
+]

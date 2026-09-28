@@ -1,0 +1,56 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目条件完整：图、费用、两条简单路径、单边关闭容错要求及费用上界/下界均明确；学生具备最短路与路径费用基础，允许枚举构造证明。",
+  "solution": "取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-C-T，费用2+1+1=4。总登记费=7≤8。\n容错：P1用边SA,AC,CT；P2用边SB,BC,CT。任意一条走廊关闭时，若关的是P1的边，则P2仍完整；若关的是P2的边，则P1仍完整；若关的是其他边，两条都仍完整。故至少一条可通行。\n下界：若总费≤7且要抗任意单边关闭，两条S-T路径必须边不相交。否则存在公共边e，关闭e后两条都断。边不相交时，从S出发的两条路径首边不同，只能分别用SA(1)和SB(2)；到达T的两条路径末边不同，只能分别用AT(4)和BT(3)。于是两条路径费用至少为(1+4)与(2+3)，总和至少10，矛盾。因此总费≤7不可能。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "从给定图中选择两条S-T简单路径，计算各自费用并验证总费≤8。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S002",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "逐边检查所选两条路径：任一条走廊关闭后，至少一条路径仍完整可通行。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "证明总登记费≤7时无法满足任意单边关闭容错，需论证两条路径必须边不相交并推出费用下界。",
+      "mode": "construct_argument"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "medium",
+      "hard"
+    ],
+    "boundary_reason": "构造费用≤8的容错方案属于熟悉最短路与枚举的应用，但下界证明需要发现“抗单边关闭⇒两条路径边不相交”并利用S、T处边费用推出至少10，超出直接套用最短路；入门学生未学容错网络，故整体接近中难边界，取medium与hard相邻候选。",
+    "hard_task_index": 2
+  }
+}

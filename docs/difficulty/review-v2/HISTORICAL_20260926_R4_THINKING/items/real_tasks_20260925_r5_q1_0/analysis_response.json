@@ -1,0 +1,35 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目给出完整到达序列、起始序号、累积确认与 NextByteExpected 定义，选项互斥且可判定；无缺失条件或歧义。",
+  "solution": "接收方已连续收到第1～200字节，第201～500字节缺失，因此 NextByteExpected 指向第201字节，累积确认值也指向第201字节；最先缺失区间为第201～500字节。第501～700、901～1000字节虽已到达，但因前面有缺口，不能使确认值前移，也不能被应用读取。故正确选项为 B。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S022",
+        "S023"
+      ],
+      "condition_ids": [
+        "S009",
+        "S016",
+        "S017",
+        "S018",
+        "S019",
+        "S020",
+        "S021"
+      ],
+      "provided_ids": [
+        "S012",
+        "S013"
+      ],
+      "residual_work": "把已到达区间与连续前缀区分开，确定 NextByteExpected 与累积确认值均指向第201字节，并选出 B。",
+      "mode": "select_or_adapt"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "easy"
+    ],
+    "boundary_reason": "该题只需按已给定义识别连续前缀：1～200 连续，201 起缺失，直接得到确认值 201 与缺失区间 201～500。虽含多个到达区间，但无需组合新规则或进行多步推导，属于对给定规则和数据的直接应用，故定为 easy。",
+    "hard_task_index": null
+  }
+}

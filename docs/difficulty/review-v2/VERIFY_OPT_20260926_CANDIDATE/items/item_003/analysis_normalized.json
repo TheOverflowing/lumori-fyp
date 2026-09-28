@@ -1,0 +1,190 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目条件完整，图小且可枚举；学习者已理解无向图、简单路径和费用相加，能找小图最短路，不要求网络流定理，因此可以做枚举和分类证明。",
+  "solution": "设计：P1=S-A-C-T（边SA,AC,CT，费用1+1+1=3），P2=S-B-T（边SB,BT，费用2+3=5），总费用8。两条路径没有公共边。任意关闭一条走廊：若关闭P1中的SA、AC或CT，P2仍完整；若关闭P2中的SB或BT，P1仍完整；关闭其他走廊时两条都完整。下界：合法两条简单S-T路径必须无公共边，否则关闭公共边会使两条同时失效。S只有两条出边SA和SB，且简单路径不能重复经过S，所以一条必须从SA离开，另一条从SB离开。从SA离开的最便宜路径是S-A-C-T费用3；从SB离开的最便宜路径是S-B-C-T费用4，但它们共用CT，不能同时选。因此任何合法两条路径费用至少3+4=7，且等于7的唯一组合已被CT冲突排除，所以总费用≥8。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003"
+      ],
+      "provided_ids": [],
+      "residual_work": "枚举此小图中的简单S-T路径并计算费用，例如S-A-T=5、S-A-C-T=3、S-B-C-T=4等。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S002",
+        "S004",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "选择S-A-C-T与S-B-T，总费用8，并核对两条路径无公共走廊。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "用两条路径无公共边说明任意一条走廊关闭后至少一条路径完整可通行。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "证明合法路径必须无公共边；由S的两条出边分类，排除最便宜组合S-A-C-T与S-B-C-T共用CT，推出总费用至少8。",
+      "mode": "construct_argument"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "medium"
+    ],
+    "boundary_reason": "问题要求把“任意关闭一边仍至少一条可用”转化为无公共边，并通过小规模分类证明总费用下界。学习者具备基本图枚举和费用计算，但未接触容错网络或边不相交构造，需自行完成这一转化和小型证明；这超出直接取最短路的熟悉应用，但不依赖高级定理或大规模搜索。",
+    "hard_task_index": null
+  },
+  "estimated_difficulty": "medium",
+  "resolved_evidence": [
+    {
+      "request_ids": [
+        {
+          "id": "S006",
+          "start": 200,
+          "end": 253,
+          "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+        }
+      ],
+      "condition_ids": [
+        {
+          "id": "S001",
+          "start": 0,
+          "end": 21,
+          "text": "虚构快递网络只有S、A、B、C、T五个站。"
+        },
+        {
+          "id": "S002",
+          "start": 21,
+          "end": 85,
+          "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "id": "S003",
+          "start": 86,
+          "end": 118,
+          "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+        }
+      ],
+      "provided_ids": []
+    },
+    {
+      "request_ids": [
+        {
+          "id": "S006",
+          "start": 200,
+          "end": 253,
+          "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+        }
+      ],
+      "condition_ids": [
+        {
+          "id": "S002",
+          "start": 21,
+          "end": 85,
+          "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "id": "S004",
+          "start": 118,
+          "end": 150,
+          "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+        },
+        {
+          "id": "S005",
+          "start": 150,
+          "end": 199,
+          "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        }
+      ],
+      "provided_ids": []
+    },
+    {
+      "request_ids": [
+        {
+          "id": "S006",
+          "start": 200,
+          "end": 253,
+          "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+        }
+      ],
+      "condition_ids": [
+        {
+          "id": "S005",
+          "start": 150,
+          "end": 199,
+          "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        }
+      ],
+      "provided_ids": []
+    },
+    {
+      "request_ids": [
+        {
+          "id": "S006",
+          "start": 200,
+          "end": 253,
+          "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+        }
+      ],
+      "condition_ids": [
+        {
+          "id": "S002",
+          "start": 21,
+          "end": 85,
+          "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "id": "S003",
+          "start": 86,
+          "end": 118,
+          "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+        },
+        {
+          "id": "S004",
+          "start": 118,
+          "end": 150,
+          "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+        },
+        {
+          "id": "S005",
+          "start": 150,
+          "end": 199,
+          "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        }
+      ],
+      "provided_ids": []
+    }
+  ],
+  "case_sha256": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+  "protocol_revision": "difficulty-review-v2.5-lossless-verification-20260926",
+  "human_validated": false,
+  "analysis_sha256": "b4f1995a1c304761392da54d8438a391bfa9b4e78e25f6bc8873b65badd93027"
+}

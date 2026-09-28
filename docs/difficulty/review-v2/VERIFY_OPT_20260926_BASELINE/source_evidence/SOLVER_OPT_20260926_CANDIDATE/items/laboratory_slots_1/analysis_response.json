@@ -1,0 +1,53 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "约束完整且无歧义；入门学生可用枚举、反证和约束推理完成，不要求专门算法，因此可判题。",
+  "solution": "最少5个时段。安排：1:A；2:B,C；3:D；4:E；5:F。核验：A与B不同时段，C与D不同时段；C>A，D>B，E>C,D，F>E；每时段至多两项。反证：若T≤4，因F>E，E≤3；因E>C,D，C,D≤2。由C>A且时段从1开始，得C=2,A=1；由D>B得D=2,B=1。于是A、B同在时段1，违反共用校准仪不能同处一时段。故≤4不可能。5时段可行，因此最少为5。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "在时段1-5中试排A=1,B=2,C=2,D=3,E=4,F=5，并逐项核验容量、先后和共用设备限制。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S006",
+        "S007"
+      ],
+      "condition_ids": [
+        "S001",
+        "S003",
+        "S004"
+      ],
+      "provided_ids": [],
+      "residual_work": "假设T≤4，由F>E推E≤3，由E>C,D推C,D≤2；结合整数时段编号推出A=1且B=1，与A、B共用校准仪冲突。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [],
+      "provided_ids": [],
+      "residual_work": "由5时段可行且≤4不可行推出最少时段为5，并写出最终答案。",
+      "mode": "apply_familiar"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "medium",
+      "hard"
+    ],
+    "boundary_reason": "入门者已能处理单链与两个独立并行任务，构造5时段安排是小型多约束组合，接近中等偏上；但未受过最短工期证明训练，证明≤4不可能需从F/E倒推并把数值排序与设备冲突结合，属于新的构造性证明瓶颈，故难题可能性更大，边界为中等与难。",
+    "hard_task_index": 1
+  }
+}

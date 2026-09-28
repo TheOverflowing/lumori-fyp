@@ -1,0 +1,55 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目条件完整：图、费用、两条简单路径、任意单边关闭、费用上限与下界证明均明确；入门离散数学准备足以枚举小图并作分类证明。",
+  "solution": "取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-C-T，费用2+1+1=4；总费7≤8。任意一条走廊关闭时：若关闭S-A或A-C或C-T，P2仍通；若关闭S-B或B-C，P1仍通；若关闭C-T，P1、P2都断，但还有S-A-B-T，费用1+1+3=5，仍通。故抵抗任意单边关闭。证明≤7不可能：若总费≤7，则两条路径费用和≤7。S到T的每条简单路径至少经过一条与S或T相连的边；S-A=1、S-B=2、A-T=4、B-T=3。若两条路径都避开S-A，则至少用S-B(2)，且到T至少用B-T(3)或经C-T(1)但需先到C；枚举费用≤7的两条S-T简单路径，只有S-A-C-T(3)、S-B-C-T(4)、S-A-B-T(5)、S-B-A-T(6)等。任意两条费用和≤7时，必同时依赖C-T或同时依赖某条公共边；关闭该公共边后两条都断。因此≤7不能保证。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "从给定图中枚举两条S-T简单路径，计算费用并检查总费≤8。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S002",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "对候选两条路径逐条假设任意单边关闭，验证至少一条仍完整可通行。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S002",
+        "S003",
+        "S004"
+      ],
+      "provided_ids": [],
+      "residual_work": "枚举或分类所有总费≤7的两条简单路径，找出必被某条单边关闭同时破坏的公共依赖。",
+      "mode": "construct_argument"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "medium",
+      "hard"
+    ],
+    "boundary_reason": "设计≤8方案只需在小图中枚举并验证单边容错，属于熟悉最短路与简单路径的直接应用，偏medium；但证明≤7不可能需要系统枚举或分类所有低费用路径对并识别公共瓶颈，相对入门准备有非例行瓶颈，故同时保留hard。",
+    "hard_task_index": 2
+  }
+}

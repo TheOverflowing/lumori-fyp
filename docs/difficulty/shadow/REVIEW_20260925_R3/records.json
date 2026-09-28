@@ -1,0 +1,60 @@
+[
+  {
+    "case_id": "REAL_TASKS_20260925_R3_task_2_q1",
+    "job_id": "e99a79e1c4f648dcbd34253b2e5be772",
+    "content_id": "4c7a07b432414c799470d0206c32857f",
+    "source_directory": "docs/difficulty/shadow/REAL_TASKS_20260925_R3",
+    "asset_sha256": "3412dd9fc8d409a12b43f93fae9a5bf402a1b8246120949d6825be4959e0e95a",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "student_visible_text": "Learning objectives:\n识别共享自旋锁所保护的线程与中断处理程序并发访问，并列举并发的来源。\n分析持锁且中断开启时被中断处理程序再次请求同一锁所形成的自等待死锁因果链。\n给出取锁、释放锁与中断使能之间的次序约束及嵌套临界区簿记要求。\n比较同一共享锁在单 CPU 与多处理器下的后果差异，并界定禁用中断的作用范围。\n区分禁止同 CPU 重复取锁与持锁关中断两种防护，说明其针对的故障模式不同。\n\n共享自旋锁与中断交互的基本约束\n自旋锁用 locked 字段表示可用或被持有；仅靠“先读再写”不能保证互斥，因为多个 CPU 可能同时读到可用，因此对 locked 的检查与置位必须作为一个原子步骤完成。\n\n有些自旋锁保护的数据同时被内核线程和中断处理程序使用，锁定用于把这两类访问串行化。\n\n由此产生一条关键约束：若某自旋锁会被中断处理程序使用，CPU 就绝不能在中断开启时持有该锁。取锁与开/关中断的相对次序因此很重要：acquire 必须先把本 CPU 的中断关掉，再置位 locked；release 必须先释放锁，之后才恢复中断。嵌套临界区通过 push_off/pop_off 记录本 CPU 上的持锁层数，只有层数归零时才恢复到最外层进入前的中断使能状态。\n\n并发的来源与禁用中断的作用范围\n并发指多个指令流交错执行，其来源有三类：多处理器并行、线程切换、以及中断处理程序与可被中断的代码同时修改同一数据。\n\n因此，同一个共享锁在不同来源下防的是不同交错；而“关中断”这一类手段只作用于执行它的那个 CPU：它阻止本 CPU 上会使用该锁的中断在临界区内被递交，却不影响其他 CPU 上的执行者取同一把锁。\n\n内核中有一把自旋锁 tickslock，保护一个计数器变量。内核线程 A 在函数 f() 中取 tickslock、读改写该计数器、再释放锁；时钟中断处理程序 clockintr 也会取同一把锁并在临界区内更新该计数器。锁的 acquire 与 release 采用“取锁时关本 CPU 中断、释放锁时恢复中断”的策略。\n\n请按任务逐条回答，并对每个结论说明依据。\n\n1. 说明为什么该计数器需要 tickslock 保护，并列出可能使 A 与 clockintr 的访问交错的并发来源。\n2. 设 A 在 f() 中已取到 tickslock，但此临界区内中断处于开启状态；此时一个时钟中断在本 CPU 上被递交，clockintr 开始执行。逐步分析锁最终是否可能被释放、该 CPU 会处于什么状态、是否会波及系统其他部分。\n3. 给出避免任务 2 后果的设计约束，并说明 acquire 与 release 中“取锁/释放锁”与“关中断/恢复中断”两组操作的相对先后次序要求；解释次序颠倒为什么会打开一个危险的时间窗口。\n4. 说明嵌套临界区中如何决定何时才真正恢复中断，以及为什么不能在每次释放锁时无条件开中断。\n5. 分别在下列两种硬件场景下，判断断言 A 与断言 B 是否成立，并结合“禁用（或开启）中断的作用范围”论证：\n场景 S：系统只有一个 CPU。\n场景 P：系统有多个 CPU，A 与 clockintr 都可能运行在其中任一 CPU 上，且 tickslock 可能被不同 CPU 上的代码同时请求。\n断言 A：本 CPU 上的中断处理程序可以一直等待某个线程释放自旋锁。\n断言 B：另一个 CPU 上的中断处理程序可以等待某个线程释放自旋锁。\n6. 对“CPU 重复取得自己已持有的锁”存在两种立场。请说明禁止同 CPU 重复取锁是否可以替代在持锁期间关中断，并论证。",
+    "original_difficulty": "hard",
+    "published_difficulty": "hard",
+    "target_difficulty": "hard",
+    "acceptance_status": "strict",
+    "strict_passed": true,
+    "judge_status": "validated",
+    "eligibility": "eligible",
+    "candidates": [
+      "medium"
+    ],
+    "comparison": "disagrees",
+    "published_comparison": "outside_candidates",
+    "judge_reason": "任务覆盖识别、因果链分析、次序约束、嵌套簿记、单/多 CPU 对比与两种防护区分。课程资料已给出关键约束（S010、S011、S012、S015）与并发来源（S014），学习者只需将这些已学概念应用到具体场景并组织论证，属于熟悉的实质性应用与证据整合，而非需要非例行策略突破的瓶颈。任务 2、3、5、6 的因果链与对比虽需独立组织，但每一步都可由已给约束直接推出，未超出已学范围。最近边界：若要求自行发现 push_off/pop_off 机制或自行推导次序约束，则偏 hard；此处均已提供，故定为 medium。",
+    "audit_status": "correction_required",
+    "audit_findings": [
+      {
+        "category": "internal_contradiction",
+        "certainty": "definite",
+        "question_ids": [
+          "S033",
+          "S030",
+          "S031",
+          "S032"
+        ],
+        "review_ids": [
+          "R006",
+          "R022"
+        ],
+        "explanation": "R006 states for scenario S that assertion A holds (中断处理程序等待会自死锁，故不能一直等待), but the minimum answer R022 says assertion A 不成立. The two review sections contradict each other on the same judgement.",
+        "suggested_correction": "Align R006 with R022: in scenario S, assertion A 不成立 (本 CPU 中断处理程序若一直等待本 CPU 线程释放锁会自死锁)."
+      },
+      {
+        "category": "unsupported_claim",
+        "certainty": "definite",
+        "question_ids": [
+          "S033",
+          "S034",
+          "S030"
+        ],
+        "review_ids": [
+          "R006",
+          "R022",
+          "R023"
+        ],
+        "explanation": "Assertion A/B are phrased as '可以一直等待' (can wait indefinitely). The review answers '成立/不成立' without noting that '一直等待' is precisely what causes deadlock, so the assertion is false in both scenarios; the answer conflates 'can wait' with 'can wait forever'.",
+        "suggested_correction": "Clarify that '一直等待' is false in both S and P for assertion A; only a bounded wait by another CPU's handler is possible, matching the intended deadlock analysis."
+      }
+    ],
+    "shadow_duration_ms": 9537
+  }
+]

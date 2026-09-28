@@ -1,0 +1,271 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "pass",
+      "reason": "图、边费用、两条简单路径、费用分计、任意单边关闭及费用上下界均明确；单边理解为恰好一条走廊关闭，与任务一致。",
+      "evidence_ids": [
+        "E0001",
+        "E0002",
+        "E0003",
+        "E0004",
+        "E0005",
+        "E0006"
+      ],
+      "evidence": [
+        {
+          "document_id": "student",
+          "quote": "虚构快递网络只有S、A、B、C、T五个站。"
+        },
+        {
+          "document_id": "student",
+          "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "document_id": "student",
+          "quote": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+        },
+        {
+          "document_id": "student",
+          "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+        },
+        {
+          "document_id": "student",
+          "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        },
+        {
+          "document_id": "student",
+          "quote": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+        }
+      ]
+    },
+    "solution_correct": {
+      "status": "fail",
+      "reason": "盲解P1=S-A-C-T与P2=S-B-C-T共用走廊CT；关闭CT时两者均断，违反至少一条可通行。其下界又称末边只能AT/BT，忽略CT，证明无效。",
+      "evidence_ids": [
+        "E0020",
+        "E0021",
+        "E0022",
+        "E0023",
+        "E0027",
+        "E0005"
+      ],
+      "evidence": [
+        {
+          "document_id": "analysis",
+          "quote": "\", \"solution\": \"取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-C-T，费用2+1+1=4。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "总登记费=7≤8。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "\\n容错：P1用边SA,AC,CT；P2用边SB,BC,CT。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "任意一条走廊关闭时，若关的是P1的边，则P2仍完整；若关的是P2的边，则P1仍完整；若关的是其他边，两条都仍完整。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "边不相交时，从S出发的两条路径首边不同，只能分别用SA(1)和SB(2)；到达T的两条路径末边不同，只能分别用AT(4)和BT(3)。"
+        },
+        {
+          "document_id": "student",
+          "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        }
+      ]
+    },
+    "reference_correct": {
+      "status": "pass",
+      "reason": "参考方案S-A-C-T与S-B-T无共用边，任一单边关闭最多断一条；下界证边不相交、首边≥3、末边≥4、中边≥1，故总费≥8。",
+      "evidence_ids": [
+        "E0009",
+        "E0010",
+        "E0011",
+        "E0012",
+        "E0013",
+        "E0014",
+        "E0002",
+        "E0005"
+      ],
+      "evidence": [
+        {
+          "document_id": "reference_answer",
+          "quote": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。"
+        },
+        {
+          "document_id": "reference_answer",
+          "quote": "它们无共用走廊，任意关闭一条走廊最多破坏其中一条。"
+        },
+        {
+          "document_id": "reference_answer",
+          "quote": "若两条路径有共用走廊，关闭该走廊会同时破坏它们，因此任何合格方案都必须没有共用走廊。"
+        },
+        {
+          "document_id": "reference_answer",
+          "quote": "两条路径离开S必须分别用S-A和S-B，费用至少3；进入T必须用不同走廊，最便宜两条是C-T与B-T，合计至少4。"
+        },
+        {
+          "document_id": "reference_answer",
+          "quote": "还至少需要一条中间走廊，因为S不直接连C，且若完全不用中间走廊，只能走S-A-T与S-B-T，费用10。"
+        },
+        {
+          "document_id": "reference_answer",
+          "quote": "因此总费不能为7或更少。"
+        },
+        {
+          "document_id": "student",
+          "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "document_id": "student",
+          "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        }
+      ]
+    },
+    "explanation_consistent": {
+      "status": "pass",
+      "reason": "解释与参考关键一致：无中间边仅S-A-T/S-B-T总10；有中间边时首3、末≥4、中≥1，总≥8；构造恰为8。",
+      "evidence_ids": [
+        "E0015",
+        "E0016",
+        "E0017",
+        "E0002",
+        "E0005"
+      ],
+      "evidence": [
+        {
+          "document_id": "reference_explanation",
+          "quote": "更严格的下界分情况：不使用中间走廊时，只能选S-A-T和S-B-T，总费10；使用至少一条中间走廊时，首边合计3、末边合计至少4、中间边至少1，故总费至少8。"
+        },
+        {
+          "document_id": "reference_explanation",
+          "quote": "构造恰好达到8。"
+        },
+        {
+          "document_id": "reference_explanation",
+          "quote": "困难来自自行识别单点关闭要求对应的共用边约束，并把构造与必要性证明连接。"
+        },
+        {
+          "document_id": "student",
+          "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "document_id": "student",
+          "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        }
+      ]
+    },
+    "source_support": {
+      "status": "pass",
+      "reason": "源图与合同逐字支持学生图/规则及参考路径费用；未发现无关或改动的事实。",
+      "evidence_ids": [
+        "E0034",
+        "E0035",
+        "E0036",
+        "E0037",
+        "E0038",
+        "E0001",
+        "E0002",
+        "E0003",
+        "E0004",
+        "E0005",
+        "E0009"
+      ],
+      "evidence": [
+        {
+          "document_id": "source:courier_map",
+          "quote": "网络只有S、A、B、C、T五个站。"
+        },
+        {
+          "document_id": "source:courier_map",
+          "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "document_id": "source:courier_contract",
+          "quote": "事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+        },
+        {
+          "document_id": "source:courier_contract",
+          "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+        },
+        {
+          "document_id": "source:courier_contract",
+          "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        },
+        {
+          "document_id": "student",
+          "quote": "虚构快递网络只有S、A、B、C、T五个站。"
+        },
+        {
+          "document_id": "student",
+          "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "document_id": "student",
+          "quote": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+        },
+        {
+          "document_id": "student",
+          "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+        },
+        {
+          "document_id": "student",
+          "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        },
+        {
+          "document_id": "reference_answer",
+          "quote": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。"
+        }
+      ]
+    },
+    "demand_supported": {
+      "status": "pass",
+      "reason": "分析任务与题目要求一致：选路径、验证任意单边关闭、证明≤7不可能；难度边界依据入门未学容错且需自主构造证明，有据。",
+      "evidence_ids": [
+        "E0018",
+        "E0030",
+        "E0031",
+        "E0032",
+        "E0006",
+        "E0007",
+        "E0008"
+      ],
+      "evidence": [
+        {
+          "document_id": "analysis",
+          "quote": "{\"decision\": {\"boundary_reason\": \"构造费用≤8的容错方案属于熟悉最短路与枚举的应用，但下界证明需要发现“抗单边关闭⇒两条路径边不相交”并利用S、T处边费用推出至少10，超出直接套用最短路；入门学生未学容错网络，故整体接近中难边界，取medium与hard相邻候选。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"从给定图中选择两条S-T简单路径，计算各自费用并验证总费≤8。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "\"}, {\"condition_ids\": [\"S002\", \"S005\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"逐边检查所选两条路径：任一条走廊关闭后，至少一条路径仍完整可通行。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "\"}, {\"condition_ids\": [\"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"证明总登记费≤7时无法满足任意单边关闭容错，需论证两条路径必须边不相交并推出费用下界。"
+        },
+        {
+          "document_id": "student",
+          "quote": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+        },
+        {
+          "document_id": "learner_profile",
+          "quote": "入门离散数学学生，理解无向图、简单路径、路径费用相加，会在小图中找最短路；没有学过容错网络、边不相交路径或网络流。"
+        },
+        {
+          "document_id": "learner_profile",
+          "quote": "本题允许自行枚举、分类或构造证明，不要求引用定理。"
+        }
+      ]
+    }
+  },
+  "case_sha256": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+  "analysis_sha256": "62512f05e3eb69f4900f819c8aadb8547e9b305eced3b709c6c2fb5d0dd61fad",
+  "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+  "human_validated": false
+}

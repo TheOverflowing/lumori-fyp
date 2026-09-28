@@ -1,0 +1,1219 @@
+[
+  {
+    "case_id": "marking_wrong_option",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "e45b175641e5e4111ac5d2c60d3944da79bc6832b0bceccf1e3986dcc9d05f6c",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 7221,
+      "prompt_sha256": "bc41861d5f92467ece19cafd4f223719acea750c2a606a9fd65c1711f741b788",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目条件完整且无冲突：六题、对4错1空1，计分规则明确，无额外加分或舍入；选项与计算要求清楚。",
+        "solution": "答对4题得 4×3=12 分；答错1题扣 1×2=2 分；空1题得0分。总分 12−2+0=10 分。选项为 A。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S004",
+              "S010"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003"
+            ],
+            "provided_ids": [],
+            "residual_work": "根据答对、答错、空题数量分别计算得分，再相加并选出对应选项。",
+            "mode": "apply_familiar"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "easy"
+          ],
+          "boundary_reason": "该题只需按已给规则做一次乘法、一次乘法和加减整合，属于直接应用；学生已掌握整数加减乘和代入给定算式，因此不需要额外练习证据即可判为 easy。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "easy",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S004",
+                "start": 84,
+                "end": 93,
+                "text": "单选：总分是多少？"
+              },
+              {
+                "id": "S010",
+                "start": 112,
+                "end": 121,
+                "text": "写出选项和计算式。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 9,
+                "text": "虚构测验只有六题。"
+              },
+              {
+                "id": "S002",
+                "start": 9,
+                "end": 66,
+                "text": "计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。"
+              },
+              {
+                "id": "S003",
+                "start": 66,
+                "end": 83,
+                "text": "某学生答对4题，答错1题，空1题。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "54427f81d6e54673a30929775b3209de5b2be20e9799d98b163467c91dcf8cad",
+        "protocol_revision": "difficulty-review-v2.3-evidence-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "5637af5321dc7ace07d8e66350ec51d15508f118676f5506467cbbf5694e3713"
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 14336,
+      "prompt_sha256": "c2cf82319678beaffcc9de96736a85b1001fa120caca0ee9a2571aae00e04fac",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "Counts sum to six and rules specify +3/-2/0 with no extras; total is uniquely 10.",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构测验只有六题。"
+              },
+              {
+                "document_id": "student",
+                "quote": "计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "某学生答对4题，答错1题，空1题。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "fail",
+            "reason": "Key computes 4×3+1×2+1×0=14, but wrong answer deducts 2, so correct total is 12-2+0=10 (option A).",
+            "evidence_ids": [
+              "E0013",
+              "E0017",
+              "E0018"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "14；4×3+1×2+1×0=14。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"答对4题得 4×3=12 分；答错1题扣 1×2=2 分；空1题得0分。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "总分 12−2+0=10 分。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "fail",
+            "reason": "Explanation says wrong answer adds 2 and total 14, contradicting student rule '答错扣2分' which gives 10.",
+            "evidence_ids": [
+              "E0014",
+              "E0002"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "正确题贡献12分，错误题再加2分，空题不计分，所以总分14。"
+              },
+              {
+                "document_id": "student",
+                "quote": "计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "fail",
+            "reason": "Sources show wrong is -2, so they support the student rule and counts but not the reference key's +2/14 claim.",
+            "evidence_ids": [
+              "E0022",
+              "E0023",
+              "E0013",
+              "E0014"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:marking_rules",
+                "quote": "每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是六项分数相加，没有加分、最低分或舍入规则。"
+              },
+              {
+                "document_id": "source:marking_response_record",
+                "quote": "某学生答对4题，答错1题，空1题。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "14；4×3+1×2+1×0=14。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "正确题贡献12分，错误题再加2分，空题不计分，所以总分14。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "Profile certifies integer +,-,× and substitution; task requires direct application to supplied counts, no unstated prep or boundary issue.",
+            "evidence_ids": [
+              "E0015",
+              "E0016",
+              "E0020",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0010",
+              "E0011"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"该题只需按已给规则做一次乘法、一次乘法和加减整合，属于直接应用；学生已掌握整数加减乘和代入给定算式，因此不需要额外练习证据即可判为 easy。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"candidates\": [\"easy\"], \"hard_task_index\": null}, \"eligibility\": \"eligible\", \"eligibility_reason\": \"题目条件完整且无冲突：六题、对4错1空1，计分规则明确，无额外加分或舍入；选项与计算要求清楚。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S002\", \"S003\"], \"mode\": \"apply_familiar\", \"provided_ids\": [], \"request_ids\": [\"S004\", \"S010\"], \"residual_work\": \"根据答对、答错、空题数量分别计算得分，再相加并选出对应选项。"
+              },
+              {
+                "document_id": "student",
+                "quote": "计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "某学生答对4题，答错1题，空1题。"
+              },
+              {
+                "document_id": "student",
+                "quote": "单选：总分是多少？"
+              },
+              {
+                "document_id": "student",
+                "quote": "写出选项和计算式。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "已掌握整数加、减、乘和代入一个给定算式的学生；不需要任何考试制度的外部知识。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "54427f81d6e54673a30929775b3209de5b2be20e9799d98b163467c91dcf8cad",
+        "analysis_sha256": "c99a19867b46197ff20edd737884c679a8b410184f258db5556bc02d6f03607b",
+        "protocol_revision": "difficulty-review-v2.3-evidence-capacity-20260926",
+        "human_validated": false
+      }
+    },
+    "decision": {
+      "status": "content_issue",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "failed:reference_correct",
+        "failed:explanation_consistent",
+        "failed:source_support"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 37251
+  },
+  {
+    "case_id": "laboratory_slots",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "81a35ec15d8c25b720f68c52282cd6f56a75c89f6f2d699ececda38c8c5f29d9",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 7976,
+      "prompt_sha256": "9e8596191aeb7245ff6b718f9bf00edd7b9115c601641d25d4a1fa6db42a0e01",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "任务条件完整且一致：六项任务、每时段最多两项、先后与设备约束明确，要求最少时段数、安排及下界证明。入门学生具备先后约束与并行练习基础，可用枚举或约束推理完成。",
+        "solution": "最少5个时段。安排：时段1：A、B；时段2：C、D；时段3：E；时段4：F。检查：C在A后、D在B后，E在C和D后，F在E后；A/B不同时段，C/D不同时段。下界证明：A与B因共用校准仪不能同段，故A、B至少占两个不同时段；C在A后，D在B后，且C与D因共用试验箱不能同段，所以C、D至少占两个不同时段，且都晚于A、B中对应任务。E须在C和D都完成后，F须在E后，因此E、F各占一个更晚时段。故至少需要2+2+1+1=6个任务时段；但每时段最多两项，6项任务至少需ceil(6/2)=3段。结合先后链，A/B最早占时段1，C/D最早占时段2，E最早时段3，F最早时段4，故4段不够；上述5段安排可行，所以最少为5段。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "需自行构造满足先后与设备约束的可行安排，并确定最少时段数。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S006",
+              "S007"
+            ],
+            "condition_ids": [
+              "S003",
+              "S004"
+            ],
+            "provided_ids": [],
+            "residual_work": "需给出下界证明，说明任何更少时段都不可能，且同时使用先后与设备限制。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium",
+            "hard"
+          ],
+          "boundary_reason": "该任务要求构造可行调度并证明最少性。学生有先后约束和并行练习基础，但未学过带共享设备的任务图调度或最短工期证明；需要把设备互斥与先后链结合，并排除4段安排，属于非例行瓶颈，因此偏向hard，但若仅视为熟悉约束的枚举应用也可为medium。",
+          "hard_task_index": 1
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 195,
+                "end": 233,
+                "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 37,
+                "text": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "id": "S002",
+                "start": 37,
+                "end": 59,
+                "text": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "id": "S003",
+                "start": 60,
+                "end": 124,
+                "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "id": "S004",
+                "start": 124,
+                "end": 169,
+                "text": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "id": "S005",
+                "start": 169,
+                "end": 194,
+                "text": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 195,
+                "end": 233,
+                "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              },
+              {
+                "id": "S007",
+                "start": 233,
+                "end": 258,
+                "text": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S003",
+                "start": 60,
+                "end": 124,
+                "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "id": "S004",
+                "start": 124,
+                "end": 169,
+                "text": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+        "protocol_revision": "difficulty-review-v2.3-evidence-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "26f916ef68da349763cb45ddc2ba8f083f7c5794c392da47ec31ee39a5cdf268"
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 20248,
+      "prompt_sha256": "210602318c6a588e716bc866ee3170a2c13d5c6d1eeb2c53ff2e8e745e985b44",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "六任务、每时段最多两项、严格先后、互斥设备、无其他限制均明确且一致，足以求最少时段与证明。",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "document_id": "student",
+                "quote": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "fail",
+            "reason": "参考解答给出合法5时段并证明4时段不可能；分析解答声称5段却列为4段，且A/B、C/D同段违反设备规则。",
+            "evidence_ids": [
+              "E0010",
+              "E0011",
+              "E0012",
+              "E0013",
+              "E0020",
+              "E0021",
+              "E0022"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "故4个时段不可能，更少也不可能；5个时段的构造满足所有规则。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"最少5个时段。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "安排：时段1：A、B；时段2：C、D；时段3：E；时段4：F。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "检查：C在A后、D在B后，E在C和D后，F在E后；A/B不同时段，C/D不同时段。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "解释指出B与已完成前置的C重叠及从E/F回推导致设备冲突，与参考5段安排和学生先后/设备定义一致。",
+            "evidence_ids": [
+              "E0014",
+              "E0015",
+              "E0010",
+              "E0011",
+              "E0003",
+              "E0004"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "构造通过让B与已完成前置任务的C重叠来节省时段；下界由E、F的后置关系向前推回C、D及A、B，与设备限制冲突。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "须自行选择这种组合约束证明。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "来源逐字提供容量、先后、设备与无其他限制；学生条件及参考证明的假设均由此支撑。",
+            "evidence_ids": [
+              "E0030",
+              "E0031",
+              "E0032",
+              "E0033",
+              "E0034",
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0011",
+              "E0012"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:laboratory_capacity",
+                "quote": "任务A、B、C、D、E、F每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "document_id": "source:laboratory_capacity",
+                "quote": "时段从1开始编号，每个时段最多执行两项任务，允许一个时段只做一项。"
+              },
+              {
+                "document_id": "source:laboratory_dependencies",
+                "quote": "C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "source:laboratory_equipment",
+                "quote": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "source:laboratory_equipment",
+                "quote": "除此之外没有设备或先后限制。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "document_id": "student",
+                "quote": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "画像证实有单链与并行练习但无共享设备调度/最短工期证明；任务需组合约束并排除4段，非例行，中高难合理。",
+            "evidence_ids": [
+              "E0016",
+              "E0017",
+              "E0027",
+              "E0028",
+              "E0006",
+              "E0007",
+              "E0008",
+              "E0009"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"该任务要求构造可行调度并证明最少性。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "学生有先后约束和并行练习基础，但未学过带共享设备的任务图调度或最短工期证明；需要把设备互斥与先后链结合，并排除4段安排，属于非例行瓶颈，因此偏向hard，但若仅视为熟悉约束的枚举应用也可为medium。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"需自行构造满足先后与设备约束的可行安排，并确定最少时段数。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S003\", \"S004\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\", \"S007\"], \"residual_work\": \"需给出下界证明，说明任何更少时段都不可能，且同时使用先后与设备限制。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              },
+              {
+                "document_id": "student",
+                "quote": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "入门学生，能读出先后约束，安排单条任务链，也做过两个互不依赖任务的并行练习；未学过带共享设备的任务图调度或最短工期证明。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "允许用枚举、反证或约束推理，不要求专门算法。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+        "analysis_sha256": "d289a0c6d7a3607c2606ead19072dcf9a2d0e81b783c4f659116abc23714707c",
+        "protocol_revision": "difficulty-review-v2.3-evidence-capacity-20260926",
+        "human_validated": false
+      }
+    },
+    "decision": {
+      "status": "content_issue",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "failed:reference_correct"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 78073
+  },
+  {
+    "case_id": "stack_repair",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "fc7c25608440a2b5fdc17f3593f485065551a31271e3598c58c44abc7687e5b6",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 8067,
+      "prompt_sha256": "d7316e6ec9503ed8c00544f5ad2981fa85169834594142d58601641ef9765b9f",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目条件完整：栈表示、四条指令语义、最小栈深、初始栈、目标、现有程序、只插入一条SWAP且不删不换、需检查四个边界。学生已分别练过各指令语义，但未练过组合指令中的顺序修复，因此可评。",
+        "solution": "现有程序跟踪：初始[2,5]；DUP→[2,5,5]；ADD弹出5、5，压入10→[2,10]；SUB弹出2、10，压入2-10=-8→[-8]，未达目标8。\n修复：在DUP与ADD之间插入SWAP。跟踪：初始[2,5]；DUP→[2,5,5]；SWAP→[2,5,5]（顶部两项相同，栈不变）；ADD→[2,10]；SUB→[2-10=-8]？不对，目标要求8。\n重新检查：目标“初始顶部数翻倍后，减去初始底部数”即5×2-2=8。现有DUP,ADD,SUB在[2,5]上：DUP→[2,5,5]；ADD→[2,10]；SUB弹出2、10得2-10=-8。要得8需10-2，故应在ADD与SUB之间插入SWAP：DUP→[2,5,5]；ADD→[2,10]；SWAP→[10,2]；SUB弹出10、2得10-2=8→[8]。\n其余边界：第一条前SWAP非法（仅1项）；DUP与ADD之间SWAP后仍[2,5,5]，ADD得[2,10]，SUB仍得-8；最后之后SWAP非法（仅1项）。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S007"
+            ],
+            "condition_ids": [
+              "S002",
+              "S003",
+              "S004",
+              "S006"
+            ],
+            "provided_ids": [],
+            "residual_work": "按DUP、ADD、SUB语义逐步跟踪[2,5]，算出最终栈并指出与目标8不符。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S007",
+              "S008"
+            ],
+            "condition_ids": [
+              "S002",
+              "S003",
+              "S004",
+              "S005",
+              "S006",
+              "S009"
+            ],
+            "provided_ids": [],
+            "residual_work": "在四个边界中逐一尝试插入SWAP，验证合法性并跟踪结果，找出唯一能达到[8]的插入位置。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S008"
+            ],
+            "condition_ids": [
+              "S003",
+              "S009"
+            ],
+            "provided_ids": [],
+            "residual_work": "对未选中的三个边界分别说明失败原因：栈深不足导致非法，或交换后SUB操作数顺序仍错误。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium"
+          ],
+          "boundary_reason": "学生已分别练过DUP、ADD、SUB、SWAP的给定语义，能直接跟踪单条指令；但未练过在组合指令中定位并修复顺序错误。本题需在四个边界中试插并验证，属于对已知语义的熟悉整合与选择，不是直接复述或单步应用，也未出现需要非例行洞察的瓶颈，故定为medium。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "medium",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S007",
+                "start": 170,
+                "end": 214,
+                "text": "先逐步跟踪现有程序，说明它为何未达目标；再只插入一条SWAP，使所有指令合法并达到目标。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 18,
+                "end": 79,
+                "text": "DUP复制顶部；ADD弹出顶部两数a、b（a原来在b下面）并压入a+b；SUB以同样顺序压入a-b；SWAP交换顶部两项。"
+              },
+              {
+                "id": "S003",
+                "start": 79,
+                "end": 109,
+                "text": "DUP至少需要1项，其余三种指令至少需要2项，否则程序非法。"
+              },
+              {
+                "id": "S004",
+                "start": 110,
+                "end": 120,
+                "text": "初始栈为[2,5]。"
+              },
+              {
+                "id": "S006",
+                "start": 152,
+                "end": 169,
+                "text": "现有程序是DUP、ADD、SUB。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S007",
+                "start": 170,
+                "end": 214,
+                "text": "先逐步跟踪现有程序，说明它为何未达目标；再只插入一条SWAP，使所有指令合法并达到目标。"
+              },
+              {
+                "id": "S008",
+                "start": 214,
+                "end": 243,
+                "text": "说明插入位置，以及为什么其余三个指令边界不能完成这项修复。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 18,
+                "end": 79,
+                "text": "DUP复制顶部；ADD弹出顶部两数a、b（a原来在b下面）并压入a+b；SUB以同样顺序压入a-b；SWAP交换顶部两项。"
+              },
+              {
+                "id": "S003",
+                "start": 79,
+                "end": 109,
+                "text": "DUP至少需要1项，其余三种指令至少需要2项，否则程序非法。"
+              },
+              {
+                "id": "S004",
+                "start": 110,
+                "end": 120,
+                "text": "初始栈为[2,5]。"
+              },
+              {
+                "id": "S005",
+                "start": 120,
+                "end": 152,
+                "text": "目标：将初始顶部数翻倍后，减去初始底部数，结束时只有结果8一项。"
+              },
+              {
+                "id": "S006",
+                "start": 152,
+                "end": 169,
+                "text": "现有程序是DUP、ADD、SUB。"
+              },
+              {
+                "id": "S009",
+                "start": 243,
+                "end": 281,
+                "text": "指令边界包括第一条之前、相邻指令之间、最后一条之后；不得删除或替换现有指令。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S008",
+                "start": 214,
+                "end": 243,
+                "text": "说明插入位置，以及为什么其余三个指令边界不能完成这项修复。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S003",
+                "start": 79,
+                "end": 109,
+                "text": "DUP至少需要1项，其余三种指令至少需要2项，否则程序非法。"
+              },
+              {
+                "id": "S009",
+                "start": 243,
+                "end": 281,
+                "text": "指令边界包括第一条之前、相邻指令之间、最后一条之后；不得删除或替换现有指令。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "e6d4442a2746318fffd27c92f8b19d70330fbd8e3fce847af88f4142e656c3b7",
+        "protocol_revision": "difficulty-review-v2.3-evidence-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "cf5a97c4bef963877d702fc81d7a1b5d83aa336f1ca48d8414c382647e28506f"
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 20897,
+      "prompt_sha256": "9af9b5e1cbce6b3e309aa7c1036ac90ea6e5c655cb8cf922d3e2b26465deae36",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "语义、最小栈深、初始栈、目标、现有程序、仅插入SWAP及四个边界均明确且自洽；唯一修复位置确实得到[8]。",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006",
+              "E0009"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构机器用[底部,…,顶部]表示栈。"
+              },
+              {
+                "document_id": "student",
+                "quote": "DUP复制顶部；ADD弹出顶部两数a、b（a原来在b下面）并压入a+b；SUB以同样顺序压入a-b；SWAP交换顶部两项。"
+              },
+              {
+                "document_id": "student",
+                "quote": "DUP至少需要1项，其余三种指令至少需要2项，否则程序非法。"
+              },
+              {
+                "document_id": "student",
+                "quote": "初始栈为[2,5]。"
+              },
+              {
+                "document_id": "student",
+                "quote": "目标：将初始顶部数翻倍后，减去初始底部数，结束时只有结果8一项。"
+              },
+              {
+                "document_id": "student",
+                "quote": "现有程序是DUP、ADD、SUB。"
+              },
+              {
+                "document_id": "student",
+                "quote": "指令边界包括第一条之前、相邻指令之间、最后一条之后；不得删除或替换现有指令。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "现有序列得-8；ADD后插SWAP得8；另三个位置分别得1、-8或非法，与SUB的a-b语义一致。",
+            "evidence_ids": [
+              "E0011",
+              "E0012",
+              "E0013",
+              "E0020",
+              "E0026",
+              "E0027"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "现程序：[2,5]→[2,5,5]→[2,10]→[-8]，做成了2-10。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "把SWAP插在ADD与SUB之间：[2,10]→[10,2]→[8]。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "放在DUP之前会得到[5,2]→[5,2,2]→[5,4]→[1]；放在DUP与ADD之间只交换相同的两个5，仍得-8；放在SUB之后只有一项，SWAP非法。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"现有程序跟踪：初始[2,5]；DUP→[2,5,5]；ADD弹出5、5，压入10→[2,10]；SUB弹出2、10，压入2-10=-8→[-8]，未达目标8。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "要得8需10-2，故应在ADD与SUB之间插入SWAP：DUP→[2,5,5]；ADD→[2,10]；SWAP→[10,2]；SUB弹出10、2得10-2=8→[8]。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\\n其余边界：第一条前SWAP非法（仅1项）；DUP与ADD之间SWAP后仍[2,5,5]，ADD得[2,10]，SUB仍得-8；最后之后SWAP非法（仅1项）。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "解释指出SUB操作数顺序错误；仅ADD后交换同时满足合法栈深并产生8，符合可见SUB语义。",
+            "evidence_ids": [
+              "E0014",
+              "E0015",
+              "E0002",
+              "E0003",
+              "E0006",
+              "E0007"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "要修复的是SUB的操作数顺序。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "先跟踪状态定位反序，再检查四个允许的插入点；只有ADD之后的交换同时保持合法并产生8。"
+              },
+              {
+                "document_id": "student",
+                "quote": "DUP复制顶部；ADD弹出顶部两数a、b（a原来在b下面）并压入a+b；SUB以同样顺序压入a-b；SWAP交换顶部两项。"
+              },
+              {
+                "document_id": "student",
+                "quote": "DUP至少需要1项，其余三种指令至少需要2项，否则程序非法。"
+              },
+              {
+                "document_id": "student",
+                "quote": "现有程序是DUP、ADD、SUB。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先逐步跟踪现有程序，说明它为何未达目标；再只插入一条SWAP，使所有指令合法并达到目标。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "源摘录与题目/答案中的栈表示、四条语义、最小栈深、初始栈、目标、现有程序及只插入SWAP限制逐项一致。",
+            "evidence_ids": [
+              "E0032",
+              "E0033",
+              "E0034",
+              "E0035",
+              "E0036",
+              "E0037",
+              "E0038",
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006",
+              "E0009"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:stack_instruction_spec",
+                "quote": "用[底部,…,顶部]表示栈。"
+              },
+              {
+                "document_id": "source:stack_instruction_spec",
+                "quote": "DUP复制顶部；ADD弹出顶部两数a、b（a原来在b下面）并压入a+b；SUB以同样顺序压入a-b；SWAP交换顶部两项。"
+              },
+              {
+                "document_id": "source:stack_instruction_spec",
+                "quote": "DUP至少需要1项，其余三种指令至少需要2项，否则程序非法。"
+              },
+              {
+                "document_id": "source:stack_task_spec",
+                "quote": "初始栈为[2,5]。"
+              },
+              {
+                "document_id": "source:stack_task_spec",
+                "quote": "目标：将初始顶部数翻倍后，减去初始底部数，结束时只有结果8一项。"
+              },
+              {
+                "document_id": "source:stack_task_spec",
+                "quote": "现有程序是DUP、ADD、SUB。"
+              },
+              {
+                "document_id": "source:stack_task_spec",
+                "quote": "只准在四个指令边界中的一处插入一条SWAP，不得删除或替换现有指令。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构机器用[底部,…,顶部]表示栈。"
+              },
+              {
+                "document_id": "student",
+                "quote": "DUP复制顶部；ADD弹出顶部两数a、b（a原来在b下面）并压入a+b；SUB以同样顺序压入a-b；SWAP交换顶部两项。"
+              },
+              {
+                "document_id": "student",
+                "quote": "DUP至少需要1项，其余三种指令至少需要2项，否则程序非法。"
+              },
+              {
+                "document_id": "student",
+                "quote": "初始栈为[2,5]。"
+              },
+              {
+                "document_id": "student",
+                "quote": "目标：将初始顶部数翻倍后，减去初始底部数，结束时只有结果8一项。"
+              },
+              {
+                "document_id": "student",
+                "quote": "现有程序是DUP、ADD、SUB。"
+              },
+              {
+                "document_id": "student",
+                "quote": "指令边界包括第一条之前、相邻指令之间、最后一条之后；不得删除或替换现有指令。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "档案确认已练单条语义但未练顺序修复；题目确需逐一验证四个插入边界，medium边界由剩余整合选择工作支撑。",
+            "evidence_ids": [
+              "E0016",
+              "E0017",
+              "E0028",
+              "E0029",
+              "E0030",
+              "E0007",
+              "E0008",
+              "E0009",
+              "E0010"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"学生已分别练过DUP、ADD、SUB、SWAP的给定语义，能直接跟踪单条指令；但未练过在组合指令中定位并修复顺序错误。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "本题需在四个边界中试插并验证，属于对已知语义的熟悉整合与选择，不是直接复述或单步应用，也未出现需要非例行洞察的瓶颈，故定为medium。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S002\", \"S003\", \"S004\", \"S006\"], \"mode\": \"apply_familiar\", \"provided_ids\": [], \"request_ids\": [\"S007\"], \"residual_work\": \"按DUP、ADD、SUB语义逐步跟踪[2,5]，算出最终栈并指出与目标8不符。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S002\", \"S003\", \"S004\", \"S005\", \"S006\", \"S009\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [], \"request_ids\": [\"S007\", \"S008\"], \"residual_work\": \"在四个边界中逐一尝试插入SWAP，验证合法性并跟踪结果，找出唯一能达到[8]的插入位置。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S003\", \"S009\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S008\"], \"residual_work\": \"对未选中的三个边界分别说明失败原因：栈深不足导致非法，或交换后SUB操作数顺序仍错误。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先逐步跟踪现有程序，说明它为何未达目标；再只插入一条SWAP，使所有指令合法并达到目标。"
+              },
+              {
+                "document_id": "student",
+                "quote": "说明插入位置，以及为什么其余三个指令边界不能完成这项修复。"
+              },
+              {
+                "document_id": "student",
+                "quote": "指令边界包括第一条之前、相邻指令之间、最后一条之后；不得删除或替换现有指令。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "程序设计入门学生，会逐条跟踪一个栈的状态，分别练过DUP、ADD、SUB、SWAP的给定语义；尚未练过定位并修复一段组合指令中的顺序错误。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "e6d4442a2746318fffd27c92f8b19d70330fbd8e3fce847af88f4142e656c3b7",
+        "analysis_sha256": "3b851577a54e0e8b217b64306d19f1cffa610fab27084e2d7404686caa092a83",
+        "protocol_revision": "difficulty-review-v2.3-evidence-capacity-20260926",
+        "human_validated": false
+      }
+    },
+    "decision": {
+      "status": "assessed",
+      "candidates": [
+        "medium"
+      ],
+      "estimated_difficulty": "medium",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "target_unavailable"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 50060
+  },
+  {
+    "case_id": "beacon_contradiction",
+    "repeat": 0,
+    "status": "failed",
+    "input_sha256": "12b2ebdb0a9691e08ceac6d814e208836be890d29059f7a2090a87f884ac709e",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 7022,
+      "prompt_sha256": "34683dbfafcf7285e6ae0c5034ca492c03e031f48b71e225809cd824aa0c9c9f",
+      "result": {
+        "eligibility": "invalid_question",
+        "eligibility_reason": "两条规则互相矛盾：启动时段必须严格晚于第3时段，又必须不晚于第3时段；整数时段中不存在同时满足两者的编号，且题面禁止例外或修改规则。",
+        "solution": "无解。设启动时段为 t。规则要求 t > 3（检测在第3时段结束时完成，启动须在更晚时段），同时要求 t ≤ 3（不晚于第3时段）。整数时段中不存在这样的 t，因此不能填写任何合规编号；题面又规定无例外或允许修改的规则，故条件冲突。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S005"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004"
+            ],
+            "provided_ids": [],
+            "residual_work": "检查整数时段中是否存在同时满足 t>3 与 t≤3 的编号；若不存在，则说明规则冲突而非给出编号。",
+            "mode": "unanswerable"
+          }
+        ],
+        "decision": {
+          "candidates": [],
+          "boundary_reason": "题面核心条件互相矛盾，无法形成可评分的启动时段答案；不涉及难度边界判断。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S005",
+                "start": 103,
+                "end": 130,
+                "text": "填写一个满足全部规则的启动时段编号，并解释它为何合规。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 25,
+                "text": "虚构信标系统把时间分成整数时段1、2、3、4、5。"
+              },
+              {
+                "id": "S002",
+                "start": 25,
+                "end": 42,
+                "text": "探测器在第3时段结束时才完成检测。"
+              },
+              {
+                "id": "S003",
+                "start": 42,
+                "end": 83,
+                "text": "系统规则同时要求：信标必须在检测完成后的更晚时段启动；信标必须不晚于第3时段启动。"
+              },
+              {
+                "id": "S004",
+                "start": 83,
+                "end": 102,
+                "text": "恰好启动一次，无例外或允许修改的规则。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "f96aa11021690a11d43499b4d7c789beb51e96b74f587aa6a210e559de4d411f",
+        "protocol_revision": "difficulty-review-v2.3-evidence-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "77e69f47ceda24a797f14644581ea0887f410bf297933ffe9f465724410de8d6"
+      }
+    },
+    "verification": {
+      "status": "failed",
+      "prompt_bytes": 14160,
+      "prompt_sha256": "6eda44c92a9c093e2eda229f81607004c50613c4ee57a3021aefa4962bb8bb41",
+      "error_type": "ValueError"
+    },
+    "decision": {
+      "status": "ungradable",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "invalid_question"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 48349
+  }
+]

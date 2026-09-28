@@ -1,0 +1,80 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目条件完整：给出共享锁、线程与中断处理程序、acquire/release 策略、单/多 CPU 场景及两个断言；课程资料已提供原子性、关中断作用范围、push_off/pop_off 等必要概念，可据此逐条论证。",
+  "solution": "1. 计数器被 A 与 clockintr 读改写，非原子交错会丢失更新，故需 tickslock 串行化。并发来源：多处理器并行、线程切换、中断处理程序与可中断代码交错。\n2. A 持锁且中断开启，本 CPU 递交时钟中断，clockintr 取同一锁而锁已被 A 持有，于是自旋等待；A 被中断打断无法继续，也就无法释放锁，形成自等待死锁。该 CPU 卡在中断上下文自旋，不能推进；其他 CPU 若不需要该锁仍可运行，但若等待该锁也会被波及。\n3. 约束：凡会被中断处理程序使用的锁，持锁期间本 CPU 必须关中断。acquire 先关本 CPU 中断再取锁；release 先释放锁再恢复中断。若先取锁后关中断，取锁后到关中断之间可被中断，中断处理程序再取同一锁即死锁；若先开中断后释放锁，释放前开中断也可被中断并重复取锁。\n4. 用 push_off/pop_off 记录本 CPU 持锁层数；仅当层数归零时恢复到最外层进入前的中断使能状态。每次释放都无条件开中断会过早打开中断，破坏外层临界区。\n5. 场景 S：断言 A 成立，本 CPU 中断处理程序等待线程释放锁时，线程无法运行，形成死锁；断言 B 不适用/不成立，因无另一 CPU。场景 P：断言 A 仍成立，本 CPU 中断自旋等待本 CPU 线程会死锁；断言 B 成立，另一 CPU 的中断处理程序可自旋等待，持锁线程可在原 CPU 继续并最终释放，故不一定死锁，但会忙等。\n6. 不能替代。禁止同 CPU 重复取锁只防同一 CPU 重入，不能防本 CPU 中断处理程序在持锁期间插入并取锁；持锁关中断才阻止该交错。二者针对的故障模式不同。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S021"
+      ],
+      "condition_ids": [
+        "S016",
+        "S017",
+        "S009"
+      ],
+      "provided_ids": [
+        "S014"
+      ],
+      "residual_work": "需把“读改写非原子”与三类并发来源对应到 A 与 clockintr 的具体交错。",
+      "mode": "apply_familiar"
+    },
+    {
+      "request_ids": [
+        "S023",
+        "S024"
+      ],
+      "condition_ids": [
+        "S010",
+        "S017",
+        "S018"
+      ],
+      "provided_ids": [
+        "S003"
+      ],
+      "residual_work": "需逐步推出 clockintr 自旋、A 无法释放、本 CPU 卡死及对其他 CPU 的有限波及。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S026",
+        "S028"
+      ],
+      "condition_ids": [
+        "S011",
+        "S012"
+      ],
+      "provided_ids": [
+        "S004"
+      ],
+      "residual_work": "需说明两组操作次序及颠倒窗口，并用 push_off/pop_off 解释嵌套恢复条件。",
+      "mode": "apply_familiar"
+    },
+    {
+      "request_ids": [
+        "S030",
+        "S033",
+        "S034",
+        "S037"
+      ],
+      "condition_ids": [
+        "S015",
+        "S031",
+        "S032"
+      ],
+      "provided_ids": [
+        "S005",
+        "S006"
+      ],
+      "residual_work": "需在单/多 CPU 下分别判定两断言，并论证禁止重入不能替代持锁关中断。",
+      "mode": "construct_argument"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "medium",
+      "hard"
+    ],
+    "boundary_reason": "任务 2 与任务 6 要求把“本 CPU 关中断只影响本 CPU”与自旋等待因果链结合，跨单/多 CPU 比较并区分两种防护；这超出直接复述，但课程资料已给出关键约束，属于熟悉概念的综合应用，未形成明确非例行瓶颈，故取 medium 与 hard 相邻边界。",
+    "hard_task_index": null
+  }
+}

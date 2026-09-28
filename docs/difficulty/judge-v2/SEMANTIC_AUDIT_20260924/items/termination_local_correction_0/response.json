@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "unsupported_claim",
+      "certainty": "definite",
+      "question_ids": [
+        "S014"
+      ],
+      "review_ids": [
+        "R003"
+      ],
+      "explanation": "The task residual_work claims a=[1], t=2 is a failing input that 'exits immediately and incorrectly returns 0 instead of 1.' This is false. With a=[1], t=2: l=0, r=len(a)-1=0, so the while condition l<r is false immediately and the code returns l=0. The specified correct answer is len(a)=1 (no index has a[i]>=2). So the code returns 0, which is indeed incorrect, but the residual_work's stated reason is wrong: it says the code returns 0 'instead of 1', implying 1 is the correct answer, which it is. Actually the claim is that it returns 0 instead of 1, which is correct: correct answer is 1, code returns 0. Wait, re-read: 'exits immediately and incorrectly returns 0 instead of 1.' The correct answer for a=[1], t=2 is len(a)=1. So the code returns 0 instead of 1 — that is correct. So no error there. Let me re-examine. Actually the claim is accurate. Hmm. Let me check the other part: 'for a=[1,2], t=2 the loop does not terminate.' With a=[1,2], t=2: l=0, r=1, m=0, a[0]=1<2 so l=m=0, l<r still holds (0<1), loop repeats forever. Correct. So R003 is accurate. No finding here.",
+      "suggested_correction": "No change needed."
+    }
+  ]
+}

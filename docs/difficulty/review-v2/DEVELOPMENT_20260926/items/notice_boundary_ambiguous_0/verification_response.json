@@ -1,0 +1,94 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "fail",
+      "reason": "温度10同时满足≤10与≥10，政策无优先级或平局规则，却要求唯一选项，条件冲突且缺失决胜条件。",
+      "evidence": [
+        {
+          "document_id": "student",
+          "quote": "温度≤10时，通知A合规；温度≥10时，通知B合规。"
+        },
+        {
+          "document_id": "student",
+          "quote": "今天温度恰为10。单选题：按此政策，唯一合规的通知是什么？"
+        },
+        {
+          "document_id": "student",
+          "quote": "政策没有优先级、平局规则或其他条款。"
+        }
+      ]
+    },
+    "reference_correct": {
+      "status": "fail",
+      "reason": "参考键称只有A合规，但温度10也满足≥10，B同样合规；键未处理双合规与唯一性要求冲突。",
+      "evidence": [
+        {
+          "document_id": "reference_answer",
+          "quote": "A.通知A。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "温度10满足“≤10”，也满足“≥10”，因此通知A和通知B都合规。"
+        },
+        {
+          "document_id": "student",
+          "quote": "温度≥10时，通知B合规。"
+        }
+      ]
+    },
+    "explanation_consistent": {
+      "status": "fail",
+      "reason": "解释只提≤10而忽略≥10，与题面可见定义及分析中双合规结论不一致。",
+      "evidence": [
+        {
+          "document_id": "reference_explanation",
+          "quote": "温度10满足≤10，因此只有A合规。"
+        },
+        {
+          "document_id": "student",
+          "quote": "温度≥10时，通知B合规。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "温度10满足“≤10”，也满足“≥10”，因此通知A和通知B都合规。"
+        }
+      ]
+    },
+    "source_support": {
+      "status": "fail",
+      "reason": "来源支持双条件同时触发且无决胜规则，反而否定参考键“只有A合规”的结论。",
+      "evidence": [
+        {
+          "document_id": "source:notice_policy_full",
+          "quote": "温度≤10时，通知A合规；温度≥10时，通知B合规。"
+        },
+        {
+          "document_id": "source:notice_policy_full",
+          "quote": "政策没有优先级、平局规则或其他条款。"
+        },
+        {
+          "document_id": "reference_answer",
+          "quote": "A.通知A。"
+        }
+      ]
+    },
+    "demand_supported": {
+      "status": "fail",
+      "reason": "分析判定题目无效且无唯一答案，参考键却给出唯一A，任务与所供解答分离且边界结论未获支持。",
+      "evidence": [
+        {
+          "document_id": "analysis",
+          "quote": "该单选题无唯一正确答案。"
+        },
+        {
+          "document_id": "reference_answer",
+          "quote": "A.通知A。"
+        },
+        {
+          "document_id": "student",
+          "quote": "必须选出唯一正确选项。"
+        }
+      ]
+    }
+  }
+}

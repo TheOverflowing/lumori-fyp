@@ -1,0 +1,78 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "pass",
+      "reason": "Initial NextByteExpected, segment order/lengths, non-overlap, one-way data, and cumulative-ACK rule are all given; unique answer follows.",
+      "evidence": [
+        {
+          "document_id": "student",
+          "quote": "初始 NextByteExpected = 1000，接收端尚未收到任何数据字节；每个数据段携带连续的整数个数据字节，段长由“长度”给出，且各段互不重叠。"
+        },
+        {
+          "document_id": "student",
+          "quote": "1) 段 P：SequenceNum = 1200，长度 = 200\n2) 段 Q：SequenceNum = 1000，长度 = 100\n3) 段 R：SequenceNum = 1400，长度 = 300"
+        }
+      ]
+    },
+    "reference_correct": {
+      "status": "pass",
+      "reason": "Q covers 1000–1099, so first gap starts at 1100; P/R are noncontiguous, so cumulative ACK is 1100, matching key C.",
+      "evidence": [
+        {
+          "document_id": "reference_answer",
+          "quote": "C"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "Q 到达后连续覆盖 [1000,1100)，NextByteExpected 变为 1100；P 覆盖 [1200,1400)，与 1100 不连续，形成缺失 [1100,1200)，不能抬高确认号"
+        }
+      ]
+    },
+    "explanation_consistent": {
+      "status": "pass",
+      "reason": "Explanation matches key C and the visible rule that cumulative ACK stops before the first gap; 1100 is the gap start, not a covered byte.",
+      "evidence": [
+        {
+          "document_id": "reference_explanation",
+          "quote": "C 选项 1100：段 Q 已按序到达并覆盖 1000–1099，之后 1100–1199 缺失，因此第一个空缺起点是 1100，累积确认号停在 1100，正确。"
+        },
+        {
+          "document_id": "student",
+          "quote": "接收端的 NextByteExpected 指向第一个空缺（尚未收到的连续字节）的起点"
+        }
+      ]
+    },
+    "source_support": {
+      "status": "pass",
+      "reason": "Sources support byte-oriented sequencing, SequenceNum as first byte, and NextByteExpected pointing to first gap; these ground the student/reference claims.",
+      "evidence": [
+        {
+          "document_id": "source:context_50cce0b14f8a0a967a4fa7d49fd473c6",
+          "quote": "The SequenceNum field contains the sequence number for the first byte of data carried in that segment"
+        },
+        {
+          "document_id": "source:context_9a0e0a8fe960219d9262b9eb78135d3f",
+          "quote": "if data has arrived out of order, then NextByteExpected points to the start of the first gap in the data"
+        },
+        {
+          "document_id": "student",
+          "quote": "有效累积确认号停在缺失区间的起点前"
+        }
+      ]
+    },
+    "demand_supported": {
+      "status": "pass",
+      "reason": "Analysis classifies as familiar apply with residual interval/continuity work; student supplies all needed rules and data, so easy boundary is justified.",
+      "evidence": [
+        {
+          "document_id": "analysis",
+          "quote": "学生只需按规则做区间与连续性判断；这是课程目标中已练习的熟悉即时应用"
+        },
+        {
+          "document_id": "student",
+          "quote": "能依据段首序号与段长写出各到达段覆盖的字节区间，并识别缺失区间。"
+        }
+      ]
+    }
+  }
+}

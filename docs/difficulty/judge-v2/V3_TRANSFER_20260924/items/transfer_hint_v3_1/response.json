@@ -1,0 +1,71 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "The question is self-contained: it specifies finite accounts with fixed distinct IDs, nonnegative balances, per-account mutexes, atomic lock acquisition, fair queuing, finite interleavings, no crashes/overflow, and a no-global-lock constraint. It asks for pseudocode, lock-protection explanation, correctness argument, and a concrete deadlock counterexample. A complete solution approach is supplied, so the task is answerable and not contradictory.",
+  "cognitive_demand": "routine_application",
+  "supplied_support": [
+    {
+      "quote": "可采用以下完整方案：对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。",
+      "finding": "The entire locking strategy and critical-section body are supplied, including ordering by ID, acquiring both locks, checking, updating, and releasing."
+    },
+    {
+      "quote": "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+      "finding": "The lock-protection explanation and the atomicity/conservation argument are supplied."
+    },
+    {
+      "quote": "所有等待只从较小 ID 指向较大 ID，不能形成等待环。",
+      "finding": "The deadlock-freedom argument is supplied."
+    },
+    {
+      "quote": "反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁。",
+      "finding": "A concrete deadlock counterexample for the wrong locking order is supplied."
+    },
+    {
+      "quote": "请把该方案写成伪代码，并解释上述理由如何覆盖所有允许的交错；无需发现另一种方案。",
+      "finding": "The remaining task is explicitly limited to transcription and explanation of the supplied reasoning, not discovery of a new strategy."
+    }
+  ],
+  "remaining_demands": [
+    {
+      "quote": "请把该方案写成伪代码",
+      "finding": "The learner must translate the supplied ordered-locking scheme into executable pseudocode."
+    },
+    {
+      "quote": "解释上述理由如何覆盖所有允许的交错",
+      "finding": "The learner must connect the supplied invariants and ordering argument to arbitrary finite interleavings."
+    }
+  ],
+  "knowledge_integration": "The learner must combine known concepts of mutexes, atomic lock acquisition, race conditions, and deadlock with the supplied ordered-locking pattern. No new synchronization primitive or proof technique is required beyond applying the given argument to interleavings.",
+  "strategy_selection": "The strategy is fully specified: acquire the two account locks in ascending ID order, perform check and update while holding both, then release both. The learner does not choose among alternative strategies.",
+  "justification_required": "The learner must explain why the supplied scheme preserves total balance, prevents overdraft, and avoids deadlock under all allowed interleavings, using the supplied invariants and wait-for ordering.",
+  "estimated_difficulty": "easy",
+  "adjacent_level_reason": "The task is easy rather than medium because the complete solution, correctness argument, and deadlock counterexample are all supplied; the learner mainly transcribes pseudocode and restates how the given reasoning covers interleavings. It is not merely reproduction of a memorized procedure because some explanation is required, but the independent reasoning is minimal.",
+  "uncertainty_reasons": [
+    "The learner has not practised multi-object lock ordering or correctness proofs, which could make even transcription and explanation feel less familiar.",
+    "If the grader expects a fully rigorous induction over interleavings rather than a concise explanation, the task could shift toward medium."
+  ],
+  "confidence": "medium",
+  "demand_audit": [
+    {
+      "quote": "请把该方案写成伪代码",
+      "finding": "The pseudocode structure is fully described in prose, but the learner must still write it in concrete pseudocode form.",
+      "support_quotes": [
+        "对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。"
+      ],
+      "supplied_extent": "partly_supplied",
+      "residual_task": "Translate the supplied ordered-locking, check, update, and release steps into clear pseudocode."
+    },
+    {
+      "quote": "解释上述理由如何覆盖所有允许的交错",
+      "finding": "The key invariants and deadlock argument are supplied, but the learner must articulate how they apply to arbitrary finite interleavings.",
+      "support_quotes": [
+        "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+        "所有等待只从较小 ID 指向较大 ID，不能形成等待环。"
+      ],
+      "supplied_extent": "partly_supplied",
+      "residual_task": "Explain that mutual exclusion makes check-and-update atomic, conservation preserves total balance, and ascending lock order prevents a wait-for cycle in every interleaving."
+    }
+  ],
+  "minimum_sufficient_response": "伪代码：\n\ntransfer(source, destination, amount):\n    if source.id < destination.id:\n        first, second = source, destination\n    else:\n        first, second = destination, source\n    lock(first)\n    lock(second)\n    if source.balance >= amount:\n        source.balance -= amount\n        destination.balance += amount\n        success = true\n    else:\n        success = false\n    unlock(second)\n    unlock(first)\n    return success\n\n解释：读 source.balance、检查 source.balance >= amount、扣款和加款都在两把锁内完成，因此其他转账不能在这些步骤之间插入并破坏检查。成功时扣款与加款相等，总余额不变；失败时不修改余额，因此任何时刻账户不透支且总余额保持初始总额。死锁方面，每个线程只按 ID 从小到大获取锁，等待关系只能从较小 ID 指向较大 ID，不可能形成等待环，所以任意并发转账不会死锁。错误方式如总先锁 source，则 A→B 与 B→A 可各持一锁再等待另一锁，形成环并死锁。",
+  "hard_basis_quote": null,
+  "learner_relative_basis": "For this learner, the bottleneck is not discovering the ordered-locking strategy or the deadlock proof, because both are supplied. The remaining work is writing pseudocode and restating the supplied invariants for arbitrary interleavings, which is a familiar application of known mutex and deadlock concepts rather than substantial independent integration."
+}

@@ -1,0 +1,50 @@
+{
+  "findings": [
+    {
+      "category": "internal_contradiction",
+      "certainty": "definite",
+      "question_ids": [
+        "S006",
+        "S007"
+      ],
+      "review_ids": [
+        "R009",
+        "R010",
+        "R011",
+        "R012"
+      ],
+      "explanation": "The minimum_answer directly contradicts the question's explicit requirements and the review's own task analysis. The question (S006) asks to judge whether the records support the causal conclusion, give a specific alternative explanation, and propose a more reliable design; S007 forbids fabricating actual background differences. The review's tasks[1]-tasks[3] correctly require concluding the data are insufficient, offering a hypothetical confound, and proposing random assignment. But the minimum_answer asserts the opposite: that the 30-point difference proves causation, that selection bias/background differences are impossible, that motivation cannot be an alternative explanation, and that random assignment is unnecessary. This is a direct internal contradiction between the declared tasks and the minimum_answer.",
+      "suggested_correction": "Rewrite minimum_answer to align with the declared tasks: state the 30-point observed difference, conclude the records are insufficient to support the causal claim due to self-selection, give a hypothetical confound (e.g., stronger motivation or prior achievement among volunteers) without asserting it as fact, and propose random assignment to treatment/control to balance confounders. Do not change the grade."
+    },
+    {
+      "category": "unsupported_claim",
+      "certainty": "definite",
+      "question_ids": [
+        "S002",
+        "S004",
+        "S006"
+      ],
+      "review_ids": [
+        "R010",
+        "R011"
+      ],
+      "explanation": "The minimum_answer asserts that the 30-point difference 'proves' the tutoring caused the gain and that selection bias or background differences are 'impossible' because both groups took the same exam. This is unsupported and contradicted by the problem facts: S002 states participation was voluntary, and S004 states no background data exist. Taking the same exam does not rule out selection bias. Similarly, claiming motivation 'cannot' be an alternative explanation is unsupported given the voluntary design.",
+      "suggested_correction": "Replace these assertions with the supported conclusion that the observational difference is consistent with but does not establish causation, and that self-selection is a plausible alternative explanation. Do not change the grade."
+    },
+    {
+      "category": "answer_coverage_gap",
+      "certainty": "definite",
+      "question_ids": [
+        "S006"
+      ],
+      "review_ids": [
+        "R009",
+        "R010",
+        "R011",
+        "R012"
+      ],
+      "explanation": "The minimum_answer omits mandatory parts of the question. S006 requires (a) judging whether the records support the causal conclusion, (b) giving a specific alternative explanation, and (c) proposing a more reliable research design and explaining what it solves. The minimum_answer instead denies the need for an alternative explanation and for random assignment, so it fails to cover the required alternative-explanation and design components.",
+      "suggested_correction": "Add the required components to minimum_answer: a specific hypothetical alternative explanation and a randomized controlled design with an explanation of how randomization addresses selection bias. Do not change the grade."
+    }
+  ]
+}

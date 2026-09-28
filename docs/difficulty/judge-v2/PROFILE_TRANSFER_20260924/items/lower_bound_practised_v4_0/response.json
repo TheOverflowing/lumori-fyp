@@ -1,0 +1,77 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "The problem is self-contained: array conditions, target semantics, proposed code, and all required deliverables (counterexample, repair, termination and boundary justification) are stated. The learner profile supplies relevant preparation (loop invariants, O(log n), first-greater-or-equal binary search with duplicates and no-match). No missing exercise facts or contradictory demands.",
+  "cognitive_demand": "strategic_reasoning",
+  "tasks": [
+    {
+      "request_ids": [
+        "S014"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S005",
+        "S006",
+        "S007",
+        "S008",
+        "S009",
+        "S010",
+        "S011",
+        "S012",
+        "S013",
+        "S015",
+        "S016"
+      ],
+      "solution_ids": [],
+      "residual_work": "Must construct a concrete failing input by reasoning about the buggy loop: with l=m on a[m]<t and r=m otherwise, when a[m]<t the update l=m can leave l unchanged (e.g., l=0,r=1,m=0), causing an infinite loop; also r=len(a)-1 cannot return len(a) for t above all entries. Learner must exhibit one such input and trace the failure.",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S014"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S015",
+        "S016"
+      ],
+      "solution_ids": [],
+      "residual_work": "Must design a corrected O(log n) algorithm, e.g., half-open [l,r) with r=len(a), m=(l+r)//2, l=m+1 when a[m]<t and r=m otherwise, returning l. This is a genuine design choice not supplied in the text.",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S014"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S005",
+        "S006",
+        "S007",
+        "S008",
+        "S009",
+        "S010",
+        "S011",
+        "S012",
+        "S013",
+        "S015"
+      ],
+      "solution_ids": [],
+      "residual_work": "Must prove termination (interval strictly shrinks each iteration) and the returned boundary (invariant: all indices < l have a[i]<t, all indices >= r have a[i]>=t; on exit l=r is the smallest index with a[i]>=t, or len(a) if none). No proof is supplied.",
+      "mode": "construct_argument"
+    }
+  ],
+  "minimum_answer": "Counterexample: a=[1,3], t=2. Initially l=0, r=1, m=0, a[0]=1<2 so l=m=0; loop repeats forever (l<r with l unchanged). Also a=[1,2], t=5 returns 1, not len(a)=2. Repair (half-open interval): l=0; r=len(a); while l<r: m=(l+r)//2; if a[m]<t: l=m+1 else: r=m; return l. Termination: each iteration either sets l=m+1>l or r=m<r, so r-l strictly decreases; O(log n) since interval halves. Boundary: maintain invariant that all i<l satisfy a[i]<t and all i>=r satisfy a[i]>=t. Initially l=0, r=len(a) satisfy it vacuously. If a[m]<t, then all i<=m have a[i]<t (sorted), so l=m+1 preserves the left part; if a[m]>=t, all i>=m have a[i]>=t, so r=m preserves the right part. On exit l=r, so every i<l has a[i]<t and every i>=l has a[i]>=t; hence l is the smallest index with a[i]>=t, or len(a) when t exceeds all entries. Duplicates are handled because the invariant uses strict/non-strict comparisons consistently.",
+  "decision": {
+    "candidates": [
+      "medium"
+    ],
+    "hard_task_index": null,
+    "reason": "The learner profile states repeated implementation and proof of exactly this first-greater-or-equal binary search with half-open intervals, duplicates, no-match returns, and progress bugs from reusing the midpoint. The task asks for a counterexample, a repair, and a termination/boundary justification. The bug (l=m stalling, r=len(a)-1 preventing len(a) return) and the standard half-open repair are familiar to this learner, so the work is meaningful familiar application rather than a nonroutine bottleneck. It is above pure reproduction because the learner must construct a concrete failing input and supply the invariant argument, but both draw directly on prior preparation. Nearest boundary: easy would require only reproducing a supplied argument; here no solution is supplied, so medium is appropriate. No hard candidate, so hard_task_index is null."
+  }
+}

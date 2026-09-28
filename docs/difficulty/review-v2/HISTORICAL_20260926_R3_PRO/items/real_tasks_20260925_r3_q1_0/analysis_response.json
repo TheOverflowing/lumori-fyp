@@ -1,0 +1,101 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "All six tasks are answerable from the supplied rules and standard spinlock reasoning; no missing essential condition or ambiguous boundary prevents grading.",
+  "solution": "1. 计数器被 A 与 clockintr 读改写，需串行化。并发来源：多处理器并行、线程切换、中断处理程序与可被中断代码交错。\n2. A 持 tickslock 且中断开启时，本 CPU 时钟中断可递交；clockintr 再取同一锁，锁已被 A 持有，故 clockintr 自旋等待。A 被中断打断，无法继续执行到 release，锁永不释放；本 CPU 死锁/停滞。其他 CPU 若也需该锁会等待，但其他 CPU 本身不一定死锁。\n3. 约束：若锁会被中断处理程序使用，持锁期间本 CPU 必须关中断。acquire 先关本 CPU 中断，再置 locked；release 先释放锁，再恢复中断。若先置 locked 后关中断，关中断前可能被中断，处理程序取同一锁而自旋；若先恢复中断后释放锁，恢复后、释放前也可能被中断并取锁。\n4. push_off/pop_off 记录本 CPU 持锁层数；仅层数归零时恢复到最外层进入前的中断使能状态。每次释放都无条件开中断会破坏外层临界区，使外层持锁期间中断开启。\n5. 场景 S：A 成立，本 CPU 中断处理程序等待线程释放锁会死锁；B 不适用/不成立，因无另一 CPU。场景 P：A 成立，本 CPU 中断处理程序等待本 CPU 线程释放锁会死锁；B 成立，另一 CPU 的中断处理程序可等待某线程释放锁，但该线程可在另一 CPU 运行并释放，故不一定死锁。关中断只作用于执行它的 CPU。\n6. 不能替代。禁止同 CPU 重复取锁只防自等待/递归取锁；持锁关中断还防本 CPU 中断处理程序在临界区内取同一锁。多 CPU 下其他 CPU 仍可并发取锁，故仍需自旋锁互斥。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S021"
+      ],
+      "condition_ids": [
+        "S016",
+        "S017",
+        "S014"
+      ],
+      "provided_ids": [
+        "S009"
+      ],
+      "residual_work": "说明共享计数器需互斥，并列出三类并发来源。",
+      "mode": "apply_familiar"
+    },
+    {
+      "request_ids": [
+        "S023",
+        "S024"
+      ],
+      "condition_ids": [
+        "S017",
+        "S018",
+        "S010"
+      ],
+      "provided_ids": [
+        "S003"
+      ],
+      "residual_work": "逐步推出 clockintr 自旋、A 无法释放、本 CPU 停滞及对其他 CPU 的影响。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S026"
+      ],
+      "condition_ids": [
+        "S010",
+        "S011"
+      ],
+      "provided_ids": [],
+      "residual_work": "给出设计约束，并解释 acquire/release 次序及颠倒后的危险窗口。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S028"
+      ],
+      "condition_ids": [
+        "S012"
+      ],
+      "provided_ids": [],
+      "residual_work": "解释 push_off/pop_off 层数归零才恢复中断，以及无条件开中断的破坏。",
+      "mode": "apply_familiar"
+    },
+    {
+      "request_ids": [
+        "S030",
+        "S031",
+        "S032",
+        "S033",
+        "S034"
+      ],
+      "condition_ids": [
+        "S015",
+        "S031",
+        "S032"
+      ],
+      "provided_ids": [
+        "S005"
+      ],
+      "residual_work": "在单 CPU 与多 CPU 下分别判断 A、B，并用关中断作用范围论证。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S036",
+        "S037"
+      ],
+      "condition_ids": [
+        "S006",
+        "S010"
+      ],
+      "provided_ids": [],
+      "residual_work": "论证禁止同 CPU 重复取锁不能替代持锁关中断，并区分故障模式。",
+      "mode": "construct_argument"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "medium",
+      "hard"
+    ],
+    "boundary_reason": "任务 2、3、6 需要把自旋锁、中断递交、单/多 CPU 作用范围与嵌套簿记整合成因果链，超出直接复述；但规则已明确给出，属于熟悉概念的综合应用。任务 5 的断言判断和任务 6 的替代性论证最接近非例行瓶颈，故边界在 medium 与 hard 之间。",
+    "hard_task_index": 5
+  }
+}

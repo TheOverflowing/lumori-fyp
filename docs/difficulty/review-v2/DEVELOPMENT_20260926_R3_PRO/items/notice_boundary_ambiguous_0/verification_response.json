@@ -1,0 +1,61 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "fail",
+      "reason": "At temperature 10 both ≤10 and ≥10 hold, so A and B are both compliant; policy explicitly has no priority/tie rule, yet question demands a unique answer. Conditions conflict and are insufficient.",
+      "evidence_ids": [
+        "E0001",
+        "E0003",
+        "E0004",
+        "E0005"
+      ]
+    },
+    "reference_correct": {
+      "status": "fail",
+      "reason": "Key selects only A, but B also satisfies ≥10 at temperature 10; no priority rule exists, so the key does not follow from the policy.",
+      "evidence_ids": [
+        "E0012",
+        "E0013",
+        "E0015",
+        "E0016"
+      ]
+    },
+    "explanation_consistent": {
+      "status": "fail",
+      "reason": "Explanation claims only A is compliant, but the policy's ≥10 condition makes B compliant as well; it ignores the conflicting condition and the absence of a tie rule.",
+      "evidence_ids": [
+        "E0014",
+        "E0001",
+        "E0003"
+      ]
+    },
+    "source_support": {
+      "status": "pass",
+      "reason": "Source excerpts state both conditional rules and the absence of priority/tie rules, which support the student's factual claims about the policy.",
+      "source_ids": [
+        "E0022",
+        "E0024"
+      ],
+      "claim_ids": [
+        "E0001",
+        "E0003"
+      ]
+    },
+    "demand_supported": {
+      "status": "fail",
+      "reason": "Analysis correctly identifies the question as invalid due to conflicting conditions, but the proposed demand of selecting a unique answer is unsupported by the policy; no valid unique answer exists.",
+      "analysis_ids": [
+        "E0015",
+        "E0016"
+      ],
+      "student_ids": [
+        "E0005",
+        "E0009"
+      ],
+      "profile_ids": [
+        "E0010",
+        "E0011"
+      ]
+    }
+  }
+}

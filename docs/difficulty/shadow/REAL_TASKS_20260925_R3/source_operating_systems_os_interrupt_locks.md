@@ -1,0 +1,21 @@
+7.4 Deadlock and lock ordering
+
+Suppose the functions running on CPUs C1 and C2 both have a point at which each needs to hold both lock A and lock B, and they acquire them in different orders:
+
+With a bit of bad luck, C1 and C2 might both execute their first acquire at exactly the same moment; both can succeed, since they are asking for different locks. But then both C1 and C2 will have to wait in their second calls to acquire(), since both locks are already held by the other CPU. Because both CPUs are waiting for each other, neither will ever release a lock, and both will wait forever. This situation is called deadlock.
+
+The key problem in the C1/C2 example is that the two CPUs acquired the locks in different orders. If they had both tried to acquire A first, one would have acquired A and then B and then released them both, and then the other CPU could have proceeded. More generally, locking code must follow this rule to avoid deadlock: all code paths that hold multiple locks must acquire locks in the same order. The need for this global lock acquisition order means that locks are effectively part of each function’s specification: callers must invoke functions in a way that causes locks to be acquired in the agreed-on order.
+
+A question that sometimes arises is what should happen if a CPU tries to acquire a lock that the same CPU already holds. One line of reasoning is that this should be allowed: no other CPU can hold the lock, so there’s no need to worry about CPUs interfering with each others’ use of the protected data. Locking systems that allow a CPU to re-acquire a lock it already holds are called a re-entrant or recursive. On the other hand, if a lock is already held, even on the same CPU, that means an operation may have temporarily violated and not yet restored some invariants; to allow a new operation to commence while the invariants don’t hold seems like an invitation to bugs. Xv6 takes this latter view, and forbids a CPU that currently holds a lock from re-acquiring it. Detecting this situation is the purpose of the call to holding in acquire.
+
+7.5 Locks and interrupts
+
+Some xv6 spinlocks protect data that is used by both threads and interrupt handlers. For example, the clockintr timer interrupt handler might increment ticks at about the same time that a kernel thread reads ticks in sys_pause. The lock tickslock serializes the two accesses.
+
+The interaction of spinlocks and interrupts raises a potential danger. Suppose sys_pause holds tickslock, and its CPU is interrupted by a timer interrupt. clockintr would try to acquire tickslock, see it was held, and wait for it to be released. In this situation, tickslock will never be released: only sys_pause can release it, but sys_pause will not continue running until clockintr returns. So the CPU will deadlock, and any code that needs either lock will also freeze.
+
+To avoid this situation, if a spinlock is used by an interrupt handler, a CPU must never hold that lock with interrupts enabled. Xv6 is more conservative: when a CPU acquires any lock, xv6 always disables interrupts on that CPU. Interrupts may still occur on other CPUs, so an interrupt’s acquire can wait for a thread to release a spinlock; just not on the same CPU.
+
+Xv6 re-enables interrupts when a CPU holds no spinlocks; it must do a little book-keeping to cope with nested critical sections. acquire calls push_off and release calls pop_off to track the nesting level of locks on the current CPU. When that count reaches zero, pop_off restores the interrupt enable state that existed at the start of the outermost critical section. push_off and pop_off tell the CPU to enable and disable interrupts by changing the SIE (Supervisor Interrupt Enable) bit in the sstatus (Supervisor Status) register, using intr_on and rc_sstatus(SSTATUS_SIE); the latter clears the SIE bit.
+
+It is important that acquire call push_off strictly before setting lk->locked. If the two were reversed, there would be a brief window when the lock was held with interrupts enabled, and an unfortunately timed interrupt would deadlock the system. Similarly, it is important that release call pop_off only after releasing the lock (spinlock.c:73).

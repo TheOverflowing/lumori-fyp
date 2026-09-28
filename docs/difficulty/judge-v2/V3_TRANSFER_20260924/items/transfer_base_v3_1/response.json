@@ -1,0 +1,72 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "The question is self-contained: it specifies finite accounts with distinct fixed IDs, nonnegative integer balances, per-account mutexes, finite concurrent transfers with distinct source/destination and positive integer amounts, all-or-nothing semantics, no other balance access, arbitrary interleaving, no crashes or overflow, atomic lock acquisition, fair queuing, eventual scheduling and release, no global lock, and required deliverables (pseudocode, lock-protection explanation, correctness argument, concrete deadlock example). No missing condition prevents a valid answer.",
+  "cognitive_demand": "strategic_reasoning",
+  "supplied_support": [
+    {
+      "quote": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。",
+      "finding": "Supplies the concurrency model needed for progress and deadlock reasoning: atomic acquisition, fair queuing, eventual scheduling, and eventual release."
+    },
+    {
+      "quote": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。",
+      "finding": "Supplies the interference model and removes unrelated failure modes, so the proof can focus on transfer interleavings."
+    },
+    {
+      "quote": "不允许使用覆盖整个系统的全局锁。",
+      "finding": "Supplies a key design constraint that rules out the trivial global-lock solution and forces per-account locking."
+    }
+  ],
+  "remaining_demands": [
+    {
+      "quote": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。",
+      "finding": "The learner must design a per-account locking protocol that atomically checks and updates both balances, preserves nonnegative balances, and prevents deadlock under arbitrary concurrent transfers."
+    },
+    {
+      "quote": "解释读余额、检查与更新分别受哪些锁保护",
+      "finding": "The learner must map each read, check, and update to the specific account lock(s) that protect it and explain why the protection is sufficient."
+    },
+    {
+      "quote": "论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。",
+      "finding": "The learner must prove mutual exclusion, no-overdraft, total-balance invariant, and deadlock freedom, then construct a concrete interleaving showing how a wrong locking order deadlocks."
+    }
+  ],
+  "knowledge_integration": "Requires combining mutual exclusion, atomic check-and-update, lock ordering or equivalent deadlock-avoidance, fair queuing progress assumptions, and an invariant proof over concurrent transfers.",
+  "strategy_selection": "The learner must choose a nonroutine strategy: acquire both account locks in a global order such as ascending account ID, or use try-lock with backoff, and justify why the chosen strategy prevents deadlock while preserving atomicity.",
+  "justification_required": "A correctness argument is required for mutual exclusion, no overdraft, total-balance preservation, and deadlock freedom, plus a concrete deadlock interleaving for a wrong locking scheme.",
+  "estimated_difficulty": "hard",
+  "adjacent_level_reason": "Medium is less fitting because the learner has only analyzed a single lock protecting one counter and has not practiced multi-object lock ordering or its correctness proof. The task requires independent integration of a new locking protocol, an invariant proof, and a concrete deadlock counterexample. Easy is clearly too low because it is not direct retrieval or a well-practised procedure.",
+  "uncertainty_reasons": [
+    "The learner profile states no practice with multi-object lock ordering, but the exact amount of prior exposure to lock-order proofs is not specified.",
+    "The fair-queuing assumption simplifies progress reasoning, but the core deadlock-avoidance design and proof remain nonroutine for this learner."
+  ],
+  "confidence": "medium",
+  "demand_audit": [
+    {
+      "quote": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。",
+      "finding": "The question supplies the concurrency model and constraints but not the locking protocol or pseudocode. The learner must invent a per-account locking scheme that atomically checks and updates both balances and avoids deadlock.",
+      "support_quotes": [
+        "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。",
+        "不允许使用覆盖整个系统的全局锁。"
+      ],
+      "supplied_extent": "partly_supplied",
+      "residual_task": "Design pseudocode that locks both accounts in a consistent global order, checks sufficient balance under both locks, updates both balances atomically, and releases locks without deadlock."
+    },
+    {
+      "quote": "解释读余额、检查与更新分别受哪些锁保护",
+      "finding": "No explanation of which locks protect reads, checks, and updates is supplied. The learner must state that both source and destination locks are held during the balance check and update, and that reads of each balance are protected by that account's lock.",
+      "support_quotes": [],
+      "supplied_extent": "not_supplied",
+      "residual_task": "Explain that source balance read/check/update is protected by source lock, destination balance read/update by destination lock, and both locks are held together for the atomic transfer decision."
+    },
+    {
+      "quote": "论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。",
+      "finding": "No correctness proof or deadlock example is supplied. The learner must prove mutual exclusion, no overdraft, total-balance preservation, and deadlock freedom, then give a concrete interleaving for a wrong locking order.",
+      "support_quotes": [],
+      "supplied_extent": "not_supplied",
+      "residual_task": "Prove the invariants under arbitrary interleavings and construct a concrete deadlock example, such as T1 locking A then B while T2 locks B then A."
+    }
+  ],
+  "minimum_sufficient_response": "Pseudocode: transfer(s,d,a): if s==d return fail; first=min(s,d); second=max(s,d); lock(first); lock(second); if balance[s]>=a: balance[s]-=a; balance[d]+=a; unlock(second); unlock(first); return success; else unlock(second); unlock(first); return fail. Reads/checks/updates: balance[s] is read and checked while holding lock(s); balance[d] is updated while holding lock(d); both locks are held during the check-and-update so no other transfer can interleave between check and update. Correctness: mutual exclusion follows because any transfer touching an account holds that account's lock; no overdraft follows because the check and debit occur under the source lock and no other transfer can change the source balance between them; total balance is preserved because a successful transfer subtracts a from source and adds a to destination, and a failed transfer changes nothing; deadlock freedom follows because all transfers acquire locks in the same global order by account ID, so a cycle in the wait-for graph would require an account ID to be both smaller and larger than another. Concrete deadlock example for wrong locking: T1 transfers A to B and locks A then waits for B; T2 transfers B to A and locks B then waits for A. Each holds one lock and waits for the other, so neither can proceed.",
+  "hard_basis_quote": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。",
+  "learner_relative_basis": "The learner can analyze a single lock protecting one counter, but has not practiced multi-object lock ordering or its correctness proof. The remaining bottleneck is independently designing a two-lock protocol that atomically checks and updates both balances while avoiding deadlock, then proving the invariants and producing a concrete deadlock interleaving. This is not a familiar application because it requires coordinating two locks, a global order, and an invariant proof rather than applying a known single-lock pattern."
+}

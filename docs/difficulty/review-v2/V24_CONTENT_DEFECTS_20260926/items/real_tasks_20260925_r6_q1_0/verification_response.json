@@ -1,0 +1,92 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "pass",
+      "reason": "Student supplies initial NextByteExpected=1000, non-overlapping segment lengths and arrival data, and cumulative-ACK rule pointing to first gap; no missing scope or endpoint changes outcome.",
+      "evidence_ids": [
+        "E0012",
+        "E0014",
+        "E0015",
+        "E0016",
+        "E0009",
+        "E0010",
+        "E0011"
+      ]
+    },
+    "solution_correct": {
+      "status": "pass",
+      "reason": "Blind analysis computes P/Q/R intervals [1200,1400),[1000,1100),[1400,1700) and finds [1100,1200) missing; only Q extends prefix, so ACK=1100 is valid.",
+      "evidence_ids": [
+        "E0035",
+        "E0036",
+        "E0037",
+        "E0014",
+        "E0015",
+        "E0016",
+        "E0011"
+      ]
+    },
+    "reference_correct": {
+      "status": "pass",
+      "reason": "Reference key C and option explanations correctly reject 1400/1300/1700 because contiguous prefix ends at 1100 due to missing [1100,1200).",
+      "evidence_ids": [
+        "E0027",
+        "E0028",
+        "E0029",
+        "E0030",
+        "E0031",
+        "E0015",
+        "E0011"
+      ]
+    },
+    "explanation_consistent": {
+      "status": "pass",
+      "reason": "Explanation identifies first gap [1100,1200) and ACK=1100, matching key C and student NextByteExpected/cumulative-ACK definitions.",
+      "evidence_ids": [
+        "E0030",
+        "E0032",
+        "E0027",
+        "E0009",
+        "E0010",
+        "E0011"
+      ]
+    },
+    "source_support": {
+      "status": "fail",
+      "reason": "Excerpts show byte-oriented/SequenceNum and NextByteExpected gap start, but none states ACK value equals NextByteExpected or cumulative ACK cannot pass gap; exact cumulative-ACK rule unsupported.",
+      "source_ids": [
+        "E0051",
+        "E0052",
+        "E0074"
+      ],
+      "claim_ids": [
+        "E0005",
+        "E0006",
+        "E0009",
+        "E0010",
+        "E0011"
+      ]
+    },
+    "demand_supported": {
+      "status": "pass",
+      "reason": "Analysis marks easy because task is interval arithmetic and finding first gap using supplied rules; profile states studied course materials and intro concepts, no hidden prior practice needed.",
+      "analysis_ids": [
+        "E0033",
+        "E0034",
+        "E0038"
+      ],
+      "student_ids": [
+        "E0012",
+        "E0014",
+        "E0015",
+        "E0016",
+        "E0009",
+        "E0010",
+        "E0017"
+      ],
+      "profile_ids": [
+        "E0026"
+      ]
+    }
+  }
+}

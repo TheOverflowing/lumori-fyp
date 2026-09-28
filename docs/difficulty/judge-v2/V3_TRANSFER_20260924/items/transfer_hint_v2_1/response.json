@@ -1,0 +1,55 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "The question is self-contained: it specifies finite accounts with distinct fixed IDs, nonnegative integer balances, per-account mutexes, transfer semantics, atomic lock acquisition, fair queuing, no global lock, and asks for pseudocode plus lock-protection explanation, correctness argument, and a concrete deadlock counterexample. The supplied complete solution and explicit instruction to use it remove ambiguity about the expected answer.",
+  "cognitive_demand": "routine_application",
+  "supplied_support": [
+    {
+      "quote": "可采用以下完整方案：对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。",
+      "finding": "The full locking strategy, critical-section placement, and success/failure behavior are supplied, so the learner does not need to invent the algorithm."
+    },
+    {
+      "quote": "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+      "finding": "The key correctness invariants and their justification are supplied."
+    },
+    {
+      "quote": "所有等待只从较小 ID 指向较大 ID，不能形成等待环。",
+      "finding": "The deadlock-freedom argument is supplied."
+    },
+    {
+      "quote": "反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁。",
+      "finding": "A concrete deadlock counterexample is supplied."
+    },
+    {
+      "quote": "请把该方案写成伪代码，并解释上述理由如何覆盖所有允许的交错；无需发现另一种方案。",
+      "finding": "The task is explicitly limited to transcribing the given scheme and explaining the supplied reasoning, not discovering an alternative."
+    }
+  ],
+  "remaining_demands": [
+    {
+      "quote": "请把该方案写成伪代码",
+      "finding": "The learner must translate the supplied natural-language scheme into correct pseudocode, including lock acquisition in ID order, critical section, and release in all paths."
+    },
+    {
+      "quote": "解释读余额、检查与更新分别受哪些锁保护",
+      "finding": "The learner must map each operation to the two account locks and state that all reads, checks, and updates occur while both locks are held."
+    },
+    {
+      "quote": "论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。",
+      "finding": "The learner must restate the supplied invariant argument and instantiate the supplied source-first counterexample concretely."
+    },
+    {
+      "quote": "解释上述理由如何覆盖所有允许的交错",
+      "finding": "The learner must connect the supplied invariant and lock-order argument to arbitrary interleavings, but the reasoning is already outlined."
+    }
+  ],
+  "knowledge_integration": "The learner must combine prior knowledge of mutexes, race conditions, and deadlock with the supplied lock-ordering scheme. Integration is limited because the scheme, invariants, and counterexample are all provided; the learner mainly organizes them into pseudocode and an explanation.",
+  "strategy_selection": "No independent strategy selection is required: the question explicitly supplies the two-lock ID-order strategy and says no alternative need be found. The learner selects only how to present the given strategy.",
+  "justification_required": "The learner must justify correctness and deadlock freedom, but the required justification is supplied in the prompt: equal debit/credit under both locks, no partial transfer visible, and acyclic wait-for order. The learner restates and applies these reasons rather than constructing a novel proof.",
+  "estimated_difficulty": "easy",
+  "adjacent_level_reason": "Medium would fit if the learner had to choose the lock-ordering strategy or construct the deadlock argument independently. Here the complete solution, invariant explanation, and counterexample are given, so the task reduces to transcription and explanation of supplied material, which is direct application for a learner who already knows mutexes and deadlock.",
+  "uncertainty_reasons": [
+    "The learner has not practised multi-object lock ordering or correctness proofs, so even supplied material may require some care, but the prompt removes the main strategic burden.",
+    "The boundary between easy and medium depends on how much credit is given for explaining arbitrary interleavings; the supplied reasoning makes this largely reproductive."
+  ],
+  "confidence": "high"
+}

@@ -1,0 +1,315 @@
+{
+  "kind": "independent_analysis_raw_audit",
+  "version": "20260926-completed-eight-raws",
+  "created_at": "2026-09-26T02:51:34.804082+00:00",
+  "status": "complete",
+  "planned_slots": 8,
+  "reviewed_slots": 8,
+  "pending_slots": 0,
+  "provenance": "AI review plus executable exhaustive enumeration; not human teacher gold. Arm names and reference answers were visible to this reviewer; verifier outputs were not.",
+  "read_scope": {
+    "raw_analysis_responses": true,
+    "original_questions_and_references": true,
+    "verification_response_read": false,
+    "records_read": false,
+    "summary_read": false,
+    "provider_calls": 0
+  },
+  "criteria": {
+    "result_correct": "Correctness of the final adopted numerical answer or claimed feasible design; retracted exploration is not penalized separately.",
+    "construction_correct": "Whether the final explicit construction satisfies every supplied constraint and stated bound.",
+    "proof_correct": "Whether the lower-bound/impossibility argument adequately establishes the requested optimum. A correct lower bound is scored separately from a flawed construction; a weaker bound insufficient for the true optimum is not proof success.",
+    "pending": "Unreviewed slots have null correctness fields and audit_status=pending; they are not successes or failures."
+  },
+  "executable_checks": {
+    "laboratory_valid_assignments_by_allowed_slot_count": {
+      "4": 0,
+      "5": 2
+    },
+    "laboratory_reference_tuple": [
+      1,
+      2,
+      2,
+      3,
+      4,
+      5
+    ],
+    "courier_simple_paths": 10,
+    "courier_edge_disjoint_pairs": 9,
+    "courier_minimum_total_fee": 8,
+    "courier_paths_at_most_four": [
+      {
+        "path": [
+          "S",
+          "A",
+          "B",
+          "C",
+          "T"
+        ],
+        "fee": 4
+      },
+      {
+        "path": [
+          "S",
+          "A",
+          "C",
+          "T"
+        ],
+        "fee": 3
+      },
+      {
+        "path": [
+          "S",
+          "B",
+          "C",
+          "T"
+        ],
+        "fee": 4
+      }
+    ],
+    "courier_minimum_by_first_edge": {
+      "A": {
+        "minimum_fee": 3,
+        "minimizers": [
+          [
+            "S",
+            "A",
+            "C",
+            "T"
+          ]
+        ]
+      },
+      "B": {
+        "minimum_fee": 4,
+        "minimizers": [
+          [
+            "S",
+            "B",
+            "C",
+            "T"
+          ]
+        ]
+      }
+    }
+  },
+  "records": [
+    {
+      "arm": "baseline",
+      "case_id": "courier_single_failure_corrected",
+      "repeat": 0,
+      "audit_status": "reviewed",
+      "raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_BASELINE/items/courier_single_failure_corrected_0/analysis_response.json",
+      "raw_sha256": "33ab7472a7c90643e746ca9c6b2aaab3c69caab5a55253092be182d1e871b928",
+      "result_correct": "incorrect",
+      "construction_correct": "incorrect",
+      "proof_correct": "incorrect",
+      "findings": [
+        {
+          "component": "construction",
+          "evidence": "P1=S-A-C-T；P2=S-B-C-T；总登记费=7",
+          "counterexample": "两路都含C-T；关闭C-T后两条登记路径都断，7费方案不满足容错。"
+        },
+        {
+          "component": "proof",
+          "evidence": "末边不同，只能分别用AT(4)和BT(3)",
+          "counterexample": "还存在C-T(1)，例如有效方案S-A-C-T与S-B-T的总费为3+5=8，直接否定其总费至少10的断言。"
+        }
+      ]
+    },
+    {
+      "arm": "baseline",
+      "case_id": "courier_single_failure_corrected",
+      "repeat": 1,
+      "audit_status": "reviewed",
+      "raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_BASELINE/items/courier_single_failure_corrected_1/analysis_response.json",
+      "raw_sha256": "9f159878c70d65b2d1fb49e7d1c1ca42bc2a35be5ee7160015d2d80e2321b560",
+      "result_correct": "incorrect",
+      "construction_correct": "incorrect",
+      "proof_correct": "incorrect",
+      "findings": [
+        {
+          "component": "construction",
+          "evidence": "P1=S-A-C-T；P2=S-B-C-T；若关闭C-T…可走S-A-B-T或S-B-A-T",
+          "counterexample": "原登记两路共用C-T，同时断路；另走两条未登记路径违反不可修改登记路径的规则。"
+        },
+        {
+          "component": "proof",
+          "evidence": "费用3与4的组合，即必须包含S-A-C-T和S-B-C-T",
+          "counterexample": "还存在S-A-B-C-T，费用1+1+1+1=4；它与S-A-C-T构成另一组总费7的路径对。虽也共边而不可行，但声称唯一组合的枚举不完整，尚未给出覆盖所有情况的证明。"
+        }
+      ]
+    },
+    {
+      "arm": "baseline",
+      "case_id": "laboratory_slots",
+      "repeat": 0,
+      "audit_status": "reviewed",
+      "raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_BASELINE/items/laboratory_slots_0/analysis_response.json",
+      "raw_sha256": "16063ec2450e5113ff8be40c7b9f5785c812e995341219fbc9250cf49a668948",
+      "result_correct": "correct",
+      "construction_correct": "incorrect",
+      "proof_correct": "correct",
+      "findings": [
+        {
+          "component": "result",
+          "evidence": "最少为5个时段。",
+          "check": "最优时段数确为5。"
+        },
+        {
+          "component": "construction",
+          "evidence": "时段1：A、B；时段2：C、D；时段3：E；时段4：F。",
+          "counterexample": "A与B同处1，C与D同处2，分别违反两项设备互斥；只列了4个时段。"
+        },
+        {
+          "component": "proof",
+          "evidence": "不能把A、B、C、D全部塞进2个时段",
+          "check": "若这四项都在前2段，C>A和D>B迫使A=B=1、C=D=2，违反设备互斥；故前四项至少3段，再加E、F至少5段。下界证明成立，未因独立的构造错误连带判错。"
+        }
+      ]
+    },
+    {
+      "arm": "baseline",
+      "case_id": "laboratory_slots",
+      "repeat": 1,
+      "audit_status": "reviewed",
+      "raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_BASELINE/items/laboratory_slots_1/analysis_response.json",
+      "raw_sha256": "c819b13f12fc731a2537cdd2d7dc74575251a0db2599d37c06af54ab5ef219c8",
+      "result_correct": "incorrect",
+      "construction_correct": "incorrect",
+      "proof_correct": "incorrect",
+      "findings": [
+        {
+          "component": "result",
+          "evidence": "4个时段安排存在，所以最少为4。",
+          "counterexample": "逐一枚举1..4上的6项时段分配，合法安排为0；最少为5。"
+        },
+        {
+          "component": "construction",
+          "evidence": "A,B在1；C,D在2；E在3；F在4。",
+          "counterexample": "A=B=1、C=D=2同时违反两项设备互斥。"
+        },
+        {
+          "component": "proof",
+          "evidence": "故至少4个时段。4个时段安排存在",
+          "counterexample": "证明至多排除了不足4段，未排除不可行的4段；再依赖违规构造宣称达到下界，不能证明真正最优值。"
+        }
+      ],
+      "interpretation_note": "最初的5段说法后来被明确撤回；按最终采用的4段方案评审。"
+    },
+    {
+      "arm": "candidate",
+      "case_id": "courier_single_failure_corrected",
+      "repeat": 0,
+      "audit_status": "reviewed",
+      "raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/items/courier_single_failure_corrected_0/analysis_response.json",
+      "raw_sha256": "77866810c262b1b2e4e8610a6688f3279deda046e1413430d991bdb99b3dd1a6",
+      "result_correct": "correct",
+      "construction_correct": "correct",
+      "proof_correct": "correct",
+      "findings": [
+        {
+          "component": "construction",
+          "evidence": "P1=S-A-C-T…3；P2=S-B-T…5；总费用8",
+          "check": "两条简单路径所用边集合不相交；任意单边关闭至多破坏其中一条。"
+        },
+        {
+          "component": "proof",
+          "evidence": "唯一费用3路径是S-A-C-T。总费用≤7时，另一条路径费用必须≤4",
+          "check": "所有路径费用至少3；总费≤7必有一条费用3，唯一为S-A-C-T。其他不同的费用≤4路径仅S-B-C-T和S-A-B-C-T，两者均与它共用C-T，故不存在合格的≤7方案。"
+        }
+      ],
+      "interpretation_note": "原文“所有费用≤4路径”列表未重复已知的P1自身。按前文“另一条”及必须边不相交的上下文理解为其他不同路径；若按字面完整列表应再列P1，但它显然与自身共边。此可补明的省略不破坏下界结论，不判实质证明错误。"
+    },
+    {
+      "arm": "candidate",
+      "case_id": "courier_single_failure_corrected",
+      "repeat": 1,
+      "audit_status": "reviewed",
+      "raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/items/courier_single_failure_corrected_1/analysis_response.json",
+      "raw_sha256": "dafdad551c1d27abf4268d3f0827788de071ff048112644b181f383af933f885",
+      "result_correct": "correct",
+      "construction_correct": "correct",
+      "proof_correct": "correct",
+      "findings": [
+        {
+          "component": "construction",
+          "evidence": "P1=S-A-C-T，费用3；P2=S-B-T，费用5，总8",
+          "check": "路径简单、没有共用边，任意单边关闭最多毁坏其中一条。"
+        },
+        {
+          "component": "proof",
+          "evidence": "SA首路最便宜3；SB首路最便宜4；等于7的唯一组合共用CT",
+          "check": "枚举10条简单路径：SA首路最小为3且唯一S-A-C-T，SB首路最小为4且唯一S-B-C-T。合法边不相交路径必须分别用SA、SB；故总费至少7，唯一等号组合共边不合法，整数费用给出至少8。"
+        }
+      ]
+    },
+    {
+      "arm": "candidate",
+      "case_id": "laboratory_slots",
+      "repeat": 0,
+      "audit_status": "reviewed",
+      "raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/items/laboratory_slots_0/analysis_response.json",
+      "raw_sha256": "662260a007cd77db51a61203f99736c0a54760bfe9395979cceb054745a34960",
+      "result_correct": "correct",
+      "construction_correct": "correct",
+      "proof_correct": "correct",
+      "findings": [
+        {
+          "component": "construction",
+          "evidence": "1:A；2:B、C；3:D；4:E；5:F。",
+          "check": "(A,B,C,D,E,F)=(1,2,2,3,4,5)，容量、全部严格先序和两项设备互斥均满足。"
+        },
+        {
+          "component": "proof",
+          "evidence": "若仅4个时段，A<C<E<F必占1,2,3,4；B<D<E迫使B=1,D=2",
+          "check": "这使A=B=1、C=D=2，违反两项互斥；因此至少5，构造达到5。"
+        }
+      ]
+    },
+    {
+      "arm": "candidate",
+      "case_id": "laboratory_slots",
+      "repeat": 1,
+      "audit_status": "reviewed",
+      "raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/items/laboratory_slots_1/analysis_response.json",
+      "raw_sha256": "df9f5361e1453ee05e2c63ad0ec35590b9285fcbcd83d5fd1c0ba352eebb2754",
+      "result_correct": "correct",
+      "construction_correct": "correct",
+      "proof_correct": "correct",
+      "findings": [
+        {
+          "component": "construction",
+          "evidence": "1:A；2:B,C；3:D；4:E；5:F。",
+          "check": "(A,B,C,D,E,F)=(1,2,2,3,4,5)逐项满足容量、先后及设备互斥。"
+        },
+        {
+          "component": "proof",
+          "evidence": "若T≤4…C=2,A=1…D=2,B=1",
+          "check": "由F>E、E>C,D及整数时段可得上述取值，A=B=1与共享设备互斥矛盾，故最少5。"
+        }
+      ]
+    }
+  ],
+  "updated_at": "2026-09-26T02:58:17.366400+00:00",
+  "partial_snapshot": {
+    "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_INDEPENDENT_AUDIT_PARTIAL.json",
+    "sha256": "61bfa1d2fd67f0186ae4854e0d9633e48d9040be4717efc309cfbc7342b604f3"
+  },
+  "descriptive_counts": {
+    "baseline": {
+      "reviewed": 4,
+      "result_correct": 1,
+      "construction_correct": 0,
+      "proof_correct": 1,
+      "all_three_correct": 0
+    },
+    "candidate": {
+      "reviewed": 4,
+      "result_correct": 4,
+      "construction_correct": 4,
+      "proof_correct": 4,
+      "all_three_correct": 4
+    }
+  },
+  "comparison_limit": "Descriptive results for two already-seen case families repeated twice; not independent teacher accuracy, statistical superiority, or a production error-rate estimate."
+}

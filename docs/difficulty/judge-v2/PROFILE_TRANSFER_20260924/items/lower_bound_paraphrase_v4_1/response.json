@@ -1,0 +1,68 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "The problem is self-contained: array properties, target semantics, the proposed code, and all requirements (counterexample, repair, termination and boundary justification) are stated. The learner profile supplies relevant prior knowledge (sorted arrays, floor division, logarithmic time, loop invariants, exact-match binary search). No missing exercise facts or contradictory demands.",
+  "cognitive_demand": "strategic_reasoning",
+  "tasks": [
+    {
+      "request_ids": [
+        "S014"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S005",
+        "S006",
+        "S007",
+        "S008",
+        "S009",
+        "S010",
+        "S011",
+        "S012",
+        "S013",
+        "S015",
+        "S016"
+      ],
+      "solution_ids": [],
+      "residual_work": "Find a concrete failing input by tracing the proposed loop, e.g. a=[1,2], t=2: l=0,r=1,m=0,a[0]<2 so l=0, loop repeats forever (nontermination). This requires independent tracing, not supplied.",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S014"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S015",
+        "S016"
+      ],
+      "solution_ids": [],
+      "residual_work": "Design a corrected lower-bound search retaining O(log n). A standard fix uses half-open [l,r) with r=len(a), m=(l+r)//2, if a[m]<t then l=m+1 else r=m, returning l. The learner must choose/adapt an interval convention and ensure progress (l strictly increases or r decreases) and correct boundary handling for duplicates and t above all entries.",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S014"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S015"
+      ],
+      "solution_ids": [],
+      "residual_work": "Prove termination and correctness for all allowed arrays: establish a loop invariant (e.g. answer lies in [l,r)), show each iteration shrinks the interval so the loop terminates, and show the final l is the smallest index with a[l]>=t or len(a). This lower-bound invariant/proof is not supplied and is nonroutine for this profile.",
+      "mode": "construct_argument"
+    }
+  ],
+  "minimum_answer": "Counterexample: a=[1,2], t=2. Trace: l=0,r=1,m=0; a[0]=1<2 so l=m=0; l<r still holds with l=0,r=1, so the loop repeats identically forever — nontermination (also fails to return index 1). Repair (half-open interval): l=0; r=len(a); while l<r: m=(l+r)//2; if a[m]<t: l=m+1 else: r=m; return l. Termination: each iteration either sets l=m+1>l (since m>=l) or sets r=m<r (since m<r), so r-l strictly decreases; bounded below by 0, so the loop ends. Correctness: maintain invariant that the answer (smallest i with a[i]>=t, or len(a)) lies in [l,r]. If a[m]<t, all indices <=m are too small, so answer in [m+1,r]; else a[m]>=t, so the answer is <=m, i.e. in [l,m]. At termination l=r, and the invariant forces l to be the answer. Duplicates: the else branch keeps r=m, preserving the leftmost qualifying index. Target above all entries: a[m]<t always, l advances to len(a), loop ends, returns len(a). O(log n): interval halves each step.",
+  "decision": {
+    "candidates": [
+      "hard"
+    ],
+    "hard_task_index": 2,
+    "reason": "The profile explicitly lacks practice constructing or proving a lower-bound search, including non-advancing loops. The bottleneck is not tracing a familiar exact-match search but building a correct invariant for the lower-bound predicate, handling the non-advancing-loop failure mode, and proving termination and boundary correctness for duplicates and out-of-range targets. The counterexample and repair are strategic but the proof of the invariant is the concrete nonroutine step (task index 2). Nearest boundary: medium would apply if the learner only had to adapt a known template with supplied invariant; here no invariant or proof is supplied, so it is hard rather than a familiar application."
+  }
+}

@@ -1,0 +1,707 @@
+[
+  {
+    "case_id": "marking_wrong_option",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "e45b175641e5e4111ac5d2c60d3944da79bc6832b0bceccf1e3986dcc9d05f6c",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 7221,
+      "prompt_sha256": "bc41861d5f92467ece19cafd4f223719acea750c2a606a9fd65c1711f741b788",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "六题、答对4、答错1、空1一致；计分规则明确且无额外规则，选项与计算要求完整。",
+        "solution": "答对4题得 4×3=12 分；答错1题扣 1×2=2 分；空1题得0分。总分 12−2+0=10。选项 A。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S004",
+              "S010"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003"
+            ],
+            "provided_ids": [],
+            "residual_work": "根据每题分值和各题数分别计算得分、扣分与空题分，再相加并选出对应选项。",
+            "mode": "apply_familiar"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "easy"
+          ],
+          "boundary_reason": "该题只需把已给计分规则直接代入给定题数，进行乘法和加减；学生已掌握整数加减乘与代入给定算式，因此属于直接应用，不需要额外练习证据。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "easy",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S004",
+                "start": 84,
+                "end": 93,
+                "text": "单选：总分是多少？"
+              },
+              {
+                "id": "S010",
+                "start": 112,
+                "end": 121,
+                "text": "写出选项和计算式。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 9,
+                "text": "虚构测验只有六题。"
+              },
+              {
+                "id": "S002",
+                "start": 9,
+                "end": 66,
+                "text": "计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。"
+              },
+              {
+                "id": "S003",
+                "start": 66,
+                "end": 83,
+                "text": "某学生答对4题，答错1题，空1题。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "54427f81d6e54673a30929775b3209de5b2be20e9799d98b163467c91dcf8cad",
+        "protocol_revision": "difficulty-review-v2.4-solver-reference-separation-20260926",
+        "human_validated": false,
+        "analysis_sha256": "e0a92f8b4ac9c6f71497248e427fdf6fd93765b777997389202fe85c250be7ee"
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 15853,
+      "prompt_sha256": "29b7c3ba7a20a517b1afde74cee6e3d31ea247a19eba9d77dff8044952751f06",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "六题、答对4、错1、空1一致；计分规则明确扣2分，选项与计算要求完整，无歧义。",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0010"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构测验只有六题。"
+              },
+              {
+                "document_id": "student",
+                "quote": "计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "某学生答对4题，答错1题，空1题。"
+              },
+              {
+                "document_id": "student",
+                "quote": "单选：总分是多少？"
+              },
+              {
+                "document_id": "student",
+                "quote": "写出选项和计算式。"
+              }
+            ]
+          },
+          "solution_correct": {
+            "status": "pass",
+            "reason": "盲解按扣2分计算：4×3−1×2+0=10，选A；与E0002扣2分规则一致。",
+            "evidence_ids": [
+              "E0017",
+              "E0018",
+              "E0019",
+              "E0002"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"答对4题得 4×3=12 分；答错1题扣 1×2=2 分；空1题得0分。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "总分 12−2+0=10。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "选项 A。"
+              },
+              {
+                "document_id": "student",
+                "quote": "计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "fail",
+            "reason": "参考答案把错题当作+2，得14；学生规则明确扣2分，正确总分应为10。",
+            "evidence_ids": [
+              "E0013",
+              "E0002"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "14；4×3+1×2+1×0=14。"
+              },
+              {
+                "document_id": "student",
+                "quote": "计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "fail",
+            "reason": "解释称错题再加2分，与E0002扣2分相反，且因此得出14，不一致。",
+            "evidence_ids": [
+              "E0014",
+              "E0002"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "正确题贡献12分，错误题再加2分，空题不计分，所以总分14。"
+              },
+              {
+                "document_id": "student",
+                "quote": "计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "源E0022逐字复现计分规则；E0023复现答对4、错1、空1（合计六题），支持学生事实。",
+            "evidence_ids": [
+              "E0022",
+              "E0023",
+              "E0001",
+              "E0002",
+              "E0003"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:marking_rules",
+                "quote": "每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是六项分数相加，没有加分、最低分或舍入规则。"
+              },
+              {
+                "document_id": "source:marking_response_record",
+                "quote": "某学生答对4题，答错1题，空1题。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构测验只有六题。"
+              },
+              {
+                "document_id": "student",
+                "quote": "计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "某学生答对4题，答错1题，空1题。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "分析定为直接代入已给规则；学生需乘减加求和并选A；档案已掌握整数运算和代入算式，边界合理。",
+            "evidence_ids": [
+              "E0015",
+              "E0016",
+              "E0020",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0010",
+              "E0011"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"该题只需把已给计分规则直接代入给定题数，进行乘法和加减；学生已掌握整数加减乘与代入给定算式，因此属于直接应用，不需要额外练习证据。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"candidates\": [\"easy\"], \"hard_task_index\": null}, \"eligibility\": \"eligible\", \"eligibility_reason\": \"六题、答对4、答错1、空1一致；计分规则明确且无额外规则，选项与计算要求完整。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S002\", \"S003\"], \"mode\": \"apply_familiar\", \"provided_ids\": [], \"request_ids\": [\"S004\", \"S010\"], \"residual_work\": \"根据每题分值和各题数分别计算得分、扣分与空题分，再相加并选出对应选项。"
+              },
+              {
+                "document_id": "student",
+                "quote": "计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "某学生答对4题，答错1题，空1题。"
+              },
+              {
+                "document_id": "student",
+                "quote": "单选：总分是多少？"
+              },
+              {
+                "document_id": "student",
+                "quote": "写出选项和计算式。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "已掌握整数加、减、乘和代入一个给定算式的学生；不需要任何考试制度的外部知识。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "54427f81d6e54673a30929775b3209de5b2be20e9799d98b163467c91dcf8cad",
+        "analysis_sha256": "24c08a8c44428dca07f5da278a7b8758f71d950b7bc4311d19435c7438bb22ec",
+        "protocol_revision": "difficulty-review-v2.4-solver-reference-separation-20260926",
+        "human_validated": false
+      }
+    },
+    "decision": {
+      "status": "content_issue",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "failed:reference_correct",
+        "failed:explanation_consistent"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 36149
+  },
+  {
+    "case_id": "real_tasks_20260925_r6_q1",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "7e7f16f8bbb38e1d234a419ea19619a94e7fd12ad66c345f110168a275084368",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 10893,
+      "prompt_sha256": "13e81ba079e759115d64568fe2a9ea1baaea82f9e1beb17c0e4aaa24feda7a81",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目给出初始 NextByteExpected、各段序号与长度，规则完整且选项互斥；按累积确认可唯一确定答案。",
+        "solution": "段 P 覆盖 [1200,1400)，段 Q 覆盖 [1000,1100)，段 R 覆盖 [1400,1700)。初始 NextByteExpected=1000，Q 到达后连续收到 [1000,1100)，故确认号可到 1100；但 [1100,1200) 缺失，P、R 虽已到达也不能抬高累积确认。因此有效累积确认号为 1100，选 C。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S017"
+            ],
+            "condition_ids": [
+              "S012",
+              "S014",
+              "S015",
+              "S016"
+            ],
+            "provided_ids": [
+              "S006",
+              "S009",
+              "S010",
+              "S011"
+            ],
+            "residual_work": "计算各段覆盖区间，找出首个空缺 [1100,1200)，据此确定累积确认号并匹配选项。",
+            "mode": "apply_familiar"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "easy"
+          ],
+          "boundary_reason": "该题只需把已给序号与长度转成区间，并直接套用已给累积确认规则；无多规则整合或非例行瓶颈，属于即时应用。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "easy",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S017",
+                "start": 650,
+                "end": 712,
+                "text": "问题：按 TCP 的字节序号与累积确认规则，此时接收端可回送的有效累积确认号（Acknowledgement 值）应为多少？"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S012",
+                "start": 437,
+                "end": 529,
+                "text": "某单向 TCP 连接的数据流：初始 NextByteExpected = 1000，接收端尚未收到任何数据字节；每个数据段携带连续的整数个数据字节，段长由“长度”给出，且各段互不重叠。"
+              },
+              {
+                "id": "S014",
+                "start": 544,
+                "end": 578,
+                "text": "1) 段 P：SequenceNum = 1200，长度 = 200"
+              },
+              {
+                "id": "S015",
+                "start": 579,
+                "end": 613,
+                "text": "2) 段 Q：SequenceNum = 1000，长度 = 100"
+              },
+              {
+                "id": "S016",
+                "start": 614,
+                "end": 648,
+                "text": "3) 段 R：SequenceNum = 1400，长度 = 300"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S006",
+                "start": 154,
+                "end": 212,
+                "text": "段的 SequenceNum 字段给出该段所载数据的第一个字节的序号，因此一个到达段覆盖从该序号开始的连续若干字节。"
+              },
+              {
+                "id": "S009",
+                "start": 280,
+                "end": 355,
+                "text": "接收端的 NextByteExpected 指向第一个空缺（尚未收到的连续字节）的起点；若数据按序到达，它指向 LastByteRcvd 之后的字节。"
+              },
+              {
+                "id": "S010",
+                "start": 356,
+                "end": 403,
+                "text": "累积确认只反映到第一个空缺之前连续收到的字节；乱序到达但不与已收前缀连续的数据不能抬高确认号。"
+              },
+              {
+                "id": "S011",
+                "start": 404,
+                "end": 435,
+                "text": "因此在存在缺失字节区间时，有效累积确认号停在缺失区间的起点前。"
+              }
+            ]
+          }
+        ],
+        "case_sha256": "582f95d4ac12a91906c4d0c49c17a212cd52d4edc9160e458adc41fbc85121e2",
+        "protocol_revision": "difficulty-review-v2.4-solver-reference-separation-20260926",
+        "human_validated": false,
+        "analysis_sha256": "6788b890532d763892162634cd339797120ee0f7d2826eed7e7f364ceb083d63"
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 35311,
+      "prompt_sha256": "3744d9bf2251d5574d7b8f4ff7b8e4a89a898d0635d1669c27646e6df7cfe048",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "Student supplies initial NextByteExpected=1000, non-overlapping segment lengths and arrival data, and cumulative-ACK rule pointing to first gap; no missing scope or endpoint changes outcome.",
+            "evidence_ids": [
+              "E0012",
+              "E0014",
+              "E0015",
+              "E0016",
+              "E0009",
+              "E0010",
+              "E0011"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "某单向 TCP 连接的数据流：初始 NextByteExpected = 1000，接收端尚未收到任何数据字节；每个数据段携带连续的整数个数据字节，段长由“长度”给出，且各段互不重叠。"
+              },
+              {
+                "document_id": "student",
+                "quote": "1) 段 P：SequenceNum = 1200，长度 = 200"
+              },
+              {
+                "document_id": "student",
+                "quote": "2) 段 Q：SequenceNum = 1000，长度 = 100"
+              },
+              {
+                "document_id": "student",
+                "quote": "3) 段 R：SequenceNum = 1400，长度 = 300"
+              },
+              {
+                "document_id": "student",
+                "quote": "接收端的 NextByteExpected 指向第一个空缺（尚未收到的连续字节）的起点；若数据按序到达，它指向 LastByteRcvd 之后的字节。"
+              },
+              {
+                "document_id": "student",
+                "quote": "累积确认只反映到第一个空缺之前连续收到的字节；乱序到达但不与已收前缀连续的数据不能抬高确认号。"
+              },
+              {
+                "document_id": "student",
+                "quote": "因此在存在缺失字节区间时，有效累积确认号停在缺失区间的起点前。"
+              }
+            ]
+          },
+          "solution_correct": {
+            "status": "pass",
+            "reason": "Blind analysis computes P/Q/R intervals [1200,1400),[1000,1100),[1400,1700) and finds [1100,1200) missing; only Q extends prefix, so ACK=1100 is valid.",
+            "evidence_ids": [
+              "E0035",
+              "E0036",
+              "E0037",
+              "E0014",
+              "E0015",
+              "E0016",
+              "E0011"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"段 P 覆盖 [1200,1400)，段 Q 覆盖 [1000,1100)，段 R 覆盖 [1400,1700)。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "初始 NextByteExpected=1000，Q 到达后连续收到 [1000,1100)，故确认号可到 1100；但 [1100,1200) 缺失，P、R 虽已到达也不能抬高累积确认。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "因此有效累积确认号为 1100，选 C。"
+              },
+              {
+                "document_id": "student",
+                "quote": "1) 段 P：SequenceNum = 1200，长度 = 200"
+              },
+              {
+                "document_id": "student",
+                "quote": "2) 段 Q：SequenceNum = 1000，长度 = 100"
+              },
+              {
+                "document_id": "student",
+                "quote": "3) 段 R：SequenceNum = 1400，长度 = 300"
+              },
+              {
+                "document_id": "student",
+                "quote": "因此在存在缺失字节区间时，有效累积确认号停在缺失区间的起点前。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "Reference key C and option explanations correctly reject 1400/1300/1700 because contiguous prefix ends at 1100 due to missing [1100,1200).",
+            "evidence_ids": [
+              "E0027",
+              "E0028",
+              "E0029",
+              "E0030",
+              "E0031",
+              "E0015",
+              "E0011"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "C"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "A 选项 1400：该值对应段 P 覆盖区间的末尾（1200+200），但 P 之前仍有缺失字节 1100，累积确认只能停在第一个空缺处，不能越过缺失区间。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "B 选项 1300：1300 落在段 P 的内部，没有对应的连续已收前缀边界，累积确认不会指向这种中间序号。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "C 选项 1100：段 Q 已按序到达并覆盖 1000–1099，之后 1100–1199 缺失，因此第一个空缺起点是 1100，累积确认号停在 1100，正确。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "D 选项 1700：1700 是段 R 覆盖区间 1400–1699 之后的一个序号，越过缺失字节 1100–1199，不能作为有效累积确认号。"
+              },
+              {
+                "document_id": "student",
+                "quote": "2) 段 Q：SequenceNum = 1000，长度 = 100"
+              },
+              {
+                "document_id": "student",
+                "quote": "因此在存在缺失字节区间时，有效累积确认号停在缺失区间的起点前。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "Explanation identifies first gap [1100,1200) and ACK=1100, matching key C and student NextByteExpected/cumulative-ACK definitions.",
+            "evidence_ids": [
+              "E0030",
+              "E0032",
+              "E0027",
+              "E0009",
+              "E0010",
+              "E0011"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "C 选项 1100：段 Q 已按序到达并覆盖 1000–1099，之后 1100–1199 缺失，因此第一个空缺起点是 1100，累积确认号停在 1100，正确。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "结论：接收端只能确认到 1100 之前连续收到的字节，故选 C。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "C"
+              },
+              {
+                "document_id": "student",
+                "quote": "接收端的 NextByteExpected 指向第一个空缺（尚未收到的连续字节）的起点；若数据按序到达，它指向 LastByteRcvd 之后的字节。"
+              },
+              {
+                "document_id": "student",
+                "quote": "累积确认只反映到第一个空缺之前连续收到的字节；乱序到达但不与已收前缀连续的数据不能抬高确认号。"
+              },
+              {
+                "document_id": "student",
+                "quote": "因此在存在缺失字节区间时，有效累积确认号停在缺失区间的起点前。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "fail",
+            "reason": "Excerpts show byte-oriented/SequenceNum and NextByteExpected gap start, but none states ACK value equals NextByteExpected or cumulative ACK cannot pass gap; exact cumulative-ACK rule unsupported.",
+            "evidence_ids": [
+              "E0051",
+              "E0052",
+              "E0074",
+              "E0005",
+              "E0006",
+              "E0009",
+              "E0010",
+              "E0011"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:context_50cce0b14f8a0a967a4fa7d49fd473c6",
+                "quote": "Because TCP is a byte-oriented protocol, each byte of data has a sequence number."
+              },
+              {
+                "document_id": "source:context_50cce0b14f8a0a967a4fa7d49fd473c6",
+                "quote": "The SequenceNum field contains the sequence number for the first byte of data carried in that segment, and the Acknowledgement and AdvertisedWindow fields carry information about the flow of data going in the other direction."
+              },
+              {
+                "document_id": "source:context_9a0e0a8fe960219d9262b9eb78135d3f",
+                "quote": "since, if data has arrived in order, NextByteExpected points to the byte after LastByteRcvd, whereas if data has arrived out of order, then NextByteExpected points to the start of the first gap in the data, as in Figure 132."
+              },
+              {
+                "document_id": "student",
+                "quote": "TCP 是面向字节的协议：发送方把字节写入连接，接收方从连接读出字节，每个数据字节都有一个序号。"
+              },
+              {
+                "document_id": "student",
+                "quote": "段的 SequenceNum 字段给出该段所载数据的第一个字节的序号，因此一个到达段覆盖从该序号开始的连续若干字节。"
+              },
+              {
+                "document_id": "student",
+                "quote": "接收端的 NextByteExpected 指向第一个空缺（尚未收到的连续字节）的起点；若数据按序到达，它指向 LastByteRcvd 之后的字节。"
+              },
+              {
+                "document_id": "student",
+                "quote": "累积确认只反映到第一个空缺之前连续收到的字节；乱序到达但不与已收前缀连续的数据不能抬高确认号。"
+              },
+              {
+                "document_id": "student",
+                "quote": "因此在存在缺失字节区间时，有效累积确认号停在缺失区间的起点前。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "Analysis marks easy because task is interval arithmetic and finding first gap using supplied rules; profile states studied course materials and intro concepts, no hidden prior practice needed.",
+            "evidence_ids": [
+              "E0033",
+              "E0034",
+              "E0038",
+              "E0012",
+              "E0014",
+              "E0015",
+              "E0016",
+              "E0009",
+              "E0010",
+              "E0017",
+              "E0026"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"该题只需把已给序号与长度转成区间，并直接套用已给累积确认规则；无多规则整合或非例行瓶颈，属于即时应用。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"candidates\": [\"easy\"], \"hard_task_index\": null}, \"eligibility\": \"eligible\", \"eligibility_reason\": \"题目给出初始 NextByteExpected、各段序号与长度，规则完整且选项互斥；按累积确认可唯一确定答案。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S012\", \"S014\", \"S015\", \"S016\"], \"mode\": \"apply_familiar\", \"provided_ids\": [\"S006\", \"S009\", \"S010\", \"S011\"], \"request_ids\": [\"S017\"], \"residual_work\": \"计算各段覆盖区间，找出首个空缺 [1100,1200)，据此确定累积确认号并匹配选项。"
+              },
+              {
+                "document_id": "student",
+                "quote": "某单向 TCP 连接的数据流：初始 NextByteExpected = 1000，接收端尚未收到任何数据字节；每个数据段携带连续的整数个数据字节，段长由“长度”给出，且各段互不重叠。"
+              },
+              {
+                "document_id": "student",
+                "quote": "1) 段 P：SequenceNum = 1200，长度 = 200"
+              },
+              {
+                "document_id": "student",
+                "quote": "2) 段 Q：SequenceNum = 1000，长度 = 100"
+              },
+              {
+                "document_id": "student",
+                "quote": "3) 段 R：SequenceNum = 1400，长度 = 300"
+              },
+              {
+                "document_id": "student",
+                "quote": "接收端的 NextByteExpected 指向第一个空缺（尚未收到的连续字节）的起点；若数据按序到达，它指向 LastByteRcvd 之后的字节。"
+              },
+              {
+                "document_id": "student",
+                "quote": "累积确认只反映到第一个空缺之前连续收到的字节；乱序到达但不与已收前缀连续的数据不能抬高确认号。"
+              },
+              {
+                "document_id": "student",
+                "quote": "问题：按 TCP 的字节序号与累积确认规则，此时接收端可回送的有效累积确认号（Acknowledgement 值）应为多少？"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "582f95d4ac12a91906c4d0c49c17a212cd52d4edc9160e458adc41fbc85121e2",
+        "analysis_sha256": "5b1e69a41eb701f0f96447b6d2914578a4d933854631c2a0d0e3d2c95fa7594e",
+        "protocol_revision": "difficulty-review-v2.4-solver-reference-separation-20260926",
+        "human_validated": false
+      }
+    },
+    "decision": {
+      "status": "content_issue",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "failed:source_support"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 108490
+  }
+]

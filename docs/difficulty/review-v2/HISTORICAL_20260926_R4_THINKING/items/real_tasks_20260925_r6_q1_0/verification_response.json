@@ -1,0 +1,82 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "pass",
+      "reason": "条件完整且一致：给定初始NBE=1000、三段序号/长度和互不重叠；规则将ACK定义为首个缺失起点，可唯一推出1100。",
+      "evidence_ids": [
+        "E0012",
+        "E0014",
+        "E0015",
+        "E0016",
+        "E0009",
+        "E0010",
+        "E0011",
+        "E0017"
+      ]
+    },
+    "reference_correct": {
+      "status": "pass",
+      "reason": "C正确：Q覆盖1000-1099后首缺起点为1100，累积ACK=1100；A/B/D分别越缺或为非连续前缀边界，不成立。",
+      "evidence_ids": [
+        "E0027",
+        "E0028",
+        "E0029",
+        "E0030",
+        "E0031",
+        "E0032",
+        "E0035",
+        "E0038"
+      ]
+    },
+    "explanation_consistent": {
+      "status": "pass",
+      "reason": "解释与题面一致：NBE/首缺起点数值指针为1100，区间[1000,1100)后缺[1100,1200)，故选C；'起点前'为边界表述。",
+      "evidence_ids": [
+        "E0030",
+        "E0032",
+        "E0009",
+        "E0010",
+        "E0011",
+        "E0035",
+        "E0038"
+      ]
+    },
+    "source_support": {
+      "status": "uncertain",
+      "reason": "源文支持字节流、SequenceNum首字节和NBE指向首缺，但未明确ACK值=NextByteExpected/累积确认语义，核心规则缺精确出处。",
+      "source_ids": [
+        "E0052",
+        "E0053",
+        "E0054",
+        "E0074",
+        "E0076"
+      ],
+      "claim_ids": [
+        "E0009",
+        "E0010",
+        "E0011",
+        "E0030"
+      ]
+    },
+    "demand_supported": {
+      "status": "pass",
+      "reason": "分析要求算区间、维护连续前缀并判断ACK；学生给定三段及规则，题目不需要未说明实现知识；easy/medium候选边界合理。",
+      "analysis_ids": [
+        "E0033",
+        "E0040"
+      ],
+      "student_ids": [
+        "E0014",
+        "E0015",
+        "E0016",
+        "E0017",
+        "E0009",
+        "E0010",
+        "E0011"
+      ],
+      "profile_ids": [
+        "E0026"
+      ]
+    }
+  }
+}

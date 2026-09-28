@@ -1,0 +1,2416 @@
+[
+  {
+    "case_key": "SOLVER_OPT_20260926_BASELINE:courier_single_failure_corrected:0",
+    "case_id": "courier_single_failure_corrected",
+    "repeat": 0,
+    "item_id": "item_000",
+    "status": "complete",
+    "input_sha256": "9d5a37d960c1840b20aa5d0c81c32fdbd684c538ac3bd27221652aba43531c24",
+    "reuse": {
+      "source_directory": "/Users/theoverflow/Downloads/FYP/docs/difficulty/review-v2/SOLVER_OPT_20260926_BASELINE",
+      "source_run": "SOLVER_OPT_20260926_BASELINE",
+      "source_case_id": "courier_single_failure_corrected",
+      "source_repeat": 0,
+      "source_record_sha256": "279cdcb6daa2bf2bb8772068d6d2a55a910bc07aa4526ebe91b99ad9268209e4",
+      "source_case_sha256": "897c2787fb06b8eb526ea1dbce1dba1a5eb473d7949e52efc7735ab4b8b887cc",
+      "input_sha256": "9d5a37d960c1840b20aa5d0c81c32fdbd684c538ac3bd27221652aba43531c24",
+      "analysis_raw_sha256": "94984d9c89bbab1d6a6c8477e6dcc01e69e5cc2d7c57c92a7a38454a87c4c06b",
+      "analysis_raw_file_sha256": "33ab7472a7c90643e746ca9c6b2aaab3c69caab5a55253092be182d1e871b928",
+      "original_protocol_sha256": "7388ec2d2f1af8162861c01157627e330266a9cd453c6f936a48574a653f069e",
+      "original_protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+      "original_analysis_model": "deepseek-flash",
+      "original_analysis_call_ids": [
+        "39e06bed5af24b178ffc41f07a8a458b"
+      ],
+      "original_analysis_parameters": {
+        "thinking": {
+          "type": "disabled"
+        },
+        "temperature": 0,
+        "max_tokens": 2400
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "call_ids": [
+        "07bb58ec60b74f2bbb642ed0510f052a"
+      ],
+      "prompt_bytes": 22937,
+      "prompt_sha256": "f44ca37e99c90d751e0b985f7572613db4606f3e493603d4437ddae71a559789",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "图、边费用、两条简单路径、费用分计、任意单边关闭及费用上下界均明确；单边理解为恰好一条走廊关闭，与任务一致。",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ]
+          },
+          "solution_correct": {
+            "status": "fail",
+            "reason": "盲解P1=S-A-C-T与P2=S-B-C-T共用走廊CT；关闭CT时两者均断，违反至少一条可通行。其下界又称末边只能AT/BT，忽略CT，证明无效。",
+            "evidence_ids": [
+              "E0020",
+              "E0021",
+              "E0022",
+              "E0023",
+              "E0027",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-C-T，费用2+1+1=4。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "总登记费=7≤8。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\\n容错：P1用边SA,AC,CT；P2用边SB,BC,CT。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "任意一条走廊关闭时，若关的是P1的边，则P2仍完整；若关的是P2的边，则P1仍完整；若关的是其他边，两条都仍完整。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "边不相交时，从S出发的两条路径首边不同，只能分别用SA(1)和SB(2)；到达T的两条路径末边不同，只能分别用AT(4)和BT(3)。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "参考方案S-A-C-T与S-B-T无共用边，任一单边关闭最多断一条；下界证边不相交、首边≥3、末边≥4、中边≥1，故总费≥8。",
+            "evidence_ids": [
+              "E0009",
+              "E0010",
+              "E0011",
+              "E0012",
+              "E0013",
+              "E0014",
+              "E0002",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "它们无共用走廊，任意关闭一条走廊最多破坏其中一条。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "若两条路径有共用走廊，关闭该走廊会同时破坏它们，因此任何合格方案都必须没有共用走廊。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "两条路径离开S必须分别用S-A和S-B，费用至少3；进入T必须用不同走廊，最便宜两条是C-T与B-T，合计至少4。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "还至少需要一条中间走廊，因为S不直接连C，且若完全不用中间走廊，只能走S-A-T与S-B-T，费用10。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "因此总费不能为7或更少。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "解释与参考关键一致：无中间边仅S-A-T/S-B-T总10；有中间边时首3、末≥4、中≥1，总≥8；构造恰为8。",
+            "evidence_ids": [
+              "E0015",
+              "E0016",
+              "E0017",
+              "E0002",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "更严格的下界分情况：不使用中间走廊时，只能选S-A-T和S-B-T，总费10；使用至少一条中间走廊时，首边合计3、末边合计至少4、中间边至少1，故总费至少8。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "构造恰好达到8。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "困难来自自行识别单点关闭要求对应的共用边约束，并把构造与必要性证明连接。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "源图与合同逐字支持学生图/规则及参考路径费用；未发现无关或改动的事实。",
+            "evidence_ids": [
+              "E0034",
+              "E0035",
+              "E0036",
+              "E0037",
+              "E0038",
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0009"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:courier_map",
+                "quote": "网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "source:courier_map",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "source:courier_contract",
+                "quote": "事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "source:courier_contract",
+                "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "document_id": "source:courier_contract",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "分析任务与题目要求一致：选路径、验证任意单边关闭、证明≤7不可能；难度边界依据入门未学容错且需自主构造证明，有据。",
+            "evidence_ids": [
+              "E0018",
+              "E0030",
+              "E0031",
+              "E0032",
+              "E0006",
+              "E0007",
+              "E0008"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"构造费用≤8的容错方案属于熟悉最短路与枚举的应用，但下界证明需要发现“抗单边关闭⇒两条路径边不相交”并利用S、T处边费用推出至少10，超出直接套用最短路；入门学生未学容错网络，故整体接近中难边界，取medium与hard相邻候选。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"从给定图中选择两条S-T简单路径，计算各自费用并验证总费≤8。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S002\", \"S005\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"逐边检查所选两条路径：任一条走廊关闭后，至少一条路径仍完整可通行。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"证明总登记费≤7时无法满足任意单边关闭容错，需论证两条路径必须边不相交并推出费用下界。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "入门离散数学学生，理解无向图、简单路径、路径费用相加，会在小图中找最短路；没有学过容错网络、边不相交路径或网络流。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "本题允许自行枚举、分类或构造证明，不要求引用定理。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+        "analysis_sha256": "62512f05e3eb69f4900f819c8aadb8547e9b305eced3b709c6c2fb5d0dd61fad",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false
+      }
+    },
+    "analysis": {
+      "status": "validated",
+      "origin": "reused_raw_revalidated",
+      "call_ids": [],
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目条件完整：图、费用、两条简单路径、单边关闭容错要求及费用上界/下界均明确；学生具备最短路与路径费用基础，允许枚举构造证明。",
+        "solution": "取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-C-T，费用2+1+1=4。总登记费=7≤8。\n容错：P1用边SA,AC,CT；P2用边SB,BC,CT。任意一条走廊关闭时，若关的是P1的边，则P2仍完整；若关的是P2的边，则P1仍完整；若关的是其他边，两条都仍完整。故至少一条可通行。\n下界：若总费≤7且要抗任意单边关闭，两条S-T路径必须边不相交。否则存在公共边e，关闭e后两条都断。边不相交时，从S出发的两条路径首边不同，只能分别用SA(1)和SB(2)；到达T的两条路径末边不同，只能分别用AT(4)和BT(3)。于是两条路径费用至少为(1+4)与(2+3)，总和至少10，矛盾。因此总费≤7不可能。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "从给定图中选择两条S-T简单路径，计算各自费用并验证总费≤8。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S002",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "逐边检查所选两条路径：任一条走廊关闭后，至少一条路径仍完整可通行。",
+            "mode": "construct_argument"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "证明总登记费≤7时无法满足任意单边关闭容错，需论证两条路径必须边不相交并推出费用下界。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium",
+            "hard"
+          ],
+          "boundary_reason": "构造费用≤8的容错方案属于熟悉最短路与枚举的应用，但下界证明需要发现“抗单边关闭⇒两条路径边不相交”并利用S、T处边费用推出至少10，超出直接套用最短路；入门学生未学容错网络，故整体接近中难边界，取medium与hard相邻候选。",
+          "hard_task_index": 2
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 21,
+                "text": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S003",
+                "start": 86,
+                "end": 118,
+                "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "id": "S004",
+                "start": 118,
+                "end": 150,
+                "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S003",
+                "start": 86,
+                "end": 118,
+                "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "id": "S004",
+                "start": 118,
+                "end": 150,
+                "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "40c02ad5ea844bcecbca043efde0f7c1d0011bd4fa65f741cb9e07c5209210c0"
+      }
+    },
+    "decision": {
+      "status": "insufficient_evidence",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "failed:solution_correct"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 65812
+  },
+  {
+    "case_key": "SOLVER_OPT_20260926_BASELINE:laboratory_slots:0",
+    "case_id": "laboratory_slots",
+    "repeat": 0,
+    "item_id": "item_001",
+    "status": "complete",
+    "input_sha256": "81a35ec15d8c25b720f68c52282cd6f56a75c89f6f2d699ececda38c8c5f29d9",
+    "reuse": {
+      "source_directory": "/Users/theoverflow/Downloads/FYP/docs/difficulty/review-v2/SOLVER_OPT_20260926_BASELINE",
+      "source_run": "SOLVER_OPT_20260926_BASELINE",
+      "source_case_id": "laboratory_slots",
+      "source_repeat": 0,
+      "source_record_sha256": "61e00455085248608a3a126ec46e5a07a15d671bc305a1a3f6fa43fc817074f3",
+      "source_case_sha256": "72a478a96c166b13ae1c8d8884775f7541320c73753c372089344e906ed02540",
+      "input_sha256": "81a35ec15d8c25b720f68c52282cd6f56a75c89f6f2d699ececda38c8c5f29d9",
+      "analysis_raw_sha256": "e5d1d3f98577fb493db279e4f70d8cfeb33577ed809653c9660cbcf74386e8b3",
+      "analysis_raw_file_sha256": "16063ec2450e5113ff8be40c7b9f5785c812e995341219fbc9250cf49a668948",
+      "original_protocol_sha256": "7388ec2d2f1af8162861c01157627e330266a9cd453c6f936a48574a653f069e",
+      "original_protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+      "original_analysis_model": "deepseek-flash",
+      "original_analysis_call_ids": [
+        "700734d778514a6ca97997146248ef6d"
+      ],
+      "original_analysis_parameters": {
+        "thinking": {
+          "type": "disabled"
+        },
+        "temperature": 0,
+        "max_tokens": 2400
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "call_ids": [
+        "b835200f3b9a4dc0ab8cec6ce17e1b7c"
+      ],
+      "prompt_bytes": 22411,
+      "prompt_sha256": "b0a395b4693a09aa09b81fe26f47be0e1f7f4efa7c9bd27df5a4aa4fd8f71192",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "Student states six one-shot tasks, max two per slot, strict precedence and A/B, C/D exclusions, and requests optimal schedule plus impossibility proof; all quantifiers and endpoints clear.",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006",
+              "E0007"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "document_id": "student",
+                "quote": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              },
+              {
+                "document_id": "student",
+                "quote": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+              }
+            ]
+          },
+          "solution_correct": {
+            "status": "fail",
+            "reason": "Blind schedule puts A,B in slot1 and C,D in slot2, violating both device exclusions, and it uses only 4 slots while claiming minimum 5; its proof cannot certify its construction.",
+            "evidence_ids": [
+              "E0022",
+              "E0023",
+              "E0004",
+              "E0027"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "安排：时段1：A、B；时段2：C、D；时段3：E；时段4：F。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "检查：A与B不同时段，C与D不同时段；C在A后，D在B后，E在C、D后，F在E后。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "上述安排达到5，故最少为5。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "Reference gives valid 5-slot schedule and proves 4 impossible by E<=3->C,D<=2->A,B both slot1, conflicting with calibration; no alternative answer missed.",
+            "evidence_ids": [
+              "E0010",
+              "E0011",
+              "E0012",
+              "E0013",
+              "E0003",
+              "E0004"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "故4个时段不可能，更少也不可能；5个时段的构造满足所有规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "Explanation says schedule overlaps B with C after A is done and derives lower bound from E,F back to C,D/A,B device conflict, matching reference schedule and student constraints.",
+            "evidence_ids": [
+              "E0014",
+              "E0010",
+              "E0003",
+              "E0004"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "构造通过让B与已完成前置任务的C重叠来节省时段；下界由E、F的后置关系向前推回C、D及A、B，与设备限制冲突。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "Source excerpts reproduce the capacity, precedence, and equipment clauses exactly used by student conditions and reference; no unsupported factual claim is added.",
+            "evidence_ids": [
+              "E0031",
+              "E0032",
+              "E0033",
+              "E0034",
+              "E0035",
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:laboratory_capacity",
+                "quote": "任务A、B、C、D、E、F每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "document_id": "source:laboratory_capacity",
+                "quote": "时段从1开始编号，每个时段最多执行两项任务，允许一个时段只做一项。"
+              },
+              {
+                "document_id": "source:laboratory_dependencies",
+                "quote": "C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "source:laboratory_equipment",
+                "quote": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "source:laboratory_equipment",
+                "quote": "除此之外没有设备或先后限制。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "document_id": "student",
+                "quote": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "Analysis cites profile's lack of shared-device/makespan proof and non-routine lower-bound combination; student gives no answer/strategy, so medium/hard adjacent hard is justified by residual proof work.",
+            "evidence_ids": [
+              "E0016",
+              "E0017",
+              "E0018",
+              "E0028",
+              "E0029",
+              "E0003",
+              "E0004",
+              "E0006",
+              "E0007",
+              "E0008",
+              "E0009"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"学生能读先后约束并安排单链，但未学过带共享设备的任务图调度或最短工期证明。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "本题需同时处理设备互斥与先后依赖，并构造达到下界的安排及不可能性证明；这不是直接检索或简单复述，属于熟悉约束的整合应用。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "由于存在“证明最少性”这一相对准备而言的非例行瓶颈，且需自行选择枚举或约束推理，故在medium与hard间取相邻候选，hard任务索引为1。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"需自行构造满足先后与设备约束的完整安排，并确定最少时段数。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S002\", \"S003\", \"S004\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\", \"S007\"], \"residual_work\": \"需给出下界证明：不能仅用6÷2，要结合A/B、C/D设备冲突及C、D分别晚于A、B推出至少5段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              },
+              {
+                "document_id": "student",
+                "quote": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "入门学生，能读出先后约束，安排单条任务链，也做过两个互不依赖任务的并行练习；未学过带共享设备的任务图调度或最短工期证明。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "允许用枚举、反证或约束推理，不要求专门算法。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+        "analysis_sha256": "56ed4e23dd36620cc9342f6f6efc38fab8b047ac6cd6dbc38ec074e275e6d6b9",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false
+      }
+    },
+    "analysis": {
+      "status": "validated",
+      "origin": "reused_raw_revalidated",
+      "call_ids": [],
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "任务条件完整且一致：六项任务、每时段最多两项、先后与设备约束明确，要求最少时段数、安排及不可能性证明。学生具备读先后约束和安排任务链的准备，可用枚举或约束推理完成。",
+        "solution": "最少为5个时段。安排：时段1：A、B；时段2：C、D；时段3：E；时段4：F。检查：A与B不同时段，C与D不同时段；C在A后，D在B后，E在C、D后，F在E后。证明不可能少于5：E必须在C、D之后，而C在A后、D在B后，所以E之前至少要有A、B、C、D四项完成。A与B不能同段，C与D不能同段，因此这四项至少占2个时段；又因C、D分别晚于A、B，不能把A、B、C、D全部塞进2个时段：若2个时段完成四项，每段恰两项，且A、B分属两段、C、D分属两段；但C所在段必须晚于A所在段，D所在段必须晚于B所在段，两个段无法同时满足两个“更晚”，故至少需3个时段完成A、B、C、D。E还需在其后，F又在E后，所以总时段至少3+1+1=5。上述安排达到5，故最少为5。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "需自行构造满足先后与设备约束的完整安排，并确定最少时段数。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S006",
+              "S007"
+            ],
+            "condition_ids": [
+              "S002",
+              "S003",
+              "S004"
+            ],
+            "provided_ids": [],
+            "residual_work": "需给出下界证明：不能仅用6÷2，要结合A/B、C/D设备冲突及C、D分别晚于A、B推出至少5段。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium",
+            "hard"
+          ],
+          "boundary_reason": "学生能读先后约束并安排单链，但未学过带共享设备的任务图调度或最短工期证明。本题需同时处理设备互斥与先后依赖，并构造达到下界的安排及不可能性证明；这不是直接检索或简单复述，属于熟悉约束的整合应用。由于存在“证明最少性”这一相对准备而言的非例行瓶颈，且需自行选择枚举或约束推理，故在medium与hard间取相邻候选，hard任务索引为1。",
+          "hard_task_index": 1
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 195,
+                "end": 233,
+                "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 37,
+                "text": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "id": "S002",
+                "start": 37,
+                "end": 59,
+                "text": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "id": "S003",
+                "start": 60,
+                "end": 124,
+                "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "id": "S004",
+                "start": 124,
+                "end": 169,
+                "text": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "id": "S005",
+                "start": 169,
+                "end": 194,
+                "text": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 195,
+                "end": 233,
+                "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              },
+              {
+                "id": "S007",
+                "start": 233,
+                "end": 258,
+                "text": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 37,
+                "end": 59,
+                "text": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "id": "S003",
+                "start": 60,
+                "end": 124,
+                "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "id": "S004",
+                "start": 124,
+                "end": 169,
+                "text": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "b46d8f0b7faefd71d4ed56043e9368c0ec45d6d1661d4e2018b990e5573f5214"
+      }
+    },
+    "decision": {
+      "status": "insufficient_evidence",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "failed:solution_correct"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 62394
+  },
+  {
+    "case_key": "SOLVER_OPT_20260926_CANDIDATE:courier_single_failure_corrected:0",
+    "case_id": "courier_single_failure_corrected",
+    "repeat": 0,
+    "item_id": "item_002",
+    "status": "complete",
+    "input_sha256": "9d5a37d960c1840b20aa5d0c81c32fdbd684c538ac3bd27221652aba43531c24",
+    "reuse": {
+      "source_directory": "/Users/theoverflow/Downloads/FYP/docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE",
+      "source_run": "SOLVER_OPT_20260926_CANDIDATE",
+      "source_case_id": "courier_single_failure_corrected",
+      "source_repeat": 0,
+      "source_record_sha256": "b0a53a16e6c7ccc5cf8d09c6ee892e3babb436ab2afb66729b32a0f7a170912d",
+      "source_case_sha256": "897c2787fb06b8eb526ea1dbce1dba1a5eb473d7949e52efc7735ab4b8b887cc",
+      "input_sha256": "9d5a37d960c1840b20aa5d0c81c32fdbd684c538ac3bd27221652aba43531c24",
+      "analysis_raw_sha256": "56916ccf3e41b65ad148bf9137dab70f3683b692c184895ae9a8815f3cc25b3b",
+      "analysis_raw_file_sha256": "77866810c262b1b2e4e8610a6688f3279deda046e1413430d991bdb99b3dd1a6",
+      "original_protocol_sha256": "7388ec2d2f1af8162861c01157627e330266a9cd453c6f936a48574a653f069e",
+      "original_protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+      "original_analysis_model": "deepseek-v4-pro",
+      "original_analysis_call_ids": [
+        "fef3933af52142ebaa850d5360312c56"
+      ],
+      "original_analysis_parameters": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low",
+        "max_tokens": 12288
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "call_ids": [
+        "3210302e7a8b4d7d9c8afded7505b9ef"
+      ],
+      "prompt_bytes": 24145,
+      "prompt_sha256": "9978c279391d7a5ea5a6f6af9820550f75c2d6fc1a23465e5ff491cf4c0d7c54",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "学生文本给出顶点边费用、两条简单路径规则、单走廊关闭及≤8/≤7要求；单边关闭条件足以推出共用边约束，条件充分且无实质歧义。",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ]
+          },
+          "solution_correct": {
+            "status": "fail",
+            "reason": "构造S-A-C-T与S-B-T总费8且无边共用可行；但≤7证明枚举费用≤4路径仅S-B-C-T与S-A-B-C-T，遗漏之前认定的S-A-C-T，枚举不完整，证明有缺陷。",
+            "evidence_ids": [
+              "E0023",
+              "E0024",
+              "E0025",
+              "E0026",
+              "E0027",
+              "E0029",
+              "E0002",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"方案：P1=S-A-C-T，费用1+1+1=3；P2=S-B-T，费用2+3=5；总费用8。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "二者无共用走廊（P1用SA、AC、CT，P2用SB、BT），任意一条走廊关闭只会影响至多一条路径，另一条仍完整，因此方案能抵抗任意单条走廊关闭。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\\n\\n证明≤7不可能：要抵抗任意单条走廊关闭，两条已登记路径不能共用任何走廊，否则关闭该共用走廊会使两条都失效，所以必须边不相交。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "图的最短S-T路径为S-A-C-T，费用3；不存在费用≤2的路径（从S-A出发至少再经A-C、C-T共3；从S-B出发至少经B-C-T或B-T，费用≥4）。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "故唯一费用3路径是S-A-C-T。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "枚举所有费用≤4的S-T路径：仅S-B-C-T（费用4，边SB、BC、CT）和S-A-B-C-T（费用4，边SA、AB、BC、CT），二者分别与P1共用CT或SA，不能与P1边不相交。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "作者构造无边共用总费8；共用边关闭必要性、首边≥3、末边≥4、中间边≥1等分情况推出总费≥8，符合条件和来源。",
+            "evidence_ids": [
+              "E0009",
+              "E0010",
+              "E0011",
+              "E0012",
+              "E0013",
+              "E0014",
+              "E0002",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "它们无共用走廊，任意关闭一条走廊最多破坏其中一条。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "若两条路径有共用走廊，关闭该走廊会同时破坏它们，因此任何合格方案都必须没有共用走廊。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "两条路径离开S必须分别用S-A和S-B，费用至少3；进入T必须用不同走廊，最便宜两条是C-T与B-T，合计至少4。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "还至少需要一条中间走廊，因为S不直接连C，且若完全不用中间走廊，只能走S-A-T与S-B-T，费用10。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "因此总费不能为7或更少。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "解释的分情况下界与参考答案一致，并与单点关闭须共用边约束相合；构造恰好达8，无与条件冲突的额外假设。",
+            "evidence_ids": [
+              "E0015",
+              "E0016",
+              "E0017",
+              "E0005",
+              "E0006",
+              "E0002"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "更严格的下界分情况：不使用中间走廊时，只能选S-A-T和S-B-T，总费10；使用至少一条中间走廊时，首边合计3、末边合计至少4、中间边至少1，故总费至少8。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "构造恰好达到8。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "困难来自自行识别单点关闭要求对应的共用边约束，并把构造与必要性证明连接。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "courier_map/contract excerpts exactly support student graph费用与两条路径、共用计费、单走廊关闭规则；无来源缺口。",
+            "evidence_ids": [
+              "E0036",
+              "E0037",
+              "E0038",
+              "E0039",
+              "E0040",
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:courier_map",
+                "quote": "网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "source:courier_map",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "source:courier_contract",
+                "quote": "事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "source:courier_contract",
+                "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "document_id": "source:courier_contract",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "分析将构造枚举与边不相交归约列为medium任务；学生文本要求证明≤7并只提供图/规则，学习者资料无容错网络经验但允许枚举，剩余工作支持medium。",
+            "evidence_ids": [
+              "E0018",
+              "E0019",
+              "E0020",
+              "E0032",
+              "E0033",
+              "E0034",
+              "E0001",
+              "E0002",
+              "E0005",
+              "E0006",
+              "E0007",
+              "E0008"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"题目要求构造总费用≤8方案并证明≤7不可能，后者需要把关闭规则转化为边不相交，并进行小规模枚举和排除；这不是直接复现。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "学生虽会在小图中找最短路，但缺少边不相交/容错网络经验，证明属于有意义地整合已知概念，故medium。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "题目明确允许枚举，未出现非例行难点，故不定为hard。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"在给定图中枚举两条简单路径S-A-C-T与S-B-T，验证无重复顶点且费用3+5=8≤8。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S002\", \"S005\"], \"mode\": \"apply_familiar\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"列出两条路径所用边；检查无共同边，并应用单边关闭规则推出任意走廊关闭时至少一条路径仍完整。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S001\", \"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"由共边关闭推出必须边不相交；证明最短路径唯一且费用3，费用≤4路径仅有S-B-C-T和S-A-B-C-T且均与最短路径共边，故总费用≤7不可能。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "入门离散数学学生，理解无向图、简单路径、路径费用相加，会在小图中找最短路；没有学过容错网络、边不相交路径或网络流。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "本题允许自行枚举、分类或构造证明，不要求引用定理。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+        "analysis_sha256": "646d9caed80dc21b6bab150a4820da148a31d241c8f998bd1375f23256ea099b",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false
+      }
+    },
+    "analysis": {
+      "status": "validated",
+      "origin": "reused_raw_revalidated",
+      "call_ids": [],
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "问题条件完整且无实质歧义；“任意一条走廊关闭”按单边关闭理解，且由规则可推出两条路径必须边不相交。图小，允许枚举和构造证明，学习者已具备无向图、简单路径和费用相加的基本能力，足以完成。",
+        "solution": "方案：P1=S-A-C-T，费用1+1+1=3；P2=S-B-T，费用2+3=5；总费用8。二者无共用走廊（P1用SA、AC、CT，P2用SB、BT），任意一条走廊关闭只会影响至多一条路径，另一条仍完整，因此方案能抵抗任意单条走廊关闭。\n\n证明≤7不可能：要抵抗任意单条走廊关闭，两条已登记路径不能共用任何走廊，否则关闭该共用走廊会使两条都失效，所以必须边不相交。图的最短S-T路径为S-A-C-T，费用3；不存在费用≤2的路径（从S-A出发至少再经A-C、C-T共3；从S-B出发至少经B-C-T或B-T，费用≥4）。故唯一费用3路径是S-A-C-T。总费用≤7时，另一条路径费用必须≤4。枚举所有费用≤4的S-T路径：仅S-B-C-T（费用4，边SB、BC、CT）和S-A-B-C-T（费用4，边SA、AB、BC、CT），二者分别与P1共用CT或SA，不能与P1边不相交。因此总费用≤7不可行。8的方案存在，所以最小总登记费为8。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "在给定图中枚举两条简单路径S-A-C-T与S-B-T，验证无重复顶点且费用3+5=8≤8。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S002",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "列出两条路径所用边；检查无共同边，并应用单边关闭规则推出任意走廊关闭时至少一条路径仍完整。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "由共边关闭推出必须边不相交；证明最短路径唯一且费用3，费用≤4路径仅有S-B-C-T和S-A-B-C-T且均与最短路径共边，故总费用≤7不可能。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium"
+          ],
+          "boundary_reason": "题目要求构造总费用≤8方案并证明≤7不可能，后者需要把关闭规则转化为边不相交，并进行小规模枚举和排除；这不是直接复现。学生虽会在小图中找最短路，但缺少边不相交/容错网络经验，证明属于有意义地整合已知概念，故medium。题目明确允许枚举，未出现非例行难点，故不定为hard。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "medium",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 21,
+                "text": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S003",
+                "start": 86,
+                "end": 118,
+                "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "id": "S004",
+                "start": 118,
+                "end": 150,
+                "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 21,
+                "text": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S003",
+                "start": 86,
+                "end": 118,
+                "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "id": "S004",
+                "start": 118,
+                "end": 150,
+                "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "2a9d8b949071d16ea9a1a8b45f32f72cb59078ad6330373d34f5472505ef18c0"
+      }
+    },
+    "decision": {
+      "status": "insufficient_evidence",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "failed:solution_correct"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 71070
+  },
+  {
+    "case_key": "SOLVER_OPT_20260926_CANDIDATE:courier_single_failure_corrected:1",
+    "case_id": "courier_single_failure_corrected",
+    "repeat": 1,
+    "item_id": "item_003",
+    "status": "complete",
+    "input_sha256": "9d5a37d960c1840b20aa5d0c81c32fdbd684c538ac3bd27221652aba43531c24",
+    "reuse": {
+      "source_directory": "/Users/theoverflow/Downloads/FYP/docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE",
+      "source_run": "SOLVER_OPT_20260926_CANDIDATE",
+      "source_case_id": "courier_single_failure_corrected",
+      "source_repeat": 1,
+      "source_record_sha256": "5f34806f2ef3ecbe357fe035db6ec984c8816f70f2ca3924989b7c7267fbf219",
+      "source_case_sha256": "897c2787fb06b8eb526ea1dbce1dba1a5eb473d7949e52efc7735ab4b8b887cc",
+      "input_sha256": "9d5a37d960c1840b20aa5d0c81c32fdbd684c538ac3bd27221652aba43531c24",
+      "analysis_raw_sha256": "7a26132df9ad6fb22abc165b3129f72d51b8c82c10026593e2c947cdf5803c28",
+      "analysis_raw_file_sha256": "dafdad551c1d27abf4268d3f0827788de071ff048112644b181f383af933f885",
+      "original_protocol_sha256": "7388ec2d2f1af8162861c01157627e330266a9cd453c6f936a48574a653f069e",
+      "original_protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+      "original_analysis_model": "deepseek-v4-pro",
+      "original_analysis_call_ids": [
+        "1a10f4638ae34c0c9f4e27aeeeae1ce2"
+      ],
+      "original_analysis_parameters": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low",
+        "max_tokens": 12288
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "call_ids": [
+        "4826c8e067634e7783a931eb264f8a22"
+      ],
+      "prompt_bytes": 23521,
+      "prompt_sha256": "b4dabca77f3aa64847bf258bbaaff42eb400642b47f607a4dc38dd12ff7454cd",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "Five-node graph, all corridors/costs, two simple S-T paths, additive cost, single-edge closure, and <=8/<=7 tasks are specified without ambiguity.",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ]
+          },
+          "solution_correct": {
+            "status": "pass",
+            "reason": "Blind construction S-A-C-T and S-B-T costs 8 with no shared edge; lower bound correctly uses distinct S-exits and rejects only cost-7 combo due shared CT.",
+            "evidence_ids": [
+              "E0021",
+              "E0022",
+              "E0023",
+              "E0024",
+              "E0025",
+              "E0026",
+              "E0027",
+              "E0006"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"设计：P1=S-A-C-T（边SA,AC,CT，费用1+1+1=3），P2=S-B-T（边SB,BT，费用2+3=5），总费用8。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "两条路径没有公共边。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "任意关闭一条走廊：若关闭P1中的SA、AC或CT，P2仍完整；若关闭P2中的SB或BT，P1仍完整；关闭其他走廊时两条都完整。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "下界：合法两条简单S-T路径必须无公共边，否则关闭公共边会使两条同时失效。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "S只有两条出边SA和SB，且简单路径不能重复经过S，所以一条必须从SA离开，另一条从SB离开。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "从SA离开的最便宜路径是S-A-C-T费用3；从SB离开的最便宜路径是S-B-C-T费用4，但它们共用CT，不能同时选。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "因此任何合法两条路径费用至少3+4=7，且等于7的唯一组合已被CT冲突排除，所以总费用≥8。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "Reference edge-disjoint construction costs 8 and survives any one closure; no-shared-edge necessity plus start/end/middle counting proves no total <=7.",
+            "evidence_ids": [
+              "E0009",
+              "E0010",
+              "E0011",
+              "E0012",
+              "E0013",
+              "E0014",
+              "E0003",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "它们无共用走廊，任意关闭一条走廊最多破坏其中一条。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "若两条路径有共用走廊，关闭该走廊会同时破坏它们，因此任何合格方案都必须没有共用走廊。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "两条路径离开S必须分别用S-A和S-B，费用至少3；进入T必须用不同走廊，最便宜两条是C-T与B-T，合计至少4。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "还至少需要一条中间走廊，因为S不直接连C，且若完全不用中间走廊，只能走S-A-T与S-B-T，费用10。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "因此总费不能为7或更少。"
+              },
+              {
+                "document_id": "student",
+                "quote": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "Explanation's no-middle vs middle partition and costs 10/8 align with reference answer and shared-edge/closure definitions.",
+            "evidence_ids": [
+              "E0015",
+              "E0016",
+              "E0017",
+              "E0005",
+              "E0006"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "更严格的下界分情况：不使用中间走廊时，只能选S-A-T和S-B-T，总费10；使用至少一条中间走廊时，首边合计3、末边合计至少4、中间边至少1，故总费至少8。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "构造恰好达到8。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "困难来自自行识别单点关闭要求对应的共用边约束，并把构造与必要性证明连接。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "Map and contract excerpts exactly state the graph/costs, two simple paths, additive billing, and single-corridor closure used in the student conditions.",
+            "evidence_ids": [
+              "E0033",
+              "E0034",
+              "E0035",
+              "E0036",
+              "E0037",
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:courier_map",
+                "quote": "网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "source:courier_map",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "source:courier_contract",
+                "quote": "事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "source:courier_contract",
+                "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "document_id": "source:courier_contract",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "Medium boundary matches residual enumeration, edge-disjoint selection, and lower-bound proof; profile supports small-graph enumeration/shortest path without prior fault tolerance.",
+            "evidence_ids": [
+              "E0018",
+              "E0019",
+              "E0028",
+              "E0029",
+              "E0030",
+              "E0031",
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006",
+              "E0007",
+              "E0008"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"问题要求把“任意关闭一边仍至少一条可用”转化为无公共边，并通过小规模分类证明总费用下界。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "学习者具备基本图枚举和费用计算，但未接触容错网络或边不相交构造，需自行完成这一转化和小型证明；这超出直接取最短路的熟悉应用，但不依赖高级定理或大规模搜索。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S002\", \"S003\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"枚举此小图中的简单S-T路径并计算费用，例如S-A-T=5、S-A-C-T=3、S-B-C-T=4等。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S002\", \"S004\", \"S005\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"选择S-A-C-T与S-B-T，总费用8，并核对两条路径无公共走廊。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S005\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"用两条路径无公共边说明任意一条走廊关闭后至少一条路径完整可通行。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"证明合法路径必须无公共边；由S的两条出边分类，排除最便宜组合S-A-C-T与S-B-C-T共用CT，推出总费用至少8。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "入门离散数学学生，理解无向图、简单路径、路径费用相加，会在小图中找最短路；没有学过容错网络、边不相交路径或网络流。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "本题允许自行枚举、分类或构造证明，不要求引用定理。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+        "analysis_sha256": "e7116d90111fd874d352183cc50c2fd141868884c9df134a572f0aed442fdbb9",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false
+      }
+    },
+    "analysis": {
+      "status": "validated",
+      "origin": "reused_raw_revalidated",
+      "call_ids": [],
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目条件完整，图小且可枚举；学习者已理解无向图、简单路径和费用相加，能找小图最短路，不要求网络流定理，因此可以做枚举和分类证明。",
+        "solution": "设计：P1=S-A-C-T（边SA,AC,CT，费用1+1+1=3），P2=S-B-T（边SB,BT，费用2+3=5），总费用8。两条路径没有公共边。任意关闭一条走廊：若关闭P1中的SA、AC或CT，P2仍完整；若关闭P2中的SB或BT，P1仍完整；关闭其他走廊时两条都完整。下界：合法两条简单S-T路径必须无公共边，否则关闭公共边会使两条同时失效。S只有两条出边SA和SB，且简单路径不能重复经过S，所以一条必须从SA离开，另一条从SB离开。从SA离开的最便宜路径是S-A-C-T费用3；从SB离开的最便宜路径是S-B-C-T费用4，但它们共用CT，不能同时选。因此任何合法两条路径费用至少3+4=7，且等于7的唯一组合已被CT冲突排除，所以总费用≥8。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003"
+            ],
+            "provided_ids": [],
+            "residual_work": "枚举此小图中的简单S-T路径并计算费用，例如S-A-T=5、S-A-C-T=3、S-B-C-T=4等。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S002",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "选择S-A-C-T与S-B-T，总费用8，并核对两条路径无公共走廊。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "用两条路径无公共边说明任意一条走廊关闭后至少一条路径完整可通行。",
+            "mode": "construct_argument"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "证明合法路径必须无公共边；由S的两条出边分类，排除最便宜组合S-A-C-T与S-B-C-T共用CT，推出总费用至少8。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium"
+          ],
+          "boundary_reason": "问题要求把“任意关闭一边仍至少一条可用”转化为无公共边，并通过小规模分类证明总费用下界。学习者具备基本图枚举和费用计算，但未接触容错网络或边不相交构造，需自行完成这一转化和小型证明；这超出直接取最短路的熟悉应用，但不依赖高级定理或大规模搜索。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "medium",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 21,
+                "text": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S003",
+                "start": 86,
+                "end": 118,
+                "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S004",
+                "start": 118,
+                "end": 150,
+                "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S003",
+                "start": 86,
+                "end": 118,
+                "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "id": "S004",
+                "start": 118,
+                "end": 150,
+                "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "97d17e28bc40135f4a6d2e76b50980ab5555569e3ab914c51f0c6895101b560f"
+      }
+    },
+    "decision": {
+      "status": "assessed",
+      "candidates": [
+        "medium"
+      ],
+      "estimated_difficulty": "medium",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "target_unavailable"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 98123
+  },
+  {
+    "case_key": "SOLVER_OPT_20260926_CANDIDATE:laboratory_slots:0",
+    "case_id": "laboratory_slots",
+    "repeat": 0,
+    "item_id": "item_004",
+    "status": "running",
+    "input_sha256": "81a35ec15d8c25b720f68c52282cd6f56a75c89f6f2d699ececda38c8c5f29d9",
+    "reuse": {
+      "source_directory": "/Users/theoverflow/Downloads/FYP/docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE",
+      "source_run": "SOLVER_OPT_20260926_CANDIDATE",
+      "source_case_id": "laboratory_slots",
+      "source_repeat": 0,
+      "source_record_sha256": "f187bbbaed2175ba9b422c0af8335020d33bb6e1beb5e0fa54ba0d50bca89856",
+      "source_case_sha256": "72a478a96c166b13ae1c8d8884775f7541320c73753c372089344e906ed02540",
+      "input_sha256": "81a35ec15d8c25b720f68c52282cd6f56a75c89f6f2d699ececda38c8c5f29d9",
+      "analysis_raw_sha256": "4871db59f48006b06a5d5fa4d6637853fcedb306154079eb43b30bc68f4fcc50",
+      "analysis_raw_file_sha256": "662260a007cd77db51a61203f99736c0a54760bfe9395979cceb054745a34960",
+      "original_protocol_sha256": "7388ec2d2f1af8162861c01157627e330266a9cd453c6f936a48574a653f069e",
+      "original_protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+      "original_analysis_model": "deepseek-v4-pro",
+      "original_analysis_call_ids": [
+        "aa07e86a70314e5cbd1e853bd6bcb86d"
+      ],
+      "original_analysis_parameters": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low",
+        "max_tokens": 12288
+      }
+    },
+    "verification": {
+      "status": "in_flight",
+      "call_ids": [],
+      "prompt_bytes": 21617,
+      "prompt_sha256": "51c339b2c5ad7b59a9e40c20144e7c9f80855db8f33e14435d7fac13733dfa03"
+    },
+    "analysis": {
+      "status": "validated",
+      "origin": "reused_raw_revalidated",
+      "call_ids": [],
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题干给出完整任务、容量、先序和设备限制且无歧义；学习者具备单链调度、并行无依赖及枚举/反证基础，足以求解该小规模调度与最优性证明。",
+        "solution": "最少5时段。可行安排：1:A；2:B、C；3:D；4:E；5:F。检查：C在A后、D在B后、E在C和D后、F在E后；A与B不同段，C与D不同段，每段最多两项。证明：A<C<E<F形成先序链，至少需4个时段。假设仅4个时段，则该链必占1,2,3,4且A=1,C=2,E=3,F=4。又B<D<E且E=3，故B、D必须在1,2且B=1,D=2。这样A与B同在1，C与D同在2，违反设备规则，矛盾。因此至少5时段；上述安排达到5，故最少5。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "在5个时段内分配6个任务，满足容量2、先序和设备互斥，得到可行安排。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S006",
+              "S007"
+            ],
+            "condition_ids": [
+              "S003"
+            ],
+            "provided_ids": [],
+            "residual_work": "识别A<C<E<F先序链，推出任何可行安排至少需4个不同时段。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S006",
+              "S007"
+            ],
+            "condition_ids": [
+              "S003",
+              "S004"
+            ],
+            "provided_ids": [],
+            "residual_work": "假设4时段可行，由链强制A/C/E/F占1-4；再由B<D<E推B=1,D=2，与设备规则矛盾，完成不可能性证明。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium"
+          ],
+          "boundary_reason": "最近边界为中等：需整合先序链、设备冲突并用反证证明最优，超出单一链式安排；但任务规模小，且学习者可用枚举/反证和基础并行练习，未出现必须依赖共享设备调度证明流利度的非例行瓶颈，故不定为难。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "medium",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 195,
+                "end": 233,
+                "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 37,
+                "text": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "id": "S002",
+                "start": 37,
+                "end": 59,
+                "text": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "id": "S003",
+                "start": 60,
+                "end": 124,
+                "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "id": "S004",
+                "start": 124,
+                "end": 169,
+                "text": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "id": "S005",
+                "start": 169,
+                "end": 194,
+                "text": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 195,
+                "end": 233,
+                "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              },
+              {
+                "id": "S007",
+                "start": 233,
+                "end": 258,
+                "text": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S003",
+                "start": 60,
+                "end": 124,
+                "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 195,
+                "end": 233,
+                "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              },
+              {
+                "id": "S007",
+                "start": 233,
+                "end": 258,
+                "text": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S003",
+                "start": 60,
+                "end": 124,
+                "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "id": "S004",
+                "start": 124,
+                "end": 169,
+                "text": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "0122a4f17a5a57b619e33477f40c66c6bfe52195bd24c808a6bd4d3879e96c2d"
+      }
+    }
+  },
+  {
+    "case_key": "SOLVER_OPT_20260926_CANDIDATE:laboratory_slots:1",
+    "case_id": "laboratory_slots",
+    "repeat": 1,
+    "item_id": "item_005",
+    "status": "pending",
+    "input_sha256": "81a35ec15d8c25b720f68c52282cd6f56a75c89f6f2d699ececda38c8c5f29d9",
+    "reuse": {
+      "source_directory": "/Users/theoverflow/Downloads/FYP/docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE",
+      "source_run": "SOLVER_OPT_20260926_CANDIDATE",
+      "source_case_id": "laboratory_slots",
+      "source_repeat": 1,
+      "source_record_sha256": "759ae36d418eb1e557c72a01cec3d66dbeb3e71172e1d3d035ccd86d811e3a10",
+      "source_case_sha256": "72a478a96c166b13ae1c8d8884775f7541320c73753c372089344e906ed02540",
+      "input_sha256": "81a35ec15d8c25b720f68c52282cd6f56a75c89f6f2d699ececda38c8c5f29d9",
+      "analysis_raw_sha256": "14d04c87aad16294c904e093ce6ad85cf393c4e075576a8b4515160656d9dd98",
+      "analysis_raw_file_sha256": "df9f5361e1453ee05e2c63ad0ec35590b9285fcbcd83d5fd1c0ba352eebb2754",
+      "original_protocol_sha256": "7388ec2d2f1af8162861c01157627e330266a9cd453c6f936a48574a653f069e",
+      "original_protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+      "original_analysis_model": "deepseek-v4-pro",
+      "original_analysis_call_ids": [
+        "e531884803564d4d95b9dd16a668cbfa"
+      ],
+      "original_analysis_parameters": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low",
+        "max_tokens": 12288
+      }
+    }
+  },
+  {
+    "case_key": "SOLVER_OPT_20260926_HELDOUT:adaptive_pair_identification_v2:0",
+    "case_id": "adaptive_pair_identification_v2",
+    "repeat": 0,
+    "item_id": "item_006",
+    "status": "pending",
+    "input_sha256": "6772b9bce05dda127d3e367994fd0d7730a3d817bc794ff6a275714cbbf7ba28",
+    "reuse": {
+      "source_directory": "/Users/theoverflow/Downloads/FYP/docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT",
+      "source_run": "SOLVER_OPT_20260926_HELDOUT",
+      "source_case_id": "adaptive_pair_identification_v2",
+      "source_repeat": 0,
+      "source_record_sha256": "9a572c2a68fd660fe2a7eaf3f90d487f389cb1efe7df52f5717fbec375c2902e",
+      "source_case_sha256": "14cf18c095053a972edfa6057ea4f30913c387b8b23ec9554bf4a3c088568251",
+      "input_sha256": "6772b9bce05dda127d3e367994fd0d7730a3d817bc794ff6a275714cbbf7ba28",
+      "analysis_raw_sha256": "8abbcf07ed3486cbd2e3ab4a07ec40c8038261aeb5bd424290a705e13e760919",
+      "analysis_raw_file_sha256": "5eab67f6df73411ada7eb5a4e750a7d5685f7b51f68c390ef01e66725e2cf154",
+      "original_protocol_sha256": "7388ec2d2f1af8162861c01157627e330266a9cd453c6f936a48574a653f069e",
+      "original_protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+      "original_analysis_model": "deepseek-v4-pro",
+      "original_analysis_call_ids": [
+        "1c34b9f08cc54d2c853be5fefdc04c12"
+      ],
+      "original_analysis_parameters": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low",
+        "max_tokens": 12288
+      }
+    }
+  },
+  {
+    "case_key": "SOLVER_OPT_20260926_HELDOUT:glyph_table_lookup_v2:0",
+    "case_id": "glyph_table_lookup_v2",
+    "repeat": 0,
+    "item_id": "item_007",
+    "status": "pending",
+    "input_sha256": "6a9962d978917a7aed4e5daba7d4d776dff981c4455deed2de232fd52fedc028",
+    "reuse": {
+      "source_directory": "/Users/theoverflow/Downloads/FYP/docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT",
+      "source_run": "SOLVER_OPT_20260926_HELDOUT",
+      "source_case_id": "glyph_table_lookup_v2",
+      "source_repeat": 0,
+      "source_record_sha256": "608e4fa3398df7d5811135fc936ca4bf233b8259f18f8de235e24c85c241f71d",
+      "source_case_sha256": "e503eadf3b3130e1042130eb3021f37155578ad838f9dca2a7db8201ef13ef10",
+      "input_sha256": "6a9962d978917a7aed4e5daba7d4d776dff981c4455deed2de232fd52fedc028",
+      "analysis_raw_sha256": "9da0e0eb45465e49296018a492c5791191f3bf271bbfba3587c76d9ac96e52e0",
+      "analysis_raw_file_sha256": "d5f0fc519879f4aaf57ac2768de28892f82ea827fef44c8671022255abe80f7a",
+      "original_protocol_sha256": "7388ec2d2f1af8162861c01157627e330266a9cd453c6f936a48574a653f069e",
+      "original_protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+      "original_analysis_model": "deepseek-v4-pro",
+      "original_analysis_call_ids": [
+        "bfd043e493204bc88f013af0d3eb6132"
+      ],
+      "original_analysis_parameters": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low",
+        "max_tokens": 12288
+      }
+    }
+  },
+  {
+    "case_key": "SOLVER_OPT_20260926_HELDOUT:odd_sum_conditional_draw_v2:0",
+    "case_id": "odd_sum_conditional_draw_v2",
+    "repeat": 0,
+    "item_id": "item_008",
+    "status": "pending",
+    "input_sha256": "cc05b45ccd4e4042a3e70848d4f424eff8c77905ca12860fd886b00f24bd9040",
+    "reuse": {
+      "source_directory": "/Users/theoverflow/Downloads/FYP/docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT",
+      "source_run": "SOLVER_OPT_20260926_HELDOUT",
+      "source_case_id": "odd_sum_conditional_draw_v2",
+      "source_repeat": 0,
+      "source_record_sha256": "fd3a67b31e40e6cab2767669d0ad7d30c8ec7f243ec8e1933198c9c49b7221e8",
+      "source_case_sha256": "2edc08896ac842af598666621e6fcb509fd96c8c46e04a888d18678228a6337d",
+      "input_sha256": "cc05b45ccd4e4042a3e70848d4f424eff8c77905ca12860fd886b00f24bd9040",
+      "analysis_raw_sha256": "6c17f4b738ec572fbb13bc23e8298374cd2411259e82ceb59930b91223531023",
+      "analysis_raw_file_sha256": "f050aae34dea8cc48161de5da859b5b02ebe4f917652694b59a273d6d6b5238e",
+      "original_protocol_sha256": "7388ec2d2f1af8162861c01157627e330266a9cd453c6f936a48574a653f069e",
+      "original_protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+      "original_analysis_model": "deepseek-v4-pro",
+      "original_analysis_call_ids": [
+        "960146741b794632990907bf159a714f"
+      ],
+      "original_analysis_parameters": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low",
+        "max_tokens": 12288
+      }
+    }
+  },
+  {
+    "case_key": "SOLVER_OPT_20260926_HELDOUT:whole_bundle_wrong_key_v2:0",
+    "case_id": "whole_bundle_wrong_key_v2",
+    "repeat": 0,
+    "item_id": "item_009",
+    "status": "pending",
+    "input_sha256": "bb46a48d9ac7a5046c57e7336a1595a087dc444486495747fa3c68264296f40b",
+    "reuse": {
+      "source_directory": "/Users/theoverflow/Downloads/FYP/docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT",
+      "source_run": "SOLVER_OPT_20260926_HELDOUT",
+      "source_case_id": "whole_bundle_wrong_key_v2",
+      "source_repeat": 0,
+      "source_record_sha256": "24f08fca7711a557f910a9fe9322c9e0368c1054d1b00eade30c75092935facc",
+      "source_case_sha256": "0c0c95a86c11b3d0ea9a2032b782b0f784a9cba025451c2a47e63e38d5894596",
+      "input_sha256": "bb46a48d9ac7a5046c57e7336a1595a087dc444486495747fa3c68264296f40b",
+      "analysis_raw_sha256": "a4fd71e41717af9372e502dacb97cb0f608c00c2450501a61f9edd52b024df06",
+      "analysis_raw_file_sha256": "18e362b03eebc526a03b9680d47d49f391fe377c521eb362e23f1fabb29685f6",
+      "original_protocol_sha256": "7388ec2d2f1af8162861c01157627e330266a9cd453c6f936a48574a653f069e",
+      "original_protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+      "original_analysis_model": "deepseek-v4-pro",
+      "original_analysis_call_ids": [
+        "9b8a33f1e29b465080ae2f52fa6b2061"
+      ],
+      "original_analysis_parameters": {
+        "thinking": {
+          "type": "enabled"
+        },
+        "reasoning_effort": "low",
+        "max_tokens": 12288
+      }
+    }
+  }
+]

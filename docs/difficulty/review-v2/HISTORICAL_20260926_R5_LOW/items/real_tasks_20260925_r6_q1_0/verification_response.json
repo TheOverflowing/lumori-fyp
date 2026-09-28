@@ -1,0 +1,66 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "pass",
+      "reason": "给出初始期望序号、各段序号/长度、到达顺序与非重叠，足以按累积确认规则唯一确定 ACK=1100；无缺失条件。",
+      "evidence_ids": [
+        "E0012",
+        "E0014",
+        "E0015",
+        "E0016",
+        "E0017"
+      ]
+    },
+    "reference_correct": {
+      "status": "pass",
+      "reason": "Q 覆盖 1000–1099 后连续前缀到 1099，缺失 1100–1199，ACK 只能为 1100；A/B/D 均越过或落在非边界，C 正确。",
+      "evidence_ids": [
+        "E0027",
+        "E0035",
+        "E0036",
+        "E0037"
+      ]
+    },
+    "explanation_consistent": {
+      "status": "uncertain",
+      "reason": "E0011 称确认号停在缺失区间起点前，若按字面取 1099；但 E0030 将 ACK=1100（缺口起点），与 E0009 一致但与 E0011 冲突。",
+      "evidence_ids": [
+        "E0030",
+        "E0009",
+        "E0011"
+      ]
+    },
+    "source_support": {
+      "status": "uncertain",
+      "reason": "E0052 支持 SequenceNum 首字节，E0074 支持乱序时 NextByteExpected 指向首缺口，但未提供来源说明 ACK 值等于该指针，E0010/E0011 无直接出处。",
+      "source_ids": [
+        "E0052",
+        "E0074"
+      ],
+      "claim_ids": [
+        "E0006",
+        "E0009",
+        "E0010",
+        "E0011"
+      ]
+    },
+    "demand_supported": {
+      "status": "pass",
+      "reason": "需用给定规则维护连续前缀并识别缺口，非直接检索；profile 表明学过课程/入门概念，足以支持 apply_familiar，未虚构练习。",
+      "analysis_ids": [
+        "E0033",
+        "E0038"
+      ],
+      "student_ids": [
+        "E0012",
+        "E0014",
+        "E0015",
+        "E0016",
+        "E0017"
+      ],
+      "profile_ids": [
+        "E0026"
+      ]
+    }
+  }
+}

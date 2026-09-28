@@ -1,0 +1,139 @@
+{
+  "version": "historical-errors-20260926",
+  "cases": [
+    {
+      "id": "real_tasks_20260925_r3_q1",
+      "split": "historical",
+      "domain": "分析内核线程与中断处理程序共享自旋锁时的同步设计，并论证本 CPU 与多处理器情况下的影响。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "student_visible_text": "Learning objectives:\n识别共享自旋锁所保护的线程与中断处理程序并发访问，并列举并发的来源。\n分析持锁且中断开启时被中断处理程序再次请求同一锁所形成的自等待死锁因果链。\n给出取锁、释放锁与中断使能之间的次序约束及嵌套临界区簿记要求。\n比较同一共享锁在单 CPU 与多处理器下的后果差异，并界定禁用中断的作用范围。\n区分禁止同 CPU 重复取锁与持锁关中断两种防护，说明其针对的故障模式不同。\n\n共享自旋锁与中断交互的基本约束\n自旋锁用 locked 字段表示可用或被持有；仅靠“先读再写”不能保证互斥，因为多个 CPU 可能同时读到可用，因此对 locked 的检查与置位必须作为一个原子步骤完成。\n\n有些自旋锁保护的数据同时被内核线程和中断处理程序使用，锁定用于把这两类访问串行化。\n\n由此产生一条关键约束：若某自旋锁会被中断处理程序使用，CPU 就绝不能在中断开启时持有该锁。取锁与开/关中断的相对次序因此很重要：acquire 必须先把本 CPU 的中断关掉，再置位 locked；release 必须先释放锁，之后才恢复中断。嵌套临界区通过 push_off/pop_off 记录本 CPU 上的持锁层数，只有层数归零时才恢复到最外层进入前的中断使能状态。\n\n并发的来源与禁用中断的作用范围\n并发指多个指令流交错执行，其来源有三类：多处理器并行、线程切换、以及中断处理程序与可被中断的代码同时修改同一数据。\n\n因此，同一个共享锁在不同来源下防的是不同交错；而“关中断”这一类手段只作用于执行它的那个 CPU：它阻止本 CPU 上会使用该锁的中断在临界区内被递交，却不影响其他 CPU 上的执行者取同一把锁。\n\n内核中有一把自旋锁 tickslock，保护一个计数器变量。内核线程 A 在函数 f() 中取 tickslock、读改写该计数器、再释放锁；时钟中断处理程序 clockintr 也会取同一把锁并在临界区内更新该计数器。锁的 acquire 与 release 采用“取锁时关本 CPU 中断、释放锁时恢复中断”的策略。\n\n请按任务逐条回答，并对每个结论说明依据。\n\n1. 说明为什么该计数器需要 tickslock 保护，并列出可能使 A 与 clockintr 的访问交错的并发来源。\n2. 设 A 在 f() 中已取到 tickslock，但此临界区内中断处于开启状态；此时一个时钟中断在本 CPU 上被递交，clockintr 开始执行。逐步分析锁最终是否可能被释放、该 CPU 会处于什么状态、是否会波及系统其他部分。\n3. 给出避免任务 2 后果的设计约束，并说明 acquire 与 release 中“取锁/释放锁”与“关中断/恢复中断”两组操作的相对先后次序要求；解释次序颠倒为什么会打开一个危险的时间窗口。\n4. 说明嵌套临界区中如何决定何时才真正恢复中断，以及为什么不能在每次释放锁时无条件开中断。\n5. 分别在下列两种硬件场景下，判断断言 A 与断言 B 是否成立，并结合“禁用（或开启）中断的作用范围”论证：\n场景 S：系统只有一个 CPU。\n场景 P：系统有多个 CPU，A 与 clockintr 都可能运行在其中任一 CPU 上，且 tickslock 可能被不同 CPU 上的代码同时请求。\n断言 A：本 CPU 上的中断处理程序可以一直等待某个线程释放自旋锁。\n断言 B：另一个 CPU 上的中断处理程序可以等待某个线程释放自旋锁。\n6. 对“CPU 重复取得自己已持有的锁”存在两种立场。请说明禁止同 CPU 重复取锁是否可以替代在持锁期间关中断，并论证。",
+      "reference_answer": "任务 1：该计数器被内核线程 A 与中断处理程序 clockintr 共同访问，两者可能交错，因此需要锁把两类访问串行化。并发来源有三类：多处理器并行、本 CPU 上的线程切换、以及中断处理程序打断可被中断的代码。任一来源都可能让“读—改—写”交错，造成丢失更新或读到中间状态。\n任务 2：clockintr 会尝试取 tickslock，发现已被 A 持有，于是在本 CPU 上自旋等待。此时只有 A 能释放该锁，而 A 已在本 CPU 上被中断打断，只有等 clockintr 返回后才可能继续运行；于是 clockintr 永远等不到锁被释放，A 也永远等不到中断返回，形成本 CPU 上的自等待死锁。锁始终不被释放，其他需要 tickslock 的代码也会被阻塞，可能使系统其他部分冻结。\n任务 3：约束是——只要某自旋锁会被中断处理程序使用，本 CPU 就绝不能在中断开启时持有该锁。次序要求：acquire 必须先关本 CPU 中断，再置位 locked；release 必须先释放锁，之后才恢复中断。若先置位 locked 再关中断，便存在一个“锁已被持有而中断仍开”的短暂窗口；若先恢复中断再释放锁，则存在“锁尚未释放而中断已开”的窗口。恰好在这类窗口内发生会使用该锁的中断，就会触发任务 2 的死锁。\n任务 4：用 push_off/pop_off 记录本 CPU 当前的持锁嵌套层数：acquire 时递增，release 时递减，只有层数减到零（即本 CPU 不再持有任何自旋锁）才恢复中断。若每次释放锁都无条件开中断，那么在外层临界区仍持锁时中断就会被提前打开，外层临界区重新暴露在任务 2 的死锁风险之下；同时也会破坏“恢复到最外层进入前的中断使能状态”这一要求。\n任务 5：断言 A——场景 S 不成立，场景 P 同样不成立。本 CPU 上的中断处理程序一旦自旋等待自己打断的那个持锁线程，该线程就无法继续运行来释放锁，等待只能是死锁而非正常等待；在场景 P 中，被本 CPU 中断打断的线程仍只能等待该中断返回，因此结论与场景 S 相同。断言 B——场景 S 中不存在其他 CPU，该情形不可发生；场景 P 中成立。另一个 CPU 上的中断处理程序可以自旋等待某线程释放自旋锁，因为持锁线程在别的 CPU 上仍能继续执行并最终释放锁。关键范围差异是：关中断只影响执行它的那个 CPU，不能阻止其他 CPU 上的中断处理程序取同一把锁并等待；它也只能阻止“本 CPU 上会使用该锁的中断在临界区内被递交”，不能覆盖已在本 CPU 上、在临界区之外开始等待同一把锁的中断。\n任务 6：不能替代。禁止同 CPU 重复取锁针对的是同一执行上下文再次请求自己已持有的锁，即把这类重入当成错误；而任务 2 的问题是异步中断在持锁期间打断执行并请求同一把锁，并不是同一上下文的重入，禁止重复取锁无法阻止这种交错。两种立场对“允许重复取锁（re-entrant/recursive）”还是“禁止”本可各自自洽，但无论选哪一种，只要该锁会被中断处理程序使用，就必须保持“不在中断开启时持有该锁”的约束；换言之，二者防护的是不同故障模式，不可相互替代。",
+      "reference_explanation": "本题要求把自旋锁的互斥原理、共享锁的线程/中断访问、中断使能与取锁次序、嵌套簿记、并发来源以及单/多处理器差异整合到同一情境中，并对两个断言分别给出条件化判断。\n\n任务 1 检查是否指出共享访问与三类并发来源，而不是只复述“需要锁”。\n任务 2 检查死锁因果链是否完整：中断处理程序自旋等待、持锁线程被压在中断帧下无法运行、锁永不释放、并波及需要该锁的代码。\n任务 3、4 检查次序约束与嵌套计数：先关中断后置位、先释放锁后恢复中断，且只在层数归零时恢复，而不是无条件开中断。\n任务 5 是最容易出错处：断言 A 在两种场景中都只能得到“不能一直等待”，因为等待者与被等待者在同一 CPU 上；断言 B 只在多处理器场景成立，因为持锁线程在别的 CPU 上仍可推进。作答必须把“关中断只作用于本 CPU”这一范围说清楚，并且不要把断言 A 与断言 B 混为一谈。\n任务 6 检查是否把“禁止重复取锁”与“持锁关中断”视为针对不同故障模式的两种措施。",
+      "kind": "short_answer",
+      "options": [],
+      "sources": [
+        {
+          "id": "context_6e969ab61218a462f2abc58f726040a4",
+          "text": "A question that sometimes arises is what should happen if a CPU tries to acquire a lock that the same CPU already holds. One line of reasoning is that this should be allowed: no other CPU can hold the lock, so there’s no need to worry about CPUs interfering with each others’ use of the protected data. Locking systems that allow a CPU to re-acquire a lock it already holds are called a re-entrant or recursive. On the other hand, if a lock is already held, even on the same CPU, that means an operation may have temporarily violated and not yet restored some invariants; to allow a new operation to commence while the invariants don’t hold seems like an invitation to bugs. Xv6 takes this latter view, and forbids a CPU that currently holds a lock from re-acquiring it. Detecting this situation is the purpose of the call to holding in acquire.\n\n7.5 Locks and interrupts\n\nSome xv6 spinlocks protect data that is used by both threads and interrupt handlers. For example, the clockintr timer interrupt handler might increment ticks at about the same time that a kernel thread reads ticks in sys_pause. The lock tickslock serializes the two accesses."
+        },
+        {
+          "id": "context_cb9db0d5737606abbb40cb3532c7e1f8",
+          "text": "The interaction of spinlocks and interrupts raises a potential danger. Suppose sys_pause holds tickslock, and its CPU is interrupted by a timer interrupt. clockintr would try to acquire tickslock, see it was held, and wait for it to be released. In this situation, tickslock will never be released: only sys_pause can release it, but sys_pause will not continue running until clockintr returns. So the CPU will deadlock, and any code that needs either lock will also freeze.\n\nTo avoid this situation, if a spinlock is used by an interrupt handler, a CPU must never hold that lock with interrupts enabled. Xv6 is more conservative: when a CPU acquires any lock, xv6 always disables interrupts on that CPU. Interrupts may still occur on other CPUs, so an interrupt’s acquire can wait for a thread to release a spinlock; just not on the same CPU."
+        },
+        {
+          "id": "context_788a42237a3fb0dd9dc62368670d58e4",
+          "text": "Xv6 re-enables interrupts when a CPU holds no spinlocks; it must do a little book-keeping to cope with nested critical sections. acquire calls push_off and release calls pop_off to track the nesting level of locks on the current CPU. When that count reaches zero, pop_off restores the interrupt enable state that existed at the start of the outermost critical section. push_off and pop_off tell the CPU to enable and disable interrupts by changing the SIE (Supervisor Interrupt Enable) bit in the sstatus (Supervisor Status) register, using intr_on and rc_sstatus(SSTATUS_SIE); the latter clears the SIE bit.\n\nIt is important that acquire call push_off strictly before setting lk->locked. If the two were reversed, there would be a brief window when the lock was held with interrupts enabled, and an unfortunately timed interrupt would deadlock the system. Similarly, it is important that release call pop_off only after releasing the lock (spinlock.c:73)."
+        },
+        {
+          "id": "context_253cf66a589aa0d41532d4d6533fc9fe",
+          "text": "Most kernels, including xv6, interleave the execution of multiple activities. One source of interleaving is multiprocessor hardware: computers with multiple CPUs executing independently, such as xv6’s RISC-V. These multiple CPUs share physical RAM, and xv6 exploits the sharing to maintain kernel data structures that all CPUs read and write. This sharing raises the possibility of one CPU reading a data structure while another CPU is mid-way through updating it, or even multiple CPUs updating the same data simultaneously; without careful design such parallel access is likely to yield incorrect results or a broken data structure. Even on a uniprocessor, the kernel may switch the CPU among a number of threads, causing their execution to be interleaved. Finally, a device interrupt handler that modifies the same data as some interruptible code could damage the data if the interrupt occurs just as the interrupted code is also modifying the data. The word concurrency refers to situations in which multiple instruction streams are interleaved, due to multiprocessor parallelism, thread switching, or interrupts."
+        },
+        {
+          "id": "context_b2c7b4005f3ab8914040f2eead7f5186",
+          "text": "Xv6 has two types of locks: spinlocks and sleep-locks. We’ll start with spinlocks. Xv6 represents a spinlock as a struct spinlock. The important field in the structure is locked, a word that is zero when the lock is available and non-zero when it is held. Were there no concurrency, xv6 could acquire a lock with code like\n\nUnfortunately, this implementation does not guarantee mutual exclusion in the face of concurrency. Two CPUs could simultaneously reach line 25, see that lk->locked is zero, and then both grab the lock by executing line 26. At this point, two different CPUs hold the lock, which violates the mutual exclusion property. What we need is a way to make lines 25 and 26 execute as an atomic (indivisible) step."
+        }
+      ],
+      "expected": {
+        "eligibility": "invalid_question",
+        "candidates": [],
+        "content_status": "fail",
+        "issue": "The multiprocessor assertion does not say where the lock-owning thread runs; its answer assumes the same CPU."
+      },
+      "label_provenance": "prior_AI_development_review_not_human_gold",
+      "target_difficulty": "hard",
+      "asset_sha256": "3412dd9fc8d409a12b43f93fae9a5bf402a1b8246120949d6825be4959e0e95a"
+    },
+    {
+      "id": "real_tasks_20260925_r5_q1",
+      "split": "historical",
+      "domain": "在存在缺失字节区间的简短到达序列中，应用 TCP 字节序号与累积确认规则。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "student_visible_text": "Learning objectives:\n把 TCP 的字节序号应用到具体到达序列，标出已按序到达与缺失的字节区间。\n依据累积确认规则判断接收方应发的确认值所指向的字节位置。\n比较 LastByteRcvd 与 NextByteExpected 的相对位置，定位缺失区间起点。\n\n字节序号与段\nTCP 是面向字节的协议：发送进程写入字节流，接收进程读出字节流，而网络上传输的是包含一段字节流的报文段。因为面向字节，每个字节都有序号；SequenceNum 字段给出该段所携带数据的第一个字节的序号。确认（Acknowledgement）与通告窗口字段承载的是反方向数据流的信息；本情境只讨论单向数据流。约定本情境中起始序号为 1，序号连续递增、不回收。\n\n接收缓冲与缺失区间\n接收方维护接收缓冲，可暂存乱序到达的数据。NextByteExpected 指向最新的“已收到且其前所有字节都已收到”的字节之后的那个字节：若数据按序到达，它指向 LastByteRcvd 之后；若出现乱序，则它指向数据中第一个缺失字节，即缺失区间的起点。一个字节只有在被收到、且其前面所有字节也都已收到之后，才可被应用读取。\n\n某 TCP 连接的接收方正在处理一个反向流量的单向数据流，字节序号从 1 开始连续编号。接收方已收到的若干字节如下（均为有效载荷，不含首部）：\n1) 第 1～200 字节已按序收到。\n2) 第 201～500 字节尚未到达。\n3) 第 501～700 字节已到达，但它们前面存在缺口。\n4) 第 701～900 字节尚未到达。\n5) 第 901～1000 字节已到达。\n6) 此情境假设接收方不发送延迟确认、不重传，接收缓冲足够大，且发送方不重传第 201～500 字节。\n\n请依据“面向字节序号 + 累积确认”规则，判断接收方此刻应发送的累积确认值指向哪个字节位置，并定位数据中最先出现的缺失区间。\n\n请选择最符合上述规则的一项。\n\nA. 确认值指向第 501 字节（即已连续收到 1～500，缺口从第 501 字节开始）。\n\nB. 确认值指向第 201 字节，且最先缺失区间为第 201～500 字节。\n\nC. 确认值指向第 1001 字节，接收方已允许应用读取全部 1～1000 字节。\n\nD. 确认值指向第 901 字节，最先缺失区间为第 701～901 字节。",
+      "reference_answer": "B",
+      "reference_explanation": "TCP 面向字节，每个字节都有序号，接收方用累积确认表示“该序号之前的字节都已连续收到”。第 1～200 字节连续到达，第 201 字节缺失，于是 NextByteExpected 指向第一个缺失字节，即第 201 字节。\n\n虽然第 501～700、901～1000 字节已到达，但它们前面的 201～500 存在缺口，因此这些乱序字节不能被越过缺口确认；接收缓冲即便暂存了它们，应用也不能读取连续状态下的第 201 字节及之后数据。\n\n所以正确结论是：累积确认指向第 201 字节，最先缺失区间为 201～500。\n\nA 错在把缺口起点误当成 501，并把已到达的 501～700 视为已连续。C 错在假设缺口不影响可确认范围，把 1001 当成可确认位置。D 错在缺口起点与累积确认位置均被错误定位。",
+      "kind": "mcq",
+      "options": [
+        "确认值指向第 501 字节（即已连续收到 1～500，缺口从第 501 字节开始）。",
+        "确认值指向第 201 字节，且最先缺失区间为第 201～500 字节。",
+        "确认值指向第 1001 字节，接收方已允许应用读取全部 1～1000 字节。",
+        "确认值指向第 901 字节，最先缺失区间为第 701～901 字节。"
+      ],
+      "sources": [
+        {
+          "id": "context_64dd618ddaee33910f654543e3749168",
+          "text": "TCP is a byte-oriented protocol, which means that the sender writes bytes into a TCP connection and the receiver reads bytes out of the TCP connection. Although “byte stream” describes the service TCP offers to application processes, TCP does not, itself, transmit individual bytes over the Internet. Instead, TCP on the source host buffers enough bytes from the sending process to fill a reasonably sized packet and then sends this packet to its peer on the destination host. TCP on the destination host then empties the contents of the packet into a receive buffer, and the receiving process reads from this buffer at its leisure. This situation is illustrated in Figure 127, which, for simplicity, shows data flowing in only one direction. Remember that, in general, a single TCP connection supports byte streams flowing in both directions.\n\nThe packets exchanged between TCP peers in Figure 127 are called segments, since each one carries a segment of the byte stream. Each TCP segment contains the header schematically depicted in Figure 128. The relevance of most of these fields will become apparent throughout this section. For now, we simply introduce them."
+        },
+        {
+          "id": "context_199c09ce877546cc6641001e1dd6ead4",
+          "text": "The Acknowledgement, SequenceNum, and AdvertisedWindow fields are all involved in TCP’s sliding window algorithm. Because TCP is a byte-oriented protocol, each byte of data has a sequence number. The SequenceNum field contains the sequence number for the first byte of data carried in that segment, and the Acknowledgement and AdvertisedWindow fields carry information about the flow of data going in the other direction. To simplify our discussion, we ignore the fact that data can flow in both directions, and we concentrate on data that has a particular SequenceNum flowing in one direction and Acknowledgement and AdvertisedWindow values flowing in the opposite direction, as illustrated in Figure 129. The use of these three fields is described more fully later in this chapter."
+        },
+        {
+          "id": "context_4d79e8b0335c674e0ef7061b94ee3471",
+          "text": "To see how the sending and receiving sides of TCP interact with each other to implement reliable and ordered delivery, consider the situation illustrated in Figure 132. TCP on the sending side maintains a send buffer. This buffer is used to store data that has been sent but not yet acknowledged, as well as data that has been written by the sending application but not transmitted. On the receiving side, TCP maintains a receive buffer. This buffer holds data that arrives out of order, as well as data that is in the correct order (i.e., there are no missing bytes earlier in the stream) but that the application process has not yet had the chance to read.\n\nTo make the following discussion simpler to follow, we initially ignore the fact that both the buffers and the sequence numbers are of some finite size and hence will eventually wrap around. Also, we do not distinguish between a pointer into a buffer where a particular byte of data is stored and the sequence number for that byte.\n\nis true because a byte cannot be read by the application until it is received and all preceding bytes have also been received. NextByteExpected points to the byte immediately after the latest byte to meet this criterion. Second,"
+        },
+        {
+          "id": "context_4880e8f2cd6feb858236c20181921f5c",
+          "text": "since, if data has arrived in order, NextByteExpected points to the byte after LastByteRcvd, whereas if data has arrived out of order, then NextByteExpected points to the start of the first gap in the data, as in Figure 132. Note that bytes to the left of LastByteRead need not be buffered because they have already been read by the local application process, and bytes to the right of LastByteRcvd need not be buffered because they have not yet arrived."
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "easy"
+        ],
+        "content_status": "pass",
+        "issue": "The first missing interval and the mapping rule are explicitly supplied."
+      },
+      "label_provenance": "prior_AI_development_review_not_human_gold",
+      "target_difficulty": "medium",
+      "asset_sha256": "b9f71d2d1ff38f61e23525f5936c92b9c4b36fa93cea94fffcd0f482bfeecb49"
+    },
+    {
+      "id": "real_tasks_20260925_r6_q1",
+      "split": "historical",
+      "domain": "在存在缺失字节区间的简短到达序列中，应用 TCP 字节序号与累积确认规则。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "student_visible_text": "Learning objectives:\n能依据段首序号与段长写出各到达段覆盖的字节区间，并识别缺失区间。\n能用累积确认规则判断存在缺失字节时接收端可回送的有效确认号，并说明依据。\n\nTCP 面向字节流与序号\nTCP 是面向字节的协议：发送方把字节写入连接，接收方从连接读出字节，每个数据字节都有一个序号。\n段的 SequenceNum 字段给出该段所载数据的第一个字节的序号，因此一个到达段覆盖从该序号开始的连续若干字节。\nAcknowledgement 与 AdvertisedWindow 描述反方向的数据流，本情境只看单向数据。\n\n累积确认与空缺区间\n接收端的 NextByteExpected 指向第一个空缺（尚未收到的连续字节）的起点；若数据按序到达，它指向 LastByteRcvd 之后的字节。\n累积确认只反映到第一个空缺之前连续收到的字节；乱序到达但不与已收前缀连续的数据不能抬高确认号。\n因此在存在缺失字节区间时，有效累积确认号停在缺失区间的起点前。\n\n某单向 TCP 连接的数据流：初始 NextByteExpected = 1000，接收端尚未收到任何数据字节；每个数据段携带连续的整数个数据字节，段长由“长度”给出，且各段互不重叠。\n\n到达序列（按到达顺序）：\n1) 段 P：SequenceNum = 1200，长度 = 200\n2) 段 Q：SequenceNum = 1000，长度 = 100\n3) 段 R：SequenceNum = 1400，长度 = 300\n\n问题：按 TCP 的字节序号与累积确认规则，此时接收端可回送的有效累积确认号（Acknowledgement 值）应为多少？\n\nA. 1400\n\nB. 1300\n\nC. 1100\n\nD. 1700",
+      "reference_answer": "C",
+      "reference_explanation": "A 选项 1400：该值对应段 P 覆盖区间的末尾（1200+200），但 P 之前仍有缺失字节 1100，累积确认只能停在第一个空缺处，不能越过缺失区间。\nB 选项 1300：1300 落在段 P 的内部，没有对应的连续已收前缀边界，累积确认不会指向这种中间序号。\nC 选项 1100：段 Q 已按序到达并覆盖 1000–1099，之后 1100–1199 缺失，因此第一个空缺起点是 1100，累积确认号停在 1100，正确。\nD 选项 1700：1700 是段 R 覆盖区间 1400–1699 之后的一个序号，越过缺失字节 1100–1199，不能作为有效累积确认号。\n结论：接收端只能确认到 1100 之前连续收到的字节，故选 C。",
+      "kind": "mcq",
+      "options": [
+        "1400",
+        "1300",
+        "1100",
+        "1700"
+      ],
+      "sources": [
+        {
+          "id": "context_6ea7dfbab6e02ade2a3804046df2f99d",
+          "text": "TCP is a byte-oriented protocol, which means that the sender writes bytes into a TCP connection and the receiver reads bytes out of the TCP connection. Although “byte stream” describes the service TCP offers to application processes, TCP does not, itself, transmit individual bytes over the Internet. Instead, TCP on the source host buffers enough bytes from the sending process to fill a reasonably sized packet and then sends this packet to its peer on the destination host. TCP on the destination host then empties the contents of the packet into a receive buffer, and the receiving process reads from this buffer at its leisure. This situation is illustrated in Figure 127, which, for simplicity, shows data flowing in only one direction. Remember that, in general, a single TCP connection supports byte streams flowing in both directions.\n\nThe packets exchanged between TCP peers in Figure 127 are called segments, since each one carries a segment of the byte stream. Each TCP segment contains the header schematically depicted in Figure 128. The relevance of most of these fields will become apparent throughout this section. For now, we simply introduce them."
+        },
+        {
+          "id": "context_50cce0b14f8a0a967a4fa7d49fd473c6",
+          "text": "The Acknowledgement, SequenceNum, and AdvertisedWindow fields are all involved in TCP’s sliding window algorithm. Because TCP is a byte-oriented protocol, each byte of data has a sequence number. The SequenceNum field contains the sequence number for the first byte of data carried in that segment, and the Acknowledgement and AdvertisedWindow fields carry information about the flow of data going in the other direction. To simplify our discussion, we ignore the fact that data can flow in both directions, and we concentrate on data that has a particular SequenceNum flowing in one direction and Acknowledgement and AdvertisedWindow values flowing in the opposite direction, as illustrated in Figure 129. The use of these three fields is described more fully later in this chapter."
+        },
+        {
+          "id": "context_26a46e6d64f093e5348d6e437e270f4a",
+          "text": "The Acknowledgement, SequenceNum, and AdvertisedWindow fields are all involved in TCP’s sliding window algorithm. Because TCP is a byte-oriented protocol, each byte of data has a sequence number. The SequenceNum field contains the sequence number for the first byte of data carried in that segment, and the Acknowledgement and AdvertisedWindow fields carry information about the flow of data going in the other direction. To simplify our discussion, we ignore the fact that data can flow in both directions, and we concentrate on data that has a particular SequenceNum flowing in one direction and Acknowledgement and AdvertisedWindow values flowing in the opposite direction, as illustrated in Figure 129. The use of these three fields is described more fully later in this chapter.\n\nThe idea is that two parties want to agree on a set of parameters, which, in the case of opening a TCP connection, are the starting sequence numbers the two sides plan to use for their respective byte streams. In general, the parameters might be any facts that each side wants the other to know about."
+        },
+        {
+          "id": "context_ec2329e722ac9bb3246149e60b883d27",
+          "text": "To see how the sending and receiving sides of TCP interact with each other to implement reliable and ordered delivery, consider the situation illustrated in Figure 132. TCP on the sending side maintains a send buffer. This buffer is used to store data that has been sent but not yet acknowledged, as well as data that has been written by the sending application but not transmitted. On the receiving side, TCP maintains a receive buffer. This buffer holds data that arrives out of order, as well as data that is in the correct order (i.e., there are no missing bytes earlier in the stream) but that the application process has not yet had the chance to read.\n\nTo make the following discussion simpler to follow, we initially ignore the fact that both the buffers and the sequence numbers are of some finite size and hence will eventually wrap around. Also, we do not distinguish between a pointer into a buffer where a particular byte of data is stored and the sequence number for that byte.\n\nis true because a byte cannot be read by the application until it is received and all preceding bytes have also been received. NextByteExpected points to the byte immediately after the latest byte to meet this criterion. Second,"
+        },
+        {
+          "id": "context_9a0e0a8fe960219d9262b9eb78135d3f",
+          "text": "since, if data has arrived in order, NextByteExpected points to the byte after LastByteRcvd, whereas if data has arrived out of order, then NextByteExpected points to the start of the first gap in the data, as in Figure 132. Note that bytes to the left of LastByteRead need not be buffered because they have already been read by the local application process, and bytes to the right of LastByteRcvd need not be buffered because they have not yet arrived."
+        }
+      ],
+      "expected": {
+        "eligibility": "invalid_question",
+        "candidates": [],
+        "content_status": "fail",
+        "issue": "The visible ACK number is described as before the first gap but reference states exactly the gap start."
+      },
+      "label_provenance": "prior_AI_development_review_not_human_gold",
+      "target_difficulty": "medium",
+      "asset_sha256": "82b7860a7706ba40b945d44e462ff8d78607fd2dd5a819916370926348ccf815"
+    }
+  ]
+}

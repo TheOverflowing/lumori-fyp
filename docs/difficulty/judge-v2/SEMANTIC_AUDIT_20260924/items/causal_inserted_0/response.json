@@ -1,0 +1,20 @@
+{
+  "findings": [
+    {
+      "category": "internal_contradiction",
+      "certainty": "definite",
+      "question_ids": [
+        "S006",
+        "S007"
+      ],
+      "review_ids": [
+        "R009",
+        "R010",
+        "R011",
+        "R012"
+      ],
+      "explanation": "The minimum_answer directly contradicts the question's requirements and the review's own task analysis. The question (S006) asks to judge whether the records support the causal conclusion, give a specific alternative explanation, and propose a more reliable design; S007 forbids fabricating actual background differences. The review's tasks[1]-[3] correctly state the data are insufficient for causation, that a hypothetical confound (e.g., motivation) should be offered, and that random assignment is the better design. But the minimum_answer asserts the opposite: that the 30-point difference proves the tutoring caused the gain, that selection bias/background differences are impossible, that motivation cannot be an alternative explanation, and that random assignment is unnecessary. This is a self-contradiction between the declared tasks and the sample answer, and the sample answer would fail the question's explicit demands.",
+      "suggested_correction": "Rewrite minimum_answer to align with the tasks: report 90% vs 60% and the 30-point difference; state the records are insufficient to support the causal claim because participation was self-selected; offer a hypothetical confound (e.g., stronger motivation or prior preparation among volunteers) without asserting it as an observed fact; and propose random assignment to treatment/control, explaining that randomization balances confounders and removes self-selection bias. Do not change the difficulty grade."
+    }
+  ]
+}

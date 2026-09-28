@@ -1,0 +1,251 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "pass",
+      "reason": "六项任务、每时段最多两项、先后与设备互斥及无其他限制均明确，条件充分且一致，足以确定唯一最少时段并证下界。",
+      "evidence_ids": [
+        "E0001",
+        "E0002",
+        "E0003",
+        "E0004",
+        "E0005"
+      ],
+      "evidence": [
+        {
+          "document_id": "student",
+          "quote": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+        },
+        {
+          "document_id": "student",
+          "quote": "时段从1开始编号，每个时段最多执行两项任务。"
+        },
+        {
+          "document_id": "student",
+          "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "document_id": "student",
+          "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+        },
+        {
+          "document_id": "student",
+          "quote": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+        }
+      ]
+    },
+    "solution_correct": {
+      "status": "fail",
+      "reason": "盲解所给4时段安排将A与B、C与D放在同一时段，违反E0004/E0034的设备互斥约束，不是可行排程，构造无效。",
+      "evidence_ids": [
+        "E0022",
+        "E0004",
+        "E0034",
+        "E0023"
+      ],
+      "evidence": [
+        {
+          "document_id": "analysis",
+          "quote": "安排：时段1：A、B；时段2：C、D；时段3：E；时段4：F。"
+        },
+        {
+          "document_id": "student",
+          "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+        },
+        {
+          "document_id": "source:laboratory_equipment",
+          "quote": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "检查：A与B不同时段，C与D不同时段；C在A后，D在B后，E在C、D后，F在E后。"
+        }
+      ]
+    },
+    "reference_correct": {
+      "status": "pass",
+      "reason": "参考答案的5时段排程满足所有先后与设备规则；4时段反证从F>E推E≤3并迫使C、D冲突，下界结论成立，无物料错误。",
+      "evidence_ids": [
+        "E0010",
+        "E0011",
+        "E0012",
+        "E0013",
+        "E0003",
+        "E0004"
+      ],
+      "evidence": [
+        {
+          "document_id": "reference_answer",
+          "quote": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。"
+        },
+        {
+          "document_id": "reference_answer",
+          "quote": "若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。"
+        },
+        {
+          "document_id": "reference_answer",
+          "quote": "它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。"
+        },
+        {
+          "document_id": "reference_answer",
+          "quote": "故4个时段不可能，更少也不可能；5个时段的构造满足所有规则。"
+        },
+        {
+          "document_id": "student",
+          "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "document_id": "student",
+          "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+        }
+      ]
+    },
+    "explanation_consistent": {
+      "status": "pass",
+      "reason": "解释准确描述B与已完成前置任务的C重叠以节省时段，并指出下界由E、F后置关系经C、D及A、B的设备冲突推出，与答案一致。",
+      "evidence_ids": [
+        "E0014",
+        "E0015",
+        "E0010",
+        "E0003",
+        "E0004"
+      ],
+      "evidence": [
+        {
+          "document_id": "reference_explanation",
+          "quote": "构造通过让B与已完成前置任务的C重叠来节省时段；下界由E、F的后置关系向前推回C、D及A、B，与设备限制冲突。"
+        },
+        {
+          "document_id": "reference_explanation",
+          "quote": "须自行选择这种组合约束证明。"
+        },
+        {
+          "document_id": "reference_answer",
+          "quote": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。"
+        },
+        {
+          "document_id": "student",
+          "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "document_id": "student",
+          "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+        }
+      ]
+    },
+    "source_support": {
+      "status": "pass",
+      "reason": "各来源片段逐字支持学生文本中的容量、先后、设备互斥及无其他限制等精确事实，无缺口或无关替换。",
+      "evidence_ids": [
+        "E0031",
+        "E0032",
+        "E0033",
+        "E0034",
+        "E0035",
+        "E0001",
+        "E0002",
+        "E0003",
+        "E0004",
+        "E0005"
+      ],
+      "evidence": [
+        {
+          "document_id": "source:laboratory_capacity",
+          "quote": "任务A、B、C、D、E、F每项恰占一个完整时段，只执行一次。"
+        },
+        {
+          "document_id": "source:laboratory_capacity",
+          "quote": "时段从1开始编号，每个时段最多执行两项任务，允许一个时段只做一项。"
+        },
+        {
+          "document_id": "source:laboratory_dependencies",
+          "quote": "C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "document_id": "source:laboratory_equipment",
+          "quote": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+        },
+        {
+          "document_id": "source:laboratory_equipment",
+          "quote": "除此之外没有设备或先后限制。"
+        },
+        {
+          "document_id": "student",
+          "quote": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+        },
+        {
+          "document_id": "student",
+          "quote": "时段从1开始编号，每个时段最多执行两项任务。"
+        },
+        {
+          "document_id": "student",
+          "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "document_id": "student",
+          "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+        },
+        {
+          "document_id": "student",
+          "quote": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+        }
+      ]
+    },
+    "demand_supported": {
+      "status": "pass",
+      "reason": "任务覆盖构造安排与下界证明，输入事实完整，残余工作为自行选择枚举/反证；hard边界与学生未学最短工期证明的准备相符。",
+      "evidence_ids": [
+        "E0016",
+        "E0017",
+        "E0018",
+        "E0028",
+        "E0029",
+        "E0006",
+        "E0007",
+        "E0008",
+        "E0009"
+      ],
+      "evidence": [
+        {
+          "document_id": "analysis",
+          "quote": "{\"decision\": {\"boundary_reason\": \"学生能读先后约束并安排单链，但未学过带共享设备的任务图调度或最短工期证明。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "本题需同时处理设备互斥与先后依赖，并构造达到下界的安排及不可能性证明；这不是直接检索或简单复述，属于熟悉约束的整合应用。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "由于存在“证明最少性”这一相对准备而言的非例行瓶颈，且需自行选择枚举或约束推理，故在medium与hard间取相邻候选，hard任务索引为1。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"需自行构造满足先后与设备约束的完整安排，并确定最少时段数。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "\"}, {\"condition_ids\": [\"S002\", \"S003\", \"S004\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\", \"S007\"], \"residual_work\": \"需给出下界证明：不能仅用6÷2，要结合A/B、C/D设备冲突及C、D分别晚于A、B推出至少5段。"
+        },
+        {
+          "document_id": "student",
+          "quote": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+        },
+        {
+          "document_id": "student",
+          "quote": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+        },
+        {
+          "document_id": "learner_profile",
+          "quote": "入门学生，能读出先后约束，安排单条任务链，也做过两个互不依赖任务的并行练习；未学过带共享设备的任务图调度或最短工期证明。"
+        },
+        {
+          "document_id": "learner_profile",
+          "quote": "允许用枚举、反证或约束推理，不要求专门算法。"
+        }
+      ]
+    }
+  },
+  "case_sha256": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+  "analysis_sha256": "a3a9d4d4856e89c026c5c02271066f4e6d1f0c2e48a0688fdd6a858db2342b0b",
+  "protocol_revision": "difficulty-review-v2.5-lossless-verification-20260926",
+  "human_validated": false
+}

@@ -1,0 +1,90 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "pass",
+      "reason": "All explicit: five nodes/edge costs, two simple S-T paths, fee sum with shared corridors charged, single corridor closure and at least one intact; no missing scope or endpoints.",
+      "evidence_ids": [
+        "E0001",
+        "E0002",
+        "E0003",
+        "E0004",
+        "E0005",
+        "E0006"
+      ]
+    },
+    "solution_correct": {
+      "status": "fail",
+      "reason": "Blind paths both use C-T, so closing C-T breaks both, violating closure condition; its lower-bound proof also wrongly ignores C-T as a possible terminal edge.",
+      "evidence_ids": [
+        "E0020",
+        "E0022",
+        "E0023",
+        "E0027",
+        "E0028",
+        "E0005"
+      ]
+    },
+    "reference_correct": {
+      "status": "pass",
+      "reason": "Reference pair is edge-disjoint and costs 8; necessity from shared-edge closure, forced distinct S/T edges, and extra middle edge gives valid lower bound 8.",
+      "evidence_ids": [
+        "E0009",
+        "E0010",
+        "E0011",
+        "E0012",
+        "E0013",
+        "E0014",
+        "E0001",
+        "E0002"
+      ]
+    },
+    "explanation_consistent": {
+      "status": "pass",
+      "reason": "Explanation matches reference key and student closure/simple-path rules: no-middle case cost 10, with-middle lower bound 8, construction achieves 8.",
+      "evidence_ids": [
+        "E0015",
+        "E0016",
+        "E0017",
+        "E0003",
+        "E0005"
+      ]
+    },
+    "source_support": {
+      "status": "pass",
+      "reason": "Courier-map and contract excerpts exactly state the five-node graph and the two-path fee/closure rules used by student and reference; they support 3+5 cost construction.",
+      "source_ids": [
+        "E0034",
+        "E0035",
+        "E0036",
+        "E0037",
+        "E0038"
+      ],
+      "claim_ids": [
+        "E0001",
+        "E0002",
+        "E0003",
+        "E0004",
+        "E0005",
+        "E0009",
+        "E0010"
+      ]
+    },
+    "demand_supported": {
+      "status": "pass",
+      "reason": "Tasks cover design, closure check, and lower-bound proof; profile lacks fault-tolerance/edge-disjoint background, justifying hard lower-bound; no invented prior practice.",
+      "analysis_ids": [
+        "E0018",
+        "E0030",
+        "E0031",
+        "E0032"
+      ],
+      "student_ids": [
+        "E0006"
+      ],
+      "profile_ids": [
+        "E0007",
+        "E0008"
+      ]
+    }
+  }
+}

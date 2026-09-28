@@ -1,0 +1,78 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "pass",
+      "reason": "规则、数据、资格条件、计分公式、同分规则与作答要求均明确；CPU/线程等不适用，无缺失条件。",
+      "evidence": [
+        {
+          "document_id": "student",
+          "quote": "只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。优先分=2×等待天数+紧急标志（标志只取0或1）。"
+        },
+        {
+          "document_id": "student",
+          "quote": "从有资格的工单中选优先分最高的一单；同分选字母较前者。"
+        }
+      ]
+    },
+    "reference_correct": {
+      "status": "pass",
+      "reason": "按规则B、C合资格，C分8高于B分7，A因工时4>3不合资格，答案与完整解法一致。",
+      "evidence": [
+        {
+          "document_id": "reference_answer",
+          "quote": "有资格的是B、C，选C。A的工时4小时超过可用的3小时，即使分数较高也不合资格。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "有资格的工单：B、C。本轮应选：C。不选A的原因：A的工时4超过本轮可用3小时，不合资格，优先分只用于合资格的工单。"
+        }
+      ]
+    },
+    "explanation_consistent": {
+      "status": "pass",
+      "reason": "解释与答案一致：先筛资格再在B、C间比较，且题面已给出全部结论，与完整解法相符。",
+      "evidence": [
+        {
+          "document_id": "reference_explanation",
+          "quote": "先应用资格条件，再在B的7分与C的8分之间选择。题面完整解法已给出全部需要报告的结论和理由。"
+        },
+        {
+          "document_id": "student",
+          "quote": "C的8分高于B的7分，因此选C。A的9分虽更高，但优先分只用于合资格的工单，所以不能选A。"
+        }
+      ]
+    },
+    "source_support": {
+      "status": "pass",
+      "reason": "来源规则与记录支持资格条件、计分公式及A/B/C/D数据，学生与参考答案据此得出B、C合资格且选C。",
+      "evidence": [
+        {
+          "document_id": "source:dispatch_rules",
+          "quote": "只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。优先分=2×等待天数+紧急标志（标志只取0或1）。"
+        },
+        {
+          "document_id": "source:dispatch_records",
+          "quote": "A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。"
+        },
+        {
+          "document_id": "reference_answer",
+          "quote": "有资格的是B、C，选C。A的工时4小时超过可用的3小时，即使分数较高也不合资格。"
+        }
+      ]
+    },
+    "demand_supported": {
+      "status": "pass",
+      "reason": "分析认定任务为复述题面已给完整解法，剩余工作仅抄录资格集合、选中单和排除A理由，与学生入门水平及题面供给一致。",
+      "evidence": [
+        {
+          "document_id": "analysis",
+          "quote": "任务仅要求复述题面已给出的完整解法：资格集合、选中工单和排除A的理由均已明示，学生只需照抄或换述，属于检索与供给答案再现，不涉及独立组合筛选与计分规则。"
+        },
+        {
+          "document_id": "student",
+          "quote": "已给出的完整解法：A、B、C、D优先分分别为9、7、8、10。A因4>3不合资格，D因材料不齐不合资格；有资格的集合是{B,C}。C的8分高于B的7分，因此选C。"
+        }
+      ]
+    }
+  }
+}

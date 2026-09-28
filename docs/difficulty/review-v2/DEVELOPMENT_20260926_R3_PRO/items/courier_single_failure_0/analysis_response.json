@@ -1,0 +1,55 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目条件完整：图、费用、两条简单路径、单边失效保证及费用上界均明确；入门离散数学准备足以枚举路径并做分类证明。",
+  "solution": "取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-C-T，费用2+1+1=4；总费7≤8。它们都从S到T且简单。任意一条走廊关闭：若关闭S-A或A-C或C-T，P2仍完整；若关闭S-B或B-C，P1仍完整；若关闭C-T，P1、P2都含C-T，但此时P1的S-A-C段和P2的S-B-C段仍到C，而C-T关闭，需另找？注意C-T是两条路径共用边，关闭后两条都断，故该方案不抗C-T关闭。改用P1=S-A-C-T(3)，P2=S-B-T(5)，总8。任意单边关闭：若关S-A/A-C/C-T，P2完整；若关S-B/B-T，P1完整；若关A-B或B-C，两条都不含，仍完整。故抗任意单边。证明≤7不可能：任何两条S-T简单路径总费≤7。S-T路径至少经过一条与T相连的边A-T(4)、B-T(3)或C-T(1)。若两条都不含C-T，则每条至少含A-T或B-T，费用至少3+3=6，但还需从S到相应端点；S到B最省2，S到A最省1，故两条分别至少5和4，总至少9>7。因此总费≤7时至少一条路径含C-T。若两条都含C-T，则关闭C-T后两条都断，不保证。若恰一条含C-T，另一条不含。含C-T的路径费用至少S到C最省2加1=3。不含C-T的路径必须经A-T或B-T；若经B-T，S到B最省2，费用至少5；若经A-T，S到A最省1，费用至少5。故总至少3+5=8>7。矛盾。所以≤7不可能。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "枚举并选择两条简单S-T路径，计算总费并验证对每条单边关闭至少一条仍通。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S002",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "对任意单边关闭分类验证所选两条路径的容错性，尤其检查共用边关闭情形。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S002",
+        "S003",
+        "S004"
+      ],
+      "provided_ids": [],
+      "residual_work": "证明总登记费≤7时无法保证单边容错：按是否含C-T分类并下界两条路径费用。",
+      "mode": "construct_argument"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "medium",
+      "hard"
+    ],
+    "boundary_reason": "设计并验证费用≤8方案是熟悉最短路与简单路径的直接应用，但证明≤7不可能需要按C-T是否被两条路径共用分类，并对不含C-T的路径给出费用下界；这超出单纯枚举，属于非平凡瓶颈，故在medium与hard间取相邻候选。",
+    "hard_task_index": 2
+  }
+}

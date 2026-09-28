@@ -1,0 +1,33 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目给出初始 NextByteExpected=1000、各段序号与长度、到达顺序，并明确单向数据与累积确认规则；条件完整且无冲突，可唯一判定有效确认号。",
+  "solution": "各段覆盖区间：P=[1200,1400)，Q=[1000,1100)，R=[1400,1700)。初始 NextByteExpected=1000。Q 到达后连续覆盖 [1000,1100)，NextByteExpected 变为 1100；P 覆盖 [1200,1400)，与 1100 不连续，形成缺失 [1100,1200)，不能抬高确认号；R 覆盖 [1400,1700)，也不与已收前缀连续。因此有效累积确认号停在缺失区间起点前，即 1100。选 C。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S017"
+      ],
+      "condition_ids": [
+        "S012",
+        "S014",
+        "S015",
+        "S016"
+      ],
+      "provided_ids": [
+        "S006",
+        "S009",
+        "S010",
+        "S011"
+      ],
+      "residual_work": "根据各段序号与长度写出覆盖区间，按到达顺序维护连续已收前缀，识别缺失区间并确定确认号。",
+      "mode": "apply_familiar"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "easy"
+    ],
+    "boundary_reason": "题目直接给出初始 NextByteExpected、各段序号长度和累积确认规则，学生只需按规则做区间与连续性判断；这是课程目标中已练习的熟悉即时应用，独立选择很少，未达到需要非例行瓶颈的 medium/hard。",
+    "hard_task_index": null
+  }
+}

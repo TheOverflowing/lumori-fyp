@@ -1,0 +1,1546 @@
+[
+  {
+    "case_id": "courier_single_failure_corrected",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "9d5a37d960c1840b20aa5d0c81c32fdbd684c538ac3bd27221652aba43531c24",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 7774,
+      "prompt_sha256": "a7d4355d008c50f7f987da7100612d30a80c6b42b0d60bc5923923b10c79a73d",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目条件完整：图、费用、两条简单路径、单边关闭容错要求及费用上界/下界均明确；学生具备最短路与路径费用基础，允许枚举构造证明。",
+        "solution": "取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-C-T，费用2+1+1=4。总登记费=7≤8。\n容错：P1用边SA,AC,CT；P2用边SB,BC,CT。任意一条走廊关闭时，若关的是P1的边，则P2仍完整；若关的是P2的边，则P1仍完整；若关的是其他边，两条都仍完整。故至少一条可通行。\n下界：若总费≤7且要抗任意单边关闭，两条S-T路径必须边不相交。否则存在公共边e，关闭e后两条都断。边不相交时，从S出发的两条路径首边不同，只能分别用SA(1)和SB(2)；到达T的两条路径末边不同，只能分别用AT(4)和BT(3)。于是两条路径费用至少为(1+4)与(2+3)，总和至少10，矛盾。因此总费≤7不可能。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "从给定图中选择两条S-T简单路径，计算各自费用并验证总费≤8。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S002",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "逐边检查所选两条路径：任一条走廊关闭后，至少一条路径仍完整可通行。",
+            "mode": "construct_argument"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "证明总登记费≤7时无法满足任意单边关闭容错，需论证两条路径必须边不相交并推出费用下界。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium",
+            "hard"
+          ],
+          "boundary_reason": "构造费用≤8的容错方案属于熟悉最短路与枚举的应用，但下界证明需要发现“抗单边关闭⇒两条路径边不相交”并利用S、T处边费用推出至少10，超出直接套用最短路；入门学生未学容错网络，故整体接近中难边界，取medium与hard相邻候选。",
+          "hard_task_index": 2
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 21,
+                "text": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S003",
+                "start": 86,
+                "end": 118,
+                "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "id": "S004",
+                "start": 118,
+                "end": 150,
+                "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S003",
+                "start": 86,
+                "end": 118,
+                "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "id": "S004",
+                "start": 118,
+                "end": 150,
+                "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "40c02ad5ea844bcecbca043efde0f7c1d0011bd4fa65f741cb9e07c5209210c0"
+      },
+      "duration_ms": 3461,
+      "call_ids": [
+        "39e06bed5af24b178ffc41f07a8a458b"
+      ]
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 22937,
+      "prompt_sha256": "f44ca37e99c90d751e0b985f7572613db4606f3e493603d4437ddae71a559789",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "All explicit: five nodes/edge costs, two simple S-T paths, fee sum with shared corridors charged, single corridor closure and at least one intact; no missing scope or endpoints.",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ]
+          },
+          "solution_correct": {
+            "status": "fail",
+            "reason": "Blind paths both use C-T, so closing C-T breaks both, violating closure condition; its lower-bound proof also wrongly ignores C-T as a possible terminal edge.",
+            "evidence_ids": [
+              "E0020",
+              "E0022",
+              "E0023",
+              "E0027",
+              "E0028",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-C-T，费用2+1+1=4。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\\n容错：P1用边SA,AC,CT；P2用边SB,BC,CT。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "任意一条走廊关闭时，若关的是P1的边，则P2仍完整；若关的是P2的边，则P1仍完整；若关的是其他边，两条都仍完整。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "边不相交时，从S出发的两条路径首边不同，只能分别用SA(1)和SB(2)；到达T的两条路径末边不同，只能分别用AT(4)和BT(3)。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "于是两条路径费用至少为(1+4)与(2+3)，总和至少10，矛盾。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "Reference pair is edge-disjoint and costs 8; necessity from shared-edge closure, forced distinct S/T edges, and extra middle edge gives valid lower bound 8.",
+            "evidence_ids": [
+              "E0009",
+              "E0010",
+              "E0011",
+              "E0012",
+              "E0013",
+              "E0014",
+              "E0001",
+              "E0002"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "它们无共用走廊，任意关闭一条走廊最多破坏其中一条。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "若两条路径有共用走廊，关闭该走廊会同时破坏它们，因此任何合格方案都必须没有共用走廊。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "两条路径离开S必须分别用S-A和S-B，费用至少3；进入T必须用不同走廊，最便宜两条是C-T与B-T，合计至少4。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "还至少需要一条中间走廊，因为S不直接连C，且若完全不用中间走廊，只能走S-A-T与S-B-T，费用10。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "因此总费不能为7或更少。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "Explanation matches reference key and student closure/simple-path rules: no-middle case cost 10, with-middle lower bound 8, construction achieves 8.",
+            "evidence_ids": [
+              "E0015",
+              "E0016",
+              "E0017",
+              "E0003",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "更严格的下界分情况：不使用中间走廊时，只能选S-A-T和S-B-T，总费10；使用至少一条中间走廊时，首边合计3、末边合计至少4、中间边至少1，故总费至少8。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "构造恰好达到8。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "困难来自自行识别单点关闭要求对应的共用边约束，并把构造与必要性证明连接。"
+              },
+              {
+                "document_id": "student",
+                "quote": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "Courier-map and contract excerpts exactly state the five-node graph and the two-path fee/closure rules used by student and reference; they support 3+5 cost construction.",
+            "evidence_ids": [
+              "E0034",
+              "E0035",
+              "E0036",
+              "E0037",
+              "E0038",
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0009",
+              "E0010"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:courier_map",
+                "quote": "网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "source:courier_map",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "source:courier_contract",
+                "quote": "事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "source:courier_contract",
+                "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "document_id": "source:courier_contract",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "document_id": "student",
+                "quote": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "document_id": "student",
+                "quote": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "document_id": "student",
+                "quote": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "它们无共用走廊，任意关闭一条走廊最多破坏其中一条。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "Tasks cover design, closure check, and lower-bound proof; profile lacks fault-tolerance/edge-disjoint background, justifying hard lower-bound; no invented prior practice.",
+            "evidence_ids": [
+              "E0018",
+              "E0030",
+              "E0031",
+              "E0032",
+              "E0006",
+              "E0007",
+              "E0008"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"构造费用≤8的容错方案属于熟悉最短路与枚举的应用，但下界证明需要发现“抗单边关闭⇒两条路径边不相交”并利用S、T处边费用推出至少10，超出直接套用最短路；入门学生未学容错网络，故整体接近中难边界，取medium与hard相邻候选。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"从给定图中选择两条S-T简单路径，计算各自费用并验证总费≤8。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S002\", \"S005\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"逐边检查所选两条路径：任一条走廊关闭后，至少一条路径仍完整可通行。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"证明总登记费≤7时无法满足任意单边关闭容错，需论证两条路径必须边不相交并推出费用下界。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "入门离散数学学生，理解无向图、简单路径、路径费用相加，会在小图中找最短路；没有学过容错网络、边不相交路径或网络流。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "本题允许自行枚举、分类或构造证明，不要求引用定理。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+        "analysis_sha256": "62512f05e3eb69f4900f819c8aadb8547e9b305eced3b709c6c2fb5d0dd61fad",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false
+      },
+      "duration_ms": 93842,
+      "call_ids": [
+        "642b5b7439d7445383727bc5a14bea43"
+      ]
+    },
+    "decision": {
+      "status": "insufficient_evidence",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "failed:solution_correct"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 97306
+  },
+  {
+    "case_id": "laboratory_slots",
+    "repeat": 1,
+    "status": "complete",
+    "input_sha256": "81a35ec15d8c25b720f68c52282cd6f56a75c89f6f2d699ececda38c8c5f29d9",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 7976,
+      "prompt_sha256": "fad441bb07cf62cb1ce098371ae3793082ea5c0ecf800925250f96410a4843ac",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "任务条件完整且一致：六项任务、每时段最多两项、先后与设备约束明确，要求最少时段数、具体安排及不可能性证明。学生具备读出先后约束和安排任务链的基础，题目可判定。",
+        "solution": "最少需要5个时段。安排如下：时段1：A、B；时段2：C、D；时段3：E；时段4：F；时段5：空？不对，F在时段4已完成，故4个时段即可？检查：A,B在1；C,D在2；E在3；F在4。先后：C在A后，D在B后，E在C,D后，F在E后，均满足；设备：A/B不同时，C/D不同时，满足。每时段最多两项，满足。因此4个时段可行。证明不能少于4：E必须在C和D都完成后，而C必须在A后、D必须在B后；A与B不能同时，C与D不能同时。若总时段≤3，则E最早只能在时段3，F最早只能在时段4，超过3，矛盾。故至少4个时段。4个时段安排存在，所以最少为4。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "根据先后与设备约束构造一个4时段安排，并验证每项任务只执行一次、每时段不超过两项。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S006",
+              "S007"
+            ],
+            "condition_ids": [
+              "S003",
+              "S004"
+            ],
+            "provided_ids": [],
+            "residual_work": "证明少于4个时段不可能：需推出E最早时段3、F最早时段4，从而总时段至少4，且不能只用6÷2估算。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium"
+          ],
+          "boundary_reason": "该题需要综合先后约束与共享设备约束，构造可行安排并证明下界。学生已能处理单链和两个独立任务的并行，但未学过带共享设备的任务图调度或最短工期证明；本题属于熟悉约束的整合应用，有明确但非高难瓶颈，故定为medium。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "medium",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 195,
+                "end": 233,
+                "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 37,
+                "text": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "id": "S002",
+                "start": 37,
+                "end": 59,
+                "text": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "id": "S003",
+                "start": 60,
+                "end": 124,
+                "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "id": "S004",
+                "start": 124,
+                "end": 169,
+                "text": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "id": "S005",
+                "start": 169,
+                "end": 194,
+                "text": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 195,
+                "end": 233,
+                "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              },
+              {
+                "id": "S007",
+                "start": 233,
+                "end": 258,
+                "text": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S003",
+                "start": 60,
+                "end": 124,
+                "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "id": "S004",
+                "start": 124,
+                "end": 169,
+                "text": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "2927f91fc6542db5be855c18541bde7f1589d61b84211d74c45011e1cce6a4f5"
+      },
+      "duration_ms": 3085,
+      "call_ids": [
+        "fc0a58e242ae46fe9ff4533473e4cd90"
+      ]
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 22095,
+      "prompt_sha256": "a5c3d5edafae2b88fa2fd733d31fb8c4a6a032ae07603d4f1a848d378e2a32a4",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "条件完整一致：六项任务、时段容量、严格先后和设备互斥均明确，存在5时段可行安排，无矛盾或缺失端点/量词歧义。",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "document_id": "student",
+                "quote": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              }
+            ]
+          },
+          "solution_correct": {
+            "status": "fail",
+            "reason": "盲解构造1:A,B、2:C,D违反E0004中A/B、C/D不能同段；其证明只排除总时段≤3，未证明4不可能，故结论最少4错。",
+            "evidence_ids": [
+              "E0021",
+              "E0023",
+              "E0024",
+              "E0027",
+              "E0028",
+              "E0030",
+              "E0004"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "安排如下：时段1：A、B；时段2：C、D；时段3：E；时段4：F；时段5：空？"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "检查：A,B在1；C,D在2；E在3；F在4。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "先后：C在A后，D在B后，E在C,D后，F在E后，均满足；设备：A/B不同时，C/D不同时，满足。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "证明不能少于4：E必须在C和D都完成后，而C必须在A后、D必须在B后；A与B不能同时，C与D不能同时。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "若总时段≤3，则E最早只能在时段3，F最早只能在时段4，超过3，矛盾。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "4个时段安排存在，所以最少为4。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "参考5时段安排逐项满足先后/设备/容量；4时段反证由F>E推出E≤3、C,D≤2且不能在第1，故C,D均2与设备互斥矛盾，证明有效。",
+            "evidence_ids": [
+              "E0010",
+              "E0011",
+              "E0012",
+              "E0013",
+              "E0003",
+              "E0004",
+              "E0002"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "故4个时段不可能，更少也不可能；5个时段的构造满足所有规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "时段从1开始编号，每个时段最多执行两项任务。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "解释所述B与已完成前置的C重叠正对应参考安排1:A;2:B,C；由E,F推回C,D/A,B与设备冲突的下界思路和参考证明一致，未曲解规则。",
+            "evidence_ids": [
+              "E0014",
+              "E0015",
+              "E0010",
+              "E0011",
+              "E0012",
+              "E0003",
+              "E0004"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "构造通过让B与已完成前置任务的C重叠来节省时段；下界由E、F的后置关系向前推回C、D及A、B，与设备限制冲突。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "须自行选择这种组合约束证明。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "来源摘录直接支持学生容量、先后、设备互斥及无其他限制的确切条件，与参考推理所用规则一致，无邻近混淆。",
+            "evidence_ids": [
+              "E0034",
+              "E0035",
+              "E0036",
+              "E0037",
+              "E0038",
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:laboratory_capacity",
+                "quote": "任务A、B、C、D、E、F每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "document_id": "source:laboratory_capacity",
+                "quote": "时段从1开始编号，每个时段最多执行两项任务，允许一个时段只做一项。"
+              },
+              {
+                "document_id": "source:laboratory_dependencies",
+                "quote": "C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "source:laboratory_equipment",
+                "quote": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "source:laboratory_equipment",
+                "quote": "除此之外没有设备或先后限制。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "document_id": "student",
+                "quote": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "fail",
+            "reason": "分析任务要求构造不存在的4时段安排，且其下界证明只推到F>4未纳入设备互斥，未覆盖学生“须同时考虑先后与设备”的证明；medium边界基于错误剩余工作，未获支持。",
+            "evidence_ids": [
+              "E0031",
+              "E0032",
+              "E0017",
+              "E0006",
+              "E0007",
+              "E0004",
+              "E0008",
+              "E0009"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"根据先后与设备约束构造一个4时段安排，并验证每项任务只执行一次、每时段不超过两项。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S003\", \"S004\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\", \"S007\"], \"residual_work\": \"证明少于4个时段不可能：需推出E最早时段3、F最早时段4，从而总时段至少4，且不能只用6÷2估算。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "学生已能处理单链和两个独立任务的并行，但未学过带共享设备的任务图调度或最短工期证明；本题属于熟悉约束的整合应用，有明确但非高难瓶颈，故定为medium。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              },
+              {
+                "document_id": "student",
+                "quote": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "入门学生，能读出先后约束，安排单条任务链，也做过两个互不依赖任务的并行练习；未学过带共享设备的任务图调度或最短工期证明。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "允许用枚举、反证或约束推理，不要求专门算法。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+        "analysis_sha256": "4ab9115b1db6978cbf6fc6196024627ce195ba3a923638ccdfda3307489c958b",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false
+      },
+      "duration_ms": 49546,
+      "call_ids": [
+        "8d4b5acbc5a84268a6bfe79eb282bcb4"
+      ]
+    },
+    "decision": {
+      "status": "insufficient_evidence",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "failed:solution_correct",
+        "failed:demand_supported"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 52636
+  },
+  {
+    "case_id": "laboratory_slots",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "81a35ec15d8c25b720f68c52282cd6f56a75c89f6f2d699ececda38c8c5f29d9",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 7976,
+      "prompt_sha256": "fad441bb07cf62cb1ce098371ae3793082ea5c0ecf800925250f96410a4843ac",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "任务条件完整且一致：六项任务、每时段最多两项、先后与设备约束明确，要求最少时段数、安排及不可能性证明。学生具备读先后约束和安排任务链的准备，可用枚举或约束推理完成。",
+        "solution": "最少为5个时段。安排：时段1：A、B；时段2：C、D；时段3：E；时段4：F。检查：A与B不同时段，C与D不同时段；C在A后，D在B后，E在C、D后，F在E后。证明不可能少于5：E必须在C、D之后，而C在A后、D在B后，所以E之前至少要有A、B、C、D四项完成。A与B不能同段，C与D不能同段，因此这四项至少占2个时段；又因C、D分别晚于A、B，不能把A、B、C、D全部塞进2个时段：若2个时段完成四项，每段恰两项，且A、B分属两段、C、D分属两段；但C所在段必须晚于A所在段，D所在段必须晚于B所在段，两个段无法同时满足两个“更晚”，故至少需3个时段完成A、B、C、D。E还需在其后，F又在E后，所以总时段至少3+1+1=5。上述安排达到5，故最少为5。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "需自行构造满足先后与设备约束的完整安排，并确定最少时段数。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S006",
+              "S007"
+            ],
+            "condition_ids": [
+              "S002",
+              "S003",
+              "S004"
+            ],
+            "provided_ids": [],
+            "residual_work": "需给出下界证明：不能仅用6÷2，要结合A/B、C/D设备冲突及C、D分别晚于A、B推出至少5段。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium",
+            "hard"
+          ],
+          "boundary_reason": "学生能读先后约束并安排单链，但未学过带共享设备的任务图调度或最短工期证明。本题需同时处理设备互斥与先后依赖，并构造达到下界的安排及不可能性证明；这不是直接检索或简单复述，属于熟悉约束的整合应用。由于存在“证明最少性”这一相对准备而言的非例行瓶颈，且需自行选择枚举或约束推理，故在medium与hard间取相邻候选，hard任务索引为1。",
+          "hard_task_index": 1
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 195,
+                "end": 233,
+                "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 37,
+                "text": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "id": "S002",
+                "start": 37,
+                "end": 59,
+                "text": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "id": "S003",
+                "start": 60,
+                "end": 124,
+                "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "id": "S004",
+                "start": 124,
+                "end": 169,
+                "text": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "id": "S005",
+                "start": 169,
+                "end": 194,
+                "text": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 195,
+                "end": 233,
+                "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              },
+              {
+                "id": "S007",
+                "start": 233,
+                "end": 258,
+                "text": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 37,
+                "end": 59,
+                "text": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "id": "S003",
+                "start": 60,
+                "end": 124,
+                "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "id": "S004",
+                "start": 124,
+                "end": 169,
+                "text": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "b46d8f0b7faefd71d4ed56043e9368c0ec45d6d1661d4e2018b990e5573f5214"
+      },
+      "duration_ms": 3726,
+      "call_ids": [
+        "700734d778514a6ca97997146248ef6d"
+      ]
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 22411,
+      "prompt_sha256": "b0a395b4693a09aa09b81fe26f47be0e1f7f4efa7c9bd27df5a4aa4fd8f71192",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "六项任务、容量上限、严格先后、两组设备互斥、无其他限制及最优性要求均明确且一致，足以推出唯一最少5时段。",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006",
+              "E0007"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "document_id": "student",
+                "quote": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              },
+              {
+                "document_id": "student",
+                "quote": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+              }
+            ]
+          },
+          "solution_correct": {
+            "status": "fail",
+            "reason": "盲解安排将A、B同时放在时段1，违反A与B共用唯一校准仪不能同时段的设备约束；尽管下界证明方向合理，构造无效。",
+            "evidence_ids": [
+              "E0022",
+              "E0004"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "安排：时段1：A、B；时段2：C、D；时段3：E；时段4：F。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "参考安排的时段1:A，2:B,C，3:D，4:E，5:F满足容量、先后和设备互斥；4时段矛盾证明由F<E≤3推出C,D均在第2段并迫使A,B同段冲突，逻辑成立。",
+            "evidence_ids": [
+              "E0010",
+              "E0011",
+              "E0012",
+              "E0013",
+              "E0003",
+              "E0004"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "故4个时段不可能，更少也不可能；5个时段的构造满足所有规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "解释指出B与C重叠节省时段，并从E、F的后置关系回推C、D及A、B直到设备冲突，与参考安排和可见先后、设备规则一致。",
+            "evidence_ids": [
+              "E0014",
+              "E0015",
+              "E0003",
+              "E0004"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "构造通过让B与已完成前置任务的C重叠来节省时段；下界由E、F的后置关系向前推回C、D及A、B，与设备限制冲突。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "须自行选择这种组合约束证明。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "学生题面中的任务数量、容量、严格先后、设备互斥及无其他限制逐项与提供的来源摘录完全一致。",
+            "evidence_ids": [
+              "E0031",
+              "E0032",
+              "E0033",
+              "E0034",
+              "E0035",
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:laboratory_capacity",
+                "quote": "任务A、B、C、D、E、F每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "document_id": "source:laboratory_capacity",
+                "quote": "时段从1开始编号，每个时段最多执行两项任务，允许一个时段只做一项。"
+              },
+              {
+                "document_id": "source:laboratory_dependencies",
+                "quote": "C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "source:laboratory_equipment",
+                "quote": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "source:laboratory_equipment",
+                "quote": "除此之外没有设备或先后限制。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+              },
+              {
+                "document_id": "student",
+                "quote": "时段从1开始编号，每个时段最多执行两项任务。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "题目要求给出最少时段、安排并证明更少不可能；分析将需求分解为构造和下界证明，且学习者档案明确缺少最短工期证明经历，故medium与hard相邻波动、hard任务索引1的难度边界有依据。",
+            "evidence_ids": [
+              "E0016",
+              "E0017",
+              "E0018",
+              "E0028",
+              "E0029",
+              "E0006",
+              "E0007",
+              "E0008",
+              "E0009"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"学生能读先后约束并安排单链，但未学过带共享设备的任务图调度或最短工期证明。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "本题需同时处理设备互斥与先后依赖，并构造达到下界的安排及不可能性证明；这不是直接检索或简单复述，属于熟悉约束的整合应用。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "由于存在“证明最少性”这一相对准备而言的非例行瓶颈，且需自行选择枚举或约束推理，故在medium与hard间取相邻候选，hard任务索引为1。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [], \"request_ids\": [\"S006\"], \"residual_work\": \"需自行构造满足先后与设备约束的完整安排，并确定最少时段数。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S002\", \"S003\", \"S004\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S006\", \"S007\"], \"residual_work\": \"需给出下界证明：不能仅用6÷2，要结合A/B、C/D设备冲突及C、D分别晚于A、B推出至少5段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+              },
+              {
+                "document_id": "student",
+                "quote": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "入门学生，能读出先后约束，安排单条任务链，也做过两个互不依赖任务的并行练习；未学过带共享设备的任务图调度或最短工期证明。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "允许用枚举、反证或约束推理，不要求专门算法。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+        "analysis_sha256": "56ed4e23dd36620cc9342f6f6efc38fab8b047ac6cd6dbc38ec074e275e6d6b9",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false
+      },
+      "duration_ms": 84460,
+      "call_ids": [
+        "fd2baeb88b2043878b9db256ba751e63"
+      ]
+    },
+    "decision": {
+      "status": "insufficient_evidence",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "failed:solution_correct"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 88189
+  },
+  {
+    "case_id": "courier_single_failure_corrected",
+    "repeat": 1,
+    "status": "failed",
+    "input_sha256": "9d5a37d960c1840b20aa5d0c81c32fdbd684c538ac3bd27221652aba43531c24",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 7774,
+      "prompt_sha256": "a7d4355d008c50f7f987da7100612d30a80c6b42b0d60bc5923923b10c79a73d",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目条件完整：图、费用、两条简单路径、单边关闭容错及费用上界均明确；允许枚举与构造证明，入门离散数学准备足够。",
+        "solution": "取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-C-T，费用2+1+1=4；总登记费7≤8。任意一条走廊关闭时：若关闭S-A或A-C或C-T，P2仍完整；若关闭S-B或B-C，P1仍完整；若关闭C-T，P1与P2都含C-T，但此时可走S-A-B-T（费用1+1+3=5）或S-B-A-T（2+1+4=7），故至少一条登记路径仍完整。因此该方案抵抗任意单边关闭。\n证明≤7不可能：若总费≤7，则两条路径费用和≤7。S到T的每条简单路径至少经过一条与S相连的边和一条与T相连的边。S-A=1、S-B=2、A-T=4、B-T=3，故单条路径费用至少为1+3=4（S-A-B-T）或2+4=6（S-B-A-T）或经C的1+1+1=3（S-A-C-T）或2+1+1=4（S-B-C-T）。两条路径费用和≤7时，唯一可能是费用3与4的组合，即必须包含S-A-C-T和S-B-C-T。但这两条路径都使用C-T；若C-T关闭，两条登记路径均不完整，不能保证至少一条可通行。其他费用组合和至少8。故总费≤7不可能达到同一保证。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "需自行枚举两条S-T简单路径，计算费用并验证总费≤8。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S002",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "需逐条检查任意单边关闭后，至少一条登记路径仍完整。",
+            "mode": "construct_argument"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "需证明总费≤7时不存在满足单边关闭容错的两条简单路径。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium",
+            "hard"
+          ],
+          "boundary_reason": "设计并验证≤8方案属于熟悉最短路与简单路径的直接应用，但证明≤7不可能需要分类所有低费用路径并识别共同瓶颈边C-T，超出常规单次最短路计算，接近非平凡构造论证。",
+          "hard_task_index": 2
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 21,
+                "text": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S003",
+                "start": 86,
+                "end": 118,
+                "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "id": "S004",
+                "start": 118,
+                "end": 150,
+                "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S003",
+                "start": 86,
+                "end": 118,
+                "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "id": "S004",
+                "start": 118,
+                "end": 150,
+                "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "222506a6491f3cfe054937588e2278602c81c71003346a5b884f29368b3392b6"
+      },
+      "duration_ms": 3552,
+      "call_ids": [
+        "d531dc8a36684e5aaa5d2bc9a11683a3"
+      ]
+    },
+    "verification": {
+      "status": "failed",
+      "prompt_bytes": 23083,
+      "prompt_sha256": "7ac66b1096a7dc469c49ef8b0ff46a5ef015c5873d917d9d8f6b1a05808d5732",
+      "error_type": "ProviderOutputError",
+      "error_code": "output_token_limit",
+      "duration_ms": 117756,
+      "call_ids": [
+        "8d60baf460024f599e057b279fabe6a3"
+      ]
+    },
+    "decision": {
+      "status": "unavailable",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "verification_unavailable"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 121311
+  }
+]

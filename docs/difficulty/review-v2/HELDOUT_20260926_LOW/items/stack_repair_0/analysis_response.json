@@ -1,0 +1,57 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目条件完整：栈表示、四条指令语义、最小栈深、初始栈、目标、现有程序、只插入一条SWAP且不删不换、需检查四个边界。学生已分别练过各指令语义，但未练过组合指令中的顺序修复，因此可评。",
+  "solution": "现有程序跟踪：初始[2,5]；DUP→[2,5,5]；ADD弹出5、5，压入10→[2,10]；SUB弹出2、10，压入2-10=-8→[-8]，未达目标8。\n修复：在DUP与ADD之间插入SWAP。跟踪：初始[2,5]；DUP→[2,5,5]；SWAP→[2,5,5]（顶部两项相同，栈不变）；ADD→[2,10]；SUB→[2-10=-8]？不对，目标要求8。\n重新检查：目标“初始顶部数翻倍后，减去初始底部数”即5×2-2=8。现有DUP,ADD,SUB在[2,5]上：DUP→[2,5,5]；ADD→[2,10]；SUB弹出2、10得2-10=-8。要得8需10-2，故应在ADD与SUB之间插入SWAP：DUP→[2,5,5]；ADD→[2,10]；SWAP→[10,2]；SUB弹出10、2得10-2=8→[8]。\n其余边界：第一条前SWAP非法（仅1项）；DUP与ADD之间SWAP后仍[2,5,5]，ADD得[2,10]，SUB仍得-8；最后之后SWAP非法（仅1项）。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S007"
+      ],
+      "condition_ids": [
+        "S002",
+        "S003",
+        "S004",
+        "S006"
+      ],
+      "provided_ids": [],
+      "residual_work": "按DUP、ADD、SUB语义逐步跟踪[2,5]，算出最终栈并指出与目标8不符。",
+      "mode": "apply_familiar"
+    },
+    {
+      "request_ids": [
+        "S007",
+        "S008"
+      ],
+      "condition_ids": [
+        "S002",
+        "S003",
+        "S004",
+        "S005",
+        "S006",
+        "S009"
+      ],
+      "provided_ids": [],
+      "residual_work": "在四个边界中逐一尝试插入SWAP，验证合法性并跟踪结果，找出唯一能达到[8]的插入位置。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S008"
+      ],
+      "condition_ids": [
+        "S003",
+        "S009"
+      ],
+      "provided_ids": [],
+      "residual_work": "对未选中的三个边界分别说明失败原因：栈深不足导致非法，或交换后SUB操作数顺序仍错误。",
+      "mode": "construct_argument"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "medium"
+    ],
+    "boundary_reason": "学生已分别练过DUP、ADD、SUB、SWAP的给定语义，能直接跟踪单条指令；但未练过在组合指令中定位并修复顺序错误。本题需在四个边界中试插并验证，属于对已知语义的熟悉整合与选择，不是直接复述或单步应用，也未出现需要非例行洞察的瓶颈，故定为medium。",
+    "hard_task_index": null
+  }
+}

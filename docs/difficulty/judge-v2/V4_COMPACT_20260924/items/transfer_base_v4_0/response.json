@@ -1,0 +1,68 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目条件完整：账户、锁、转账语义、公平调度与无溢出等均已给出，且要求明确（伪代码、锁保护说明、正确性论证、死锁反例）。学习者已具备互斥锁、竞态、死锁基础，仅缺多对象加锁顺序经验，属于可评分的边界情形。",
+  "cognitive_demand": "strategic_reasoning",
+  "tasks": [
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S004",
+        "S005",
+        "S007"
+      ],
+      "solution_ids": [],
+      "residual_work": "需自行设计按账户 ID 排序加锁的转账伪代码：先比较 source/destination 的 ID，按固定全序依次获取两把锁，再在锁内读余额、检查、更新或返回失败，最后逆序释放。题目未提供任何伪代码或加锁顺序方案。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S008"
+      ],
+      "condition_ids": [
+        "S001",
+        "S004"
+      ],
+      "solution_ids": [],
+      "residual_work": "需说明读余额、检查与更新都在同一临界区内、由两把账户锁共同保护，并解释为何不能只锁一个账户或先读后锁。",
+      "mode": "apply_familiar"
+    },
+    {
+      "request_ids": [
+        "S008"
+      ],
+      "condition_ids": [
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "solution_ids": [],
+      "residual_work": "需给出正确性论证：总余额守恒（转账是同一临界区内一减一加）、不透支（检查与更新原子）、无死锁（全序加锁破坏循环等待）。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S008"
+      ],
+      "condition_ids": [
+        "S005"
+      ],
+      "solution_ids": [],
+      "residual_work": "需构造具体并发反例：两个线程分别以相反顺序获取 A、B 两把锁，各自持有第一把并等待第二把，形成循环等待而死锁。",
+      "mode": "construct_argument"
+    }
+  ],
+  "minimum_answer": "伪代码：transfer(s,d,amt){ if s.id<d.id {lock(s);lock(d);} else {lock(d);lock(s);} if s.balance>=amt {s.balance-=amt; d.balance+=amt; ok=true;} else ok=false; unlock both; return ok;} 读余额、检查与更新都在两把账户锁的同一临界区内完成，由 s 与 d 的锁共同保护；不使用全局锁。正确性：转账在临界区内一减一加，总额不变；检查与更新原子，故不透支；所有线程按账户 ID 全序加锁，破坏循环等待，故无死锁。反例：线程1 先锁 A 再等 B，线程2 先锁 B 再等 A，二者互相等待形成死锁。",
+  "decision": {
+    "candidates": [
+      "medium",
+      "hard"
+    ],
+    "hard_task_index": 0,
+    "reason": "学习者已掌握单锁保护计数器的分析，但尚未练习多对象加锁顺序及其正确性证明。本题核心瓶颈是自行设计按 ID 全序加锁的转账方案并论证其无死锁，这属于相对既有准备的非例行策略选择，而非单纯复述已知论证，故存在 hard 候选。另一方面，若学习者能把单锁临界区经验直接迁移到两把锁并按固定顺序获取，则任务接近熟悉的互斥应用，故 medium 亦合理。边界在于：题目未提供任何加锁顺序方案或正确性证明，需独立构造，因此不能仅判为 easy；但所需概念（互斥、临界区、循环等待）均为已学内容，故不排除 medium。hard_task_index=0 指向伪代码设计这一具体瓶颈。"
+  }
+}

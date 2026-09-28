@@ -1,0 +1,55 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "fail",
+      "reason": "Rules require start in a later segment after end of segment 3 and no later than segment 3, i.e. t>3 and t<=3; no integer segment satisfies both, with no exceptions allowed.",
+      "evidence_ids": [
+        "E0002",
+        "E0003",
+        "E0004"
+      ]
+    },
+    "reference_correct": {
+      "status": "fail",
+      "reason": "Reference answer t=3 satisfies t<=3 but violates t>3 required by later-than-3; under integer segment order the key does not follow.",
+      "evidence_ids": [
+        "E0008",
+        "E0014"
+      ]
+    },
+    "explanation_consistent": {
+      "status": "fail",
+      "reason": "Explanation claims segment 3 starts after detection completion, but exact visible rule requires a later segment after end of segment 3; 3 is not later, so it conflicts with the predicate.",
+      "evidence_ids": [
+        "E0009",
+        "E0003"
+      ]
+    },
+    "source_support": {
+      "status": "fail",
+      "reason": "Sources support the student's rules, but do not support the reference explanation's claim that segment 3 starts after detection; they state completion at end of segment 3 and later segment required, contradicting that claim.",
+      "source_ids": [
+        "E0018",
+        "E0019",
+        "E0020"
+      ],
+      "claim_ids": [
+        "E0009"
+      ]
+    },
+    "demand_supported": {
+      "status": "pass",
+      "reason": "Analysis treats the single request as unanswerable due conflicting conditions, separates conditions/request from no-solution conclusion; no difficulty boundary applies, and profile covers strict integer order needed to see no t exists.",
+      "analysis_ids": [
+        "E0016"
+      ],
+      "student_ids": [
+        "E0005"
+      ],
+      "profile_ids": [
+        "E0006",
+        "E0007"
+      ]
+    }
+  }
+}

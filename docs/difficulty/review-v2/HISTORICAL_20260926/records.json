@@ -1,0 +1,383 @@
+[
+  {
+    "case_id": "real_tasks_20260925_r3_q1",
+    "repeat": 0,
+    "status": "failed",
+    "input_sha256": "47170bdb782ed25e350a6ca94e47862bc540bb0b16c9f3cac062c6b5c1ad48e2",
+    "analysis": {
+      "status": "failed",
+      "prompt_sha256": "ed930d7d33a393e106b1ac743705a50b5abb1e1410fc0cfa36931969d8e7493b",
+      "error_type": "ValidationError"
+    },
+    "decision": {
+      "status": "unavailable",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "analysis_unavailable"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 5006
+  },
+  {
+    "case_id": "real_tasks_20260925_r5_q1",
+    "repeat": 0,
+    "status": "failed",
+    "input_sha256": "3becd06f5ca311d30df2b567c477b9a8ee0944099b8c52ce62fe807b194e5c05",
+    "analysis": {
+      "status": "validated",
+      "prompt_sha256": "660e284e837a67956853129f6315d4d21b091a127c13e9850f7663d408e0f295",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目给出完整到达序列、起始序号、累积确认与 NextByteExpected 定义，选项互斥且有一项符合规则；无缺失条件或歧义。",
+        "solution": "接收方已连续收到第1～200字节，第201字节起缺失；第501～700、901～1000字节虽到达，但因前面有缺口，不能使累积确认前移。NextByteExpected 指向第一个缺失字节，即第201字节；累积确认值也指向第201字节，表示期望收到从201开始的数据。最先缺失区间为第201～500字节。因此选 B。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S022",
+              "S023"
+            ],
+            "condition_ids": [
+              "S009",
+              "S016",
+              "S017",
+              "S018",
+              "S019",
+              "S020",
+              "S021"
+            ],
+            "provided_ids": [
+              "S012",
+              "S013"
+            ],
+            "residual_work": "把已到达区间与连续前缀区分开，确定累积确认只能覆盖1～200，并据此选出B。",
+            "mode": "select_or_adapt"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "easy"
+          ],
+          "boundary_reason": "该题只需按已给定义识别连续前缀并匹配选项，属于对累积确认规则的直接应用；无多步非例行瓶颈，故为easy。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "easy",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S022",
+                "start": 741,
+                "end": 803,
+                "text": "请依据“面向字节序号 + 累积确认”规则，判断接收方此刻应发送的累积确认值指向哪个字节位置，并定位数据中最先出现的缺失区间。"
+              },
+              {
+                "id": "S023",
+                "start": 805,
+                "end": 819,
+                "text": "请选择最符合上述规则的一项。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S009",
+                "start": 301,
+                "end": 326,
+                "text": "约定本情境中起始序号为 1，序号连续递增、不回收。"
+              },
+              {
+                "id": "S016",
+                "start": 575,
+                "end": 594,
+                "text": "1) 第 1～200 字节已按序收到。"
+              },
+              {
+                "id": "S017",
+                "start": 595,
+                "end": 615,
+                "text": "2) 第 201～500 字节尚未到达。"
+              },
+              {
+                "id": "S018",
+                "start": 616,
+                "end": 645,
+                "text": "3) 第 501～700 字节已到达，但它们前面存在缺口。"
+              },
+              {
+                "id": "S019",
+                "start": 646,
+                "end": 666,
+                "text": "4) 第 701～900 字节尚未到达。"
+              },
+              {
+                "id": "S020",
+                "start": 667,
+                "end": 687,
+                "text": "5) 第 901～1000 字节已到达。"
+              },
+              {
+                "id": "S021",
+                "start": 688,
+                "end": 739,
+                "text": "6) 此情境假设接收方不发送延迟确认、不重传，接收缓冲足够大，且发送方不重传第 201～500 字节。"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S012",
+                "start": 359,
+                "end": 466,
+                "text": "NextByteExpected 指向最新的“已收到且其前所有字节都已收到”的字节之后的那个字节：若数据按序到达，它指向 LastByteRcvd 之后；若出现乱序，则它指向数据中第一个缺失字节，即缺失区间的起点。"
+              },
+              {
+                "id": "S013",
+                "start": 466,
+                "end": 501,
+                "text": "一个字节只有在被收到、且其前面所有字节也都已收到之后，才可被应用读取。"
+              }
+            ]
+          }
+        ],
+        "case_sha256": "cfdb4ed84cee884f1c0dc4f352b61ae6c3167fcfca98080f80313256efa4247b",
+        "protocol_revision": "difficulty-review-v2-blind-solve-verify-20260926",
+        "human_validated": false,
+        "analysis_sha256": "de9be66d735ddff4e4279988e51eb7a5af09d906b1a7a3296a536eeac7e40600"
+      }
+    },
+    "verification": {
+      "status": "failed",
+      "prompt_sha256": "b4b102d4796ec9e387d12e68425af881802a9fec064558b597ce28c370fac4ad",
+      "error_type": "ValueError"
+    },
+    "decision": {
+      "status": "unavailable",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "verification_unavailable"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 5507
+  },
+  {
+    "case_id": "real_tasks_20260925_r6_q1",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "7e7f16f8bbb38e1d234a419ea19619a94e7fd12ad66c345f110168a275084368",
+    "analysis": {
+      "status": "validated",
+      "prompt_sha256": "d2487910b1f9938bbc7819081e5ceaec4e251b7fc28062b76caafb0c222d9ecc",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目给出初始 NextByteExpected=1000、各段序号与长度、到达顺序，并明确单向数据与累积确认规则；条件完整且无冲突，可唯一判定有效确认号。",
+        "solution": "各段覆盖区间：P=[1200,1400)，Q=[1000,1100)，R=[1400,1700)。初始 NextByteExpected=1000。Q 到达后连续覆盖 [1000,1100)，NextByteExpected 变为 1100；P 覆盖 [1200,1400)，与 1100 不连续，形成缺失 [1100,1200)，不能抬高确认号；R 覆盖 [1400,1700)，也不与已收前缀连续。因此有效累积确认号停在缺失区间起点前，即 1100。选 C。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S017"
+            ],
+            "condition_ids": [
+              "S012",
+              "S014",
+              "S015",
+              "S016"
+            ],
+            "provided_ids": [
+              "S006",
+              "S009",
+              "S010",
+              "S011"
+            ],
+            "residual_work": "根据各段序号与长度写出覆盖区间，按到达顺序维护连续已收前缀，识别缺失区间并确定确认号。",
+            "mode": "apply_familiar"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "easy"
+          ],
+          "boundary_reason": "题目直接给出初始 NextByteExpected、各段序号长度和累积确认规则，学生只需按规则做区间与连续性判断；这是课程目标中已练习的熟悉即时应用，独立选择很少，未达到需要非例行瓶颈的 medium/hard。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "easy",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S017",
+                "start": 650,
+                "end": 712,
+                "text": "问题：按 TCP 的字节序号与累积确认规则，此时接收端可回送的有效累积确认号（Acknowledgement 值）应为多少？"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S012",
+                "start": 437,
+                "end": 529,
+                "text": "某单向 TCP 连接的数据流：初始 NextByteExpected = 1000，接收端尚未收到任何数据字节；每个数据段携带连续的整数个数据字节，段长由“长度”给出，且各段互不重叠。"
+              },
+              {
+                "id": "S014",
+                "start": 544,
+                "end": 578,
+                "text": "1) 段 P：SequenceNum = 1200，长度 = 200"
+              },
+              {
+                "id": "S015",
+                "start": 579,
+                "end": 613,
+                "text": "2) 段 Q：SequenceNum = 1000，长度 = 100"
+              },
+              {
+                "id": "S016",
+                "start": 614,
+                "end": 648,
+                "text": "3) 段 R：SequenceNum = 1400，长度 = 300"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S006",
+                "start": 154,
+                "end": 212,
+                "text": "段的 SequenceNum 字段给出该段所载数据的第一个字节的序号，因此一个到达段覆盖从该序号开始的连续若干字节。"
+              },
+              {
+                "id": "S009",
+                "start": 280,
+                "end": 355,
+                "text": "接收端的 NextByteExpected 指向第一个空缺（尚未收到的连续字节）的起点；若数据按序到达，它指向 LastByteRcvd 之后的字节。"
+              },
+              {
+                "id": "S010",
+                "start": 356,
+                "end": 403,
+                "text": "累积确认只反映到第一个空缺之前连续收到的字节；乱序到达但不与已收前缀连续的数据不能抬高确认号。"
+              },
+              {
+                "id": "S011",
+                "start": 404,
+                "end": 435,
+                "text": "因此在存在缺失字节区间时，有效累积确认号停在缺失区间的起点前。"
+              }
+            ]
+          }
+        ],
+        "case_sha256": "582f95d4ac12a91906c4d0c49c17a212cd52d4edc9160e458adc41fbc85121e2",
+        "protocol_revision": "difficulty-review-v2-blind-solve-verify-20260926",
+        "human_validated": false,
+        "analysis_sha256": "e2db8ff1fedea9510107704b48c700ab12adc1dd2a6ce9a06eb261b270dffb29"
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_sha256": "8f2f92d220323335f26e214d64010cd382da840f49415ae7a82aabd45fb0c98d",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "Initial NextByteExpected, segment order/lengths, non-overlap, one-way data, and cumulative-ACK rule are all given; unique answer follows.",
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "初始 NextByteExpected = 1000，接收端尚未收到任何数据字节；每个数据段携带连续的整数个数据字节，段长由“长度”给出，且各段互不重叠。"
+              },
+              {
+                "document_id": "student",
+                "quote": "1) 段 P：SequenceNum = 1200，长度 = 200\n2) 段 Q：SequenceNum = 1000，长度 = 100\n3) 段 R：SequenceNum = 1400，长度 = 300"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "Q covers 1000–1099, so first gap starts at 1100; P/R are noncontiguous, so cumulative ACK is 1100, matching key C.",
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "C"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "Q 到达后连续覆盖 [1000,1100)，NextByteExpected 变为 1100；P 覆盖 [1200,1400)，与 1100 不连续，形成缺失 [1100,1200)，不能抬高确认号"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "Explanation matches key C and the visible rule that cumulative ACK stops before the first gap; 1100 is the gap start, not a covered byte.",
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "C 选项 1100：段 Q 已按序到达并覆盖 1000–1099，之后 1100–1199 缺失，因此第一个空缺起点是 1100，累积确认号停在 1100，正确。"
+              },
+              {
+                "document_id": "student",
+                "quote": "接收端的 NextByteExpected 指向第一个空缺（尚未收到的连续字节）的起点"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "Sources support byte-oriented sequencing, SequenceNum as first byte, and NextByteExpected pointing to first gap; these ground the student/reference claims.",
+            "evidence": [
+              {
+                "document_id": "source:context_50cce0b14f8a0a967a4fa7d49fd473c6",
+                "quote": "The SequenceNum field contains the sequence number for the first byte of data carried in that segment"
+              },
+              {
+                "document_id": "source:context_9a0e0a8fe960219d9262b9eb78135d3f",
+                "quote": "if data has arrived out of order, then NextByteExpected points to the start of the first gap in the data"
+              },
+              {
+                "document_id": "student",
+                "quote": "有效累积确认号停在缺失区间的起点前"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "Analysis classifies as familiar apply with residual interval/continuity work; student supplies all needed rules and data, so easy boundary is justified.",
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "学生只需按规则做区间与连续性判断；这是课程目标中已练习的熟悉即时应用"
+              },
+              {
+                "document_id": "student",
+                "quote": "能依据段首序号与段长写出各到达段覆盖的字节区间，并识别缺失区间。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "582f95d4ac12a91906c4d0c49c17a212cd52d4edc9160e458adc41fbc85121e2",
+        "analysis_sha256": "20f5462d3a3af666471a505c8ca5044d97229b6dc5436f73ce887fcfb1448724",
+        "protocol_revision": "difficulty-review-v2-blind-solve-verify-20260926",
+        "human_validated": false
+      }
+    },
+    "decision": {
+      "status": "assessed",
+      "candidates": [
+        "easy"
+      ],
+      "estimated_difficulty": "easy",
+      "target_relation": "mismatch",
+      "recommendation": "rework_candidate",
+      "reason_codes": [
+        "target_mismatch"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 5122
+  }
+]

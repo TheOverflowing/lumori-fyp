@@ -1,0 +1,118 @@
+{
+  "cases": [
+    {
+      "id": "stack_repair",
+      "split": "heldout",
+      "domain": "invented_stack_machine",
+      "learner_profile": "程序设计入门学生，会逐条跟踪一个栈的状态，分别练过DUP、ADD、SUB、SWAP的给定语义；尚未练过定位并修复一段组合指令中的顺序错误。",
+      "student_visible_text": "虚构机器用[底部,…,顶部]表示栈。DUP复制顶部；ADD弹出顶部两数a、b（a原来在b下面）并压入a+b；SUB以同样顺序压入a-b；SWAP交换顶部两项。DUP至少需要1项，其余三种指令至少需要2项，否则程序非法。\n初始栈为[2,5]。目标：将初始顶部数翻倍后，减去初始底部数，结束时只有结果8一项。现有程序是DUP、ADD、SUB。\n先逐步跟踪现有程序，说明它为何未达目标；再只插入一条SWAP，使所有指令合法并达到目标。说明插入位置，以及为什么其余三个指令边界不能完成这项修复。指令边界包括第一条之前、相邻指令之间、最后一条之后；不得删除或替换现有指令。",
+      "reference_answer": "现程序：[2,5]→[2,5,5]→[2,10]→[-8]，做成了2-10。把SWAP插在ADD与SUB之间：[2,10]→[10,2]→[8]。放在DUP之前会得到[5,2]→[5,2,2]→[5,4]→[1]；放在DUP与ADD之间只交换相同的两个5，仍得-8；放在SUB之后只有一项，SWAP非法。",
+      "reference_explanation": "要修复的是SUB的操作数顺序。先跟踪状态定位反序，再检查四个允许的插入点；只有ADD之后的交换同时保持合法并产生8。",
+      "sources": [
+        {
+          "id": "stack_instruction_spec",
+          "text": "用[底部,…,顶部]表示栈。DUP复制顶部；ADD弹出顶部两数a、b（a原来在b下面）并压入a+b；SUB以同样顺序压入a-b；SWAP交换顶部两项。DUP至少需要1项，其余三种指令至少需要2项，否则程序非法。"
+        },
+        {
+          "id": "stack_task_spec",
+          "text": "初始栈为[2,5]。目标：将初始顶部数翻倍后，减去初始底部数，结束时只有结果8一项。现有程序是DUP、ADD、SUB。只准在四个指令边界中的一处插入一条SWAP，不得删除或替换现有指令。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "medium"
+        ],
+        "content_status": "pass",
+        "issue": "须把已学指令语义用于状态跟踪、错误定位与受限修复，并排除其他位置；方法仍是已知规则的有限组合，无需新算法或定理。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    },
+    {
+      "id": "laboratory_slots",
+      "split": "heldout",
+      "domain": "invented_laboratory_schedule",
+      "learner_profile": "入门学生，能读出先后约束，安排单条任务链，也做过两个互不依赖任务的并行练习；未学过带共享设备的任务图调度或最短工期证明。允许用枚举、反证或约束推理，不要求专门算法。",
+      "student_visible_text": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务。\n先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制，允许一个时段只做一项。\n请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。证明须同时考虑先后与设备限制，不能仅用6÷2估算。",
+      "reference_answer": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。故4个时段不可能，更少也不可能；5个时段的构造满足所有规则。",
+      "reference_explanation": "构造通过让B与已完成前置任务的C重叠来节省时段；下界由E、F的后置关系向前推回C、D及A、B，与设备限制冲突。须自行选择这种组合约束证明。",
+      "sources": [
+        {
+          "id": "laboratory_capacity",
+          "text": "任务A、B、C、D、E、F每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务，允许一个时段只做一项。"
+        },
+        {
+          "id": "laboratory_dependencies",
+          "text": "C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "id": "laboratory_equipment",
+          "text": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "hard"
+        ],
+        "content_status": "pass",
+        "issue": "须自行综合依赖与互斥设备设计并行安排，再选择反证或等价方法建立最优性；对只练过单链和无依赖并行的背景是未提示的约束组合。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    },
+    {
+      "id": "marking_wrong_option",
+      "split": "heldout",
+      "domain": "invented_marking_scheme",
+      "learner_profile": "已掌握整数加、减、乘和代入一个给定算式的学生；不需要任何考试制度的外部知识。",
+      "student_visible_text": "虚构测验只有六题。计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。某学生答对4题，答错1题，空1题。\n单选：总分是多少？A.10；B.14；C.8；D.12。写出选项和计算式。",
+      "reference_answer": "B.14；4×3+1×2+1×0=14。",
+      "reference_explanation": "正确题贡献12分，错误题再加2分，空题不计分，所以总分14。",
+      "sources": [
+        {
+          "id": "marking_rules",
+          "text": "每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是六项分数相加，没有加分、最低分或舍入规则。"
+        },
+        {
+          "id": "marking_response_record",
+          "text": "某学生答对4题，答错1题，空1题。选项A.10；B.14；C.8；D.12。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "easy"
+        ],
+        "content_status": "fail",
+        "issue": "题目充分且有唯一正确选项A：4×3-1×2=10；参考答案和解释把扣2分错误写成加2分。不能因参考错误把这道可解题本身判为无解，也不能让容易的难度标签覆盖内容错误。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    },
+    {
+      "id": "beacon_contradiction",
+      "split": "heldout",
+      "domain": "invented_beacon_timing",
+      "learner_profile": "掌握整数时段编号和严格先后的入门学生。只能依据题面规则，不允许删除规则或假设紧急豁免。",
+      "student_visible_text": "虚构信标系统把时间分成整数时段1、2、3、4、5。探测器在第3时段结束时才完成检测。系统规则同时要求：信标必须在检测完成后的更晚时段启动；信标必须不晚于第3时段启动。恰好启动一次，无例外或允许修改的规则。\n填写一个满足全部规则的启动时段编号，并解释它为何合规。",
+      "reference_answer": "第3时段。",
+      "reference_explanation": "第3时段可以在检测完成后立即启动，也正好满足不晚于第3时段。",
+      "sources": [
+        {
+          "id": "beacon_clock",
+          "text": "时间分成整数时段1、2、3、4、5。探测器在第3时段结束时才完成检测。"
+        },
+        {
+          "id": "beacon_mandatory_rules",
+          "text": "信标必须在检测完成后的更晚时段启动；信标必须不晚于第3时段启动。恰好启动一次，无例外或允许修改的规则。"
+        }
+      ],
+      "expected": {
+        "eligibility": "invalid_question",
+        "candidates": [],
+        "content_status": "fail",
+        "issue": "更晚时段要求编号>3，截止要求编号≤3，两者不能同时成立。参考答案3违反严格先后，题目却要求填写一个合规编号，未提供正确作答形式。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    }
+  ]
+}

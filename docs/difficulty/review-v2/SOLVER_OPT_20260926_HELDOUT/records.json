@@ -1,0 +1,1707 @@
+[
+  {
+    "case_id": "adaptive_pair_identification_v2",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "6772b9bce05dda127d3e367994fd0d7730a3d817bc794ff6a275714cbbf7ba28",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 8181,
+      "prompt_sha256": "15b4785840c92fb29997a4bb1cb03c022305598f361244c8f375cfd8d9dcaf7b",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目条件明确：8个候选、每次问两个不同对象、回答条件、停止条件均无歧义；学习者具备候选集合更新和排除法的基本经验，且题目允许自己画树或穷举，不要求引用信息论定理，因此可以尝试构造策略并用有限分支反证下界。",
+        "solution": "策略：先问{A,B}。若答是，问{A,C}：是则为A，否为B。若答否，问{C,D}。若答是，问{C,E}：是则为C，否为D。若答否，问{E,F}。若答是，问{E,G}：是则为E，否为F。若答否，问{G,E}：是则为G，否为H。最坏4次（路径：否、否、是/否、第四问；其他路径最多3次）。证明：任何3次策略首问只能报两个名字，故“是”后至多2个候选，“否”后至少6个候选。若答否，剩余2次询问至多产生2²=4种不同回答序列，无法区分6个对象，必有不同对象同路径。故至少4次，策略达到最优。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S006",
+              "S007"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "从初始候选全集{A,...,H}出发，按每次回答把候选集更新为已报两名字的交集（是）或差集（否），设计一个不超过4层的完整决策树；在两候选分支需用一个已排除对象作陪衬，并列出所有路径。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S007"
+            ],
+            "condition_ids": [
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "对设计好的策略逐路径计数：首问是→2次，首问否且二问是→3次，首问否且二问否→4次；取最大值4作为最坏次数。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S007"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "证明3次不可行：首问的“是”分支至多2个候选，“否”分支至少6个候选；若答否，余下2次询问最多产生2²=4个不同的回答序列，无法区分6个对象，故必有不同对象路径相同。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium",
+            "hard"
+          ],
+          "boundary_reason": "构造4次决策树可由已练习的候选更新和穷举画出，属中等；但证明3次不可能需要将首问的2/6分支与剩余回答序列容量结合，并给出“更少次数不可能”的一般性反驳，未见于已练习的单一询问更新或简单的排除法。材料允许穷举而无决策树/下界证明训练，因此该瓶颈达到困难；整体靠近中等-困难边界，故给中等和困难两个候选，不确定主要在于学生是否能把穷举转化为充分的反证。",
+          "hard_task_index": 2
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 203,
+                "end": 240,
+                "text": "请设计一种无论隐藏对象是谁都能确定答案的策略，使最坏情况下的询问次数最少。"
+              },
+              {
+                "id": "S007",
+                "start": 240,
+                "end": 278,
+                "text": "给出完整的分支策略，说明最坏次数，并证明任何更少次数的策略都不可能保证识别。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 47,
+                "text": "虚构探询游戏开始时，盒内隐藏的对象恰为A、B、C、D、E、F、G、H之一，所有对象起初都可能。"
+              },
+              {
+                "id": "S002",
+                "start": 47,
+                "end": 98,
+                "text": "每次询问必须报出恰好两个不同对象名；这两个名字可以来自完整名单，也允许再次使用已排除或曾询问过的名字。"
+              },
+              {
+                "id": "S003",
+                "start": 98,
+                "end": 146,
+                "text": "设备回答“是”的必要且充分条件是隐藏对象属于本次所报的这两个名字，否则回答“否”，设备从不说谎。"
+              },
+              {
+                "id": "S004",
+                "start": 147,
+                "end": 163,
+                "text": "下一次询问可以依据此前回答改变。"
+              },
+              {
+                "id": "S005",
+                "start": 163,
+                "end": 202,
+                "text": "每次询问费用相同；当且仅当当前候选集合只剩一个对象时，才允许停止并报出该对象。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S007",
+                "start": 240,
+                "end": 278,
+                "text": "给出完整的分支策略，说明最坏次数，并证明任何更少次数的策略都不可能保证识别。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S005",
+                "start": 163,
+                "end": 202,
+                "text": "每次询问费用相同；当且仅当当前候选集合只剩一个对象时，才允许停止并报出该对象。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S007",
+                "start": 240,
+                "end": 278,
+                "text": "给出完整的分支策略，说明最坏次数，并证明任何更少次数的策略都不可能保证识别。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 47,
+                "text": "虚构探询游戏开始时，盒内隐藏的对象恰为A、B、C、D、E、F、G、H之一，所有对象起初都可能。"
+              },
+              {
+                "id": "S002",
+                "start": 47,
+                "end": 98,
+                "text": "每次询问必须报出恰好两个不同对象名；这两个名字可以来自完整名单，也允许再次使用已排除或曾询问过的名字。"
+              },
+              {
+                "id": "S003",
+                "start": 98,
+                "end": 146,
+                "text": "设备回答“是”的必要且充分条件是隐藏对象属于本次所报的这两个名字，否则回答“否”，设备从不说谎。"
+              },
+              {
+                "id": "S005",
+                "start": 163,
+                "end": 202,
+                "text": "每次询问费用相同；当且仅当当前候选集合只剩一个对象时，才允许停止并报出该对象。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "0a705f43f5bf794523eb1f14dca58253868dce1bcfa752b89e0da1c9f14e1aa2",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "416506109a8e738d37e0b4fedcdbca8f5cf275820dda64ca40ae85586a112f76"
+      },
+      "duration_ms": 63241,
+      "call_ids": [
+        "1c34b9f08cc54d2c853be5fefdc04c12"
+      ]
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 24809,
+      "prompt_sha256": "76b77cac6c96bd51000b3ef3cf07474b61608f1a81ad90b7ede9d9eab29d9d1d",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "Eight fixed candidates, exactly two distinct names, reuse of excluded/prior names permitted, iff membership answer, adaptive, stop iff singleton are jointly sufficient and clear.",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构探询游戏开始时，盒内隐藏的对象恰为A、B、C、D、E、F、G、H之一，所有对象起初都可能。"
+              },
+              {
+                "document_id": "student",
+                "quote": "每次询问必须报出恰好两个不同对象名；这两个名字可以来自完整名单，也允许再次使用已排除或曾询问过的名字。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备回答“是”的必要且充分条件是隐藏对象属于本次所报的这两个名字，否则回答“否”，设备从不说谎。"
+              },
+              {
+                "document_id": "student",
+                "quote": "下一次询问可以依据此前回答改变。"
+              },
+              {
+                "document_id": "student",
+                "quote": "每次询问费用相同；当且仅当当前候选集合只剩一个对象时，才允许停止并报出该对象。"
+              }
+            ]
+          },
+          "solution_correct": {
+            "status": "pass",
+            "reason": "Analyzed tree uniquely resolves all paths within 4; lower bound correctly shows first-no branch has 6 candidates but only 4 possible 2-query transcripts.",
+            "evidence_ids": [
+              "E0020",
+              "E0022",
+              "E0024",
+              "E0026",
+              "E0028",
+              "E0029",
+              "E0030",
+              "E0001"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"策略：先问{A,B}。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "若答否，问{C,D}。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "若答否，问{E,F}。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "若答否，问{G,E}：是则为G，否为H。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "证明：任何3次策略首问只能报两个名字，故“是”后至多2个候选，“否”后至少6个候选。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "若答否，剩余2次询问至多产生2²=4种不同回答序列，无法区分6个对象，必有不同对象同路径。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "故至少4次，策略达到最优。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构探询游戏开始时，盒内隐藏的对象恰为A、B、C、D、E、F、G、H之一，所有对象起初都可能。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "Reference strategy respects reuse rule, ends uniquely for A-H, and explanation's all-no branch proves 3 queries cannot stop uniquely.",
+            "evidence_ids": [
+              "E0010",
+              "E0011",
+              "E0012",
+              "E0013",
+              "E0001",
+              "E0003",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "最少的最坏询问次数是4。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "先问{A,B}：若是，再问{A,C}，是则A，否则B。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "若首次为否，再问{C,D}：若是，再问{C,A}，是则C，否则D；若否，再问{E,F}：若是，再问{E,A}，是则E，否则F；若否，再问{G,A}，是则G，否则H。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "各终点都唯一，最多询问4次。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构探询游戏开始时，盒内隐藏的对象恰为A、B、C、D、E、F、G、H之一，所有对象起初都可能。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备回答“是”的必要且充分条件是隐藏对象属于本次所报的这两个名字，否则回答“否”，设备从不说谎。"
+              },
+              {
+                "document_id": "student",
+                "quote": "每次询问费用相同；当且仅当当前候选集合只剩一个对象时，才允许停止并报出该对象。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "Explanation matches reference key and query/stop definitions, correctly handling excluded-name complements and no-branch exclusion count.",
+            "evidence_ids": [
+              "E0014",
+              "E0015",
+              "E0016",
+              "E0002",
+              "E0003",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "每次恰好询问两个不同名字，已排除的名字仍可使用：首次回答是时C已排除，首次回答否时A已排除，所以后续分支中的补充名字合法且不会引入额外候选。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "要证明至少4次，考虑连续3次都回答否的分支：每次否最多排除2个对象，3次最多排除6个，初始8个中仍至少剩2个；这一分支与至少一个真实隐藏对象相容，尚不能停止。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "给出的策略在每个隐藏对象上都正确，最坏为4次，故达到下界。"
+              },
+              {
+                "document_id": "student",
+                "quote": "每次询问必须报出恰好两个不同对象名；这两个名字可以来自完整名单，也允许再次使用已排除或曾询问过的名字。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备回答“是”的必要且充分条件是隐藏对象属于本次所报的这两个名字，否则回答“否”，设备从不说谎。"
+              },
+              {
+                "document_id": "student",
+                "quote": "每次询问费用相同；当且仅当当前候选集合只剩一个对象时，才允许停止并报出该对象。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "Source excerpts exactly support the stated candidate set, pair query/reuse rule, iff answer condition, adaptive/cost/stop constraint, and optimality target.",
+            "evidence_ids": [
+              "E0036",
+              "E0037",
+              "E0038",
+              "E0039",
+              "E0040",
+              "E0041",
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:pair_game_objects",
+                "quote": "隐藏对象恰为A、B、C、D、E、F、G、H之一，所有对象起初都可能。"
+              },
+              {
+                "document_id": "source:pair_query_rule",
+                "quote": "每次必须报出恰好两个不同对象名，可以来自完整名单，允许再次使用已排除或曾询问过的名字。"
+              },
+              {
+                "document_id": "source:pair_query_rule",
+                "quote": "回答是的必要且充分条件是隐藏对象属于所报的这两个名字，否则回答否，设备从不说谎。"
+              },
+              {
+                "document_id": "source:pair_stopping_rule",
+                "quote": "下一次询问可以依据此前回答改变；每次询问费用相同。"
+              },
+              {
+                "document_id": "source:pair_stopping_rule",
+                "quote": "当且仅当当前候选集合只剩一个对象时，才允许停止并报出该对象。"
+              },
+              {
+                "document_id": "source:pair_stopping_rule",
+                "quote": "目标是对每个可能隐藏对象都保证正确，并最小化最坏询问次数。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构探询游戏开始时，盒内隐藏的对象恰为A、B、C、D、E、F、G、H之一，所有对象起初都可能。"
+              },
+              {
+                "document_id": "student",
+                "quote": "每次询问必须报出恰好两个不同对象名；这两个名字可以来自完整名单，也允许再次使用已排除或曾询问过的名字。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设备回答“是”的必要且充分条件是隐藏对象属于本次所报的这两个名字，否则回答“否”，设备从不说谎。"
+              },
+              {
+                "document_id": "student",
+                "quote": "下一次询问可以依据此前回答改变。"
+              },
+              {
+                "document_id": "student",
+                "quote": "每次询问费用相同；当且仅当当前候选集合只剩一个对象时，才允许停止并报出该对象。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请设计一种无论隐藏对象是谁都能确定答案的策略，使最坏情况下的询问次数最少。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "All three required tasks are separated from facts; boundary cites profile practice for tree construction and marks lower-bound proof as new, so medium/hard split is justified.",
+            "evidence_ids": [
+              "E0017",
+              "E0018",
+              "E0031",
+              "E0032",
+              "E0033",
+              "E0034",
+              "E0006",
+              "E0007",
+              "E0008",
+              "E0009"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"构造4次决策树可由已练习的候选更新和穷举画出，属中等；但证明3次不可能需要将首问的2/6分支与剩余回答序列容量结合，并给出“更少次数不可能”的一般性反驳，未见于已练习的单一询问更新或简单的排除法。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "材料允许穷举而无决策树/下界证明训练，因此该瓶颈达到困难；整体靠近中等-困难边界，故给中等和困难两个候选，不确定主要在于学生是否能把穷举转化为充分的反证。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S002\", \"S003\", \"S004\", \"S005\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [], \"request_ids\": [\"S006\", \"S007\"], \"residual_work\": \"从初始候选全集{A,..."
+              },
+              {
+                "document_id": "analysis",
+                "quote": ",H}出发，按每次回答把候选集更新为已报两名字的交集（是）或差集（否），设计一个不超过4层的完整决策树；在两候选分支需用一个已排除对象作陪衬，并列出所有路径。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S005\"], \"mode\": \"apply_familiar\", \"provided_ids\": [], \"request_ids\": [\"S007\"], \"residual_work\": \"对设计好的策略逐路径计数：首问是→2次，首问否且二问是→3次，首问否且二问否→4次；取最大值4作为最坏次数。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S001\", \"S002\", \"S003\", \"S005\"], \"mode\": \"construct_argument\", \"provided_ids\": [], \"request_ids\": [\"S007\"], \"residual_work\": \"证明3次不可行：首问的“是”分支至多2个候选，“否”分支至少6个候选；若答否，余下2次询问最多产生2²=4个不同的回答序列，无法区分6个对象，故必有不同对象路径相同。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请设计一种无论隐藏对象是谁都能确定答案的策略，使最坏情况下的询问次数最少。"
+              },
+              {
+                "document_id": "student",
+                "quote": "给出完整的分支策略，说明最坏次数，并证明任何更少次数的策略都不可能保证识别。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "能列出有限候选集合，理解“且仅当”、集合交集和排除法，并做过一次是非询问后的候选更新；未学习自适应识别策略、决策树或最坏次数下界证明。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "允许自己画树、分类或穷举，不要求引用信息论定理。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "0a705f43f5bf794523eb1f14dca58253868dce1bcfa752b89e0da1c9f14e1aa2",
+        "analysis_sha256": "81db7d97e7d6ce66c3f7f21d3255b6bef889d1d6a7169aa3b705b0bdd98ce63b",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false
+      },
+      "duration_ms": 90398,
+      "call_ids": [
+        "490671f4d6d643f8b45b48d4b1abd6a0"
+      ]
+    },
+    "decision": {
+      "status": "boundary",
+      "candidates": [
+        "medium",
+        "hard"
+      ],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "difficulty_boundary"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 153642
+  },
+  {
+    "case_id": "odd_sum_conditional_draw_v2",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "cc05b45ccd4e4042a3e70848d4f424eff8c77905ca12860fd886b00f24bd9040",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 7623,
+      "prompt_sha256": "a3d89a8e22de39d6b7a201d80a2ddda3d62bc8a5fca374014b27b64225f0561f",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "问题陈述无歧义：样本空间为4签无放回有序抽取的12个等可能结果，条件事件为x+y为奇数且无额外筛选。学习档案已覆盖等可能样本空间、条件概率公式、有序枚举和奇偶判断；乘法比较属基础算术，无需额外准备，因此合格。",
+        "solution": "所有有序结果共12个：(1,2),(1,3),(1,4),(2,1),(2,3),(2,4),(3,1),(3,2),(3,4),(4,1),(4,2),(4,3)。条件x+y为奇时，一奇一偶，条件结果8个：(1,2),(1,4),(2,1),(2,3),(3,2),(3,4),(4,1),(4,3)；这些是分母，仍等可能。其中x×y>3的有6个：(1,4),(2,3),(3,2),(3,4),(4,1),(4,3)。所以条件概率=6/8=3/4。条件内不满足x×y>3的全部结果为(1,2),(2,1)。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003"
+            ],
+            "provided_ids": [],
+            "residual_work": "按无放回、顺序不同算不同列出12个等可能结果。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "筛出x+y为奇的8个结果，说明它们是等可能的条件分母。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "对8个条件结果计算乘积并与3比较，得6个有利结果。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "用6/8并化简为3/4。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "取条件集合中不满足x×y>3的(1,2),(2,1)。",
+            "mode": "apply_familiar"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "easy"
+          ],
+          "boundary_reason": "已分别练过有序枚举和奇偶判断，条件概率公式也已学；本题只是把这些已练子技能按题目明确顺序机械组合（列举12个有序结果→筛奇数和→筛乘积>3→计数）。没有新的方法选择或论证瓶颈，因此最接近边界为easy/medium，但就档案证据应判为easy。未见过本组合条件带来轻微不确定性，但不足以构成medium要求的整合难度。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "easy",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 156,
+                "end": 211,
+                "text": "求此时x×y大于3的条件概率，写成最简分数；说明分母应包含哪些结果，并给出条件内不满足x×y大于3的全部结果。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 36,
+                "text": "虚构抽签游戏中，袋内恰有标为1、2、3、4的四枚不同签，每种标号各一枚。"
+              },
+              {
+                "id": "S002",
+                "start": 36,
+                "end": 72,
+                "text": "先均匀随机抽出一枚，记为x；不放回，再从余签中均匀随机抽出一枚，记为y。"
+              },
+              {
+                "id": "S003",
+                "start": 72,
+                "end": 96,
+                "text": "记录有序结果(x,y)，抽取顺序不同算不同结果。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 156,
+                "end": 211,
+                "text": "求此时x×y大于3的条件概率，写成最简分数；说明分母应包含哪些结果，并给出条件内不满足x×y大于3的全部结果。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S004",
+                "start": 97,
+                "end": 146,
+                "text": "主持人只在x+y为奇数时亮灯，否则不亮灯；亮灯的必要且充分条件就是x+y为奇数，没有其他筛选规则。"
+              },
+              {
+                "id": "S005",
+                "start": 146,
+                "end": 155,
+                "text": "你只观察到灯已亮。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 156,
+                "end": 211,
+                "text": "求此时x×y大于3的条件概率，写成最简分数；说明分母应包含哪些结果，并给出条件内不满足x×y大于3的全部结果。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S004",
+                "start": 97,
+                "end": 146,
+                "text": "主持人只在x+y为奇数时亮灯，否则不亮灯；亮灯的必要且充分条件就是x+y为奇数，没有其他筛选规则。"
+              },
+              {
+                "id": "S005",
+                "start": 146,
+                "end": 155,
+                "text": "你只观察到灯已亮。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 156,
+                "end": 211,
+                "text": "求此时x×y大于3的条件概率，写成最简分数；说明分母应包含哪些结果，并给出条件内不满足x×y大于3的全部结果。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S004",
+                "start": 97,
+                "end": 146,
+                "text": "主持人只在x+y为奇数时亮灯，否则不亮灯；亮灯的必要且充分条件就是x+y为奇数，没有其他筛选规则。"
+              },
+              {
+                "id": "S005",
+                "start": 146,
+                "end": 155,
+                "text": "你只观察到灯已亮。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 156,
+                "end": 211,
+                "text": "求此时x×y大于3的条件概率，写成最简分数；说明分母应包含哪些结果，并给出条件内不满足x×y大于3的全部结果。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S004",
+                "start": 97,
+                "end": 146,
+                "text": "主持人只在x+y为奇数时亮灯，否则不亮灯；亮灯的必要且充分条件就是x+y为奇数，没有其他筛选规则。"
+              },
+              {
+                "id": "S005",
+                "start": 146,
+                "end": 155,
+                "text": "你只观察到灯已亮。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "cb6e48bd712ab7af758181852719417dbb411e18034f3e2afd7699e961cb8cb7",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "b10b333d24744886e443d341a66d7e262be752ea2ab5d4ef8b9eba853cffbad5"
+      },
+      "duration_ms": 59595,
+      "call_ids": [
+        "960146741b794632990907bf159a714f"
+      ]
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 21402,
+      "prompt_sha256": "c22f9d42988339a89b5b6242393cdd791a6f0c0e0f4de8e469ac43d2387f09d0",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "Material conditions are internally consistent: labels 1-4 one each, ordered without-replacement draw, light iff odd sum with no other filtering, observed light. Sufficient to enumerate 12 and condition on 8.",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构抽签游戏中，袋内恰有标为1、2、3、4的四枚不同签，每种标号各一枚。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先均匀随机抽出一枚，记为x；不放回，再从余签中均匀随机抽出一枚，记为y。"
+              },
+              {
+                "document_id": "student",
+                "quote": "记录有序结果(x,y)，抽取顺序不同算不同结果。"
+              },
+              {
+                "document_id": "student",
+                "quote": "主持人只在x+y为奇数时亮灯，否则不亮灯；亮灯的必要且充分条件就是x+y为奇数，没有其他筛选规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "你只观察到灯已亮。"
+              },
+              {
+                "document_id": "student",
+                "quote": "求此时x×y大于3的条件概率，写成最简分数；说明分母应包含哪些结果，并给出条件内不满足x×y大于3的全部结果。"
+              }
+            ]
+          },
+          "solution_correct": {
+            "status": "pass",
+            "reason": "Blind solution correctly lists all 12 ordered outcomes, filters the 8 odd-sum outcomes, counts 6 with product>3, gives 6/8=3/4 and unsat (1,2),(2,1).",
+            "evidence_ids": [
+              "E0019",
+              "E0020",
+              "E0021",
+              "E0022",
+              "E0023",
+              "E0002",
+              "E0004"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"所有有序结果共12个：(1,2),(1,3),(1,4),(2,1),(2,3),(2,4),(3,1),(3,2),(3,4),(4,1),(4,2),(4,3)。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "条件x+y为奇时，一奇一偶，条件结果8个：(1,2),(1,4),(2,1),(2,3),(3,2),(3,4),(4,1),(4,3)；这些是分母，仍等可能。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "其中x×y>3的有6个：(1,4),(2,3),(3,2),(3,4),(4,1),(4,3)。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "所以条件概率=6/8=3/4。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "条件内不满足x×y>3的全部结果为(1,2),(2,1)。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先均匀随机抽出一枚，记为x；不放回，再从余签中均匀随机抽出一枚，记为y。"
+              },
+              {
+                "document_id": "student",
+                "quote": "主持人只在x+y为奇数时亮灯，否则不亮灯；亮灯的必要且充分条件就是x+y为奇数，没有其他筛选规则。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "Reference answer independently states condition sample 8, favorable 6, probability 3/4, and unsat (1,2),(2,1); this follows from the student draw and signal rules.",
+            "evidence_ids": [
+              "E0009",
+              "E0010",
+              "E0002",
+              "E0004"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "条件概率为3/4。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "亮灯后的条件样本共有8个有序结果，其中乘积大于3的有6个，所以6/8=3/4；不满足的结果恰为(1,2)、(2,1)。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先均匀随机抽出一枚，记为x；不放回，再从余签中均匀随机抽出一枚，记为y。"
+              },
+              {
+                "document_id": "student",
+                "quote": "主持人只在x+y为奇数时亮灯，否则不亮灯；亮灯的必要且充分条件就是x+y为奇数，没有其他筛选规则。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "Explanation keeps 8 odd-sum outcomes, notes two unsat products equal 2 and rest exceed 3, denominator 8 not 12; matches reference answer and exact conditional definition.",
+            "evidence_ids": [
+              "E0011",
+              "E0012",
+              "E0013",
+              "E0004",
+              "E0006"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "原抽取共有12个等可能有序结果。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "亮灯条件下只保留(1,2)、(1,4)、(2,1)、(2,3)、(3,2)、(3,4)、(4,1)、(4,3)，共8个，它们条件下仍等可能。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "两个不满足结果的乘积均为2，其余6个的乘积大于3；因此分母为8而非12，概率为6/8=3/4。"
+              },
+              {
+                "document_id": "student",
+                "quote": "主持人只在x+y为奇数时亮灯，否则不亮灯；亮灯的必要且充分条件就是x+y为奇数，没有其他筛选规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "求此时x×y大于3的条件概率，写成最简分数；说明分母应包含哪些结果，并给出条件内不满足x×y大于3的全部结果。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "Provided source excerpts exactly match the student draw rule, signal rule, and target event; no material factual claim lacks source support.",
+            "evidence_ids": [
+              "E0030",
+              "E0031",
+              "E0032",
+              "E0033",
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0006"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:token_draw_rule",
+                "quote": "袋内恰有标为1、2、3、4的四枚不同签，每种标号各一枚。"
+              },
+              {
+                "document_id": "source:token_draw_rule",
+                "quote": "先均匀随机抽出一枚，记为x；不放回，再从余签中均匀随机抽出一枚，记为y。"
+              },
+              {
+                "document_id": "source:token_draw_rule",
+                "quote": "记录有序结果(x,y)，抽取顺序不同算不同结果。"
+              },
+              {
+                "document_id": "source:token_signal_rule",
+                "quote": "亮灯的必要且充分条件为x+y是奇数，没有其他筛选规则；目标事件为x×y大于3。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构抽签游戏中，袋内恰有标为1、2、3、4的四枚不同签，每种标号各一枚。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先均匀随机抽出一枚，记为x；不放回，再从余签中均匀随机抽出一枚，记为y。"
+              },
+              {
+                "document_id": "student",
+                "quote": "记录有序结果(x,y)，抽取顺序不同算不同结果。"
+              },
+              {
+                "document_id": "student",
+                "quote": "主持人只在x+y为奇数时亮灯，否则不亮灯；亮灯的必要且充分条件就是x+y为奇数，没有其他筛选规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "求此时x×y大于3的条件概率，写成最简分数；说明分母应包含哪些结果，并给出条件内不满足x×y大于3的全部结果。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "Proposed easy boundary matches residual work: enumerate 12, filter odd, compare product, simplify, list unsat; all tasks covered and prompt supplies no answer. Profile confirms practiced components; unlearned combination immaterial.",
+            "evidence_ids": [
+              "E0014",
+              "E0015",
+              "E0016",
+              "E0017",
+              "E0018",
+              "E0002",
+              "E0004",
+              "E0006",
+              "E0007",
+              "E0008"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"已分别练过有序枚举和奇偶判断，条件概率公式也已学；本题只是把这些已练子技能按题目明确顺序机械组合（列举12个有序结果→筛奇数和→筛乘积>3→计数）。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "没有新的方法选择或论证瓶颈，因此最接近边界为easy/medium，但就档案证据应判为easy。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "未见过本组合条件带来轻微不确定性，但不足以构成medium要求的整合难度。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"candidates\": [\"easy\"], \"hard_task_index\": null}, \"eligibility\": \"eligible\", \"eligibility_reason\": \"问题陈述无歧义：样本空间为4签无放回有序抽取的12个等可能结果，条件事件为x+y为奇数且无额外筛选。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "学习档案已覆盖等可能样本空间、条件概率公式、有序枚举和奇偶判断；乘法比较属基础算术，无需额外准备，因此合格。"
+              },
+              {
+                "document_id": "student",
+                "quote": "先均匀随机抽出一枚，记为x；不放回，再从余签中均匀随机抽出一枚，记为y。"
+              },
+              {
+                "document_id": "student",
+                "quote": "主持人只在x+y为奇数时亮灯，否则不亮灯；亮灯的必要且充分条件就是x+y为奇数，没有其他筛选规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "求此时x×y大于3的条件概率，写成最简分数；说明分母应包含哪些结果，并给出条件内不满足x×y大于3的全部结果。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "已学有限等可能样本空间，以及条件概率等于条件内有利结果数除以条件内总结果数；分别练过有序抽取的枚举与整数奇偶判断，未做过本题的组合条件。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "可用列举，不要求排列组合公式。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "cb6e48bd712ab7af758181852719417dbb411e18034f3e2afd7699e961cb8cb7",
+        "analysis_sha256": "4a0381b4761a1de2617f0936e3e5875ce5cc22e61b82103bd57f83fc4c4e2e33",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false
+      },
+      "duration_ms": 59485,
+      "call_ids": [
+        "dbf952f1c0c543b99018e199d094249b"
+      ]
+    },
+    "decision": {
+      "status": "assessed",
+      "candidates": [
+        "easy"
+      ],
+      "estimated_difficulty": "easy",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "target_unavailable"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 119084
+  },
+  {
+    "case_id": "glyph_table_lookup_v2",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "6a9962d978917a7aed4e5daba7d4d776dff981c4455deed2de232fd52fedc028",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 6769,
+      "prompt_sha256": "9c76bde86bb5d17d495e35cf8b7399ce16b00c2056d9474e8ab90d92ed721a9c",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题干提供完整查码表和清晰标注“波纹”，学生只需按给出的入门能力识别相同词组并逐项查找；条件无缺失或歧义。",
+        "solution": "代码：73。查到的表项：波纹→73。在给出的完整查码表中直接找到与登记卡标注“波纹”相同的表项，对应代码为73，不必按字形或顺序推断。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S004"
+            ],
+            "condition_ids": [
+              "S001",
+              "S003"
+            ],
+            "provided_ids": [
+              "S002"
+            ],
+            "residual_work": "在表中找出“波纹”这一项并抄录其代码73，同时指出该表项；无需计算或推断。",
+            "mode": "reproduce"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "easy"
+          ],
+          "boundary_reason": "题目只有直接查表复现一项，学习者已具备辨识相同词组并逐项查找的准备。最接近的边界为 easy/medium；由于答案已在表中显式给出，不需选择或整合规则，因此为 easy。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "easy",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S004",
+                "start": 83,
+                "end": 102,
+                "text": "请写出它对应的代码，并指出查到的表项。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 40,
+                "text": "虚构字纹登记处只使用下列完整查码表，不存在按字形、顺序或其他信息推断代码的规则。"
+              },
+              {
+                "id": "S003",
+                "start": 69,
+                "end": 83,
+                "text": "一张登记卡清楚标注“波纹”。"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S002",
+                "start": 41,
+                "end": 68,
+                "text": "晨星纹→41；苔叶纹→26；波纹→73；方格纹→58。"
+              }
+            ]
+          }
+        ],
+        "case_sha256": "2b670f005a4671347937c1c5ac3c7360506b2b7bf2e2c3fce915b037f22f01a7",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "cb4402a6bc1cdf25fba70fd65f573edce030ce4470132f416b8d4c420806ccc7"
+      },
+      "duration_ms": 23554,
+      "call_ids": [
+        "bfd043e493204bc88f013af0d3eb6132"
+      ]
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 14857,
+      "prompt_sha256": "c0578408cd1a1408623e20600c32185b6e4e9c6c990abd50db540b28cc881057",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "题干提供完整查码表、无推断规则、登记卡标注波纹并询问对应代码及表项；条件一致且足以唯一确定答案为73。",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构字纹登记处只使用下列完整查码表，不存在按字形、顺序或其他信息推断代码的规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "晨星纹→41；苔叶纹→26；波纹→73；方格纹→58。"
+              },
+              {
+                "document_id": "student",
+                "quote": "一张登记卡清楚标注“波纹”。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请写出它对应的代码，并指出查到的表项。"
+              }
+            ]
+          },
+          "solution_correct": {
+            "status": "pass",
+            "reason": "分析解直接查找表中波纹→73并给出代码73及表项，与题干条件和查码表一致，未引入额外推断。",
+            "evidence_ids": [
+              "E0011",
+              "E0012",
+              "E0013",
+              "E0002",
+              "E0003"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"代码：73。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "查到的表项：波纹→73。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "在给出的完整查码表中直接找到与登记卡标注“波纹”相同的表项，对应代码为73，不必按字形或顺序推断。"
+              },
+              {
+                "document_id": "student",
+                "quote": "晨星纹→41；苔叶纹→26；波纹→73；方格纹→58。"
+              },
+              {
+                "document_id": "student",
+                "quote": "一张登记卡清楚标注“波纹”。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "参考答案给出73及波纹→73表项，与题干查码表唯一匹配，无需考虑其他选项或计算。",
+            "evidence_ids": [
+              "E0006",
+              "E0002",
+              "E0003"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "73；表项是“波纹→73”。"
+              },
+              {
+                "document_id": "student",
+                "quote": "晨星纹→41；苔叶纹→26；波纹→73；方格纹→58。"
+              },
+              {
+                "document_id": "student",
+                "quote": "一张登记卡清楚标注“波纹”。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "解释指出查码表直接给出波纹→73，与参考答案73和表项相符，且不依赖推断规则。",
+            "evidence_ids": [
+              "E0007",
+              "E0006",
+              "E0002"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "查码表直接给出“波纹→73”，题目要求的代码就是73；不需要从其他表项计算。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "73；表项是“波纹→73”。"
+              },
+              {
+                "document_id": "student",
+                "quote": "晨星纹→41；苔叶纹→26；波纹→73；方格纹→58。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "源明确列出波纹→73并规定仅按表确定，支撑题干的表项、规则限定和参考答案。",
+            "evidence_ids": [
+              "E0016",
+              "E0017",
+              "E0001",
+              "E0002",
+              "E0006",
+              "E0007"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:glyph_complete_table",
+                "quote": "晨星纹→41；苔叶纹→26；波纹→73；方格纹→58。"
+              },
+              {
+                "document_id": "source:glyph_rule",
+                "quote": "只按给定完整查码表确定代码，不存在按字形、顺序或其他信息推断代码的规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构字纹登记处只使用下列完整查码表，不存在按字形、顺序或其他信息推断代码的规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "晨星纹→41；苔叶纹→26；波纹→73；方格纹→58。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "73；表项是“波纹→73”。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "查码表直接给出“波纹→73”，题目要求的代码就是73；不需要从其他表项计算。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "分析将任务定为直接查表复现，学生只需查找表项；档案表明具备逐项查找准备，easy边界成立。",
+            "evidence_ids": [
+              "E0008",
+              "E0009",
+              "E0010",
+              "E0014",
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"题目只有直接查表复现一项，学习者已具备辨识相同词组并逐项查找的准备。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "最接近的边界为 easy/medium；由于答案已在表中显式给出，不需选择或整合规则，因此为 easy。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"candidates\": [\"easy\"], \"hard_task_index\": null}, \"eligibility\": \"eligible\", \"eligibility_reason\": \"题干提供完整查码表和清晰标注“波纹”，学生只需按给出的入门能力识别相同词组并逐项查找；条件无缺失或歧义。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S003\"], \"mode\": \"reproduce\", \"provided_ids\": [\"S002\"], \"request_ids\": [\"S004\"], \"residual_work\": \"在表中找出“波纹”这一项并抄录其代码73，同时指出该表项；无需计算或推断。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构字纹登记处只使用下列完整查码表，不存在按字形、顺序或其他信息推断代码的规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "晨星纹→41；苔叶纹→26；波纹→73；方格纹→58。"
+              },
+              {
+                "document_id": "student",
+                "quote": "一张登记卡清楚标注“波纹”。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请写出它对应的代码，并指出查到的表项。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "能识别相同汉字词组并从对应表逐项查找的入门学生；本题不要求计算或推断编码规律。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "2b670f005a4671347937c1c5ac3c7360506b2b7bf2e2c3fce915b037f22f01a7",
+        "analysis_sha256": "f3b828279bd90817365dca79cda9e6f9969855606114b41c56b8bd73dbc63f98",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false
+      },
+      "duration_ms": 21239,
+      "call_ids": [
+        "37c866146a624f35a8fd0b825d758bb8"
+      ]
+    },
+    "decision": {
+      "status": "assessed",
+      "candidates": [
+        "easy"
+      ],
+      "estimated_difficulty": "easy",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "target_unavailable"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 44795
+  },
+  {
+    "case_id": "whole_bundle_wrong_key_v2",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "bb46a48d9ac7a5046c57e7336a1595a087dc444486495747fa3c68264296f40b",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 7180,
+      "prompt_sha256": "8ba91210865dc44063d81a8197b4163a95351b33bdab2eaf221a30a066ff866f",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "规则完整且无歧义：每3枚完整组换1枚，余数保留；学习者已掌握整数除法、商与余数并能数完整组，可直接解题。14÷3无边界异常。",
+        "solution": "14枚筹码，每3枚一组：14÷3=4组余2枚。最多可换4枚水晶，剩余2枚筹码因不足一组只能保留，不能兑换。商=4，余数=2；无四舍五入、借补或赠送。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S005",
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S004"
+            ],
+            "provided_ids": [],
+            "residual_work": "用总筹码14除以每组3，得到商4、余数2；验证3×4=12≤14且3×5=15>14，所以最多完整组为4。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S002",
+              "S003"
+            ],
+            "provided_ids": [
+              "S002"
+            ],
+            "residual_work": "说明余下的2枚筹码不足3枚，按规则只能保留，不能兑换，也不存在四舍五入或借补。",
+            "mode": "reproduce"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "easy"
+          ],
+          "boundary_reason": "最近边界为中等，因为中等要求在新情境下进行有意义的熟悉应用或整合多个规则。该题虽以兑换为背景，但所有规则已明列且只需求一次14÷3；学习者已熟练掌握整数除法、余数和按完整组计数，只需即时套用，无需选择证据或综合新概念。若存在多个兑换步骤或需自行判断规则冲突，才会升为中等。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "easy",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S005",
+                "start": 112,
+                "end": 128,
+                "text": "问他按规则最多能换得多少枚水晶？"
+              },
+              {
+                "id": "S006",
+                "start": 128,
+                "end": 145,
+                "text": "写出商和余数，说明余筹码如何处理。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 52,
+                "text": "虚构兑换处的完整规则：每凑满3枚筹码，且仅当交出这一完整组3枚筹码时，才能换得1枚水晶；筹码交出后消耗。"
+              },
+              {
+                "id": "S004",
+                "start": 95,
+                "end": 112,
+                "text": "某人起初只有14枚筹码、没有水晶。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 128,
+                "end": 145,
+                "text": "写出商和余数，说明余筹码如何处理。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 52,
+                "end": 70,
+                "text": "未满一组的余筹码只能保留，不能兑换。"
+              },
+              {
+                "id": "S003",
+                "start": 70,
+                "end": 94,
+                "text": "没有赠送、借筹码、补贴、四舍五入或其他兑换规则。"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S002",
+                "start": 52,
+                "end": 70,
+                "text": "未满一组的余筹码只能保留，不能兑换。"
+              }
+            ]
+          }
+        ],
+        "case_sha256": "50f0ceca5bbe45be9f8ed3f13a88de4b5734c8eecb2f0a7508cf5d4b794bf3f2",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "07d0d92466b2c6dc457da0f59bd4918c997b6f251241c1d0a88751ad3eaff0a2"
+      },
+      "duration_ms": 43273,
+      "call_ids": [
+        "9b8a33f1e29b465080ae2f52fa6b2061"
+      ]
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 17391,
+      "prompt_sha256": "df29198a1001021b076749a1087c42ba04ad88f6ebba8c761d65250c1e0fcb2b",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "Student rules specify only complete 3-chip groups exchange, leftover cannot exchange, and no rounding/gifts; initial 14 chips supplied; requested quotient/remainder interpretation is unambiguous.",
+            "evidence_ids": [
+              "E0001",
+              "E0002",
+              "E0003",
+              "E0004",
+              "E0005",
+              "E0006"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构兑换处的完整规则：每凑满3枚筹码，且仅当交出这一完整组3枚筹码时，才能换得1枚水晶；筹码交出后消耗。"
+              },
+              {
+                "document_id": "student",
+                "quote": "未满一组的余筹码只能保留，不能兑换。"
+              },
+              {
+                "document_id": "student",
+                "quote": "没有赠送、借筹码、补贴、四舍五入或其他兑换规则。"
+              },
+              {
+                "document_id": "student",
+                "quote": "某人起初只有14枚筹码、没有水晶。"
+              },
+              {
+                "document_id": "student",
+                "quote": "问他按规则最多能换得多少枚水晶？"
+              },
+              {
+                "document_id": "student",
+                "quote": "写出商和余数，说明余筹码如何处理。"
+              }
+            ]
+          },
+          "solution_correct": {
+            "status": "pass",
+            "reason": "Blind solution computes 14÷3=4R2, caps crystals at 4 full groups, and explains leftover 2 chips are retained; this satisfies the exact exchange rule.",
+            "evidence_ids": [
+              "E0016",
+              "E0017",
+              "E0018",
+              "E0001",
+              "E0002",
+              "E0004"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"14枚筹码，每3枚一组：14÷3=4组余2枚。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "最多可换4枚水晶，剩余2枚筹码因不足一组只能保留，不能兑换。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "商=4，余数=2；无四舍五入、借补或赠送。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构兑换处的完整规则：每凑满3枚筹码，且仅当交出这一完整组3枚筹码时，才能换得1枚水晶；筹码交出后消耗。"
+              },
+              {
+                "document_id": "student",
+                "quote": "未满一组的余筹码只能保留，不能兑换。"
+              },
+              {
+                "document_id": "student",
+                "quote": "某人起初只有14枚筹码、没有水晶。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "fail",
+            "reason": "Reference answer says leftover 2 chips exchange for one more crystal, but student condition only allows complete 3-chip groups; it adds a non-existent extra crystal.",
+            "evidence_ids": [
+              "E0008",
+              "E0001",
+              "E0002",
+              "E0003"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "最多5枚水晶；14枚筹码拆成4组，每组3枚，余下2枚；余筹码再换1枚水晶。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构兑换处的完整规则：每凑满3枚筹码，且仅当交出这一完整组3枚筹码时，才能换得1枚水晶；筹码交出后消耗。"
+              },
+              {
+                "document_id": "student",
+                "quote": "未满一组的余筹码只能保留，不能兑换。"
+              },
+              {
+                "document_id": "student",
+                "quote": "没有赠送、借筹码、补贴、四舍五入或其他兑换规则。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "fail",
+            "reason": "Explanation's 'although only 2 leftover, also count 1 extra' contradicts the explicit no-rounding and leftover-retain rule; 14=4×3+2 supports only 4 full groups.",
+            "evidence_ids": [
+              "E0010",
+              "E0009",
+              "E0001",
+              "E0002",
+              "E0003"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "完整组可换4枚水晶；虽然余下2枚不足一组，也额外计1枚，所以共5枚。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "14=4×3+2。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构兑换处的完整规则：每凑满3枚筹码，且仅当交出这一完整组3枚筹码时，才能换得1枚水晶；筹码交出后消耗。"
+              },
+              {
+                "document_id": "student",
+                "quote": "未满一组的余筹码只能保留，不能兑换。"
+              },
+              {
+                "document_id": "student",
+                "quote": "没有赠送、借筹码、补贴、四舍五入或其他兑换规则。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "fail",
+            "reason": "Source excerpts state leftover <3 cannot exchange and no rounding; reference answer's claim that 2 leftover chips '再换1枚水晶' is directly contradicted, not supported.",
+            "evidence_ids": [
+              "E0023",
+              "E0024",
+              "E0008",
+              "E0002"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:crystal_exchange_rule",
+                "quote": "未满一组的余筹码只能保留，不能兑换。"
+              },
+              {
+                "document_id": "source:crystal_exchange_rule",
+                "quote": "没有赠送、借筹码、补贴、四舍五入或其他兑换规则。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "最多5枚水晶；14枚筹码拆成4组，每组3枚，余下2枚；余筹码再换1枚水晶。"
+              },
+              {
+                "document_id": "student",
+                "quote": "未满一组的余筹码只能保留，不能兑换。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "Learner profile confirms mastery of integer division/quotient/remainder and counting full groups; residual work is one simple 14÷3 division plus restating the supplied leftover rule, so easy boundary is justified.",
+            "evidence_ids": [
+              "E0011",
+              "E0012",
+              "E0019",
+              "E0020",
+              "E0005",
+              "E0006",
+              "E0001",
+              "E0002",
+              "E0007"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"最近边界为中等，因为中等要求在新情境下进行有意义的熟悉应用或整合多个规则。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "该题虽以兑换为背景，但所有规则已明列且只需求一次14÷3；学习者已熟练掌握整数除法、余数和按完整组计数，只需即时套用，无需选择证据或综合新概念。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S001\", \"S004\"], \"mode\": \"apply_familiar\", \"provided_ids\": [], \"request_ids\": [\"S005\", \"S006\"], \"residual_work\": \"用总筹码14除以每组3，得到商4、余数2；验证3×4=12≤14且3×5=15>14，所以最多完整组为4。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S002\", \"S003\"], \"mode\": \"reproduce\", \"provided_ids\": [\"S002\"], \"request_ids\": [\"S006\"], \"residual_work\": \"说明余下的2枚筹码不足3枚，按规则只能保留，不能兑换，也不存在四舍五入或借补。"
+              },
+              {
+                "document_id": "student",
+                "quote": "问他按规则最多能换得多少枚水晶？"
+              },
+              {
+                "document_id": "student",
+                "quote": "写出商和余数，说明余筹码如何处理。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构兑换处的完整规则：每凑满3枚筹码，且仅当交出这一完整组3枚筹码时，才能换得1枚水晶；筹码交出后消耗。"
+              },
+              {
+                "document_id": "student",
+                "quote": "未满一组的余筹码只能保留，不能兑换。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "已经掌握整数除法、商与余数，能按完整组数计数的入门学生；不需任何现实兑换制度知识。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "50f0ceca5bbe45be9f8ed3f13a88de4b5734c8eecb2f0a7508cf5d4b794bf3f2",
+        "analysis_sha256": "8824d5d0c895fabb5d0f889370e01eab44f3c2f0ee707bd5259c8b51b4a1229f",
+        "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+        "human_validated": false
+      },
+      "duration_ms": 33964,
+      "call_ids": [
+        "39eac914241343f0929fc056d32ddef2"
+      ]
+    },
+    "decision": {
+      "status": "content_issue",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "failed:reference_correct",
+        "failed:explanation_consistent",
+        "failed:source_support"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 77240
+  }
+]

@@ -1,0 +1,214 @@
+{
+  "version": "difficulty-review-v2-diagnostic-20260926",
+  "provenance": "AI-authored invented course rules and development expectations, frozen before model calls; not human gold and not empirical learner difficulty.",
+  "cases": [
+    {
+      "id": "dispatch_scaffold",
+      "split": "development",
+      "domain": "invented_dispatch_rules",
+      "learner_profile": "入门学生，会做整数加乘和大小比较；分别练过按条件筛选记录、按公式计算优先分，尚未练过把这两项规则组合。所有必要规则均在题面。",
+      "student_visible_text": "虚构派工课规则：只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。优先分=2×等待天数+紧急标志（标志只取0或1）。从有资格的工单中选优先分最高的一单；同分选字母较前者。\n数据：A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。\n已给出的完整解法：A、B、C、D优先分分别为9、7、8、10。A因4>3不合资格，D因材料不齐不合资格；有资格的集合是{B,C}。C的8分高于B的7分，因此选C。A的9分虽更高，但优先分只用于合资格的工单，所以不能选A。\n作答：列出有资格的工单，写出本轮应选哪单，并用一句话解释为何不选A。",
+      "reference_answer": "有资格的是B、C，选C。A的工时4小时超过可用的3小时，即使分数较高也不合资格。",
+      "reference_explanation": "先应用资格条件，再在B的7分与C的8分之间选择。题面完整解法已给出全部需要报告的结论和理由。",
+      "sources": [
+        {
+          "id": "dispatch_rules",
+          "text": "只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。优先分=2×等待天数+紧急标志（标志只取0或1）。从有资格的工单中选优先分最高的一单；同分选字母较前者。"
+        },
+        {
+          "id": "dispatch_records",
+          "text": "A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": ["easy"],
+        "content_status": "pass",
+        "issue": "完整解法已给出资格集合、分数、选择与排除A的理由；学生只需读取并复述，不应把已提供的两阶段推理算作独立工作。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    },
+    {
+      "id": "dispatch_independent",
+      "split": "development",
+      "domain": "invented_dispatch_rules",
+      "learner_profile": "入门学生，会做整数加乘和大小比较；分别练过按条件筛选记录、按公式计算优先分，尚未练过把这两项规则组合。所有必要规则均在题面。",
+      "student_visible_text": "虚构派工课规则：只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。优先分=2×等待天数+紧急标志（标志只取0或1）。从有资格的工单中选优先分最高的一单；同分选字母较前者。\n数据：A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。\n作答：列出有资格的工单，写出本轮应选哪单，并用一句话解释为何不选A。",
+      "reference_answer": "有资格的是B、C，选C。A的工时4小时超过可用的3小时，即使分数较高也不合资格。",
+      "reference_explanation": "A超过工时上限，D材料不齐，均须先排除。B得2×3+1=7分，C得2×4+0=8分，所以选C。高分不能抵消资格不足。",
+      "sources": [
+        {
+          "id": "dispatch_rules",
+          "text": "只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。优先分=2×等待天数+紧急标志（标志只取0或1）。从有资格的工单中选优先分最高的一单；同分选字母较前者。"
+        },
+        {
+          "id": "dispatch_records",
+          "text": "A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": ["medium"],
+        "content_status": "pass",
+        "issue": "须独立把资格筛选与优先分计算、比较组合，抵抗A和D的高分干扰；每步规则已给出，无需发明新方法。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    },
+    {
+      "id": "courier_single_failure",
+      "split": "development",
+      "domain": "invented_courier_network",
+      "learner_profile": "入门离散数学学生，理解无向图、简单路径、路径费用相加，会在小图中找最短路；没有学过容错网络、边不相交路径或网络流。本题允许自行枚举、分类或构造证明，不要求引用定理。",
+      "student_visible_text": "虚构快递网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。\n规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。\n请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。",
+      "reference_answer": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。它们无共用走廊，任意关闭一条走廊最多破坏其中一条。若两条路径有共用走廊，关闭该走廊会同时破坏它们，因此任何合格方案都必须没有共用走廊。两条路径离开S必须分别用S-A和S-B，费用至少3；进入T必须用不同走廊，最便宜两条是C-T与B-T，合计至少4。还至少需要一条中间走廊，因为S不直接连C，且若完全不用中间走廊，只能走S-A-T与S-B-T，费用9。因此总费不能为7或更少。",
+      "reference_explanation": "更严格的下界分情况：不使用中间走廊时，只能选S-A-T和S-B-T，总费9；使用至少一条中间走廊时，首边合计3、末边合计至少4、中间边至少1，故总费至少8。构造恰好达到8。困难来自自行识别单点关闭要求对应的共用边约束，并把构造与必要性证明连接。",
+      "sources": [
+        {
+          "id": "courier_map",
+          "text": "网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "id": "courier_contract",
+          "text": "事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": ["hard"],
+        "content_status": "pass",
+        "issue": "相对只学过单条最短路的背景，须自行选择两路容错条件、构造方案并证明费用下界；题面未提供边不相交或下界分解方法。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    },
+    {
+      "id": "notice_boundary_ambiguous",
+      "split": "development",
+      "domain": "invented_notice_policy",
+      "learner_profile": "已掌握整数大小比较以及≤、≥符号的入门学生。只能使用题面政策，不假设额外惯例。",
+      "student_visible_text": "虚构场馆政策全文：温度≤10时，通知A合规；温度≥10时，通知B合规。管理员每天只张贴一份合规通知。政策没有优先级、平局规则或其他条款。\n今天温度恰为10。单选题：按此政策，唯一合规的通知是什么？A.通知A；B.通知B。必须选出唯一正确选项。",
+      "reference_answer": "A.通知A。",
+      "reference_explanation": "温度10满足≤10，因此只有A合规。",
+      "sources": [
+        {
+          "id": "notice_policy_full",
+          "text": "温度≤10时，通知A合规；温度≥10时，通知B合规。管理员每天只张贴一份合规通知。政策没有优先级、平局规则或其他条款。"
+        }
+      ],
+      "expected": {
+        "eligibility": "invalid_question",
+        "candidates": [],
+        "content_status": "fail",
+        "issue": "10同时满足两个条件，A或B都可作为当天唯一张贴的一份；只张贴一份并不使合规选择唯一。题目要求唯一正确选项但没有消除平局，参考解释错误排除了B。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    },
+    {
+      "id": "stack_repair",
+      "split": "heldout",
+      "domain": "invented_stack_machine",
+      "learner_profile": "程序设计入门学生，会逐条跟踪一个栈的状态，分别练过DUP、ADD、SUB、SWAP的给定语义；尚未练过定位并修复一段组合指令中的顺序错误。",
+      "student_visible_text": "虚构机器用[底部,…,顶部]表示栈。DUP复制顶部；ADD弹出顶部两数a、b（a原来在b下面）并压入a+b；SUB以同样顺序压入a-b；SWAP交换顶部两项。DUP至少需要1项，其余三种指令至少需要2项，否则程序非法。\n初始栈为[2,5]。目标：将初始顶部数翻倍后，减去初始底部数，结束时只有结果8一项。现有程序是DUP、ADD、SUB。\n先逐步跟踪现有程序，说明它为何未达目标；再只插入一条SWAP，使所有指令合法并达到目标。说明插入位置，以及为什么其余三个指令边界不能完成这项修复。指令边界包括第一条之前、相邻指令之间、最后一条之后；不得删除或替换现有指令。",
+      "reference_answer": "现程序：[2,5]→[2,5,5]→[2,10]→[-8]，做成了2-10。把SWAP插在ADD与SUB之间：[2,10]→[10,2]→[8]。放在DUP之前会得到[5,2]→[5,2,2]→[5,4]→[1]；放在DUP与ADD之间只交换相同的两个5，仍得-8；放在SUB之后只有一项，SWAP非法。",
+      "reference_explanation": "要修复的是SUB的操作数顺序。先跟踪状态定位反序，再检查四个允许的插入点；只有ADD之后的交换同时保持合法并产生8。",
+      "sources": [
+        {
+          "id": "stack_instruction_spec",
+          "text": "用[底部,…,顶部]表示栈。DUP复制顶部；ADD弹出顶部两数a、b（a原来在b下面）并压入a+b；SUB以同样顺序压入a-b；SWAP交换顶部两项。DUP至少需要1项，其余三种指令至少需要2项，否则程序非法。"
+        },
+        {
+          "id": "stack_task_spec",
+          "text": "初始栈为[2,5]。目标：将初始顶部数翻倍后，减去初始底部数，结束时只有结果8一项。现有程序是DUP、ADD、SUB。只准在四个指令边界中的一处插入一条SWAP，不得删除或替换现有指令。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": ["medium"],
+        "content_status": "pass",
+        "issue": "须把已学指令语义用于状态跟踪、错误定位与受限修复，并排除其他位置；方法仍是已知规则的有限组合，无需新算法或定理。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    },
+    {
+      "id": "laboratory_slots",
+      "split": "heldout",
+      "domain": "invented_laboratory_schedule",
+      "learner_profile": "入门学生，能读出先后约束，安排单条任务链，也做过两个互不依赖任务的并行练习；未学过带共享设备的任务图调度或最短工期证明。允许用枚举、反证或约束推理，不要求专门算法。",
+      "student_visible_text": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务。\n先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制，允许一个时段只做一项。\n请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。证明须同时考虑先后与设备限制，不能仅用6÷2估算。",
+      "reference_answer": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。故4个时段不可能，更少也不可能；5个时段的构造满足所有规则。",
+      "reference_explanation": "构造通过让B与已完成前置任务的C重叠来节省时段；下界由E、F的后置关系向前推回C、D及A、B，与设备限制冲突。须自行选择这种组合约束证明。",
+      "sources": [
+        {
+          "id": "laboratory_capacity",
+          "text": "任务A、B、C、D、E、F每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务，允许一个时段只做一项。"
+        },
+        {
+          "id": "laboratory_dependencies",
+          "text": "C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "id": "laboratory_equipment",
+          "text": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": ["hard"],
+        "content_status": "pass",
+        "issue": "须自行综合依赖与互斥设备设计并行安排，再选择反证或等价方法建立最优性；对只练过单链和无依赖并行的背景是未提示的约束组合。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    },
+    {
+      "id": "marking_wrong_option",
+      "split": "heldout",
+      "domain": "invented_marking_scheme",
+      "learner_profile": "已掌握整数加、减、乘和代入一个给定算式的学生；不需要任何考试制度的外部知识。",
+      "student_visible_text": "虚构测验只有六题。计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。某学生答对4题，答错1题，空1题。\n单选：总分是多少？A.10；B.14；C.8；D.12。写出选项和计算式。",
+      "reference_answer": "B.14；4×3+1×2+1×0=14。",
+      "reference_explanation": "正确题贡献12分，错误题再加2分，空题不计分，所以总分14。",
+      "sources": [
+        {
+          "id": "marking_rules",
+          "text": "每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是六项分数相加，没有加分、最低分或舍入规则。"
+        },
+        {
+          "id": "marking_response_record",
+          "text": "某学生答对4题，答错1题，空1题。选项A.10；B.14；C.8；D.12。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": ["easy"],
+        "content_status": "fail",
+        "issue": "题目充分且有唯一正确选项A：4×3-1×2=10；参考答案和解释把扣2分错误写成加2分。不能因参考错误把这道可解题本身判为无解，也不能让容易的难度标签覆盖内容错误。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    },
+    {
+      "id": "beacon_contradiction",
+      "split": "heldout",
+      "domain": "invented_beacon_timing",
+      "learner_profile": "掌握整数时段编号和严格先后的入门学生。只能依据题面规则，不允许删除规则或假设紧急豁免。",
+      "student_visible_text": "虚构信标系统把时间分成整数时段1、2、3、4、5。探测器在第3时段结束时才完成检测。系统规则同时要求：信标必须在检测完成后的更晚时段启动；信标必须不晚于第3时段启动。恰好启动一次，无例外或允许修改的规则。\n填写一个满足全部规则的启动时段编号，并解释它为何合规。",
+      "reference_answer": "第3时段。",
+      "reference_explanation": "第3时段可以在检测完成后立即启动，也正好满足不晚于第3时段。",
+      "sources": [
+        {
+          "id": "beacon_clock",
+          "text": "时间分成整数时段1、2、3、4、5。探测器在第3时段结束时才完成检测。"
+        },
+        {
+          "id": "beacon_mandatory_rules",
+          "text": "信标必须在检测完成后的更晚时段启动；信标必须不晚于第3时段启动。恰好启动一次，无例外或允许修改的规则。"
+        }
+      ],
+      "expected": {
+        "eligibility": "invalid_question",
+        "candidates": [],
+        "content_status": "fail",
+        "issue": "更晚时段要求编号>3，截止要求编号≤3，两者不能同时成立。参考答案3违反严格先后，题目却要求填写一个合规编号，未提供正确作答形式。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    }
+  ]
+}

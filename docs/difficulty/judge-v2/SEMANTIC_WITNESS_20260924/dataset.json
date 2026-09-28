@@ -1,0 +1,266 @@
+{
+  "audit_version": "v2",
+  "cases": [
+    {
+      "learner_profile": "Undergraduates who can trace loops, understand sorted arrays, integer division, loop invariants and O(log n), and have traced ordinary binary search for an exact match. They have not implemented or proved a first-greater-or-equal boundary search or debugged its non-progress cases.",
+      "student_visible_text": "An array a has at least one element and is sorted in nondecreasing order; duplicates are allowed. Integers and indexing are exact. Given target t, return the smallest index i with a[i] >= t, or len(a) if there is no such index. The following code is proposed:\nl = 0\nr = len(a) - 1\nwhile l < r:\n    m = (l + r) // 2\n    if a[m] < t:\n        l = m\n    else:\n        r = m\nreturn l\nGive one concrete input where it fails, repair it while retaining O(log n) worst-case running time, and justify both termination and the returned boundary for all allowed arrays, including duplicates and a target above all entries. You may change the interval convention. No library search function may be used.",
+      "review": {
+        "eligibility": "eligible",
+        "eligibility_reason": "The problem is self-contained: it supplies the array conditions, the target definition, the proposed buggy code, and the repair/justification requirements. The learner profile states relevant prior knowledge (loop tracing, sorted arrays, integer division, invariants, O(log n), ordinary exact-match binary search) and explicitly notes no experience with first-greater-or-equal boundary search or its non-progress cases, which is sufficient to judge relative demand.",
+        "cognitive_demand": "strategic_reasoning",
+        "tasks": [
+          {
+            "request_ids": [
+              "S014"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S005",
+              "S006",
+              "S007",
+              "S008",
+              "S009",
+              "S010",
+              "S011",
+              "S012",
+              "S013",
+              "S015",
+              "S016"
+            ],
+            "solution_ids": [],
+            "residual_work": "Must construct a concrete failing input by reasoning about the l=m non-progress case, e.g. a=[1,2], t=2 (or a=[1], t=2), where l stays 0 and the loop returns 0 instead of the correct boundary.",
+            "mode": "construct_argument"
+          },
+          {
+            "request_ids": [
+              "S014"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S015",
+              "S016"
+            ],
+            "solution_ids": [],
+            "residual_work": "Must design a corrected boundary search, e.g. half-open [l,r) with r=len(a), m=(l+r)//2, l=m+1 when a[m]<t else r=m, returning l; must ensure progress and O(log n).",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S014"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S015"
+            ],
+            "solution_ids": [],
+            "residual_work": "Must prove termination (interval strictly shrinks each iteration) and correctness of the returned boundary for all arrays, including duplicates and t above all entries (return len(a)).",
+            "mode": "construct_argument"
+          }
+        ],
+        "minimum_answer": "Failing input: a=[1,2], t=2. Initially l=0, r=1, m=0; a[0]=1<2 so l=m=0, and l<r still holds, so the loop never makes progress and returns 0, but the correct answer is 1. Repair using a half-open interval: l=0, r=len(a); while l<r: m=(l+r)//2; if a[m]<t: l=m+1 else: r=m; return l. Termination: each iteration either sets l=m+1>l or r=m<r, so r-l strictly decreases and the loop ends. Correctness: maintain that all indices <l have a[i]<t and all indices >=r have a[i]>=t; when a[m]<t, indices <=m are below t so l=m+1 is safe; otherwise a[m]>=t so r=m is safe. At exit l=r, so l is the smallest index with a[l]>=t, or len(a) if none exists. Duplicates are handled because the else branch moves r left past equal values; t above all entries drives l to len(a).",
+        "decision": {
+          "candidates": [
+            "hard"
+          ],
+          "hard_task_index": 1,
+          "reason": "The learner can trace loops and ordinary exact-match binary search, but has not implemented or proved a first-greater-or-equal boundary search or debugged its non-progress cases. The bottleneck is not recalling binary search but recognizing the l=m non-progress bug and selecting a correct interval convention (half-open with l=m+1) that guarantees progress while preserving the boundary invariant. This is a specific nonroutine strategy/integration step rather than a familiar application, so the nearest boundary is hard rather than medium; the proof and failing-input construction are then routine once the repair is chosen."
+        }
+      },
+      "origin": "lower_bound_intro_v4_0",
+      "origin_sha256": "3735fb5d6156bbef8049b89d528823d39740a3287f81ae7b9e4bdb880c3cc2ab",
+      "id": "termination_observed",
+      "target_category": "internal_contradiction",
+      "target_present": true,
+      "provenance": "Unmodified observed review: never progresses yet returns 0",
+      "execution_witness": {
+        "question_sha256": "ade8079e1514df792d24269912912e23f8b1af6698fe86323b68e870365fc3e0",
+        "scope": "Exact supplied program; examples only, not execution of model code or full repair verification",
+        "examples": [
+          {
+            "a": [
+              1,
+              2
+            ],
+            "t": 2,
+            "expected_return": 1,
+            "status": "nontermination_repeated_state",
+            "actual_return": null,
+            "trace": [
+              {
+                "l": 0,
+                "r": 1,
+                "m": 0,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "a": [
+              1
+            ],
+            "t": 2,
+            "expected_return": 1,
+            "status": "returned",
+            "actual_return": 0,
+            "trace": []
+          },
+          {
+            "a": [
+              2,
+              3
+            ],
+            "t": 2,
+            "expected_return": 0,
+            "status": "returned",
+            "actual_return": 0,
+            "trace": [
+              {
+                "l": 0,
+                "r": 1,
+                "m": 0,
+                "value": 2
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "learner_profile": "Undergraduates who can trace loops, understand sorted arrays, integer division, loop invariants and O(log n), and have traced ordinary binary search for an exact match. They have not implemented or proved a first-greater-or-equal boundary search or debugged its non-progress cases.",
+      "student_visible_text": "An array a has at least one element and is sorted in nondecreasing order; duplicates are allowed. Integers and indexing are exact. Given target t, return the smallest index i with a[i] >= t, or len(a) if there is no such index. The following code is proposed:\nl = 0\nr = len(a) - 1\nwhile l < r:\n    m = (l + r) // 2\n    if a[m] < t:\n        l = m\n    else:\n        r = m\nreturn l\nGive one concrete input where it fails, repair it while retaining O(log n) worst-case running time, and justify both termination and the returned boundary for all allowed arrays, including duplicates and a target above all entries. You may change the interval convention. No library search function may be used.",
+      "review": {
+        "eligibility": "eligible",
+        "eligibility_reason": "The problem is self-contained: it supplies the array conditions, the target definition, the proposed buggy code, and the repair/justification requirements. The learner profile states relevant prior knowledge (loop tracing, sorted arrays, integer division, invariants, O(log n), ordinary exact-match binary search) and explicitly notes no experience with first-greater-or-equal boundary search or its non-progress cases, which is sufficient to judge relative demand.",
+        "cognitive_demand": "strategic_reasoning",
+        "tasks": [
+          {
+            "request_ids": [
+              "S014"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S005",
+              "S006",
+              "S007",
+              "S008",
+              "S009",
+              "S010",
+              "S011",
+              "S012",
+              "S013",
+              "S015",
+              "S016"
+            ],
+            "solution_ids": [],
+            "residual_work": "Must give a concrete failing input: for a=[1,2], t=2 the loop does not terminate; alternatively a=[1], t=2 exits immediately and incorrectly returns 0 instead of 1.",
+            "mode": "construct_argument"
+          },
+          {
+            "request_ids": [
+              "S014"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S015",
+              "S016"
+            ],
+            "solution_ids": [],
+            "residual_work": "Must design a corrected boundary search, e.g. half-open [l,r) with r=len(a), m=(l+r)//2, l=m+1 when a[m]<t else r=m, returning l; must ensure progress and O(log n).",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S014"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S015"
+            ],
+            "solution_ids": [],
+            "residual_work": "Must prove termination (interval strictly shrinks each iteration) and correctness of the returned boundary for all arrays, including duplicates and t above all entries (return len(a)).",
+            "mode": "construct_argument"
+          }
+        ],
+        "minimum_answer": "Failing input: a=[1,2], t=2. Initially l=0, r=1, m=0; a[0]=1<2 so l=m=0, and l<r still holds, so the loop never makes progress and does not return, although the specified correct answer is 1. Repair using a half-open interval: l=0, r=len(a); while l<r: m=(l+r)//2; if a[m]<t: l=m+1 else: r=m; return l. Termination: each iteration either sets l=m+1>l or r=m<r, so r-l strictly decreases and the loop ends. Correctness: maintain that all indices <l have a[i]<t and all indices >=r have a[i]>=t; when a[m]<t, indices <=m are below t so l=m+1 is safe; otherwise a[m]>=t so r=m is safe. At exit l=r, so l is the smallest index with a[l]>=t, or len(a) if none exists. Duplicates are handled because the else branch moves r left past equal values; t above all entries drives l to len(a).",
+        "decision": {
+          "candidates": [
+            "hard"
+          ],
+          "hard_task_index": 1,
+          "reason": "The learner can trace loops and ordinary exact-match binary search, but has not implemented or proved a first-greater-or-equal boundary search or debugged its non-progress cases. The bottleneck is not recalling binary search but recognizing the l=m non-progress bug and selecting a correct interval convention (half-open with l=m+1) that guarantees progress while preserving the boundary invariant. This is a specific nonroutine strategy/integration step rather than a familiar application, so the nearest boundary is hard rather than medium; the proof and failing-input construction are then routine once the repair is chosen."
+        }
+      },
+      "origin": "lower_bound_intro_v4_0",
+      "origin_sha256": "3735fb5d6156bbef8049b89d528823d39740a3287f81ae7b9e4bdb880c3cc2ab",
+      "id": "termination_local_correction",
+      "target_category": "internal_contradiction",
+      "target_present": false,
+      "provenance": "Only distinction between nontermination and wrong return corrected",
+      "execution_witness": {
+        "question_sha256": "ade8079e1514df792d24269912912e23f8b1af6698fe86323b68e870365fc3e0",
+        "scope": "Exact supplied program; examples only, not execution of model code or full repair verification",
+        "examples": [
+          {
+            "a": [
+              1,
+              2
+            ],
+            "t": 2,
+            "expected_return": 1,
+            "status": "nontermination_repeated_state",
+            "actual_return": null,
+            "trace": [
+              {
+                "l": 0,
+                "r": 1,
+                "m": 0,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "a": [
+              1
+            ],
+            "t": 2,
+            "expected_return": 1,
+            "status": "returned",
+            "actual_return": 0,
+            "trace": []
+          },
+          {
+            "a": [
+              2,
+              3
+            ],
+            "t": 2,
+            "expected_return": 0,
+            "status": "returned",
+            "actual_return": 0,
+            "trace": [
+              {
+                "l": 0,
+                "r": 1,
+                "m": 0,
+                "value": 2
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "limitations": "Focused follow-up after observing audit false positives; no broad generalization"
+}

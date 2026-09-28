@@ -1,0 +1,85 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目条件完整：账户、ID、余额、锁、转账语义、公平排队与原子获取均已给出；要求明确（伪代码、锁保护说明、正确性论证、死锁反例），且明确允许采用所给完整方案，不存在矛盾或不可答要求。学习者已具备锁、竞态、死锁基础，虽未练习多对象加锁顺序，但题目已提供完整方案与论证要点，可据此完成。",
+  "cognitive_demand": "routine_application",
+  "tasks": [
+    {
+      "request_ids": [
+        "S006",
+        "S016"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S004",
+        "S005",
+        "S007"
+      ],
+      "solution_ids": [
+        "S009",
+        "S010",
+        "S011",
+        "S012"
+      ],
+      "residual_work": "把已给出的按 ID 升序加锁、持两锁检查与更新、成败均释放的步骤转写为结构清晰的伪代码，并保证 source/destination 不同、失败不改余额等条件在代码中体现。",
+      "mode": "reproduce"
+    },
+    {
+      "request_ids": [
+        "S008"
+      ],
+      "condition_ids": [
+        "S001",
+        "S004",
+        "S005"
+      ],
+      "solution_ids": [
+        "S013"
+      ],
+      "residual_work": "将“读、检查、扣款、加款均在两锁保护内”对应到伪代码的具体语句，说明每步由哪把/哪些锁保护，并解释为何检查不会被其他转账破坏。",
+      "mode": "apply_familiar"
+    },
+    {
+      "request_ids": [
+        "S008",
+        "S016"
+      ],
+      "condition_ids": [
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "solution_ids": [
+        "S013",
+        "S014"
+      ],
+      "residual_work": "把“成功扣加相等、失败不改余额”与“等待只从较小 ID 指向较大 ID、无等待环”组织成覆盖所有允许交错的正确性论证，说明总余额不变、不透支、无死锁。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S008"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S005"
+      ],
+      "solution_ids": [
+        "S015"
+      ],
+      "residual_work": "把“总先锁 source”的反例展开为具体并发场景：A→B 与 B→A 各持一锁再互相等待，说明为何形成死锁。",
+      "mode": "reproduce"
+    }
+  ],
+  "minimum_answer": "伪代码：transfer(s,d,amt){ if s==d return fail; first=min(id(s),id(d)); second=max(id(s),id(d)); lock(first); lock(second); if balance(s)>=amt { balance(s)-=amt; balance(d)+=amt; ok=true } else ok=false; unlock(second); unlock(first); return ok?success:fail }。锁保护：读 balance(s)、检查 balance(s)>=amt、扣 balance(s)、加 balance(d) 都在持有两把锁期间进行，因此检查与更新是原子的，不会被其他转账插入破坏。正确性：成功时扣加相等，总余额不变；失败时不修改，总余额不变；检查在锁内保证不透支。死锁：所有等待边从较小 ID 指向较大 ID，ID 全序无环，故无等待环。反例：若总先锁 source，A→B 持 A 等 B，B→A 持 B 等 A，形成环而死锁。",
+  "decision": {
+    "candidates": [
+      "easy"
+    ],
+    "hard_task_index": null,
+    "reason": "题目已给出完整方案、锁保护要点、正确性理由和死锁反例，学习者只需将其转写为伪代码并复述/组织这些已提供的论证，属于对已给材料的直接再现与熟悉概念的应用。最近边界是 easy 与 medium：这里没有要求独立选择或设计新策略，也没有需要学习者自行补足的非平凡证明瓶颈，因此判为 easy。"
+  }
+}

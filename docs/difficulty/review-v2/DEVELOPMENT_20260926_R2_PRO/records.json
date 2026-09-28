@@ -1,0 +1,767 @@
+[
+  {
+    "case_id": "courier_single_failure",
+    "repeat": 0,
+    "status": "failed",
+    "input_sha256": "da31c9985c181c4607db3ce10fced93120eb11d3c3f7ba3d65a535b849497649",
+    "analysis": {
+      "status": "validated",
+      "prompt_sha256": "e29750cf500e33abc25734edcaa696ec98bb34f2bef814ff061858cb14b7bf45",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目条件完整：图、费用、两条简单路径、单边关闭容错要求及费用上界均明确；入门离散数学准备足以通过枚举和分类完成。",
+        "solution": "取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-T，费用2+3=5。总登记费8。P1用边SA,AC,CT；P2用边SB,BT。任意一条走廊关闭：若关闭P1的边，P2仍完整；若关闭P2的边，P1仍完整；关闭其他边不影响。故抵抗任意单边关闭。证明≤7不可能：两条S-T简单路径必须边不相交，否则若共用某边，关闭该边两条同时失效。图中S-T边不相交路径只有两条：S-A-C-T费用3和S-B-T费用5，总费用8；其他候选如S-A-B-T费用1+1+3=5与S-B-C-T费用2+1+1=4共用边SB或AB等，不能同时容错。因此最小总费为8，≤7不可能。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "枚举并选择两条简单S-T路径，计算总费用，验证不超过8且覆盖单边关闭。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S002",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "对所选两条路径逐边检查：任意一条走廊关闭后至少一条路径完整。",
+            "mode": "construct_argument"
+          },
+          {
+            "request_ids": [
+              "S006"
+            ],
+            "condition_ids": [
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "provided_ids": [],
+            "residual_work": "证明总费≤7不可能：说明容错要求迫使两条路径边不相交，并枚举所有边不相交S-T路径对。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium",
+            "hard"
+          ],
+          "boundary_reason": "任务需在给定小图中自行选择两条路径并证明最优性；虽可枚举，但需发现单边容错等价于两条路径边不相交，并排除所有≤7方案，超出直接套用最短路。入门准备未涉及容错网络，故接近hard；但图很小且允许枚举，故保留medium为相邻下界。",
+          "hard_task_index": 2
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 21,
+                "text": "虚构快递网络只有S、A、B、C、T五个站。"
+              },
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S003",
+                "start": 86,
+                "end": 118,
+                "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "id": "S004",
+                "start": 118,
+                "end": 150,
+                "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S006",
+                "start": 200,
+                "end": 253,
+                "text": "请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 21,
+                "end": 85,
+                "text": "无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+              },
+              {
+                "id": "S003",
+                "start": 86,
+                "end": 118,
+                "text": "规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。"
+              },
+              {
+                "id": "S004",
+                "start": 118,
+                "end": 150,
+                "text": "登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。"
+              },
+              {
+                "id": "S005",
+                "start": 150,
+                "end": 199,
+                "text": "登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "fdc63f6775e8505e69439a5f7acdbbe7942d7b0a31df3526d5cc356fb17a5c9d",
+        "protocol_revision": "difficulty-review-v2.1-host-evidence-20260926",
+        "human_validated": false,
+        "analysis_sha256": "0794679326aa12f4525682e34125611884cd1e4c64aefa76b06e23a8dc490388"
+      }
+    },
+    "verification": {
+      "status": "failed",
+      "prompt_sha256": "044480ff48e12290503f5063cb0599d40e045fbb0bdb9b0f87127a537652055f",
+      "error_type": "ValueError"
+    },
+    "decision": {
+      "status": "unavailable",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "verification_unavailable"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 6473
+  },
+  {
+    "case_id": "dispatch_independent",
+    "repeat": 0,
+    "status": "failed",
+    "input_sha256": "cee338cc7c90535744707d992d36105aa9a8197dd869c30be6e91e77baa2da78",
+    "analysis": {
+      "status": "validated",
+      "prompt_sha256": "5d8f0ca0399d9221c836d5304d9f757b7ac93143181052947d6b8d0f330db63a",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题面规则完整且无冲突：资格条件、优先分公式、同分规则和数据均明确；学生具备整数运算、比较及分别练习过的筛选与公式计算基础，任务可判定。",
+        "solution": "有资格：B、C。A工时4>3，D材料不齐，均无资格。优先分：B=2×3+1=7；C=2×4+0=8。最高为C，故选C。不选A因为A工时4小时超过本轮可用3小时，无资格。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S005"
+            ],
+            "condition_ids": [
+              "S001",
+              "S004"
+            ],
+            "provided_ids": [],
+            "residual_work": "逐单核对材料齐全且工时≤3，筛出B、C并排除A、D。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S005"
+            ],
+            "condition_ids": [
+              "S002",
+              "S004"
+            ],
+            "provided_ids": [],
+            "residual_work": "对B、C分别代入优先分公式，计算2×等待天数+紧急标志。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S005"
+            ],
+            "condition_ids": [
+              "S003",
+              "S004"
+            ],
+            "provided_ids": [],
+            "residual_work": "比较B、C的优先分，按最高分规则确定应选工单。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S005"
+            ],
+            "condition_ids": [
+              "S001",
+              "S004"
+            ],
+            "provided_ids": [],
+            "residual_work": "用一句话说明A因工时超过3小时而不具资格。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium"
+          ],
+          "boundary_reason": "最近边界为medium：学生分别练过筛选和公式计算，但未练过组合；本题需先筛资格再算分比较，属于熟悉的两个已练规则的有意义整合，而非仅复现或单步应用。无hard瓶颈，因为规则、数据和同分条件均直接给出，无需非例行选择或构造。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "medium",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S005",
+                "start": 173,
+                "end": 207,
+                "text": "作答：列出有资格的工单，写出本轮应选哪单，并用一句话解释为何不选A。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 36,
+                "text": "虚构派工课规则：只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。"
+              },
+              {
+                "id": "S004",
+                "start": 89,
+                "end": 172,
+                "text": "数据：A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S005",
+                "start": 173,
+                "end": 207,
+                "text": "作答：列出有资格的工单，写出本轮应选哪单，并用一句话解释为何不选A。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S002",
+                "start": 36,
+                "end": 61,
+                "text": "优先分=2×等待天数+紧急标志（标志只取0或1）。"
+              },
+              {
+                "id": "S004",
+                "start": 89,
+                "end": 172,
+                "text": "数据：A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S005",
+                "start": 173,
+                "end": 207,
+                "text": "作答：列出有资格的工单，写出本轮应选哪单，并用一句话解释为何不选A。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S003",
+                "start": 61,
+                "end": 88,
+                "text": "从有资格的工单中选优先分最高的一单；同分选字母较前者。"
+              },
+              {
+                "id": "S004",
+                "start": 89,
+                "end": 172,
+                "text": "数据：A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。"
+              }
+            ],
+            "provided_ids": []
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S005",
+                "start": 173,
+                "end": 207,
+                "text": "作答：列出有资格的工单，写出本轮应选哪单，并用一句话解释为何不选A。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 36,
+                "text": "虚构派工课规则：只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。"
+              },
+              {
+                "id": "S004",
+                "start": 89,
+                "end": 172,
+                "text": "数据：A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "63d797fda9968038cc309a5fa86df94f1d9cb4a6170ead2ba7a8d90bea94cd69",
+        "protocol_revision": "difficulty-review-v2.1-host-evidence-20260926",
+        "human_validated": false,
+        "analysis_sha256": "0cb568f2705402070966b22dd5c3dabd2e390c546e4ae3b7c48fcafadc83cbac"
+      }
+    },
+    "verification": {
+      "status": "failed",
+      "prompt_sha256": "046e300b589138a75e5c62b9e36fac62c0d9cef2e0be30f5936008d8af8e1ad5",
+      "error_type": "ValueError"
+    },
+    "decision": {
+      "status": "unavailable",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "verification_unavailable"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 6372
+  },
+  {
+    "case_id": "dispatch_scaffold",
+    "repeat": 0,
+    "status": "failed",
+    "input_sha256": "1d2fe6037b62de6c6511ea3efb10a91bd878229a6ab2654569304a488fa54863",
+    "analysis": {
+      "status": "validated",
+      "prompt_sha256": "338c37bdb8060069f8c2d2db441a1f09f0199353e53e5ad8932cc3d136448521",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "规则、数据、完整解法与作答要求均明确；无缺失条件或歧义，可依据题面判定。",
+        "solution": "有资格的工单：B、C。应选：C。不选A的原因：A工时4超过本轮可用3小时，不合资格，优先分再高也不能参与选择。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S009"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004"
+            ],
+            "provided_ids": [
+              "S005",
+              "S006",
+              "S007",
+              "S008"
+            ],
+            "residual_work": "按题面复述已给出的资格集合、选中结果及不选A的理由。",
+            "mode": "reproduce"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "easy"
+          ],
+          "boundary_reason": "题面已给出完整解法，学生只需复述有资格集合、选中C及A不合资格的理由；属于直接再现，不涉及独立组合筛选与优先分规则。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "easy",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S009",
+                "start": 284,
+                "end": 318,
+                "text": "作答：列出有资格的工单，写出本轮应选哪单，并用一句话解释为何不选A。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 36,
+                "text": "虚构派工课规则：只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。"
+              },
+              {
+                "id": "S002",
+                "start": 36,
+                "end": 61,
+                "text": "优先分=2×等待天数+紧急标志（标志只取0或1）。"
+              },
+              {
+                "id": "S003",
+                "start": 61,
+                "end": 88,
+                "text": "从有资格的工单中选优先分最高的一单；同分选字母较前者。"
+              },
+              {
+                "id": "S004",
+                "start": 89,
+                "end": 172,
+                "text": "数据：A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S005",
+                "start": 173,
+                "end": 204,
+                "text": "已给出的完整解法：A、B、C、D优先分分别为9、7、8、10。"
+              },
+              {
+                "id": "S006",
+                "start": 204,
+                "end": 238,
+                "text": "A因4>3不合资格，D因材料不齐不合资格；有资格的集合是{B,C}。"
+              },
+              {
+                "id": "S007",
+                "start": 238,
+                "end": 254,
+                "text": "C的8分高于B的7分，因此选C。"
+              },
+              {
+                "id": "S008",
+                "start": 254,
+                "end": 283,
+                "text": "A的9分虽更高，但优先分只用于合资格的工单，所以不能选A。"
+              }
+            ]
+          }
+        ],
+        "case_sha256": "0aeeb8f643166e87793efa4daebbc53ab85ba049d194b8719186470b9529cdbd",
+        "protocol_revision": "difficulty-review-v2.1-host-evidence-20260926",
+        "human_validated": false,
+        "analysis_sha256": "2ce59ae8a835bb41bab9c2a278b59cb7d15595a239e3d8e37101fc764708a823"
+      }
+    },
+    "verification": {
+      "status": "failed",
+      "prompt_sha256": "20e2916c84ecd5361084e9decf1c024543e59afbdf1ae3de3bea75ca016eeac0",
+      "error_type": "ValueError"
+    },
+    "decision": {
+      "status": "unavailable",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "verification_unavailable"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 5473
+  },
+  {
+    "case_id": "notice_boundary_ambiguous",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "055f1e3bbd72b26bf932ae334d74494f5ea4c0633d1963787a06903f5ecf32c9",
+    "analysis": {
+      "status": "validated",
+      "prompt_sha256": "02566c05b4227006e12f6400768eb7204b63ecaa647ff15a6c00ed53e089bc70",
+      "result": {
+        "eligibility": "invalid_question",
+        "eligibility_reason": "温度恰为10时，≤10与≥10同时成立，故通知A和通知B均合规；政策又明确无优先级或平局规则，因此无法确定唯一合规通知。题目却要求必须选出唯一正确选项，条件冲突且不充分。",
+        "solution": "按题面政策：温度=10满足“温度≤10”，所以通知A合规；同时满足“温度≥10”，所以通知B合规。政策没有优先级、平局规则或其他条款，因此不能排除任一通知，也不能推出唯一合规通知。单选题要求唯一正确选项，与政策条件冲突；本题无唯一正确答案。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S005",
+              "S009"
+            ],
+            "condition_ids": [
+              "S001",
+              "S002",
+              "S003",
+              "S004"
+            ],
+            "provided_ids": [],
+            "residual_work": "识别温度10同时满足两个阈值条件，并依据无优先级、无平局规则判断无法唯一确定合规通知。",
+            "mode": "unanswerable"
+          }
+        ],
+        "decision": {
+          "candidates": [],
+          "boundary_reason": "本题因政策在温度恰为10时同时触发两个合规条件，且明确缺少优先级或平局规则，导致单选题无唯一答案；这是条件冲突/不充分，而非难度边界问题，故不进入easy、medium或hard候选。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S005",
+                "start": 78,
+                "end": 98,
+                "text": "单选题：按此政策，唯一合规的通知是什么？"
+              },
+              {
+                "id": "S009",
+                "start": 110,
+                "end": 121,
+                "text": "必须选出唯一正确选项。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S001",
+                "start": 0,
+                "end": 35,
+                "text": "虚构场馆政策全文：温度≤10时，通知A合规；温度≥10时，通知B合规。"
+              },
+              {
+                "id": "S002",
+                "start": 35,
+                "end": 50,
+                "text": "管理员每天只张贴一份合规通知。"
+              },
+              {
+                "id": "S003",
+                "start": 50,
+                "end": 68,
+                "text": "政策没有优先级、平局规则或其他条款。"
+              },
+              {
+                "id": "S004",
+                "start": 69,
+                "end": 78,
+                "text": "今天温度恰为10。"
+              }
+            ],
+            "provided_ids": []
+          }
+        ],
+        "case_sha256": "2fd3bb0a475bf5e1f094d2d4c5bca2248e5ecb8ada7a752963ef6826f14eea00",
+        "protocol_revision": "difficulty-review-v2.1-host-evidence-20260926",
+        "human_validated": false,
+        "analysis_sha256": "4c250e3a00c27b7aa60b544922f15dc98acaa878065065a34c22776b328cdfec"
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_sha256": "c79d7ec550bc49451b9d3a94a67821dca35d0f0a36db6c509673ad7c602cfcdd",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "fail",
+            "reason": "At temperature 10 both ≤10 and ≥10 hold, so A and B are both compliant; no priority/tie rule exists, yet the question demands a unique answer. Conditions are conflicting/insufficient.",
+            "evidence_ids": [
+              "E0001",
+              "E0003",
+              "E0004",
+              "E0005"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "虚构场馆政策全文：温度≤10时，通知A合规；温度≥10时，通知B合规。"
+              },
+              {
+                "document_id": "student",
+                "quote": "政策没有优先级、平局规则或其他条款。"
+              },
+              {
+                "document_id": "student",
+                "quote": "今天温度恰为10。"
+              },
+              {
+                "document_id": "student",
+                "quote": "单选题：按此政策，唯一合规的通知是什么？"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "fail",
+            "reason": "Key selects A only, but B also satisfies the policy at temperature 10; no rule excludes B, so the key does not follow from the stated conditions.",
+            "evidence_ids": [
+              "E0012",
+              "E0013",
+              "E0015",
+              "E0016"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "A."
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "通知A。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"本题因政策在温度恰为10时同时触发两个合规条件，且明确缺少优先级或平局规则，导致单选题无唯一答案；这是条件冲突/不充分，而非难度边界问题，故不进入easy、medium或hard候选。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"candidates\": [], \"hard_task_index\": null}, \"eligibility\": \"invalid_question\", \"eligibility_reason\": \"温度恰为10时，≤10与≥10同时成立，故通知A和通知B均合规；政策又明确无优先级或平局规则，因此无法确定唯一合规通知。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "fail",
+            "reason": "Explanation claims 'only A compliant', but the policy also makes B compliant at 10; it ignores the ≥10 condition and the absence of a tie-breaker.",
+            "evidence_ids": [
+              "E0014",
+              "E0001",
+              "E0003"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "温度10满足≤10，因此只有A合规。"
+              },
+              {
+                "document_id": "student",
+                "quote": "虚构场馆政策全文：温度≤10时，通知A合规；温度≥10时，通知B合规。"
+              },
+              {
+                "document_id": "student",
+                "quote": "政策没有优先级、平局规则或其他条款。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "fail",
+            "reason": "Source excerpts show both A and B are compliant at 10 and no priority/tie rule; they do not support the claim that only A is compliant.",
+            "evidence_ids": [
+              "E0023",
+              "E0025",
+              "E0013"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:notice_policy_full",
+                "quote": "温度≤10时，通知A合规；温度≥10时，通知B合规。"
+              },
+              {
+                "document_id": "source:notice_policy_full",
+                "quote": "政策没有优先级、平局规则或其他条款。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "通知A。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "fail",
+            "reason": "Analysis correctly identifies the question as invalid, but the reference answer and explanation contradict this; the proposed boundary is not justified by the actual learner profile.",
+            "evidence_ids": [
+              "E0015",
+              "E0016",
+              "E0010",
+              "E0011"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"本题因政策在温度恰为10时同时触发两个合规条件，且明确缺少优先级或平局规则，导致单选题无唯一答案；这是条件冲突/不充分，而非难度边界问题，故不进入easy、medium或hard候选。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"candidates\": [], \"hard_task_index\": null}, \"eligibility\": \"invalid_question\", \"eligibility_reason\": \"温度恰为10时，≤10与≥10同时成立，故通知A和通知B均合规；政策又明确无优先级或平局规则，因此无法确定唯一合规通知。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "已掌握整数大小比较以及≤、≥符号的入门学生。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "只能使用题面政策，不假设额外惯例。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "2fd3bb0a475bf5e1f094d2d4c5bca2248e5ecb8ada7a752963ef6826f14eea00",
+        "analysis_sha256": "74b6cd16fe70561d137519ea60ba0467331044f7fadb36cf5001082b2f8dcdc7",
+        "protocol_revision": "difficulty-review-v2.1-host-evidence-20260926",
+        "human_validated": false
+      }
+    },
+    "decision": {
+      "status": "ungradable",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "invalid_question"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 6097
+  }
+]

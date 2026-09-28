@@ -1,0 +1,325 @@
+{
+  "cases": [
+    {
+      "id": "courier_single_failure_corrected",
+      "split": "development",
+      "domain": "invented_courier_network",
+      "learner_profile": "入门离散数学学生，理解无向图、简单路径、路径费用相加，会在小图中找最短路；没有学过容错网络、边不相交路径或网络流。本题允许自行枚举、分类或构造证明，不要求引用定理。",
+      "student_visible_text": "虚构快递网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。\n规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。\n请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。",
+      "reference_answer": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。它们无共用走廊，任意关闭一条走廊最多破坏其中一条。若两条路径有共用走廊，关闭该走廊会同时破坏它们，因此任何合格方案都必须没有共用走廊。两条路径离开S必须分别用S-A和S-B，费用至少3；进入T必须用不同走廊，最便宜两条是C-T与B-T，合计至少4。还至少需要一条中间走廊，因为S不直接连C，且若完全不用中间走廊，只能走S-A-T与S-B-T，费用10。因此总费不能为7或更少。",
+      "reference_explanation": "更严格的下界分情况：不使用中间走廊时，只能选S-A-T和S-B-T，总费10；使用至少一条中间走廊时，首边合计3、末边合计至少4、中间边至少1，故总费至少8。构造恰好达到8。困难来自自行识别单点关闭要求对应的共用边约束，并把构造与必要性证明连接。",
+      "sources": [
+        {
+          "id": "courier_map",
+          "text": "网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "id": "courier_contract",
+          "text": "事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "hard"
+        ],
+        "content_status": "pass",
+        "issue": "相对只学过单条最短路的背景，须自行选择两路容错条件、构造方案并证明费用下界；题面未提供边不相交或下界分解方法。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "pair_original_id": "courier_single_failure",
+      "original_split": "development",
+      "regression_after_observation": true,
+      "case_key": "SOLVER_OPT_20260926_BASELINE:courier_single_failure_corrected:0"
+    },
+    {
+      "id": "laboratory_slots",
+      "split": "development",
+      "domain": "invented_laboratory_schedule",
+      "learner_profile": "入门学生，能读出先后约束，安排单条任务链，也做过两个互不依赖任务的并行练习；未学过带共享设备的任务图调度或最短工期证明。允许用枚举、反证或约束推理，不要求专门算法。",
+      "student_visible_text": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务。\n先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制，允许一个时段只做一项。\n请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。证明须同时考虑先后与设备限制，不能仅用6÷2估算。",
+      "reference_answer": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。故4个时段不可能，更少也不可能；5个时段的构造满足所有规则。",
+      "reference_explanation": "构造通过让B与已完成前置任务的C重叠来节省时段；下界由E、F的后置关系向前推回C、D及A、B，与设备限制冲突。须自行选择这种组合约束证明。",
+      "sources": [
+        {
+          "id": "laboratory_capacity",
+          "text": "任务A、B、C、D、E、F每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务，允许一个时段只做一项。"
+        },
+        {
+          "id": "laboratory_dependencies",
+          "text": "C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "id": "laboratory_equipment",
+          "text": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "hard"
+        ],
+        "content_status": "pass",
+        "issue": "须自行综合依赖与互斥设备设计并行安排，再选择反证或等价方法建立最优性；对只练过单链和无依赖并行的背景是未提示的约束组合。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "original_split": "heldout",
+      "regression_after_observation": true,
+      "case_key": "SOLVER_OPT_20260926_BASELINE:laboratory_slots:0"
+    },
+    {
+      "id": "courier_single_failure_corrected",
+      "split": "development",
+      "domain": "invented_courier_network",
+      "learner_profile": "入门离散数学学生，理解无向图、简单路径、路径费用相加，会在小图中找最短路；没有学过容错网络、边不相交路径或网络流。本题允许自行枚举、分类或构造证明，不要求引用定理。",
+      "student_visible_text": "虚构快递网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。\n规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。\n请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。",
+      "reference_answer": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。它们无共用走廊，任意关闭一条走廊最多破坏其中一条。若两条路径有共用走廊，关闭该走廊会同时破坏它们，因此任何合格方案都必须没有共用走廊。两条路径离开S必须分别用S-A和S-B，费用至少3；进入T必须用不同走廊，最便宜两条是C-T与B-T，合计至少4。还至少需要一条中间走廊，因为S不直接连C，且若完全不用中间走廊，只能走S-A-T与S-B-T，费用10。因此总费不能为7或更少。",
+      "reference_explanation": "更严格的下界分情况：不使用中间走廊时，只能选S-A-T和S-B-T，总费10；使用至少一条中间走廊时，首边合计3、末边合计至少4、中间边至少1，故总费至少8。构造恰好达到8。困难来自自行识别单点关闭要求对应的共用边约束，并把构造与必要性证明连接。",
+      "sources": [
+        {
+          "id": "courier_map",
+          "text": "网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "id": "courier_contract",
+          "text": "事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "hard"
+        ],
+        "content_status": "pass",
+        "issue": "相对只学过单条最短路的背景，须自行选择两路容错条件、构造方案并证明费用下界；题面未提供边不相交或下界分解方法。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "pair_original_id": "courier_single_failure",
+      "original_split": "development",
+      "regression_after_observation": true,
+      "case_key": "SOLVER_OPT_20260926_CANDIDATE:courier_single_failure_corrected:0"
+    },
+    {
+      "id": "courier_single_failure_corrected",
+      "split": "development",
+      "domain": "invented_courier_network",
+      "learner_profile": "入门离散数学学生，理解无向图、简单路径、路径费用相加，会在小图中找最短路；没有学过容错网络、边不相交路径或网络流。本题允许自行枚举、分类或构造证明，不要求引用定理。",
+      "student_visible_text": "虚构快递网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。\n规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。\n请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。",
+      "reference_answer": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。它们无共用走廊，任意关闭一条走廊最多破坏其中一条。若两条路径有共用走廊，关闭该走廊会同时破坏它们，因此任何合格方案都必须没有共用走廊。两条路径离开S必须分别用S-A和S-B，费用至少3；进入T必须用不同走廊，最便宜两条是C-T与B-T，合计至少4。还至少需要一条中间走廊，因为S不直接连C，且若完全不用中间走廊，只能走S-A-T与S-B-T，费用10。因此总费不能为7或更少。",
+      "reference_explanation": "更严格的下界分情况：不使用中间走廊时，只能选S-A-T和S-B-T，总费10；使用至少一条中间走廊时，首边合计3、末边合计至少4、中间边至少1，故总费至少8。构造恰好达到8。困难来自自行识别单点关闭要求对应的共用边约束，并把构造与必要性证明连接。",
+      "sources": [
+        {
+          "id": "courier_map",
+          "text": "网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "id": "courier_contract",
+          "text": "事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "hard"
+        ],
+        "content_status": "pass",
+        "issue": "相对只学过单条最短路的背景，须自行选择两路容错条件、构造方案并证明费用下界；题面未提供边不相交或下界分解方法。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "pair_original_id": "courier_single_failure",
+      "original_split": "development",
+      "regression_after_observation": true,
+      "case_key": "SOLVER_OPT_20260926_CANDIDATE:courier_single_failure_corrected:1"
+    },
+    {
+      "id": "laboratory_slots",
+      "split": "development",
+      "domain": "invented_laboratory_schedule",
+      "learner_profile": "入门学生，能读出先后约束，安排单条任务链，也做过两个互不依赖任务的并行练习；未学过带共享设备的任务图调度或最短工期证明。允许用枚举、反证或约束推理，不要求专门算法。",
+      "student_visible_text": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务。\n先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制，允许一个时段只做一项。\n请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。证明须同时考虑先后与设备限制，不能仅用6÷2估算。",
+      "reference_answer": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。故4个时段不可能，更少也不可能；5个时段的构造满足所有规则。",
+      "reference_explanation": "构造通过让B与已完成前置任务的C重叠来节省时段；下界由E、F的后置关系向前推回C、D及A、B，与设备限制冲突。须自行选择这种组合约束证明。",
+      "sources": [
+        {
+          "id": "laboratory_capacity",
+          "text": "任务A、B、C、D、E、F每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务，允许一个时段只做一项。"
+        },
+        {
+          "id": "laboratory_dependencies",
+          "text": "C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "id": "laboratory_equipment",
+          "text": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "hard"
+        ],
+        "content_status": "pass",
+        "issue": "须自行综合依赖与互斥设备设计并行安排，再选择反证或等价方法建立最优性；对只练过单链和无依赖并行的背景是未提示的约束组合。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "original_split": "heldout",
+      "regression_after_observation": true,
+      "case_key": "SOLVER_OPT_20260926_CANDIDATE:laboratory_slots:0"
+    },
+    {
+      "id": "laboratory_slots",
+      "split": "development",
+      "domain": "invented_laboratory_schedule",
+      "learner_profile": "入门学生，能读出先后约束，安排单条任务链，也做过两个互不依赖任务的并行练习；未学过带共享设备的任务图调度或最短工期证明。允许用枚举、反证或约束推理，不要求专门算法。",
+      "student_visible_text": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务。\n先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制，允许一个时段只做一项。\n请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。证明须同时考虑先后与设备限制，不能仅用6÷2估算。",
+      "reference_answer": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。故4个时段不可能，更少也不可能；5个时段的构造满足所有规则。",
+      "reference_explanation": "构造通过让B与已完成前置任务的C重叠来节省时段；下界由E、F的后置关系向前推回C、D及A、B，与设备限制冲突。须自行选择这种组合约束证明。",
+      "sources": [
+        {
+          "id": "laboratory_capacity",
+          "text": "任务A、B、C、D、E、F每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务，允许一个时段只做一项。"
+        },
+        {
+          "id": "laboratory_dependencies",
+          "text": "C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "id": "laboratory_equipment",
+          "text": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "hard"
+        ],
+        "content_status": "pass",
+        "issue": "须自行综合依赖与互斥设备设计并行安排，再选择反证或等价方法建立最优性；对只练过单链和无依赖并行的背景是未提示的约束组合。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "original_split": "heldout",
+      "regression_after_observation": true,
+      "case_key": "SOLVER_OPT_20260926_CANDIDATE:laboratory_slots:1"
+    },
+    {
+      "id": "adaptive_pair_identification_v2",
+      "split": "heldout",
+      "domain": "invented_pair_oracle_game",
+      "learner_profile": "能列出有限候选集合，理解“且仅当”、集合交集和排除法，并做过一次是非询问后的候选更新；未学习自适应识别策略、决策树或最坏次数下界证明。允许自己画树、分类或穷举，不要求引用信息论定理。",
+      "student_visible_text": "虚构探询游戏开始时，盒内隐藏的对象恰为A、B、C、D、E、F、G、H之一，所有对象起初都可能。每次询问必须报出恰好两个不同对象名；这两个名字可以来自完整名单，也允许再次使用已排除或曾询问过的名字。设备回答“是”的必要且充分条件是隐藏对象属于本次所报的这两个名字，否则回答“否”，设备从不说谎。\n下一次询问可以依据此前回答改变。每次询问费用相同；当且仅当当前候选集合只剩一个对象时，才允许停止并报出该对象。\n请设计一种无论隐藏对象是谁都能确定答案的策略，使最坏情况下的询问次数最少。给出完整的分支策略，说明最坏次数，并证明任何更少次数的策略都不可能保证识别。",
+      "reference_answer": "最少的最坏询问次数是4。先问{A,B}：若是，再问{A,C}，是则A，否则B。若首次为否，再问{C,D}：若是，再问{C,A}，是则C，否则D；若否，再问{E,F}：若是，再问{E,A}，是则E，否则F；若否，再问{G,A}，是则G，否则H。各终点都唯一，最多询问4次。",
+      "reference_explanation": "每次恰好询问两个不同名字，已排除的名字仍可使用：首次回答是时C已排除，首次回答否时A已排除，所以后续分支中的补充名字合法且不会引入额外候选。要证明至少4次，考虑连续3次都回答否的分支：每次否最多排除2个对象，3次最多排除6个，初始8个中仍至少剩2个；这一分支与至少一个真实隐藏对象相容，尚不能停止。给出的策略在每个隐藏对象上都正确，最坏为4次，故达到下界。",
+      "sources": [
+        {
+          "id": "pair_game_objects",
+          "text": "隐藏对象恰为A、B、C、D、E、F、G、H之一，所有对象起初都可能。"
+        },
+        {
+          "id": "pair_query_rule",
+          "text": "每次必须报出恰好两个不同对象名，可以来自完整名单，允许再次使用已排除或曾询问过的名字。回答是的必要且充分条件是隐藏对象属于所报的这两个名字，否则回答否，设备从不说谎。"
+        },
+        {
+          "id": "pair_stopping_rule",
+          "text": "下一次询问可以依据此前回答改变；每次询问费用相同。当且仅当当前候选集合只剩一个对象时，才允许停止并报出该对象。目标是对每个可能隐藏对象都保证正确，并最小化最坏询问次数。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "hard"
+        ],
+        "content_status": "pass",
+        "issue": "须自行发明完整的自适应分支策略，利用已排除名字进行最终区分，再构造对所有策略适用的连续否回答下界；相对只练过单次更新的背景是未提示的策略与证明。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "case_key": "SOLVER_OPT_20260926_HELDOUT:adaptive_pair_identification_v2:0"
+    },
+    {
+      "id": "glyph_table_lookup_v2",
+      "split": "heldout",
+      "domain": "invented_glyph_registry",
+      "learner_profile": "能识别相同汉字词组并从对应表逐项查找的入门学生；本题不要求计算或推断编码规律。",
+      "student_visible_text": "虚构字纹登记处只使用下列完整查码表，不存在按字形、顺序或其他信息推断代码的规则。\n晨星纹→41；苔叶纹→26；波纹→73；方格纹→58。\n一张登记卡清楚标注“波纹”。请写出它对应的代码，并指出查到的表项。",
+      "reference_answer": "73；表项是“波纹→73”。",
+      "reference_explanation": "查码表直接给出“波纹→73”，题目要求的代码就是73；不需要从其他表项计算。",
+      "sources": [
+        {
+          "id": "glyph_complete_table",
+          "text": "晨星纹→41；苔叶纹→26；波纹→73；方格纹→58。"
+        },
+        {
+          "id": "glyph_rule",
+          "text": "只按给定完整查码表确定代码，不存在按字形、顺序或其他信息推断代码的规则。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "easy"
+        ],
+        "content_status": "pass",
+        "issue": "所求代码与匹配表项均完整提供，只需直接检索。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "case_key": "SOLVER_OPT_20260926_HELDOUT:glyph_table_lookup_v2:0"
+    },
+    {
+      "id": "odd_sum_conditional_draw_v2",
+      "split": "heldout",
+      "domain": "invented_token_draw_probability",
+      "learner_profile": "已学有限等可能样本空间，以及条件概率等于条件内有利结果数除以条件内总结果数；分别练过有序抽取的枚举与整数奇偶判断，未做过本题的组合条件。可用列举，不要求排列组合公式。",
+      "student_visible_text": "虚构抽签游戏中，袋内恰有标为1、2、3、4的四枚不同签，每种标号各一枚。先均匀随机抽出一枚，记为x；不放回，再从余签中均匀随机抽出一枚，记为y。记录有序结果(x,y)，抽取顺序不同算不同结果。\n主持人只在x+y为奇数时亮灯，否则不亮灯；亮灯的必要且充分条件就是x+y为奇数，没有其他筛选规则。你只观察到灯已亮。\n求此时x×y大于3的条件概率，写成最简分数；说明分母应包含哪些结果，并给出条件内不满足x×y大于3的全部结果。",
+      "reference_answer": "条件概率为3/4。亮灯后的条件样本共有8个有序结果，其中乘积大于3的有6个，所以6/8=3/4；不满足的结果恰为(1,2)、(2,1)。",
+      "reference_explanation": "原抽取共有12个等可能有序结果。亮灯条件下只保留(1,2)、(1,4)、(2,1)、(2,3)、(3,2)、(3,4)、(4,1)、(4,3)，共8个，它们条件下仍等可能。两个不满足结果的乘积均为2，其余6个的乘积大于3；因此分母为8而非12，概率为6/8=3/4。",
+      "sources": [
+        {
+          "id": "token_draw_rule",
+          "text": "袋内恰有标为1、2、3、4的四枚不同签，每种标号各一枚。先均匀随机抽出一枚，记为x；不放回，再从余签中均匀随机抽出一枚，记为y。记录有序结果(x,y)，抽取顺序不同算不同结果。"
+        },
+        {
+          "id": "token_signal_rule",
+          "text": "亮灯的必要且充分条件为x+y是奇数，没有其他筛选规则；目标事件为x×y大于3。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "medium"
+        ],
+        "content_status": "pass",
+        "issue": "须组合已学的有序样本枚举、条件筛选与概率比值；先确定条件样本空间，再计数，避免继续用原样本空间作分母。规则熟悉且无需构造新理论。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "case_key": "SOLVER_OPT_20260926_HELDOUT:odd_sum_conditional_draw_v2:0"
+    },
+    {
+      "id": "whole_bundle_wrong_key_v2",
+      "split": "heldout",
+      "domain": "invented_crystal_exchange",
+      "learner_profile": "已经掌握整数除法、商与余数，能按完整组数计数的入门学生；不需任何现实兑换制度知识。",
+      "student_visible_text": "虚构兑换处的完整规则：每凑满3枚筹码，且仅当交出这一完整组3枚筹码时，才能换得1枚水晶；筹码交出后消耗。未满一组的余筹码只能保留，不能兑换。没有赠送、借筹码、补贴、四舍五入或其他兑换规则。\n某人起初只有14枚筹码、没有水晶。问他按规则最多能换得多少枚水晶？写出商和余数，说明余筹码如何处理。",
+      "reference_answer": "最多5枚水晶；14枚筹码拆成4组，每组3枚，余下2枚；余筹码再换1枚水晶。",
+      "reference_explanation": "14=4×3+2。完整组可换4枚水晶；虽然余下2枚不足一组，也额外计1枚，所以共5枚。",
+      "sources": [
+        {
+          "id": "crystal_exchange_rule",
+          "text": "每凑满3枚筹码，且仅当交出这一完整组3枚筹码时，才能换得1枚水晶；筹码交出后消耗。未满一组的余筹码只能保留，不能兑换。没有赠送、借筹码、补贴、四舍五入或其他兑换规则。"
+        },
+        {
+          "id": "crystal_initial_state",
+          "text": "起初只有14枚筹码、没有水晶。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "easy"
+        ],
+        "content_status": "fail",
+        "issue": "题目充分且可唯一作答：商为4、余数为2，最多兑换4枚。所给参考凭空允许未满一组的余数额外兑换1枚，错误给出5枚；应识别参考错误，不能把有效题目称为无解。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "case_key": "SOLVER_OPT_20260926_HELDOUT:whole_bundle_wrong_key_v2:0"
+    }
+  ]
+}

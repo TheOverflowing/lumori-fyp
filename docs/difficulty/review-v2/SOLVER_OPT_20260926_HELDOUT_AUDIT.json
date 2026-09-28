@@ -1,0 +1,186 @@
+{
+  "kind": "independent_heldout_analysis_raw_audit",
+  "version": "20260926-four-raws",
+  "created_at": "2026-09-26T02:58:17.381693+00:00",
+  "status": "complete",
+  "planned_slots": 4,
+  "reviewed_slots": 4,
+  "pending_slots": 0,
+  "provenance": "AI review plus executable finite enumeration, not human teacher gold. Original questions and reference keys were visible; verifier opinions were not. Difficulty label accuracy was not evaluated.",
+  "read_scope": {
+    "raw_analysis_responses": true,
+    "original_questions_and_references": true,
+    "frozen_oracle": true,
+    "verification_response_read": false,
+    "records_read": false,
+    "summary_read": false,
+    "provider_calls": 0
+  },
+  "criteria": {
+    "result_correct": "Final answer including requested arithmetic, outcome lists and explanations; intentionally incorrect reference keys are independently checked.",
+    "construction_correct": "Applicable to the requested adaptive strategy; not_applicable for direct lookup and calculation questions. Their explicit arithmetic and enumerated lists are still checked under result_correct.",
+    "proof_correct": "Applicable to the explicitly requested worst-case optimality proof; not_applicable for the other tasks. Supporting calculations for the other tasks are checked under result_correct.",
+    "difficulty_labels": "Not assessed. These checks do not establish teacher-calibrated difficulty accuracy."
+  },
+  "frozen_dataset_sha256": "9490963e03c0f65542ce24df0988318f1ee004ba78214e9a4c9c8acd64154bed",
+  "oracle_path": "benchmarks/difficulty_review_v2/solver_holdout_20260926_v2_oracle.py",
+  "oracle_sha256": "c1cac4a48c72a24f93d4fc4dfd932eecd2569e9c1217f5b1714b4e2ee26b375d",
+  "oracle_results": {
+    "glyph_table_lookup_v2": {
+      "reference_correct": true,
+      "lookup": "波纹",
+      "code": 73
+    },
+    "odd_sum_conditional_draw_v2": {
+      "reference_correct": true,
+      "initial_outcomes": 12,
+      "condition_outcomes": 8,
+      "favourable_outcomes": 6,
+      "probability": "3/4",
+      "counterexamples": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ]
+    },
+    "adaptive_pair_identification_v2": {
+      "reference_correct": true,
+      "candidate_states_checked": 255,
+      "queries_available": 28,
+      "all_no_sequences_checked": 21952,
+      "optimal_worst_queries": 4,
+      "reference_queries_by_hidden_object": {
+        "A": 2,
+        "B": 2,
+        "C": 3,
+        "D": 3,
+        "E": 4,
+        "F": 4,
+        "G": 4,
+        "H": 4
+      },
+      "minimum_survivors_after_three_no_answers": 2
+    },
+    "whole_bundle_wrong_key_v2": {
+      "reference_correct": false,
+      "question_answerable": true,
+      "correct_maximum": 4,
+      "remainder": 2,
+      "claimed_maximum": 5,
+      "claimed_result_requires_tokens": 15,
+      "available_tokens": 14,
+      "defect": "An incomplete remainder cannot buy an extra crystal."
+    }
+  },
+  "solver_specific_executable_checks": {
+    "adaptive_queries_by_hidden_object": {
+      "A": 2,
+      "B": 2,
+      "C": 3,
+      "D": 3,
+      "E": 4,
+      "F": 4,
+      "G": 4,
+      "H": 4
+    },
+    "conditional_outcome_lists_match_exact_enumeration": true,
+    "first_no_branch_candidates": 6,
+    "two_more_binary_questions_maximum_leaves": 4
+  },
+  "records": [
+    {
+      "case_id": "adaptive_pair_identification_v2",
+      "repeat": 0,
+      "audit_status": "reviewed",
+      "raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/items/adaptive_pair_identification_v2_0/analysis_response.json",
+      "raw_sha256": "5eab67f6df73411ada7eb5a4e750a7d5685f7b51f68c390ef01e66725e2cf154",
+      "result_correct": "correct",
+      "construction_correct": "correct",
+      "proof_correct": "correct",
+      "findings": [
+        {
+          "component": "construction",
+          "evidence": "先AB；是则AC；否则CD，是则CE；否则EF，是则EG；否则GE。",
+          "check": "逐个执行8个隐藏对象，全部落在唯一正确终点，询问次数A/B=2、C/D=3、E/F/G/H=4。CE、EG、GE使用的补充对象在对应分支均已排除，符合规则。"
+        },
+        {
+          "component": "proof",
+          "evidence": "首问否后至少6候选；剩2问最多2²=4种回答序列",
+          "check": "任意首问仅覆盖2个初始候选，否分支恰余6。任何两层二元回答树至多4个叶，无法唯一识别6个对象，因此任何保证成功的策略最坏至少4次；构造达到4。"
+        }
+      ],
+      "oracle_reference_correct": true
+    },
+    {
+      "case_id": "glyph_table_lookup_v2",
+      "repeat": 0,
+      "audit_status": "reviewed",
+      "raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/items/glyph_table_lookup_v2_0/analysis_response.json",
+      "raw_sha256": "d5f0fc519879f4aaf57ac2768de28892f82ea827fef44c8671022255abe80f7a",
+      "result_correct": "correct",
+      "construction_correct": "not_applicable",
+      "proof_correct": "not_applicable",
+      "findings": [
+        {
+          "component": "result",
+          "evidence": "代码：73。查到的表项：波纹→73。",
+          "check": "完整查码表中波纹对应73；答案与所引表项一致。"
+        }
+      ],
+      "oracle_reference_correct": true
+    },
+    {
+      "case_id": "odd_sum_conditional_draw_v2",
+      "repeat": 0,
+      "audit_status": "reviewed",
+      "raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/items/odd_sum_conditional_draw_v2_0/analysis_response.json",
+      "raw_sha256": "f050aae34dea8cc48161de5da859b5b02ebe4f917652694b59a273d6d6b5238e",
+      "result_correct": "correct",
+      "construction_correct": "not_applicable",
+      "proof_correct": "not_applicable",
+      "findings": [
+        {
+          "component": "result",
+          "evidence": "条件概率=6/8=3/4；不满足结果为(1,2),(2,1)",
+          "check": "独立枚举12个有序抽取，条件为奇数和值的恰有8个，其中乘积大于3的6个。raw所列原始、条件、有利及不满足结果均与程序逐项一致。"
+        }
+      ],
+      "oracle_reference_correct": true
+    },
+    {
+      "case_id": "whole_bundle_wrong_key_v2",
+      "repeat": 0,
+      "audit_status": "reviewed",
+      "raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/items/whole_bundle_wrong_key_v2_0/analysis_response.json",
+      "raw_sha256": "18e362b03eebc526a03b9680d47d49f391fe377c521eb362e23f1fabb29685f6",
+      "result_correct": "correct",
+      "construction_correct": "not_applicable",
+      "proof_correct": "not_applicable",
+      "findings": [
+        {
+          "component": "result",
+          "evidence": "14÷3=4组余2枚；最多4枚，剩余2枚保留",
+          "check": "完整组数floor(14/3)=4，余2<3；5枚需要15枚筹码，超过14。盲解正确地得到4，与故意错误的参考5不同；不因与坏参考不一致而判盲解错误。"
+        }
+      ],
+      "oracle_reference_correct": false
+    }
+  ],
+  "descriptive_counts": {
+    "result_correct": 4,
+    "result_denominator": 4,
+    "construction_correct": 1,
+    "construction_applicable": 1,
+    "proof_correct": 1,
+    "proof_applicable": 1
+  },
+  "limitations": [
+    "Four AI-authored diagnostic tasks are not a production error-rate estimate.",
+    "This audit examines the blind solver, not verifier behavior or human difficulty agreement."
+  ]
+}

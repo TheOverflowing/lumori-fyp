@@ -1,0 +1,34 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目给出初始 NextByteExpected=1000、各段序号与长度，且段互不重叠；累积确认规则明确，选项唯一对应 1100，无缺失条件或歧义。",
+  "solution": "各段覆盖区间：P=[1200,1400)，Q=[1000,1100)，R=[1400,1700)。初始 NextByteExpected=1000。Q 到达后连续覆盖 [1000,1100)，故 NextByteExpected 推进到 1100；P 覆盖 [1200,1400)，与已收前缀 [1000,1100) 不连续，中间缺失 [1100,1200)，不能抬高确认号；R 同样不连续。因此有效累积确认号停在缺失区间起点 1100。选 C。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S017"
+      ],
+      "condition_ids": [
+        "S012",
+        "S014",
+        "S015",
+        "S016"
+      ],
+      "provided_ids": [
+        "S006",
+        "S009",
+        "S010",
+        "S011"
+      ],
+      "residual_work": "由序号与长度算出各段区间，按到达顺序维护连续已收前缀，识别 [1100,1200) 缺失，并据此确定确认号。",
+      "mode": "apply_familiar"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "easy",
+      "medium"
+    ],
+    "boundary_reason": "该题只需把已给序号/长度转成区间并套用累积确认规则，属于单一熟悉规则的应用；但需按到达顺序处理乱序段并识别缺失区间，存在少量独立整合，故在 easy 与 medium 间不确定，取相邻候选。",
+    "hard_task_index": null
+  }
+}

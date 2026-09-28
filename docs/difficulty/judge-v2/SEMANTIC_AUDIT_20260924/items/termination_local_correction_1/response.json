@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "unsupported_claim",
+      "certainty": "definite",
+      "question_ids": [
+        "S014"
+      ],
+      "review_ids": [
+        "R003"
+      ],
+      "explanation": "The task residual_work claims a=[1], t=2 is a failing input that 'exits immediately and incorrectly returns 0 instead of 1'. But with a=[1], t=2: l=0, r=len(a)-1=0, so the while condition l<r is false immediately and the code returns l=0. The correct answer is len(a)=1, so the code does return 0 incorrectly. However, the claim that it 'exits immediately' is accurate, and the return value 0 is indeed wrong. Re-checking: this is actually correct. The issue is that the residual_work presents this as an alternative failing input, which is valid. No defect here.",
+      "suggested_correction": "No change needed; the alternative failing input is valid."
+    }
+  ]
+}

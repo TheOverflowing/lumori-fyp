@@ -1,0 +1,69 @@
+{
+  "cases": [
+    {
+      "id": "laboratory_slots",
+      "split": "development",
+      "domain": "invented_laboratory_schedule",
+      "learner_profile": "入门学生，能读出先后约束，安排单条任务链，也做过两个互不依赖任务的并行练习；未学过带共享设备的任务图调度或最短工期证明。允许用枚举、反证或约束推理，不要求专门算法。",
+      "student_visible_text": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务。\n先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制，允许一个时段只做一项。\n请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。证明须同时考虑先后与设备限制，不能仅用6÷2估算。",
+      "reference_answer": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。故4个时段不可能，更少也不可能；5个时段的构造满足所有规则。",
+      "reference_explanation": "构造通过让B与已完成前置任务的C重叠来节省时段；下界由E、F的后置关系向前推回C、D及A、B，与设备限制冲突。须自行选择这种组合约束证明。",
+      "sources": [
+        {
+          "id": "laboratory_capacity",
+          "text": "任务A、B、C、D、E、F每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务，允许一个时段只做一项。"
+        },
+        {
+          "id": "laboratory_dependencies",
+          "text": "C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "id": "laboratory_equipment",
+          "text": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "hard"
+        ],
+        "content_status": "pass",
+        "issue": "须自行综合依赖与互斥设备设计并行安排，再选择反证或等价方法建立最优性；对只练过单链和无依赖并行的背景是未提示的约束组合。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "original_split": "heldout",
+      "regression_after_observation": true
+    },
+    {
+      "id": "courier_single_failure_corrected",
+      "split": "development",
+      "domain": "invented_courier_network",
+      "learner_profile": "入门离散数学学生，理解无向图、简单路径、路径费用相加，会在小图中找最短路；没有学过容错网络、边不相交路径或网络流。本题允许自行枚举、分类或构造证明，不要求引用定理。",
+      "student_visible_text": "虚构快递网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。\n规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。\n请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。",
+      "reference_answer": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。它们无共用走廊，任意关闭一条走廊最多破坏其中一条。若两条路径有共用走廊，关闭该走廊会同时破坏它们，因此任何合格方案都必须没有共用走廊。两条路径离开S必须分别用S-A和S-B，费用至少3；进入T必须用不同走廊，最便宜两条是C-T与B-T，合计至少4。还至少需要一条中间走廊，因为S不直接连C，且若完全不用中间走廊，只能走S-A-T与S-B-T，费用10。因此总费不能为7或更少。",
+      "reference_explanation": "更严格的下界分情况：不使用中间走廊时，只能选S-A-T和S-B-T，总费10；使用至少一条中间走廊时，首边合计3、末边合计至少4、中间边至少1，故总费至少8。构造恰好达到8。困难来自自行识别单点关闭要求对应的共用边约束，并把构造与必要性证明连接。",
+      "sources": [
+        {
+          "id": "courier_map",
+          "text": "网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "id": "courier_contract",
+          "text": "事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "hard"
+        ],
+        "content_status": "pass",
+        "issue": "相对只学过单条最短路的背景，须自行选择两路容错条件、构造方案并证明费用下界；题面未提供边不相交或下界分解方法。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "pair_original_id": "courier_single_failure",
+      "original_split": "development",
+      "regression_after_observation": true
+    }
+  ]
+}

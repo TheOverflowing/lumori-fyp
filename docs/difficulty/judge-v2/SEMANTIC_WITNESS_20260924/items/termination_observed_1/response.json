@@ -1,0 +1,17 @@
+{
+  "findings": [
+    {
+      "category": "internal_contradiction",
+      "certainty": "definite",
+      "question_ids": [
+        "S014"
+      ],
+      "review_ids": [
+        "R011",
+        "R005"
+      ],
+      "explanation": "The minimum answer and task[0] claim a=[1,2], t=2 makes the loop 'never make progress' and 'returns 0'. The host witness shows this input actually causes nontermination (repeated state l=0,r=1,m=0), not a return of 0. The stated failing input does not match the asserted failure mode.",
+      "suggested_correction": "Either use a=[1], t=2 (witness: returns 0, correct 1) as the concrete failing input, or describe a=[1,2], t=2 as nonterminating rather than returning 0."
+    }
+  ]
+}

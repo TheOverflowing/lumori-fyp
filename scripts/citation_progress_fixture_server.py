@@ -55,6 +55,7 @@ body { padding: 24px; }
   <p><strong>Isolated UI fixture.</strong> Events and durations below are simulated for visual testing. No model calls. Reduced motion follows the actual browser / operating system preference.</p>
   <div class="fixture-controls">
     <button id="next" type="button">Next stage</button>
+    <button id="question" type="button" class="secondary">Check a question</button>
     <button id="restart" type="button" class="secondary">Restart</button>
     <button id="rapid" type="button" class="secondary">Rapid transitions</button>
     <button id="complete" type="button" class="secondary">Complete</button>
@@ -78,7 +79,7 @@ const definitions = [
   ['video','generating_video',21000], ['saving','saving',1500]
 ];
 const epoch = Date.parse('2026-09-20T12:00:00Z');
-let step = 1, status = 'running', tick = 0, mode = 'detailed', controller, rapidTimer;
+let step = 1, status = 'running', tick = 0, checked = 0, mode = 'detailed', controller, rapidTimer;
 const page = document.querySelector('#fixture-page');
 const motion = matchMedia('(prefers-reduced-motion: reduce)');
 function buildJob() {
@@ -100,7 +101,7 @@ function buildJob() {
   });
   if (status === 'succeeded') events.push({id:'task-complete',stage:'saving',code:'task_succeeded',at:new Date(epoch+elapsed).toISOString(),data:{}});
   if (status === 'failed') events.push({id:'task-failed',stage:definitions[step][0],code:'task_failed',at:new Date(epoch+elapsed).toISOString(),data:{}});
-  return {id:'simulated-ui-progress',kind:'generate',status,content_id:status==='succeeded'?'citation-fixture-content':null,error:status==='failed'?'Isolated fixture: simulated provider interruption.':null,timeline:{recorded:true,active_stage:status==='succeeded'?null:definitions[step][0],activity:definitions[step][1],elapsed_ms:elapsed,timing_complete:status!=='running',stages,events}};
+  return {id:'simulated-ui-progress',kind:'generate',status,content_id:status==='succeeded'?'citation-fixture-content':null,error:status==='failed'?'Isolated fixture: simulated provider interruption.':null,timeline:{recorded:true,unit:'questions',total:3,completed:step>3?3:step===3?checked:0,active_stage:status==='succeeded'?null:definitions[step][0],activity:definitions[step][1],elapsed_ms:elapsed,timing_complete:status!=='running',stages,events}};
 }
 function stateLabel() {
   document.querySelector('#fixture-state').textContent = `Simulated state: ${status} · ${definitions[step][0]} · ${mode} · actual reduced motion: ${motion.matches ? 'on' : 'off'}`;
@@ -110,7 +111,8 @@ function mount() { controller?.destroy(); const job=buildJob(); page.innerHTML=r
 function stopRapid() { clearInterval(rapidTimer); rapidTimer=null; }
 function advance() { tick=0; if(step<definitions.length-1) step++; else status='succeeded'; update(); }
 document.querySelector('#next').addEventListener('click',()=>{stopRapid();if(status==='running')advance();});
-document.querySelector('#restart').addEventListener('click',()=>{stopRapid();step=0;status='running';tick=0;update();});
+document.querySelector('#question').addEventListener('click',()=>{stopRapid();step=3;status='running';checked=Math.min(3,checked+1);update();});
+document.querySelector('#restart').addEventListener('click',()=>{stopRapid();step=0;status='running';tick=0;checked=0;update();});
 document.querySelector('#rapid').addEventListener('click',()=>{stopRapid();step=0;status='running';tick=0;update();rapidTimer=setInterval(()=>{advance();if(status!=='running')stopRapid();},90);});
 document.querySelector('#complete').addEventListener('click',()=>{stopRapid();step=definitions.length-1;status='succeeded';update();});
 document.querySelector('#fail').addEventListener('click',()=>{stopRapid();status='failed';update();});

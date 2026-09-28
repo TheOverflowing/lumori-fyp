@@ -1,0 +1,150 @@
+{
+  "version": "difficulty-review-v2-solver-attribution-regression-20260926",
+  "provenance": "Post-observation development regression. Former heldout items are consumed, not fresh validation. Original expectations and source files unchanged.",
+  "cases": [
+    {
+      "id": "laboratory_slots",
+      "split": "development",
+      "domain": "invented_laboratory_schedule",
+      "learner_profile": "入门学生，能读出先后约束，安排单条任务链，也做过两个互不依赖任务的并行练习；未学过带共享设备的任务图调度或最短工期证明。允许用枚举、反证或约束推理，不要求专门算法。",
+      "student_visible_text": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务。\n先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制，允许一个时段只做一项。\n请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。证明须同时考虑先后与设备限制，不能仅用6÷2估算。",
+      "reference_answer": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。故4个时段不可能，更少也不可能；5个时段的构造满足所有规则。",
+      "reference_explanation": "构造通过让B与已完成前置任务的C重叠来节省时段；下界由E、F的后置关系向前推回C、D及A、B，与设备限制冲突。须自行选择这种组合约束证明。",
+      "sources": [
+        {
+          "id": "laboratory_capacity",
+          "text": "任务A、B、C、D、E、F每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务，允许一个时段只做一项。"
+        },
+        {
+          "id": "laboratory_dependencies",
+          "text": "C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "id": "laboratory_equipment",
+          "text": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "hard"
+        ],
+        "content_status": "pass",
+        "issue": "须自行综合依赖与互斥设备设计并行安排，再选择反证或等价方法建立最优性；对只练过单链和无依赖并行的背景是未提示的约束组合。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "original_split": "heldout",
+      "regression_after_observation": true
+    },
+    {
+      "id": "marking_wrong_option",
+      "split": "development",
+      "domain": "invented_marking_scheme",
+      "learner_profile": "已掌握整数加、减、乘和代入一个给定算式的学生；不需要任何考试制度的外部知识。",
+      "student_visible_text": "虚构测验只有六题。计分规则：每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是这六项分数相加，没有加分、最低分或舍入规则。某学生答对4题，答错1题，空1题。\n单选：总分是多少？A.10；B.14；C.8；D.12。写出选项和计算式。",
+      "reference_answer": "B.14；4×3+1×2+1×0=14。",
+      "reference_explanation": "正确题贡献12分，错误题再加2分，空题不计分，所以总分14。",
+      "sources": [
+        {
+          "id": "marking_rules",
+          "text": "每答对一题加3分，每答错一题扣2分，每空一题计0分；总分就是六项分数相加，没有加分、最低分或舍入规则。"
+        },
+        {
+          "id": "marking_response_record",
+          "text": "某学生答对4题，答错1题，空1题。选项A.10；B.14；C.8；D.12。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "easy"
+        ],
+        "content_status": "fail",
+        "issue": "题目充分且有唯一正确选项A：4×3-1×2=10；参考答案和解释把扣2分错误写成加2分。不能因参考错误把这道可解题本身判为无解，也不能让容易的难度标签覆盖内容错误。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "original_split": "heldout",
+      "regression_after_observation": true
+    },
+    {
+      "id": "courier_single_failure_corrected",
+      "split": "development",
+      "domain": "invented_courier_network",
+      "learner_profile": "入门离散数学学生，理解无向图、简单路径、路径费用相加，会在小图中找最短路；没有学过容错网络、边不相交路径或网络流。本题允许自行枚举、分类或构造证明，不要求引用定理。",
+      "student_visible_text": "虚构快递网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。\n规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。\n请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。",
+      "reference_answer": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。它们无共用走廊，任意关闭一条走廊最多破坏其中一条。若两条路径有共用走廊，关闭该走廊会同时破坏它们，因此任何合格方案都必须没有共用走廊。两条路径离开S必须分别用S-A和S-B，费用至少3；进入T必须用不同走廊，最便宜两条是C-T与B-T，合计至少4。还至少需要一条中间走廊，因为S不直接连C，且若完全不用中间走廊，只能走S-A-T与S-B-T，费用10。因此总费不能为7或更少。",
+      "reference_explanation": "更严格的下界分情况：不使用中间走廊时，只能选S-A-T和S-B-T，总费10；使用至少一条中间走廊时，首边合计3、末边合计至少4、中间边至少1，故总费至少8。构造恰好达到8。困难来自自行识别单点关闭要求对应的共用边约束，并把构造与必要性证明连接。",
+      "sources": [
+        {
+          "id": "courier_map",
+          "text": "网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "id": "courier_contract",
+          "text": "事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "hard"
+        ],
+        "content_status": "pass",
+        "issue": "相对只学过单条最短路的背景，须自行选择两路容错条件、构造方案并证明费用下界；题面未提供边不相交或下界分解方法。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold",
+      "pair_original_id": "courier_single_failure",
+      "original_split": "development",
+      "regression_after_observation": true
+    },
+    {
+      "id": "real_tasks_20260925_r6_q1",
+      "split": "development",
+      "domain": "在存在缺失字节区间的简短到达序列中，应用 TCP 字节序号与累积确认规则。",
+      "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+      "student_visible_text": "Learning objectives:\n能依据段首序号与段长写出各到达段覆盖的字节区间，并识别缺失区间。\n能用累积确认规则判断存在缺失字节时接收端可回送的有效确认号，并说明依据。\n\nTCP 面向字节流与序号\nTCP 是面向字节的协议：发送方把字节写入连接，接收方从连接读出字节，每个数据字节都有一个序号。\n段的 SequenceNum 字段给出该段所载数据的第一个字节的序号，因此一个到达段覆盖从该序号开始的连续若干字节。\nAcknowledgement 与 AdvertisedWindow 描述反方向的数据流，本情境只看单向数据。\n\n累积确认与空缺区间\n接收端的 NextByteExpected 指向第一个空缺（尚未收到的连续字节）的起点；若数据按序到达，它指向 LastByteRcvd 之后的字节。\n累积确认只反映到第一个空缺之前连续收到的字节；乱序到达但不与已收前缀连续的数据不能抬高确认号。\n因此在存在缺失字节区间时，有效累积确认号停在缺失区间的起点前。\n\n某单向 TCP 连接的数据流：初始 NextByteExpected = 1000，接收端尚未收到任何数据字节；每个数据段携带连续的整数个数据字节，段长由“长度”给出，且各段互不重叠。\n\n到达序列（按到达顺序）：\n1) 段 P：SequenceNum = 1200，长度 = 200\n2) 段 Q：SequenceNum = 1000，长度 = 100\n3) 段 R：SequenceNum = 1400，长度 = 300\n\n问题：按 TCP 的字节序号与累积确认规则，此时接收端可回送的有效累积确认号（Acknowledgement 值）应为多少？\n\nA. 1400\n\nB. 1300\n\nC. 1100\n\nD. 1700",
+      "reference_answer": "C",
+      "reference_explanation": "A 选项 1400：该值对应段 P 覆盖区间的末尾（1200+200），但 P 之前仍有缺失字节 1100，累积确认只能停在第一个空缺处，不能越过缺失区间。\nB 选项 1300：1300 落在段 P 的内部，没有对应的连续已收前缀边界，累积确认不会指向这种中间序号。\nC 选项 1100：段 Q 已按序到达并覆盖 1000–1099，之后 1100–1199 缺失，因此第一个空缺起点是 1100，累积确认号停在 1100，正确。\nD 选项 1700：1700 是段 R 覆盖区间 1400–1699 之后的一个序号，越过缺失字节 1100–1199，不能作为有效累积确认号。\n结论：接收端只能确认到 1100 之前连续收到的字节，故选 C。",
+      "kind": "mcq",
+      "options": [
+        "1400",
+        "1300",
+        "1100",
+        "1700"
+      ],
+      "sources": [
+        {
+          "id": "context_6ea7dfbab6e02ade2a3804046df2f99d",
+          "text": "TCP is a byte-oriented protocol, which means that the sender writes bytes into a TCP connection and the receiver reads bytes out of the TCP connection. Although “byte stream” describes the service TCP offers to application processes, TCP does not, itself, transmit individual bytes over the Internet. Instead, TCP on the source host buffers enough bytes from the sending process to fill a reasonably sized packet and then sends this packet to its peer on the destination host. TCP on the destination host then empties the contents of the packet into a receive buffer, and the receiving process reads from this buffer at its leisure. This situation is illustrated in Figure 127, which, for simplicity, shows data flowing in only one direction. Remember that, in general, a single TCP connection supports byte streams flowing in both directions.\n\nThe packets exchanged between TCP peers in Figure 127 are called segments, since each one carries a segment of the byte stream. Each TCP segment contains the header schematically depicted in Figure 128. The relevance of most of these fields will become apparent throughout this section. For now, we simply introduce them."
+        },
+        {
+          "id": "context_50cce0b14f8a0a967a4fa7d49fd473c6",
+          "text": "The Acknowledgement, SequenceNum, and AdvertisedWindow fields are all involved in TCP’s sliding window algorithm. Because TCP is a byte-oriented protocol, each byte of data has a sequence number. The SequenceNum field contains the sequence number for the first byte of data carried in that segment, and the Acknowledgement and AdvertisedWindow fields carry information about the flow of data going in the other direction. To simplify our discussion, we ignore the fact that data can flow in both directions, and we concentrate on data that has a particular SequenceNum flowing in one direction and Acknowledgement and AdvertisedWindow values flowing in the opposite direction, as illustrated in Figure 129. The use of these three fields is described more fully later in this chapter."
+        },
+        {
+          "id": "context_26a46e6d64f093e5348d6e437e270f4a",
+          "text": "The Acknowledgement, SequenceNum, and AdvertisedWindow fields are all involved in TCP’s sliding window algorithm. Because TCP is a byte-oriented protocol, each byte of data has a sequence number. The SequenceNum field contains the sequence number for the first byte of data carried in that segment, and the Acknowledgement and AdvertisedWindow fields carry information about the flow of data going in the other direction. To simplify our discussion, we ignore the fact that data can flow in both directions, and we concentrate on data that has a particular SequenceNum flowing in one direction and Acknowledgement and AdvertisedWindow values flowing in the opposite direction, as illustrated in Figure 129. The use of these three fields is described more fully later in this chapter.\n\nThe idea is that two parties want to agree on a set of parameters, which, in the case of opening a TCP connection, are the starting sequence numbers the two sides plan to use for their respective byte streams. In general, the parameters might be any facts that each side wants the other to know about."
+        },
+        {
+          "id": "context_ec2329e722ac9bb3246149e60b883d27",
+          "text": "To see how the sending and receiving sides of TCP interact with each other to implement reliable and ordered delivery, consider the situation illustrated in Figure 132. TCP on the sending side maintains a send buffer. This buffer is used to store data that has been sent but not yet acknowledged, as well as data that has been written by the sending application but not transmitted. On the receiving side, TCP maintains a receive buffer. This buffer holds data that arrives out of order, as well as data that is in the correct order (i.e., there are no missing bytes earlier in the stream) but that the application process has not yet had the chance to read.\n\nTo make the following discussion simpler to follow, we initially ignore the fact that both the buffers and the sequence numbers are of some finite size and hence will eventually wrap around. Also, we do not distinguish between a pointer into a buffer where a particular byte of data is stored and the sequence number for that byte.\n\nis true because a byte cannot be read by the application until it is received and all preceding bytes have also been received. NextByteExpected points to the byte immediately after the latest byte to meet this criterion. Second,"
+        },
+        {
+          "id": "context_9a0e0a8fe960219d9262b9eb78135d3f",
+          "text": "since, if data has arrived in order, NextByteExpected points to the byte after LastByteRcvd, whereas if data has arrived out of order, then NextByteExpected points to the start of the first gap in the data, as in Figure 132. Note that bytes to the left of LastByteRead need not be buffered because they have already been read by the local application process, and bytes to the right of LastByteRcvd need not be buffered because they have not yet arrived."
+        }
+      ],
+      "expected": {
+        "eligibility": "invalid_question",
+        "candidates": [],
+        "content_status": "fail",
+        "issue": "The visible ACK number is described as before the first gap but reference states exactly the gap start."
+      },
+      "label_provenance": "prior_AI_development_review_not_human_gold",
+      "target_difficulty": "medium",
+      "asset_sha256": "82b7860a7706ba40b945d44e462ff8d78607fd2dd5a819916370926348ccf815",
+      "original_split": "historical",
+      "regression_after_observation": true
+    }
+  ]
+}

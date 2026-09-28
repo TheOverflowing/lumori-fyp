@@ -1,0 +1,53 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目条件完整：五站无向图、边费用、两条简单路径、单边关闭容错、费用上限与下界证明均明确；学生具备最短路与路径费用基础，允许枚举构造。",
+  "solution": "取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-C-T，费用2+1+1=4；总费7≤8。任意一条走廊关闭：若关闭S-A或A-C或C-T，P1断但P2仍通；若关闭S-B或B-C，P2断但P1仍通；若关闭C-T，两条都断，故该方案不抗C-T关闭。需换方案：P1=S-A-T费用5，P2=S-B-C-T费用4，总费9超8。再试P1=S-A-B-T费用1+1+3=5，P2=S-B-C-T费用4，总费9。P1=S-A-C-T费用3，P2=S-B-T费用5，总费8；关闭C-T时P1断，P2仍通；关闭S-A时P1断，P2仍通；关闭S-B时P2断，P1仍通；关闭A-C时P1断，P2仍通；关闭B-T时P2断，P1仍通；关闭A-B不影响；关闭S-C不存在。故方案P1=S-A-C-T，P2=S-B-T，总费3+5=8，抗任意单边关闭。下界：若总费≤7，两条路径费用和≤7。S到T最短路为S-A-C-T费用3，次短为S-B-C-T费用4，二者共用C-T；任何两条S-T路径若费用和≤7，只能取费用3与4的组合，必共用C-T，关闭C-T则两条都断，不能保证。故≤7不可能。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "在给定五站图中枚举两条S-T简单路径，计算费用和并检验总费≤8。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "对候选两条路径逐条检查任意单边关闭后是否至少一条仍完整可通行。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S002",
+        "S004"
+      ],
+      "provided_ids": [],
+      "residual_work": "证明总费≤7时不存在抗任意单边关闭的两条简单路径，需分析最短路组合与共用边。",
+      "mode": "construct_argument"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "medium",
+      "hard"
+    ],
+    "boundary_reason": "构造费用≤8的容错路径对属于熟悉最短路与枚举的应用，但下界证明要求排除所有≤7组合并识别共用瓶颈边，超出直接套用最短路，接近硬；因学生未学容错网络，故取medium与hard相邻候选。",
+    "hard_task_index": 2
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目给出了账户、锁、转账语义、公平调度、无溢出等完整条件，要求明确（伪代码、锁保护说明、正确性论证、错误加锁死锁例子），且与学习者已学互斥锁/死锁知识衔接；缺少多对象加锁顺序经验不构成题目缺失，只影响难度判断。",
+  "cognitive_demand": "strategic_reasoning",
+  "tasks": [
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S004",
+        "S005",
+        "S007"
+      ],
+      "solution_ids": [],
+      "residual_work": "需要自行设计按账户 ID 排序获取两把锁的转账伪代码，并保证余额检查与更新在同一临界区内完成；题目未提供任何伪代码或加锁顺序方案。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S008"
+      ],
+      "condition_ids": [
+        "S001",
+        "S004",
+        "S005"
+      ],
+      "solution_ids": [],
+      "residual_work": "需要说明 source/destination 余额的读取、充足性检查、扣减与增加分别由哪把锁保护，并解释为何检查与更新必须原子地处于同一临界区。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S008"
+      ],
+      "condition_ids": [
+        "S003",
+        "S004",
+        "S005",
+        "S007"
+      ],
+      "solution_ids": [],
+      "residual_work": "需要给出正确性论证：总余额不变、不透支、无死锁，并说明公平排队与有限步释放如何排除活锁/饥饿。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S008"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S005"
+      ],
+      "solution_ids": [],
+      "residual_work": "需要构造一个具体并发交错例子，展示两个转账以相反顺序获取两把锁时如何形成循环等待而死锁。",
+      "mode": "construct_argument"
+    }
+  ],
+  "minimum_answer": "伪代码：transfer(s,d,a){ if s==d or a<=0 return fail; first=min(s,d); second=max(s,d); lock(first); lock(second); if balance[s]>=a { balance[s]-=a; balance[d]+=a; unlock(second); unlock(first); return ok } else { unlock(second); unlock(first); return fail } }。锁保护：balance[s] 的读取、检查与扣减由 s 的锁保护；balance[d] 的读取与增加由 d 的锁保护；由于两把锁都持有，检查与更新在同一临界区内原子完成。正确性：每次成功转账从 s 扣 a 并向 d 加 a，总余额不变；失败路径不修改余额；任何账户余额不会低于 0，因为扣减前在 s 锁内检查 balance[s]>=a。无死锁：所有转账按账户 ID 全局一致顺序获取两把锁，不会出现循环等待；公平排队保证等待者最终获得锁，持有者有限步释放，故不会饥饿。错误加锁例子：T1 从 A 转 B 先 lock(A) 再 lock(B)，T2 从 B 转 A 先 lock(B) 再 lock(A)；若 T1 持有 A、T2 持有 B，二者互相等待对方释放，形成死锁。",
+  "decision": {
+    "candidates": [
+      "hard"
+    ],
+    "hard_task_index": 0,
+    "reason": "该学习者已能分析单锁保护单计数器的代码，但尚未练习多对象加锁顺序及其正确性证明。本题的核心瓶颈不是复述互斥锁定义，而是自行设计一个非全局锁的两账户转账协议：必须发现并采用按账户 ID 排序获取两把锁这一非平凡策略，同时把余额检查与更新放入同一临界区，再论证总余额不变、不透支、无死锁，并构造相反加锁顺序导致循环等待的具体例子。这些步骤需要把已知的锁、竞态、死锁概念整合到一个新的多锁协议中，属于相对其先前准备的特定非routine策略瓶颈，因此判为 hard。最近边界是 medium：若学习者已练习过锁排序或资源层次协议，则本题更接近熟悉应用；但当前画像明确缺少该经验，故不能仅凭熟悉互斥锁概念判为 medium。"
+  }
+}

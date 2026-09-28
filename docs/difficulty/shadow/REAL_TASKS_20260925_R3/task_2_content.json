@@ -1,0 +1,697 @@
+{
+  "id": "4c7a07b432414c799470d0206c32857f",
+  "course_id": "87cfea9119a2422a839b609b5b432fb2",
+  "job_id": "e99a79e1c4f648dcbd34253b2e5be772",
+  "version": 1,
+  "status": "draft",
+  "asset": {
+    "title": "分析内核线程与中断处理程序共享自旋锁时的同步设计，并论证本 CPU 与多处理器情况下的影响。",
+    "evidence_sufficient": true,
+    "evidence_note": "",
+    "learning_objectives": [
+      "识别共享自旋锁所保护的线程与中断处理程序并发访问，并列举并发的来源。",
+      "分析持锁且中断开启时被中断处理程序再次请求同一锁所形成的自等待死锁因果链。",
+      "给出取锁、释放锁与中断使能之间的次序约束及嵌套临界区簿记要求。",
+      "比较同一共享锁在单 CPU 与多处理器下的后果差异，并界定禁用中断的作用范围。",
+      "区分禁止同 CPU 重复取锁与持锁关中断两种防护，说明其针对的故障模式不同。"
+    ],
+    "section_scope": "shared",
+    "sections": [
+      {
+        "heading": "共享自旋锁与中断交互的基本约束",
+        "text": "自旋锁用 locked 字段表示可用或被持有；仅靠“先读再写”不能保证互斥，因为多个 CPU 可能同时读到可用，因此对 locked 的检查与置位必须作为一个原子步骤完成。\n\n有些自旋锁保护的数据同时被内核线程和中断处理程序使用，锁定用于把这两类访问串行化。\n\n由此产生一条关键约束：若某自旋锁会被中断处理程序使用，CPU 就绝不能在中断开启时持有该锁。取锁与开/关中断的相对次序因此很重要：acquire 必须先把本 CPU 的中断关掉，再置位 locked；release 必须先释放锁，之后才恢复中断。嵌套临界区通过 push_off/pop_off 记录本 CPU 上的持锁层数，只有层数归零时才恢复到最外层进入前的中断使能状态。",
+        "citation_ids": [
+          "context_b2c7b4005f3ab8914040f2eead7f5186",
+          "context_6e969ab61218a462f2abc58f726040a4",
+          "context_cb9db0d5737606abbb40cb3532c7e1f8",
+          "context_788a42237a3fb0dd9dc62368670d58e4"
+        ]
+      },
+      {
+        "heading": "并发的来源与禁用中断的作用范围",
+        "text": "并发指多个指令流交错执行，其来源有三类：多处理器并行、线程切换、以及中断处理程序与可被中断的代码同时修改同一数据。\n\n因此，同一个共享锁在不同来源下防的是不同交错；而“关中断”这一类手段只作用于执行它的那个 CPU：它阻止本 CPU 上会使用该锁的中断在临界区内被递交，却不影响其他 CPU 上的执行者取同一把锁。",
+        "citation_ids": [
+          "context_253cf66a589aa0d41532d4d6533fc9fe",
+          "context_cb9db0d5737606abbb40cb3532c7e1f8"
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "slot_id": "q1",
+        "difficulty": "hard",
+        "difficulty_design": {
+          "cognitive_process": "analyze",
+          "concepts": [
+            "自旋锁互斥与原子性",
+            "线程与中断处理程序共享数据",
+            "持锁与中断使能的次序约束",
+            "嵌套临界区的中断状态簿记",
+            "并发的三种来源",
+            "单 CPU 与多处理器下中断/锁等待的差异"
+          ],
+          "expected_steps": [
+            "指出计数器被线程与中断处理程序共同访问，并列出多处理器并行、线程切换、中断三类并发来源。",
+            "推导持锁且中断开启时被同 CPU 中断处理程序再次取锁形成的自等待死锁因果链，并说明对本 CPU 及需要该锁的其他代码的影响。",
+            "给出“被中断处理程序使用的锁不得在中断开启时持有”的约束，说明 acquire 先关中断后置位、release 先释放锁后恢复中断，并解释次序颠倒产生的危险窗口。",
+            "说明 push_off/pop_off 通过嵌套层数决定恢复中断的时机，无条件开中断会重新暴露外层临界区的风险。",
+            "分别在单 CPU 与多处理器场景下判断断言 A、B，并说明关中断只作用于本 CPU、其他 CPU 仍可自旋等待持锁线程。",
+            "论证禁止同 CPU 重复取锁与持锁关中断针对不同故障模式，不能互相替代。"
+          ]
+        },
+        "kind": "short_answer",
+        "stem": "内核中有一把自旋锁 tickslock，保护一个计数器变量。内核线程 A 在函数 f() 中取 tickslock、读改写该计数器、再释放锁；时钟中断处理程序 clockintr 也会取同一把锁并在临界区内更新该计数器。锁的 acquire 与 release 采用“取锁时关本 CPU 中断、释放锁时恢复中断”的策略。\n\n请按任务逐条回答，并对每个结论说明依据。\n\n1. 说明为什么该计数器需要 tickslock 保护，并列出可能使 A 与 clockintr 的访问交错的并发来源。\n2. 设 A 在 f() 中已取到 tickslock，但此临界区内中断处于开启状态；此时一个时钟中断在本 CPU 上被递交，clockintr 开始执行。逐步分析锁最终是否可能被释放、该 CPU 会处于什么状态、是否会波及系统其他部分。\n3. 给出避免任务 2 后果的设计约束，并说明 acquire 与 release 中“取锁/释放锁”与“关中断/恢复中断”两组操作的相对先后次序要求；解释次序颠倒为什么会打开一个危险的时间窗口。\n4. 说明嵌套临界区中如何决定何时才真正恢复中断，以及为什么不能在每次释放锁时无条件开中断。\n5. 分别在下列两种硬件场景下，判断断言 A 与断言 B 是否成立，并结合“禁用（或开启）中断的作用范围”论证：\n场景 S：系统只有一个 CPU。\n场景 P：系统有多个 CPU，A 与 clockintr 都可能运行在其中任一 CPU 上，且 tickslock 可能被不同 CPU 上的代码同时请求。\n断言 A：本 CPU 上的中断处理程序可以一直等待某个线程释放自旋锁。\n断言 B：另一个 CPU 上的中断处理程序可以等待某个线程释放自旋锁。\n6. 对“CPU 重复取得自己已持有的锁”存在两种立场。请说明禁止同 CPU 重复取锁是否可以替代在持锁期间关中断，并论证。",
+        "options": [],
+        "answer": "任务 1：该计数器被内核线程 A 与中断处理程序 clockintr 共同访问，两者可能交错，因此需要锁把两类访问串行化。并发来源有三类：多处理器并行、本 CPU 上的线程切换、以及中断处理程序打断可被中断的代码。任一来源都可能让“读—改—写”交错，造成丢失更新或读到中间状态。\n任务 2：clockintr 会尝试取 tickslock，发现已被 A 持有，于是在本 CPU 上自旋等待。此时只有 A 能释放该锁，而 A 已在本 CPU 上被中断打断，只有等 clockintr 返回后才可能继续运行；于是 clockintr 永远等不到锁被释放，A 也永远等不到中断返回，形成本 CPU 上的自等待死锁。锁始终不被释放，其他需要 tickslock 的代码也会被阻塞，可能使系统其他部分冻结。\n任务 3：约束是——只要某自旋锁会被中断处理程序使用，本 CPU 就绝不能在中断开启时持有该锁。次序要求：acquire 必须先关本 CPU 中断，再置位 locked；release 必须先释放锁，之后才恢复中断。若先置位 locked 再关中断，便存在一个“锁已被持有而中断仍开”的短暂窗口；若先恢复中断再释放锁，则存在“锁尚未释放而中断已开”的窗口。恰好在这类窗口内发生会使用该锁的中断，就会触发任务 2 的死锁。\n任务 4：用 push_off/pop_off 记录本 CPU 当前的持锁嵌套层数：acquire 时递增，release 时递减，只有层数减到零（即本 CPU 不再持有任何自旋锁）才恢复中断。若每次释放锁都无条件开中断，那么在外层临界区仍持锁时中断就会被提前打开，外层临界区重新暴露在任务 2 的死锁风险之下；同时也会破坏“恢复到最外层进入前的中断使能状态”这一要求。\n任务 5：断言 A——场景 S 不成立，场景 P 同样不成立。本 CPU 上的中断处理程序一旦自旋等待自己打断的那个持锁线程，该线程就无法继续运行来释放锁，等待只能是死锁而非正常等待；在场景 P 中，被本 CPU 中断打断的线程仍只能等待该中断返回，因此结论与场景 S 相同。断言 B——场景 S 中不存在其他 CPU，该情形不可发生；场景 P 中成立。另一个 CPU 上的中断处理程序可以自旋等待某线程释放自旋锁，因为持锁线程在别的 CPU 上仍能继续执行并最终释放锁。关键范围差异是：关中断只影响执行它的那个 CPU，不能阻止其他 CPU 上的中断处理程序取同一把锁并等待；它也只能阻止“本 CPU 上会使用该锁的中断在临界区内被递交”，不能覆盖已在本 CPU 上、在临界区之外开始等待同一把锁的中断。\n任务 6：不能替代。禁止同 CPU 重复取锁针对的是同一执行上下文再次请求自己已持有的锁，即把这类重入当成错误；而任务 2 的问题是异步中断在持锁期间打断执行并请求同一把锁，并不是同一上下文的重入，禁止重复取锁无法阻止这种交错。两种立场对“允许重复取锁（re-entrant/recursive）”还是“禁止”本可各自自洽，但无论选哪一种，只要该锁会被中断处理程序使用，就必须保持“不在中断开启时持有该锁”的约束；换言之，二者防护的是不同故障模式，不可相互替代。",
+        "explanation": "本题要求把自旋锁的互斥原理、共享锁的线程/中断访问、中断使能与取锁次序、嵌套簿记、并发来源以及单/多处理器差异整合到同一情境中，并对两个断言分别给出条件化判断。\n\n任务 1 检查是否指出共享访问与三类并发来源，而不是只复述“需要锁”。\n任务 2 检查死锁因果链是否完整：中断处理程序自旋等待、持锁线程被压在中断帧下无法运行、锁永不释放、并波及需要该锁的代码。\n任务 3、4 检查次序约束与嵌套计数：先关中断后置位、先释放锁后恢复中断，且只在层数归零时恢复，而不是无条件开中断。\n任务 5 是最容易出错处：断言 A 在两种场景中都只能得到“不能一直等待”，因为等待者与被等待者在同一 CPU 上；断言 B 只在多处理器场景成立，因为持锁线程在别的 CPU 上仍可推进。作答必须把“关中断只作用于本 CPU”这一范围说清楚，并且不要把断言 A 与断言 B 混为一谈。\n任务 6 检查是否把“禁止重复取锁”与“持锁关中断”视为针对不同故障模式的两种措施。",
+        "difficulty_reason": "题干只给出情境与条件，不提供死锁推理、次序结论或单/多处理器的判断结果。学生必须自行把互斥的原子性要求、共享数据的两类访问者、中断使能与取锁的次序、嵌套临界区簿记、并发的三来源整合起来，推导出完整的自等待死锁因果链；并在此基础上对两个断言在单 CPU 与多处理器下分别作条件化判断，尤其要区分“本 CPU 的 ISR 不能等待”与“其他 CPU 的 ISR 可以等待”，同时界定关中断的作用范围，最后论证两种防护措施不可互相替代。这些结论之间存在相互制约，不能靠复述定义或套用单一公式得到。",
+        "citation_ids": [
+          "context_6e969ab61218a462f2abc58f726040a4",
+          "context_cb9db0d5737606abbb40cb3532c7e1f8",
+          "context_788a42237a3fb0dd9dc62368670d58e4",
+          "context_253cf66a589aa0d41532d4d6533fc9fe",
+          "context_b2c7b4005f3ab8914040f2eead7f5186"
+        ]
+      }
+    ],
+    "visual_prompt": ""
+  },
+  "sources": [
+    {
+      "id": "context_6e969ab61218a462f2abc58f726040a4",
+      "document_id": "e11fab564a864c08a7ac52e45ca6c49d",
+      "document_name": "os_interrupt_locks.md",
+      "page": 1,
+      "text": "A question that sometimes arises is what should happen if a CPU tries to acquire a lock that the same CPU already holds. One line of reasoning is that this should be allowed: no other CPU can hold the lock, so there’s no need to worry about CPUs interfering with each others’ use of the protected data. Locking systems that allow a CPU to re-acquire a lock it already holds are called a re-entrant or recursive. On the other hand, if a lock is already held, even on the same CPU, that means an operation may have temporarily violated and not yet restored some invariants; to allow a new operation to commence while the invariants don’t hold seems like an invitation to bugs. Xv6 takes this latter view, and forbids a CPU that currently holds a lock from re-acquiring it. Detecting this situation is the purpose of the call to holding in acquire.\n\n7.5 Locks and interrupts\n\nSome xv6 spinlocks protect data that is used by both threads and interrupt handlers. For example, the clockintr timer interrupt handler might increment ticks at about the same time that a kernel thread reads ticks in sys_pause. The lock tickslock serializes the two accesses.",
+      "metadata": {
+        "heading_path": [],
+        "keywords": [
+          "CPU",
+          "lock",
+          "same",
+          "already",
+          "holds",
+          "acquire",
+          "other",
+          "hold"
+        ],
+        "token_count": 244,
+        "token_limit": 256,
+        "protected_block_split": false,
+        "section_start": 0,
+        "section_end": 4198,
+        "chunk_strategy": "recursive_token_v1_no_overlap",
+        "chunking_version": "recursive_token_v1",
+        "chunking_config": {
+          "strategy": "recursive_token_v1",
+          "max_chars": 1200,
+          "overlap_chars": 0,
+          "max_tokens": 256,
+          "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+          "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+        },
+        "chunk_index": 2,
+        "page_char_start": 1247,
+        "page_char_end": 2395,
+        "source_page_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+        "coordinate_system": "parsed_page_python_chars_v1",
+        "language": "en",
+        "split_reason": "recursive_token_budget",
+        "protected_block_types": [],
+        "source_format": ".md",
+        "source_document_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+        "parser_version": "local-document-parser-v1",
+        "extraction_method": "utf8-sig-v1",
+        "extraction_status": "good",
+        "extraction_warnings": [],
+        "source_asset_ids": [],
+        "coordinate_basis": "extracted_page_text",
+        "ocr_accuracy_verified": false,
+        "context_expansion": "none",
+        "retrieved_chunk_ids": [
+          "24fbaaec2d8bf1f961a8ff1095150d50"
+        ]
+      },
+      "score": 0.6666697645604777,
+      "retrieval": {
+        "version": "retrieval-v2",
+        "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+        "strategy": "hybrid_dense_lexical_v1",
+        "effective_strategy": "hybrid_dense_lexical_v1",
+        "fallback_reason": null,
+        "dense_score": 0.6666697645604777,
+        "lexical_score": 0.5726440505262421,
+        "dense_rank": 2,
+        "lexical_rank": 3,
+        "fusion_score": null,
+        "selection_rank": 2,
+        "selection_score": 0.7132376052822613,
+        "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+        "mmr_relevance": null,
+        "mmr_redundancy": null,
+        "normalized_lexical_score": 0.9313568144356726,
+        "lexical_bonus": 0.04656784072178363,
+        "rerank_score": 0.98828125
+      }
+    },
+    {
+      "id": "context_cb9db0d5737606abbb40cb3532c7e1f8",
+      "document_id": "e11fab564a864c08a7ac52e45ca6c49d",
+      "document_name": "os_interrupt_locks.md",
+      "page": 1,
+      "text": "The interaction of spinlocks and interrupts raises a potential danger. Suppose sys_pause holds tickslock, and its CPU is interrupted by a timer interrupt. clockintr would try to acquire tickslock, see it was held, and wait for it to be released. In this situation, tickslock will never be released: only sys_pause can release it, but sys_pause will not continue running until clockintr returns. So the CPU will deadlock, and any code that needs either lock will also freeze.\n\nTo avoid this situation, if a spinlock is used by an interrupt handler, a CPU must never hold that lock with interrupts enabled. Xv6 is more conservative: when a CPU acquires any lock, xv6 always disables interrupts on that CPU. Interrupts may still occur on other CPUs, so an interrupt’s acquire can wait for a thread to release a spinlock; just not on the same CPU.",
+      "metadata": {
+        "heading_path": [],
+        "keywords": [
+          "CPU",
+          "interrupts",
+          "sys_pause",
+          "tickslock",
+          "interrupt",
+          "lock",
+          "clockintr",
+          "acquire"
+        ],
+        "token_count": 181,
+        "token_limit": 256,
+        "protected_block_split": false,
+        "section_start": 0,
+        "section_end": 4198,
+        "chunk_strategy": "recursive_token_v1_no_overlap",
+        "chunking_version": "recursive_token_v1",
+        "chunking_config": {
+          "strategy": "recursive_token_v1",
+          "max_chars": 1200,
+          "overlap_chars": 0,
+          "max_tokens": 256,
+          "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+          "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+        },
+        "chunk_index": 3,
+        "page_char_start": 2397,
+        "page_char_end": 3240,
+        "source_page_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+        "coordinate_system": "parsed_page_python_chars_v1",
+        "language": "en",
+        "split_reason": "recursive_token_budget",
+        "protected_block_types": [],
+        "source_format": ".md",
+        "source_document_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+        "parser_version": "local-document-parser-v1",
+        "extraction_method": "utf8-sig-v1",
+        "extraction_status": "good",
+        "extraction_warnings": [],
+        "source_asset_ids": [],
+        "coordinate_basis": "extracted_page_text",
+        "ocr_accuracy_verified": false,
+        "context_expansion": "none",
+        "retrieved_chunk_ids": [
+          "53d10690b7f372a6c0af655b5c13e522"
+        ]
+      },
+      "score": 0.6873925601374418,
+      "retrieval": {
+        "version": "retrieval-v2",
+        "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+        "strategy": "hybrid_dense_lexical_v1",
+        "effective_strategy": "hybrid_dense_lexical_v1",
+        "fallback_reason": null,
+        "dense_score": 0.6873925601374418,
+        "lexical_score": 0.6011171997464706,
+        "dense_rank": 1,
+        "lexical_rank": 2,
+        "fusion_score": null,
+        "selection_rank": 1,
+        "selection_score": 0.7362758585619933,
+        "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+        "mmr_relevance": null,
+        "mmr_redundancy": null,
+        "normalized_lexical_score": 0.9776659684910299,
+        "lexical_bonus": 0.0488832984245515,
+        "rerank_score": 0.9921875
+      }
+    },
+    {
+      "id": "context_788a42237a3fb0dd9dc62368670d58e4",
+      "document_id": "e11fab564a864c08a7ac52e45ca6c49d",
+      "document_name": "os_interrupt_locks.md",
+      "page": 1,
+      "text": "Xv6 re-enables interrupts when a CPU holds no spinlocks; it must do a little book-keeping to cope with nested critical sections. acquire calls push_off and release calls pop_off to track the nesting level of locks on the current CPU. When that count reaches zero, pop_off restores the interrupt enable state that existed at the start of the outermost critical section. push_off and pop_off tell the CPU to enable and disable interrupts by changing the SIE (Supervisor Interrupt Enable) bit in the sstatus (Supervisor Status) register, using intr_on and rc_sstatus(SSTATUS_SIE); the latter clears the SIE bit.\n\nIt is important that acquire call push_off strictly before setting lk->locked. If the two were reversed, there would be a brief window when the lock was held with interrupts enabled, and an unfortunately timed interrupt would deadlock the system. Similarly, it is important that release call pop_off only after releasing the lock (spinlock.c:73).",
+      "metadata": {
+        "heading_path": [],
+        "keywords": [
+          "pop_off",
+          "interrupts",
+          "CPU",
+          "push_off",
+          "interrupt",
+          "enable",
+          "critical",
+          "acquire"
+        ],
+        "token_count": 201,
+        "token_limit": 256,
+        "protected_block_split": false,
+        "section_start": 0,
+        "section_end": 4198,
+        "chunk_strategy": "recursive_token_v1_no_overlap",
+        "chunking_version": "recursive_token_v1",
+        "chunking_config": {
+          "strategy": "recursive_token_v1",
+          "max_chars": 1200,
+          "overlap_chars": 0,
+          "max_tokens": 256,
+          "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+          "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+        },
+        "chunk_index": 4,
+        "page_char_start": 3242,
+        "page_char_end": 4198,
+        "source_page_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+        "coordinate_system": "parsed_page_python_chars_v1",
+        "language": "en",
+        "split_reason": "recursive_token_budget",
+        "protected_block_types": [],
+        "source_format": ".md",
+        "source_document_sha256": "d3bdcad78eb2360b2a97f12bacfa2c8e90811afe6d347ea431fcf7e569e1e21f",
+        "parser_version": "local-document-parser-v1",
+        "extraction_method": "utf8-sig-v1",
+        "extraction_status": "good",
+        "extraction_warnings": [],
+        "source_asset_ids": [],
+        "coordinate_basis": "extracted_page_text",
+        "ocr_accuracy_verified": false,
+        "context_expansion": "none",
+        "retrieved_chunk_ids": [
+          "e61e004f9f2d97d19714435dcae64ed7"
+        ]
+      },
+      "score": 0.5523898860136559,
+      "retrieval": {
+        "version": "retrieval-v2",
+        "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+        "strategy": "hybrid_dense_lexical_v1",
+        "effective_strategy": "hybrid_dense_lexical_v1",
+        "fallback_reason": null,
+        "dense_score": 0.5523898860136559,
+        "lexical_score": 0.49968720442210396,
+        "dense_rank": 4,
+        "lexical_rank": 7,
+        "fusion_score": null,
+        "selection_rank": 3,
+        "selection_score": 0.5930248216684628,
+        "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+        "mmr_relevance": null,
+        "mmr_redundancy": null,
+        "normalized_lexical_score": 0.8126987130961393,
+        "lexical_bonus": 0.04063493565480697,
+        "rerank_score": 0.46875
+      }
+    },
+    {
+      "id": "context_253cf66a589aa0d41532d4d6533fc9fe",
+      "document_id": "01ea6c275e2342dd84bb1523806a5b13",
+      "document_name": "os_races.md",
+      "page": 1,
+      "text": "Most kernels, including xv6, interleave the execution of multiple activities. One source of interleaving is multiprocessor hardware: computers with multiple CPUs executing independently, such as xv6’s RISC-V. These multiple CPUs share physical RAM, and xv6 exploits the sharing to maintain kernel data structures that all CPUs read and write. This sharing raises the possibility of one CPU reading a data structure while another CPU is mid-way through updating it, or even multiple CPUs updating the same data simultaneously; without careful design such parallel access is likely to yield incorrect results or a broken data structure. Even on a uniprocessor, the kernel may switch the CPU among a number of threads, causing their execution to be interleaved. Finally, a device interrupt handler that modifies the same data as some interruptible code could damage the data if the interrupt occurs just as the interrupted code is also modifying the data. The word concurrency refers to situations in which multiple instruction streams are interleaved, due to multiprocessor parallelism, thread switching, or interrupts.",
+      "metadata": {
+        "heading_path": [],
+        "keywords": [
+          "data",
+          "multiple",
+          "CPUs",
+          "xv6",
+          "CPU",
+          "execution",
+          "One",
+          "multiprocessor"
+        ],
+        "token_count": 209,
+        "token_limit": 256,
+        "protected_block_split": false,
+        "section_start": 0,
+        "section_end": 7146,
+        "chunk_strategy": "recursive_token_v1_no_overlap",
+        "chunking_version": "recursive_token_v1",
+        "chunking_config": {
+          "strategy": "recursive_token_v1",
+          "max_chars": 1200,
+          "overlap_chars": 0,
+          "max_tokens": 256,
+          "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+          "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+        },
+        "chunk_index": 0,
+        "page_char_start": 0,
+        "page_char_end": 1117,
+        "source_page_sha256": "0cf37b5fe1891b4795125b3fd96b06e962c6b397769bc36b74f2a969780722ab",
+        "coordinate_system": "parsed_page_python_chars_v1",
+        "language": "en",
+        "split_reason": "recursive_token_budget",
+        "protected_block_types": [],
+        "source_format": ".md",
+        "source_document_sha256": "0cf37b5fe1891b4795125b3fd96b06e962c6b397769bc36b74f2a969780722ab",
+        "parser_version": "local-document-parser-v1",
+        "extraction_method": "utf8-sig-v1",
+        "extraction_status": "good",
+        "extraction_warnings": [],
+        "source_asset_ids": [],
+        "coordinate_basis": "extracted_page_text",
+        "ocr_accuracy_verified": false,
+        "context_expansion": "none",
+        "retrieved_chunk_ids": [
+          "787f72d50fe0bbd409f5a9b0aa27393d"
+        ]
+      },
+      "score": 0.5339198873560496,
+      "retrieval": {
+        "version": "retrieval-v2",
+        "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+        "strategy": "hybrid_dense_lexical_v1",
+        "effective_strategy": "hybrid_dense_lexical_v1",
+        "fallback_reason": null,
+        "dense_score": 0.5339198873560496,
+        "lexical_score": 0.5016619524559959,
+        "dense_rank": 6,
+        "lexical_rank": 6,
+        "fusion_score": null,
+        "selection_rank": 5,
+        "selection_score": 0.5747154109918605,
+        "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+        "mmr_relevance": null,
+        "mmr_redundancy": null,
+        "normalized_lexical_score": 0.8159104727162183,
+        "lexical_bonus": 0.04079552363581092,
+        "rerank_score": 0.81640625
+      }
+    },
+    {
+      "id": "context_b2c7b4005f3ab8914040f2eead7f5186",
+      "document_id": "01ea6c275e2342dd84bb1523806a5b13",
+      "document_name": "os_races.md",
+      "page": 1,
+      "text": "Xv6 has two types of locks: spinlocks and sleep-locks. We’ll start with spinlocks. Xv6 represents a spinlock as a struct spinlock. The important field in the structure is locked, a word that is zero when the lock is available and non-zero when it is held. Were there no concurrency, xv6 could acquire a lock with code like\n\nUnfortunately, this implementation does not guarantee mutual exclusion in the face of concurrency. Two CPUs could simultaneously reach line 25, see that lk->locked is zero, and then both grab the lock by executing line 26. At this point, two different CPUs hold the lock, which violates the mutual exclusion property. What we need is a way to make lines 25 and 26 execute as an atomic (indivisible) step.",
+      "metadata": {
+        "heading_path": [],
+        "keywords": [
+          "lock",
+          "Xv6",
+          "two",
+          "spinlocks",
+          "spinlock",
+          "locked",
+          "zero",
+          "concurrency"
+        ],
+        "token_count": 169,
+        "token_limit": 256,
+        "protected_block_split": false,
+        "section_start": 0,
+        "section_end": 7146,
+        "chunk_strategy": "recursive_token_v1_no_overlap",
+        "chunking_version": "recursive_token_v1",
+        "chunking_config": {
+          "strategy": "recursive_token_v1",
+          "max_chars": 1200,
+          "overlap_chars": 0,
+          "max_tokens": 256,
+          "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+          "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+        },
+        "chunk_index": 5,
+        "page_char_start": 5136,
+        "page_char_end": 5864,
+        "source_page_sha256": "0cf37b5fe1891b4795125b3fd96b06e962c6b397769bc36b74f2a969780722ab",
+        "coordinate_system": "parsed_page_python_chars_v1",
+        "language": "en",
+        "split_reason": "recursive_token_budget",
+        "protected_block_types": [],
+        "source_format": ".md",
+        "source_document_sha256": "0cf37b5fe1891b4795125b3fd96b06e962c6b397769bc36b74f2a969780722ab",
+        "parser_version": "local-document-parser-v1",
+        "extraction_method": "utf8-sig-v1",
+        "extraction_status": "good",
+        "extraction_warnings": [],
+        "source_asset_ids": [],
+        "coordinate_basis": "extracted_page_text",
+        "ocr_accuracy_verified": false,
+        "context_expansion": "none",
+        "retrieved_chunk_ids": [
+          "b7d07438ccf2ae71d3ed584bd8b11937"
+        ]
+      },
+      "score": 0.5531747052305114,
+      "retrieval": {
+        "version": "retrieval-v2",
+        "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+        "strategy": "hybrid_dense_lexical_v1",
+        "effective_strategy": "hybrid_dense_lexical_v1",
+        "fallback_reason": null,
+        "dense_score": 0.5531747052305114,
+        "lexical_score": 0.0,
+        "dense_rank": 3,
+        "lexical_rank": null,
+        "fusion_score": null,
+        "selection_rank": 6,
+        "selection_score": 0.5531747052305114,
+        "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+        "mmr_relevance": null,
+        "mmr_redundancy": null,
+        "normalized_lexical_score": 0.0,
+        "lexical_bonus": 0.0,
+        "rerank_score": 0.408203125
+      }
+    }
+  ],
+  "config": {
+    "course_id": "87cfea9119a2422a839b609b5b432fb2",
+    "topic": "分析内核线程与中断处理程序共享自旋锁时的同步设计，并论证本 CPU 与多处理器情况下的影响。",
+    "material": "quiz",
+    "difficulty": "hard",
+    "difficulty_distribution": null,
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "question_type": "short_answer",
+    "count": 1,
+    "language": "zh",
+    "document_ids": [
+      "25e02307a1924e2f9496e72c3c116198",
+      "01ea6c275e2342dd84bb1523806a5b13",
+      "e11fab564a864c08a7ac52e45ca6c49d",
+      "e2fb9f23f90f4ec58d9fb8b6d64242a9"
+    ],
+    "use_subagents": true,
+    "include_explanations": true,
+    "prompt_version": "education-agent-v1",
+    "text_model": "deepseek-flash",
+    "agent_prompt_revision": "20260924-grounded-task-v6",
+    "text_json_mode": true,
+    "tool_contract_sha256": "68744aa7e8427fbc9e9e7982a82a988241e98807815ab4861964d6c47c9204b1",
+    "text_endpoint_signature": "135d1baf7e282b6975b8",
+    "embedding_signature": "91fab32d24999992076e",
+    "retrieval": {
+      "version": "retrieval-v2",
+      "strategy": "hybrid_dense_lexical_v1",
+      "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+      "top_k": 5,
+      "candidate_k": 20,
+      "rrf_k": 60,
+      "mmr_lambda": 0.7,
+      "bm25_k1": 1.2,
+      "bm25_b": 0.75,
+      "query_term_frequency": "binary",
+      "candidate_pool": "top_candidate_k_per_route_then_top_candidate_k_fused_for_mmr",
+      "mmr_relevance": "rrf_score_divided_by_max_candidate_rrf_score",
+      "mmr_redundancy": "maximum_nonnegative_cosine_to_already_selected_chunks",
+      "dense_lexical_bonus_cap": 0.05,
+      "dense_lexical_score": "cosine_plus_capped_max_normalized_bm25",
+      "tie_break": "input_order",
+      "no_lexical_matches": "dense_fallback_for_hybrid_empty_for_bm25",
+      "score_semantics": "original_query_chunk_cosine",
+      "document_encoding": "title_path_v1",
+      "query_encoding": "cs_instruction_v1",
+      "context_tokens": 1024,
+      "expansion": "none",
+      "context_tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d",
+      "context_budget_unit": "qwen_source_serialization_tokens_v1",
+      "reranker_model": "qwen/qwen3-reranker-8b",
+      "reranker_signature": "ea51c5866aec287fbb13"
+    },
+    "rubric_version": "difficulty-rubric-v1",
+    "difficulty_plan": [
+      {
+        "slot_id": "q1",
+        "difficulty": "hard"
+      }
+    ],
+    "max_repairs": 1,
+    "max_calls": 14,
+    "context_chars": 48000,
+    "orchestration": {
+      "mode": "supervisor_v2",
+      "planner_revision": "assessment-contracts-v6-20260924",
+      "plan_schema_sha256": "45745d5edd37fcac5c053e7d0aaea6127382c3a88d49535540d9b6476c2f6077",
+      "batch_size": 8,
+      "dispatch": "bounded_parallel_workers_v1",
+      "assembly": "deterministic_verified_assets",
+      "previous_briefs_window": 16,
+      "max_parallel_questions": 20,
+      "answer_policy": "freeform_with_requirement_checks",
+      "review_schema_sha256": "b9bc396adc270812a610dfe43f4e9c483d9b5559bb6bee1afc5f521bd4d10d6a",
+      "composition_schema_sha256": "22ad441b93ea24488f7e568aedb50254d446cbccb817869b0390a0381baa7294",
+      "failure_recovery": "isolated-question-recovery-v1"
+    },
+    "harness": {
+      "runtime": "0.1.5rc1",
+      "adapter": "harness-acp-20260924-v8",
+      "quality_revision": "20260919-correctness-first-v1",
+      "reasoning_effort": "off",
+      "response_format": "json_object",
+      "schema_repairs": 1,
+      "max_requests": 4,
+      "max_output_tokens": 8192,
+      "timeout": 240.0
+    },
+    "difficulty_shadow": {
+      "mode": "shadow",
+      "revision": "difficulty-shadow-v2-repeat-policy",
+      "protocol_sha256": "b0866a7be453e6d911e53b7ba5004de43a424348068e8da8ad4aae9f7144fb27",
+      "judge_revision": "difficulty-judge-v4.1-reference-capacity-20260924",
+      "audit_revision": "difficulty-semantic-audit-v2-witness-20260924",
+      "max_calls": 4,
+      "max_questions": 1,
+      "timeout": 30,
+      "context_chars": 48000,
+      "repeat_disagreements": true,
+      "parameters": {
+        "thinking": {
+          "type": "disabled"
+        },
+        "temperature": 0,
+        "max_tokens": 6000
+      },
+      "audit_max_tokens": 3000,
+      "transport": "configured_text_api_json",
+      "sampling": "first_accepted_questions",
+      "audit_selection": "each_sampled_question_if_budget_remains",
+      "failure_policy": "observe_only_no_retry"
+    },
+    "difficulty_policy": {
+      "revision": "difficulty-calibration-v1",
+      "strict_rounds": 3,
+      "relaxation_tiers": [
+        "adjacent_level",
+        "any_level"
+      ],
+      "correctness_relaxed": false,
+      "note": "After three bounded rounds, reuse the closest candidate whose other quality gates passed. Requested labels remain authoring targets; assessed levels are reported separately. Combined low-confidence quality judgments are never relaxed."
+    },
+    "repair_policy": {
+      "revision": "question-repair-v2",
+      "minimum_rounds": 3,
+      "manual_extension_rounds": 3,
+      "format_compatibility": "preserve_content_v1",
+      "quality_gates_relaxed": false
+    },
+    "review_policy_revision": "20260922-quality-contract-v1",
+    "difficulty_acceptance": {
+      "policy_revision": "difficulty-calibration-v1",
+      "status": "strict",
+      "strict_passed": true,
+      "rounds": 3,
+      "acceptance_reason": "target_matched",
+      "correctness_relaxed": false,
+      "items": [
+        {
+          "slot_id": "q1",
+          "assessed_difficulty": "hard",
+          "confidence": "high",
+          "target_difficulty": "hard",
+          "strict_passed": true,
+          "level_distance": 0,
+          "rounds": 3,
+          "accepted_attempt": 3,
+          "acceptance_reason": "target_matched"
+        }
+      ]
+    }
+  },
+  "created_at": "2026-09-25T03:34:13.100715+00:00",
+  "media": [],
+  "difficulty_assessment": {
+    "status": "model_checked",
+    "version": 1,
+    "items": [
+      {
+        "slot_id": "q1",
+        "assessed_difficulty": "hard",
+        "confidence": "high",
+        "target_difficulty": "hard",
+        "strict_passed": true,
+        "level_distance": 0,
+        "rounds": 3,
+        "accepted_attempt": 3,
+        "acceptance_reason": "target_matched"
+      }
+    ],
+    "limitation": "模型按认知要求复核，不等于教师确认或学生实际作答难度。",
+    "acceptance": {
+      "policy_revision": "difficulty-calibration-v1",
+      "status": "strict",
+      "strict_passed": true,
+      "rounds": 3,
+      "acceptance_reason": "target_matched",
+      "correctness_relaxed": false,
+      "items": [
+        {
+          "slot_id": "q1",
+          "assessed_difficulty": "hard",
+          "confidence": "high",
+          "target_difficulty": "hard",
+          "strict_passed": true,
+          "level_distance": 0,
+          "rounds": 3,
+          "accepted_attempt": 3,
+          "acceptance_reason": "target_matched"
+        }
+      ]
+    }
+  },
+  "difficulty_shadow": {
+    "mode": "shadow",
+    "status": "completed",
+    "affects_primary_decision": false,
+    "calls_reserved": 2,
+    "duration_ms": 9537,
+    "questions": [
+      {
+        "slot_id": "q1",
+        "original_difficulty": "hard",
+        "target_difficulty": "hard",
+        "published_difficulty": "hard",
+        "judge_status": "validated",
+        "estimated_difficulty": "medium",
+        "candidates": [
+          "medium"
+        ],
+        "audit_status": "correction_required",
+        "repeat_status": null,
+        "repeat_audit_status": null,
+        "counterfactual_rework": {
+          "action": "manual_review",
+          "scope": "difficulty_only",
+          "enforcement_enabled": false,
+          "human_validated": false,
+          "reason": "audit_not_cleared"
+        },
+        "manual_review_recommended": true,
+        "review_flags": [
+          "published_grade_outside_candidates",
+          "semantic_audit_unavailable_or_flagged"
+        ]
+      }
+    ],
+    "observed_content_version": 1,
+    "matches_current_content": true
+  },
+  "evaluation": null
+}

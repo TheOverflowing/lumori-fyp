@@ -1,0 +1,256 @@
+"""Frozen, bounded evaluation of the new two-stage reviewer. Dry by default.
+
+Expected labels and split metadata never enter model prompts. Every attempted
+case remains in the denominator. AI diagnostic labels cannot open a release gate.
+"""
+import argparse
+import asyncio
+from collections import Counter
+from dataclasses import replace
+import hashlib
+import json
+from pathlib import Path
+import random
+import shutil
+import sys
+import tempfile
+import time
+from pydantic import ValidationError
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+from app.config import Settings
+from app.providers import ApiProviders, ProviderError, ProviderOutputError
+from scripts.difficulty_experiment import CappedStore, call_rows, write_json
+
+CASE_FIELDS = ('learner_profile', 'student_visible_text', 'reference_answer',
+               'reference_explanation', 'sources', 'kind', 'options')
+MAX_PROMPT_BYTES = 100_000
+CONTENT_CHECKS = ('conditions_complete', 'reference_correct', 'explanation_consistent', 'source_support')
+
+
+def stage_parameters(effort):
+    if effort == 'none':
+        return {'thinking': {'type': 'disabled'}, 'temperature': 0, 'max_tokens': 2400}
+    if effort not in ('low', 'high', 'max'):
+        raise ValueError('Unsupported review effort')
+    return {'thinking': {'type': 'enabled'}, 'reasoning_effort': effort, 'max_tokens': 12288}
+
+
+def digest(value):
+    return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
+
+
+def input_case(case):
+    return {key: case[key] for key in CASE_FIELDS if key in case}
+
+
+def score(records, cases):
+    expected = {case['id']: case for case in cases}
+    counts = Counter(row.get('decision', {}).get('status', 'unavailable') for row in records)
+    defects = [row for row in records if expected[row['case_id']]['expected']['content_status'] == 'fail']
+    controls = [row for row in records if expected[row['case_id']]['expected']['content_status'] == 'pass']
+    decided = [row for row in controls if row.get('decision', {}).get('status') == 'assessed']
+    false_clear = [row['case_id'] for row in defects if row.get('decision', {}).get('status') == 'assessed']
+    false_reject = [row['case_id'] for row in controls if row.get('decision', {}).get('status') in ('content_issue', 'ungradable')]
+    matched = [row for row in decided if row['decision'].get('estimated_difficulty') in
+               expected[row['case_id']]['expected'].get('candidates', [])]
+    detected = [row['case_id'] for row in defects
+                if row.get('analysis', {}).get('status') == 'validated'
+                and row.get('verification', {}).get('status') == 'validated'
+                and any(row['verification'].get('result', {}).get('checks', {}).get(name, {}).get('status') == 'fail'
+                        for name in ('conditions_complete', 'reference_correct',
+                                     'explanation_consistent', 'source_support'))]
+    graded_defects = [row['case_id'] for row in defects if row.get('decision', {}).get('status')
+                      in ('assessed', 'boundary')]
+    candidate_matches = [row for row in controls if row.get('decision', {}).get('status')
+                         in ('assessed', 'boundary') and set(row['decision'].get('candidates', [])) &
+                         set(expected[row['case_id']]['expected'].get('candidates', []))]
+    stages_validated = sum(row.get('analysis', {}).get('status') == 'validated' and
+                           row.get('verification', {}).get('status') == 'validated' for row in records)
+    def content_statuses(row):
+        if row.get('verification', {}).get('status') != 'validated':
+            return []
+        checks = row['verification'].get('result', {}).get('checks', {})
+        return [checks.get(name, {}).get('status') for name in CONTENT_CHECKS]
+    content_false_clear = [row['case_id'] for row in defects if content_statuses(row) == ['pass'] * 4]
+    content_flags = [row['case_id'] for row in controls if 'fail' in content_statuses(row)]
+    solver_checks = Counter(row.get('verification', {}).get('result', {}).get('checks', {})
+                            .get('solution_correct', {}).get('status', 'not_verified')
+                            if row.get('verification', {}).get('status') == 'validated' else 'not_verified'
+                            for row in records)
+    return {'submitted': len(records), 'outcomes': dict(counts),
+            'stages_validated': stages_validated,
+            'defect_cases': len(defects), 'defects_cleared': false_clear,
+            'defects_detected': detected, 'defects_given_difficulty': graded_defects,
+            'defects_with_all_content_checks_passed': content_false_clear,
+            'control_cases': len(controls), 'controls_rejected': false_reject,
+            'controls_with_content_failure': content_flags,
+            'controls_ungradable': [row['case_id'] for row in controls
+                                    if row.get('decision', {}).get('status') == 'ungradable'],
+            'verifier_reported_solution_checks': dict(solver_checks),
+            'independent_solution_accuracy': None,
+            'control_expected_candidate_coverage': len(candidate_matches) / len(controls) if controls else None,
+            'control_single_grade_coverage': len(decided) / len(controls) if controls else None,
+            'control_single_grade_agreement': len(matched) / len(decided) if decided else None,
+            'ai_diagnostic_gate_passed': bool(records) and stages_validated == len(records)
+                and len(detected) == len(defects) and len(matched) == len(controls),
+            'diagnostic_gate_scope': 'Structured outcomes against AI expectations; explanations still need independent review.',
+            'human_accuracy': None, 'production_ready': False,
+            'release_blockers': ['No independent teacher calibration has been supplied.',
+                                 'This small diagnostic is not a production error-rate estimate.']}
+
+
+async def run(args):
+    from app import difficulty_review_v2 as reviewer
+    data = json.loads(args.dataset.read_text())
+    cases = [case for case in data['cases'] if args.split == 'all' or case['split'] == args.split]
+    if args.case_id:
+        selected_ids = set(args.case_id)
+        if len(selected_ids) != len(args.case_id) or selected_ids - {c['id'] for c in cases}:
+            raise ValueError('Unknown or duplicate selected case IDs')
+        cases = [case for case in cases if case['id'] in selected_ids]
+    if not cases or len({case['id'] for case in cases}) != len(cases):
+        raise ValueError('Empty selection or duplicate case IDs')
+    planned = 2 * len(cases) * args.repeats
+    if not 1 <= args.repeats <= 2 or not planned <= args.max_calls <= 40:
+        raise ValueError('Evaluation requires two calls per case within a hard cap of 40')
+    output = args.output.resolve()
+    output.mkdir(parents=True, exist_ok=False)
+    write_json(output / 'dataset.json', {'cases': cases})
+    hashes = {}
+    for name in ('app/difficulty_review_v2.py', 'app/difficulty_judge.py',
+                 'app/providers.py', 'app/config.py', 'app/store.py',
+                 'scripts/difficulty_experiment.py', 'scripts/difficulty_review_v2_eval.py'):
+        target = output / 'code' / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / name, target)
+        hashes[name] = hashlib.sha256(target.read_bytes()).hexdigest()
+    records = [{'case_id': case['id'], 'repeat': repeat, 'status': 'pending'}
+               for case in cases for repeat in range(args.repeats)]
+    random.Random(926).shuffle(records)
+    parameters = stage_parameters(args.analyst_effort)
+    verifier_parameters = stage_parameters(args.verifier_effort)
+    analyst_timeout = 45 if args.analyst_effort == 'none' else 120
+    verifier_timeout = 45 if args.verifier_effort == 'none' else 120
+    manifest = {'kind': 'difficulty-review-v2-diagnostic', 'live': args.live,
+                'status': 'prepared', 'protocol_sha256': reviewer.protocol_fingerprint(),
+                'dataset_sha256': digest(cases), 'code_sha256': hashes,
+                'planned_calls': planned, 'call_cap': args.max_calls,
+                'parameters': parameters, 'split': args.split,
+                'selected_case_ids': [case['id'] for case in cases],
+                'max_prompt_bytes': MAX_PROMPT_BYTES,
+                'analyst_model_override': args.analyst_model,
+                'analyst_parameters': parameters,
+                'analyst_timeout': analyst_timeout,
+                'verifier_model_override': args.verifier_model,
+                'verifier_parameters': verifier_parameters,
+                'verifier_timeout': verifier_timeout,
+                'production_ready': False, 'human_accuracy': None}
+    write_json(output / 'manifest.json', manifest)
+    write_json(output / 'records.json', records)
+    if not args.live:
+        print(json.dumps({'status': 'prepared', 'planned_calls': planned}), flush=True)
+        return
+    base = Settings.from_env()
+    settings = replace(base, text_json_mode=True, timeout=analyst_timeout,
+                       text=replace(base.text, model=args.analyst_model or base.text.model, extra=parameters))
+    settings.text.require('text')
+    store = CappedStore(Path(tempfile.mkdtemp(prefix='lumori-review-v2-')), args.max_calls)
+    provider = ApiProviders(settings, store)
+    verification_settings = replace(settings, timeout=verifier_timeout, text=replace(
+        settings.text, model=args.verifier_model or base.text.model, extra=verifier_parameters))
+    verifier = ApiProviders(verification_settings, store)
+    by_id = {case['id']: case for case in cases}
+    manifest.update(status='running', model=settings.text.model,
+                    verifier_model=verification_settings.text.model,
+                    endpoint_signature=settings.text.signature,
+                    verifier_endpoint_signature=verification_settings.text.signature)
+    write_json(output / 'manifest.json', manifest)
+    try:
+        for row in records:
+            source = by_id[row['case_id']]
+            case = input_case(source)
+            item_id = f'{row["case_id"]}_{row["repeat"]}'
+            row.update(input_sha256=digest(case), status='running')
+            started = time.monotonic()
+            for stage in ('analysis', 'verification'):
+                record = row[stage] = {'status': 'preparing'}
+                stage_started = time.monotonic()
+                previous_calls = {c['id'] for c in store.all('SELECT id FROM calls WHERE job_id=?', (item_id,))}
+                try:
+                    prompts = (reviewer.analysis_messages(case) if stage == 'analysis' else
+                               reviewer.verification_messages(case, row['analysis']['result']))
+                    write_json(output / 'items' / item_id / f'{stage}_prompt.json', prompts)
+                    record['prompt_bytes'] = len(json.dumps(prompts, ensure_ascii=False).encode())
+                    if record['prompt_bytes'] > MAX_PROMPT_BYTES:
+                        raise ValueError('Diagnostic prompt size cap exceeded')
+                    record.update(status='in_flight', prompt_sha256=digest(prompts))
+                    write_json(output / 'records.json', records)
+                    active_provider = provider if stage == 'analysis' else verifier
+                    timeout = analyst_timeout if stage == 'analysis' else verifier_timeout
+                    raw = await asyncio.wait_for(active_provider.generate(prompts, item_id), timeout=timeout)
+                    write_json(output / 'items' / item_id / f'{stage}_response.json', raw)
+                    result = (reviewer.validate_analysis(raw, case) if stage == 'analysis' else
+                              reviewer.validate_verification(raw, case, row['analysis']['result']))
+                    record.update(status='validated', result=result)
+                except Exception as exc:
+                    record.update(status='failed', error_type=type(exc).__name__)
+                    if getattr(exc, 'code', None):
+                        record['error_code'] = exc.code
+                    if isinstance(exc, ValidationError):
+                        record['validation_issues'] = [{'type': issue['type'], 'location': list(issue['loc'])}
+                            for issue in exc.errors(include_input=False, include_context=False, include_url=False)]
+                    if isinstance(exc, ProviderError) and not isinstance(exc, ProviderOutputError):
+                        manifest['stop_reason'] = getattr(exc, 'code', None) or 'provider_failure'
+                    break
+                finally:
+                    record['duration_ms'] = round((time.monotonic() - stage_started) * 1000)
+                    record['call_ids'] = [c['id'] for c in store.all('SELECT id FROM calls WHERE job_id=?', (item_id,))
+                                          if c['id'] not in previous_calls]
+            # Target only enters the local decision, never either review prompt.
+            target = source.get('target_difficulty')
+            row['decision'] = reviewer.decide(row.get('analysis', {}), row.get('verification', {}), target)
+            row.update(status='complete' if all(row.get(s, {}).get('status') == 'validated'
+                                               for s in ('analysis', 'verification')) else 'failed',
+                       duration_ms=round((time.monotonic() - started) * 1000))
+            write_json(output / 'records.json', records)
+            print(item_id, row['status'], row['decision']['status'], flush=True)
+            if manifest.get('stop_reason'):
+                break
+    finally:
+        await provider.close()
+        await verifier.close()
+        for row in records:
+            if row['status'] == 'pending':
+                row.update(status='not_attempted', decision=reviewer.decide({}, {}, None))
+            elif row['status'] == 'running':
+                row.update(status='failed', decision=reviewer.decide(
+                    row.get('analysis', {}), row.get('verification', {}),
+                    by_id[row['case_id']].get('target_difficulty')))
+        calls = call_rows(store)
+        write_json(output / 'calls.json', calls)
+        write_json(output / 'records.json', records)
+        manifest.update(status='complete' if all(row['status'] == 'complete' for row in records)
+                        else 'completed_with_failures', actual_calls=len(calls),
+                        total_tokens=sum(c['usage'].get('total_tokens', 0) for c in calls),
+                        calls_without_total_tokens=sum('total_tokens' not in c['usage'] for c in calls),
+                        calls_without_cost=sum('cost' not in c['usage'] for c in calls))
+        write_json(output / 'manifest.json', manifest)
+        write_json(output / 'summary.json', score(records, cases))
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--dataset', type=Path, required=True)
+    parser.add_argument('--split', choices=('development', 'heldout', 'historical', 'all'), default='development')
+    parser.add_argument('--case-id', action='append', help='Restrict to a named case within the selected split')
+    parser.add_argument('--repeats', type=int, default=1)
+    parser.add_argument('--max-calls', type=int, default=24)
+    parser.add_argument('--analyst-model', choices=('deepseek-flash', 'deepseek-v4-pro'))
+    parser.add_argument('--analyst-effort', choices=('none', 'low', 'high', 'max'), default='none')
+    parser.add_argument('--verifier-model', choices=('deepseek-flash', 'deepseek-v4-pro'))
+    parser.add_argument('--verifier-effort', choices=('none', 'low', 'high', 'max'), default='none')
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--live', action='store_true')
+    asyncio.run(run(parser.parse_args()))

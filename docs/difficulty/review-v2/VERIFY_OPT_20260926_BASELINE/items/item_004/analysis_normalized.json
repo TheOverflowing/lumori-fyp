@@ -1,0 +1,160 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题干给出完整任务、容量、先序和设备限制且无歧义；学习者具备单链调度、并行无依赖及枚举/反证基础，足以求解该小规模调度与最优性证明。",
+  "solution": "最少5时段。可行安排：1:A；2:B、C；3:D；4:E；5:F。检查：C在A后、D在B后、E在C和D后、F在E后；A与B不同段，C与D不同段，每段最多两项。证明：A<C<E<F形成先序链，至少需4个时段。假设仅4个时段，则该链必占1,2,3,4且A=1,C=2,E=3,F=4。又B<D<E且E=3，故B、D必须在1,2且B=1,D=2。这样A与B同在1，C与D同在2，违反设备规则，矛盾。因此至少5时段；上述安排达到5，故最少5。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "在5个时段内分配6个任务，满足容量2、先序和设备互斥，得到可行安排。",
+      "mode": "apply_familiar"
+    },
+    {
+      "request_ids": [
+        "S006",
+        "S007"
+      ],
+      "condition_ids": [
+        "S003"
+      ],
+      "provided_ids": [],
+      "residual_work": "识别A<C<E<F先序链，推出任何可行安排至少需4个不同时段。",
+      "mode": "apply_familiar"
+    },
+    {
+      "request_ids": [
+        "S006",
+        "S007"
+      ],
+      "condition_ids": [
+        "S003",
+        "S004"
+      ],
+      "provided_ids": [],
+      "residual_work": "假设4时段可行，由链强制A/C/E/F占1-4；再由B<D<E推B=1,D=2，与设备规则矛盾，完成不可能性证明。",
+      "mode": "construct_argument"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "medium"
+    ],
+    "boundary_reason": "最近边界为中等：需整合先序链、设备冲突并用反证证明最优，超出单一链式安排；但任务规模小，且学习者可用枚举/反证和基础并行练习，未出现必须依赖共享设备调度证明流利度的非例行瓶颈，故不定为难。",
+    "hard_task_index": null
+  },
+  "estimated_difficulty": "medium",
+  "resolved_evidence": [
+    {
+      "request_ids": [
+        {
+          "id": "S006",
+          "start": 195,
+          "end": 233,
+          "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+        }
+      ],
+      "condition_ids": [
+        {
+          "id": "S001",
+          "start": 0,
+          "end": 37,
+          "text": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。"
+        },
+        {
+          "id": "S002",
+          "start": 37,
+          "end": 59,
+          "text": "时段从1开始编号，每个时段最多执行两项任务。"
+        },
+        {
+          "id": "S003",
+          "start": 60,
+          "end": 124,
+          "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "id": "S004",
+          "start": 124,
+          "end": 169,
+          "text": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+        },
+        {
+          "id": "S005",
+          "start": 169,
+          "end": 194,
+          "text": "除此之外没有设备或先后限制，允许一个时段只做一项。"
+        }
+      ],
+      "provided_ids": []
+    },
+    {
+      "request_ids": [
+        {
+          "id": "S006",
+          "start": 195,
+          "end": 233,
+          "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+        },
+        {
+          "id": "S007",
+          "start": 233,
+          "end": 258,
+          "text": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+        }
+      ],
+      "condition_ids": [
+        {
+          "id": "S003",
+          "start": 60,
+          "end": 124,
+          "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        }
+      ],
+      "provided_ids": []
+    },
+    {
+      "request_ids": [
+        {
+          "id": "S006",
+          "start": 195,
+          "end": 233,
+          "text": "请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。"
+        },
+        {
+          "id": "S007",
+          "start": 233,
+          "end": 258,
+          "text": "证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+        }
+      ],
+      "condition_ids": [
+        {
+          "id": "S003",
+          "start": 60,
+          "end": 124,
+          "text": "先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+        },
+        {
+          "id": "S004",
+          "start": 124,
+          "end": 169,
+          "text": "设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。"
+        }
+      ],
+      "provided_ids": []
+    }
+  ],
+  "case_sha256": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+  "protocol_revision": "difficulty-review-v2.4.1-solution-capacity-20260926",
+  "human_validated": false,
+  "analysis_sha256": "0122a4f17a5a57b619e33477f40c66c6bfe52195bd24c808a6bd4d3879e96c2d"
+}

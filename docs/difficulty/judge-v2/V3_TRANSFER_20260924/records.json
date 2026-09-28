@@ -1,0 +1,2052 @@
+[
+  {
+    "id": "divisibility_base_v3_1",
+    "case_id": "divisibility_base",
+    "domain": "mathematics",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "valid",
+    "label": "hard",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明存在两个不同数成整除关系，并明确要求说明构造/分组对任意 n 的适用性及整除原因。目标明确且可解，无矛盾。",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [],
+      "remaining_demands": [
+        {
+          "quote": "证明其中一定存在两个不同数，使一个整除另一个。",
+          "finding": "需要给出完整的存在性证明，而非仅验证例子。"
+        },
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n",
+          "finding": "需要构造一个对任意 n 都成立的分组/映射，并论证其普遍性。"
+        },
+        {
+          "quote": "并解释由它得到整除关系的原因",
+          "finding": "需要解释同一组内两个数为何必有一个整除另一个。"
+        },
+        {
+          "quote": "不能只检验几个例子。",
+          "finding": "排除有限验证，要求一般性论证。"
+        }
+      ],
+      "knowledge_integration": "需要把正整数分解为奇数部分与 2 的幂、抽屉原理、整除定义以及任意 n 的普遍性论证结合起来。",
+      "strategy_selection": "关键策略是把每个数写成 2^k·m（m 为奇数），按奇数部分 m 分组；1 到 2n 中奇数部分只有 n 种，而取 n+1 个数，由抽屉原理必有两个数同组，再比较 2 的幂次得到整除关系。",
+      "justification_required": "必须证明分组覆盖所有 1 到 2n 的整数、奇数部分种类恰为 n、抽屉原理适用，并说明同组两数中较小 2 的幂次者整除较大者。",
+      "estimated_difficulty": "hard",
+      "adjacent_level_reason": "该题不是简单套用抽屉原理：学生已会抽屉原理，但未学过按奇数部分分组这一关键构造。难点在于自行发现把每个数写成 2^k·m 并按奇数 m 分组，并证明奇数部分种类恰为 n 且同组给出整除关系。若仅视为常规抽屉原理应用，会低估构造发现与普遍性论证的独立整合要求；若视为 extended_inquiry，则本题不需要长期迭代探究，故 hard 更合适。",
+      "uncertainty_reasons": [
+        "学生已学抽屉原理，可能通过提示或类似题回忆出按奇数部分分组，从而降低实际难度。",
+        "若课堂曾隐含训练过 2^k·m 分解，则可能接近 medium；但档案明确未学该技巧。"
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "证明其中一定存在两个不同数，使一个整除另一个。",
+          "finding": "题目只给出待证结论，未提供分组或证明思路。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "构造分组并证明存在同组两数成整除关系。"
+        },
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n",
+          "finding": "题目要求普遍性论证，但未给出任何构造。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "给出对任意 n 都成立的分组构造，并说明其覆盖范围与组数。"
+        },
+        {
+          "quote": "并解释由它得到整除关系的原因",
+          "finding": "题目要求解释整除来源，但未提供解释。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "说明同组两数写成 2 的幂乘以同一奇数后，较小幂次者整除较大幂次者。"
+        },
+        {
+          "quote": "不能只检验几个例子。",
+          "finding": "题目排除有限验证，要求一般证明。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "用一般性论证代替举例验证。"
+        }
+      ],
+      "minimum_sufficient_response": "把 1,2,…,2n 中每个整数写成 2^k·m，其中 m 为奇数，k≥0。按奇数部分 m 分组。1 到 2n 中的奇数 m 只有 1,3,5,…,2n−1，共 n 个，因此分组至多 n 组。任取 n+1 个不同整数，由抽屉原理，必有两个数落在同一组，即它们有相同的奇数部分 m，设为 2^a·m 与 2^b·m。若 a<b，则 2^a·m 整除 2^b·m；若 b<a，则 2^b·m 整除 2^a·m。两数不同，故 a≠b，于是其中一个整除另一个。该构造对任意正整数 n 都适用，因为奇数部分种类数恰为 n，抽屉原理保证同组，而同组即给出整除关系。",
+      "hard_basis_quote": "你需要说明构造或分组方法为何适用于任意 n",
+      "learner_relative_basis": "该学生已掌握抽屉原理，但档案明确未学过按奇数部分分组的技巧。剩余瓶颈是自行发现 2^k·m 分解并按奇数 m 分组，同时证明奇数部分种类恰为 n 且同组两数必成整除关系；这不是已练习过的熟悉应用，而是需要独立构造与普遍性论证的非例行策略。"
+    }
+  },
+  {
+    "id": "m_missing_v2_0",
+    "case_id": "m_missing",
+    "domain": "mathematics",
+    "arm": "v2",
+    "repeat": 0,
+    "status": "valid",
+    "label": "uncertain",
+    "eligibility": "invalid_question",
+    "result": {
+      "eligibility": "invalid_question",
+      "eligibility_reason": "题目只给出“设 x、y 为非负实数”，没有给出任何关于 x、y 的方程、不等式或其他约束条件，因此 xy 的数值无法唯一确定。例如 x=0,y=0 时 xy=0，而 x=1,y=1 时 xy=1，均满足题设。题目要求“给出 xy 唯一确定的数值”属于不可满足的要求，缺少必要的题目条件。",
+      "cognitive_demand": "uncertain",
+      "supplied_support": [],
+      "remaining_demands": [
+        {
+          "quote": "设 x、y 为非负实数。请给出 xy 唯一确定的数值。",
+          "finding": "题面仅声明 x、y 为非负实数，未提供任何可推导 xy 的等式或不等式；在现有条件下 xy 可取任意非负值，无法唯一确定，因此该要求不可完成。"
+        }
+      ],
+      "knowledge_integration": "由于题目缺少约束条件，无法判断需要整合哪些数学知识；学生即使掌握一元二次式、配方法和平方非负，也没有可用于确定 xy 的信息。",
+      "strategy_selection": "不存在可选的合理策略：任何策略都只能说明 xy 不唯一，而不能给出题目所要求的唯一数值。",
+      "justification_required": "若按题意作答，学生只能指出条件不足、xy 不唯一；但题目要求给出唯一数值，故无法提供符合要求的证明或计算。",
+      "estimated_difficulty": "uncertain",
+      "adjacent_level_reason": "题目因缺少条件而无效，不能按认知需求或难度分级；将其归为 easy、medium 或 hard 都会掩盖其不可作答的本质。",
+      "uncertainty_reasons": [
+        "题目缺少 x、y 之间的约束条件，无法确定 xy。",
+        "无效题目不应被赋予难度等级，故难度只能记为 uncertain。"
+      ],
+      "confidence": "high"
+    }
+  },
+  {
+    "id": "divisibility_base_v2_0",
+    "case_id": "divisibility_base",
+    "domain": "mathematics",
+    "arm": "v2",
+    "repeat": 0,
+    "status": "valid",
+    "label": "hard",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明存在两个不同数成整除关系，并明确要求说明构造或分组方法对任意 n 适用及整除原因。没有矛盾或不可满足的要求。",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [],
+      "remaining_demands": [
+        {
+          "quote": "证明其中一定存在两个不同数，使一个整除另一个。",
+          "finding": "需要给出完整的抽屉原理证明，而不是仅验证例子；核心是找到能把 1 到 2n 分成 n 个类、且同类中任意两数成整除关系的分组。"
+        },
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n",
+          "finding": "必须把分组规则一般化，说明对任意正整数 n 都恰好得到 n 个类别，并覆盖 1,2,…,2n 中所有整数。"
+        },
+        {
+          "quote": "并解释由它得到整除关系的原因",
+          "finding": "需要论证同一组内任意两个不同数中，一个必整除另一个，从而由 n+1 个数落入 n 组推出存在两个数同组。"
+        }
+      ],
+      "knowledge_integration": "需要综合正整数整除、奇偶性、抽屉原理和数学证明表述。关键整合点是把每个数写成 2^k 乘以奇数，并按奇数部分分组；这需要把整除关系与奇数部分相同这一结构联系起来。",
+      "strategy_selection": "学生已会抽屉原理和简单放对象入给定类别的题，但本题没有给出类别，必须自行构造分组。按奇数部分分组是非平凡策略选择，不能直接套用已给类别；需要发现每个数唯一表示为奇数部分乘 2 的幂，并利用该表示构造 n 个组。",
+      "justification_required": "必须证明分组对任意 n 成立、组数为 n、覆盖全部 1 到 2n，并证明同组两数中较小者整除较大者。仅举例或只说明思路不满足要求。",
+      "estimated_difficulty": "hard",
+      "adjacent_level_reason": "对已学抽屉原理但未学按奇数部分分组技巧的高中生，本题不是常规应用：类别未给定，需要自行发现并验证一个非平凡分组，且要作一般性证明。若只要求套用现成类别，则可能是 medium；但本题明确要求构造并解释任意 n 的适用性，因此更符合 hard。",
+      "uncertainty_reasons": [
+        "学生是否在竞赛或拓展材料中接触过“奇数部分”分组无法从档案确认。",
+        "若教师此前已暗示按奇数部分分组，则实际难度会下降，但学生可见文本中没有该提示。"
+      ],
+      "confidence": "medium"
+    }
+  },
+  {
+    "id": "editor_base_v2_1",
+    "case_id": "editor_base",
+    "domain": "humanities",
+    "arm": "v2",
+    "repeat": 1,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The task is self-contained with fictional materials, supplies all needed records, and explicitly permits multiple supported conclusions. It asks for evaluation, explanation, two explanations, a distinction between established and possible, additional evidence, and a qualified conclusion—all answerable from the given text without external facts.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "The published submission policy says: \"All submissions received before Friday are printed without editorial changes.\"",
+          "finding": "Provides the policy text that must be interpreted and weighed against the contributor's account."
+        },
+        {
+          "quote": "There are no other records.",
+          "finding": "Constrains the evidence base and signals that conclusions must be qualified rather than definitive."
+        },
+        {
+          "quote": "Multiple supported conclusions are allowed; do not invent facts.",
+          "finding": "Explicitly permits more than one defensible conclusion and forbids adding outside facts."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "Requires selecting a relevant detail from the editor and from the contributor and using both to assess the claim."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "Requires interpreting the policy's scope and determining whether it addresses the contributor's worry about losing a club role."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "Requires generating alternatives, classifying epistemic status, and specifying discriminating evidence."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "Requires synthesizing the analysis into a hedged conclusion that does not overclaim."
+        }
+      ],
+      "knowledge_integration": "The response must combine the editor's claim, the contributor's account, and the policy, then apply observation/interpretation and established/possible distinctions to produce a qualified conclusion.",
+      "strategy_selection": "The solver must choose relevant details from each account, interpret the policy's limits, generate two explanations, and select additional evidence that would discriminate between them.",
+      "justification_required": "Each judgment—about the editor's claim, the policy's effect, the two explanations, and the final conclusion—must be supported by quoted or paraphrased details from the supplied records.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "It is more than routine application because the solver must adjudicate the policy against the contributor's account and manage established versus possible explanations. It is less than hard because the records are short, the required distinctions are explicitly prompted, and no extended independent investigation is needed.",
+      "uncertainty_reasons": [
+        "The learner profile says students have practised distinguishing observations from interpretations, which may make the epistemic classification more routine than the task otherwise appears.",
+        "The line between medium and hard depends on how much independent integration is expected in a short seminar response, which is not fully specified."
+      ],
+      "confidence": "medium"
+    }
+  },
+  {
+    "id": "h_hint_v2_0",
+    "case_id": "h_hint",
+    "domain": "humanities",
+    "arm": "v2",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: it supplies two fictional passages, a perspective note, two competing claims, and six explicit constraints. The learner profile specifies close reading and comparison without outside theory. All required evidence is student-visible, and the task is answerable with multiple defensible interpretations.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "A first-person account gives access to a situated viewpoint, not automatic knowledge of every participant's motives.",
+          "finding": "The note supplies the central interpretive principle that first-person narration is limited, reducing the need to derive this from scratch."
+        },
+        {
+          "quote": "Distinguish a narrator's explicit statement from an inference based on an image, omission or contrast.",
+          "finding": "The note directly supplies the distinction between explicit statement and inference that constraint 1 requires."
+        },
+        {
+          "quote": "The curator's collective we can be read as an aspiration to shared ownership or as a phrase that leaves differences within the group unstated.",
+          "finding": "The note supplies two competing readings of the curator's collective language, scaffolding constraint 3 and the competing-reading requirement."
+        },
+        {
+          "quote": "The volunteer's applause and unopened letter can support readings of tentative belonging, unresolved exclusion, or a mixture, but the text does not establish censorship or identify the letter's contents.",
+          "finding": "The note supplies the interpretive options for the volunteer's details and explicitly rules out censorship and letter contents, scaffolding constraints 2, 5, and 6."
+        },
+        {
+          "quote": "A defensible interpretation compares details from both passages, acknowledges a plausible competing reading, and explains the limits of its claim.",
+          "finding": "The note supplies the criteria for a defensible interpretation, reducing the need to invent standards for evaluating the claims."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Distinguish what each passage explicitly states from inferences about motives, selection, rejection, or withheld information.",
+          "finding": "The learner must apply the supplied distinction to specific details in both passages, not merely repeat the principle."
+        },
+        {
+          "quote": "Use at least one concrete detail from each account as textual support.",
+          "finding": "The learner must select and integrate concrete details from both passages into a coherent argument."
+        },
+        {
+          "quote": "Compare how the curator's collective language and the volunteer's applause coexist with hesitation or unstated difference.",
+          "finding": "The learner must construct a comparative reading that holds collective language and hesitation together without collapsing one into the other."
+        },
+        {
+          "quote": "Address a plausible competing reading drawn from the same passages.",
+          "finding": "The learner must generate or select a competing reading and show how the evidence can support it, then adjudicate."
+        },
+        {
+          "quote": "Decide which claim, if either, better fits the evidence and the constraints, and justify your judgment.",
+          "finding": "The learner must adjudicate between two claims using evidence and constraints, which requires weighing support and overreach."
+        },
+        {
+          "quote": "If neither claim is fully defensible, revise one claim into a qualified sentence that could satisfy the constraints.",
+          "finding": "The learner must produce a revised claim that preserves evidential support while removing unsupported assertions."
+        }
+      ],
+      "knowledge_integration": "The learner must integrate the perspective note's principles with specific details from both passages, the two competing claims, and the six constraints. This requires coordinating explicit statements, inferences, omissions, and competing readings into a single justified interpretation.",
+      "strategy_selection": "The learner must choose which details to use, which competing reading to address, and how to adjudicate between the claims. The note supplies interpretive options, but the learner must select and apply them to the specific evidence.",
+      "justification_required": "The learner must justify the judgment about which claim better fits the evidence, explain the competing reading, and state the uncertainty that remains. The justification must be tied to textual details and the constraints.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "The task is more than routine application because it requires adjudicating between claims and constructing a qualified interpretation under multiple constraints. However, the supplied note provides substantial scaffolding: it names the interpretive options, states the limits, and gives the criteria for a defensible interpretation. For undergraduates in an introductory humanities seminar, this is a meaningful familiar application and analysis rather than a nonroutine strategy requiring independent integration. Hard would require the learner to generate the interpretive framework without the note's explicit guidance.",
+      "uncertainty_reasons": [
+        "The boundary between medium and hard depends on how much the supplied note reduces the need for independent interpretive framing; the note is quite directive.",
+        "No empirical data on learner performance is available, so difficulty is a qualitative judgment."
+      ],
+      "confidence": "medium"
+    }
+  },
+  {
+    "id": "editor_hint_v2_1",
+    "case_id": "editor_hint",
+    "domain": "humanities",
+    "arm": "v2",
+    "repeat": 1,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: all material is fictional, the learner profile specifies prior practice in distinguishing observations from interpretations and supporting comparisons with quotations, and the task supplies the records needed. It asks for evaluation, explanation, two explanations, a distinction between established and possible, additional evidence, and a qualified conclusion. No missing conditions, contradictions, or unanswerable demands are present; multiple supported conclusions are explicitly allowed.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "The published submission policy says: \"All submissions received before Friday are printed without editorial changes.\"",
+          "finding": "Supplies the policy premise that can be used to assess the editor's inference from printing to free speech."
+        },
+        {
+          "quote": "Teaching note: Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission.",
+          "finding": "Provides the key distinction between editorial alteration and pre-submission social pressure, scaffolding the central evaluation."
+        },
+        {
+          "quote": "The contributor's worry might reflect a credible informal threat or an unsupported personal expectation.",
+          "finding": "Supplies the two plausible explanations the task asks the learner to develop and distinguish."
+        },
+        {
+          "quote": "Independent accounts of club reactions could help distinguish the explanations.",
+          "finding": "Supplies a direction for the additional-evidence requirement."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "Learner must select a relevant detail from the editor's account and a relevant detail from the contributor's account, then use both to assess the claim rather than merely summarizing."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "Learner must reason about the scope of the policy: it governs editorial changes after receipt, not the contributor's pre-submission decision or worry."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "Learner must generate two explanations, classify each as established or possible, and propose discriminating evidence without inventing facts."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "Learner must synthesize the analysis into a conclusion that is neither overbroad nor unsupported, while allowing multiple supported conclusions."
+        }
+      ],
+      "knowledge_integration": "The learner must integrate the editor's inference, the contributor's first-person account, the published policy, and the absence of other records. The central integration is recognizing that unchanged printing addresses editorial alteration but not pre-submission social pressure, and that the contributor's deletion is established while its cause remains only possible.",
+      "strategy_selection": "The learner must choose a strategy of separating established facts from possible explanations, using textual details from both accounts, and testing the policy's scope against the contributor's concern. This is nonroutine because the editor's claim and the policy are superficially supportive but do not settle the freedom question.",
+      "justification_required": "Each step requires textual support: the editor's claim must be evaluated with a detail from each account, the policy's limits must be explained, the two explanations must be distinguished as established or possible, and the conclusion must be qualified by the records. The teaching note supplies the conceptual frame but not the specific textual application.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "Medium fits because the learner applies familiar skills of distinguishing observation from interpretation and supporting claims with quotations to a new but clearly structured fictional case. Hard is less fitting because the teaching note supplies the central distinction and the two explanations, reducing the need for substantial independent integration or nonroutine strategy. Easy is less fitting because the learner must still coordinate multiple sources, classify established versus possible, and propose discriminating evidence.",
+      "uncertainty_reasons": [
+        "The teaching note supplies much of the analytical frame, which may reduce the demand below strategic_reasoning for some learners.",
+        "The learner profile specifies prior practice with the core skills, so the task may be routine application rather than strategic reasoning for well-prepared undergraduates."
+      ],
+      "confidence": "medium"
+    }
+  },
+  {
+    "id": "divisibility_base_v2_1",
+    "case_id": "divisibility_base",
+    "domain": "mathematics",
+    "arm": "v2",
+    "repeat": 1,
+    "status": "valid",
+    "label": "hard",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明存在两个不同数一个整除另一个，并明确要求说明构造或分组方法对任意 n 适用且解释整除关系原因。没有矛盾或不可满足的要求。",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [],
+      "remaining_demands": [
+        {
+          "quote": "证明其中一定存在两个不同数，使一个整除另一个。",
+          "finding": "需要给出完整的数学证明，而不仅是观察或举例。"
+        },
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n",
+          "finding": "必须构造或说明一种对任意正整数 n 都成立的分组/映射方法，并论证其普遍性。"
+        },
+        {
+          "quote": "并解释由它得到整除关系的原因",
+          "finding": "需要解释为什么该分组或构造能保证同一组内两个数之间存在整除关系。"
+        },
+        {
+          "quote": "不能只检验几个例子。",
+          "finding": "排除仅靠有限例子验证，要求一般性证明。"
+        }
+      ],
+      "knowledge_integration": "需要综合运用正整数整除、奇偶性、抽屉原理和数学证明。核心是发现按奇数部分分组的方法：每个正整数可唯一写成奇数乘以 2 的幂，1 到 2n 中奇数部分只有 n 个可能值，取 n+1 个数必有两个落入同一组，从而由同组两数之间的倍数关系得到整除。",
+      "strategy_selection": "学生已学抽屉原理和简单给定类别放对象题，但未学按奇数部分分组的技巧。因此主要策略选择在于自行构造合适的“抽屉”类别，而不是套用现成分类。",
+      "justification_required": "必须证明分组覆盖 1 到 2n 的所有整数、组数为 n，并证明同一组内任意两个不同数中一个整除另一个，最后用抽屉原理推出结论。",
+      "estimated_difficulty": "hard",
+      "adjacent_level_reason": "对已学抽屉原理但未学奇数部分分组技巧的高中生，本题不是直接套用熟悉分类的 routine_application，因为关键分组需要独立构造；也不是 extended_inquiry，因为不需要长期迭代探究。它要求在熟悉工具上完成非例行构造与证明，因此 hard 比 medium 更合适。",
+      "uncertainty_reasons": [
+        "学生是否能在提示下自行想到按奇数部分分组存在个体差异。",
+        "若课堂曾隐含接触过类似构造，难度可能降为 medium。"
+      ],
+      "confidence": "medium"
+    }
+  },
+  {
+    "id": "editor_hint_v3_1",
+    "case_id": "editor_hint",
+    "domain": "humanities",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained with fictional materials, supplies all needed records, and asks for a bounded seminar response. It explicitly permits multiple supported conclusions and forbids inventing facts, so the open-endedness is intentional rather than a defect. No missing student-visible condition prevents a valid answer.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission.",
+          "finding": "Supplies the central distinction between post-submission editorial freedom and pre-submission social freedom, which is the key interpretive move."
+        },
+        {
+          "quote": "The contributor's worry might reflect a credible informal threat or an unsupported personal expectation.",
+          "finding": "Supplies the two plausible explanations the task asks students to generate."
+        },
+        {
+          "quote": "Nobody requesting deletion rules out that particular explicit request but does not establish whether informal pressure existed.",
+          "finding": "Supplies the inference about what the absence of an explicit deletion request does and does not establish."
+        },
+        {
+          "quote": "Independent accounts of club reactions could help distinguish the explanations.",
+          "finding": "Supplies the type of additional evidence that could distinguish the two explanations."
+        },
+        {
+          "quote": "A qualified conclusion may affirm unchanged publication while leaving pre-submission freedom unresolved.",
+          "finding": "Supplies a model qualified conclusion that satisfies the final requirement."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "The student must select a relevant detail from the editor's account and a relevant detail from the contributor's account and use them to assess the claim."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "The student must apply the policy text to the contributor's stated worry and explain why it does or does not resolve it."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "The student must generate two explanations, sort established facts from possibilities, and propose discriminating evidence."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "The student must formulate a conclusion that is qualified and traceable to the supplied records."
+        }
+      ],
+      "knowledge_integration": "The student must coordinate three short fictional texts (editor's claim, contributor's account, submission policy) with the teaching note's distinction between editorial alteration and anticipated social consequences, then apply that distinction to the contributor's deletion and the editor's freedom claim.",
+      "strategy_selection": "The student must choose which detail from each account is probative, decide how far the policy's guarantee extends, and select evidence that could discriminate between a credible informal threat and an unsupported personal expectation.",
+      "justification_required": "Each interpretive move must be tied to specific textual evidence, and the final conclusion must be qualified rather than absolute, with established facts separated from mere possibilities.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "The task is not reproduction because students must apply the observation/interpretation distinction to new fictional material rather than recall it. It is not hard because the teaching note supplies the key distinction, both plausible explanations, the inference about the missing deletion request, the type of discriminating evidence, and a model qualified conclusion, leaving students to select and apply rather than discover. The nearest alternative, hard, would fit if students had to generate the interpretive framework and explanations unaided; here the framework is largely provided, so medium is the better fit for prepared undergraduates.",
+      "uncertainty_reasons": [
+        "The teaching note is unusually complete, which could push the task toward easy for well-prepared students, but the need to select probative details and construct a qualified conclusion keeps it above direct retrieval.",
+        "Without empirical data on how these undergraduates handle the observation/interpretation distinction in new cases, the medium/hard boundary remains somewhat provisional."
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "The teaching note supplies the evaluative framework (unchanged printing shows no editorial alteration but not pre-submission freedom), but the student must still choose a probative detail from each account and connect it to the claim.",
+          "support_quotes": [
+            "Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Select a specific detail from the editor's account and a specific detail from the contributor's account, then use them to show the editor's claim overreaches."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "The teaching note states the policy's scope but does not itself write the explanation applying the policy to the contributor's worry.",
+          "support_quotes": [
+            "Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Explain that the policy guarantees unchanged printing of received submissions but does not address the contributor's pre-submission worry about losing a club role."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "The teaching note supplies both explanations and the discriminating evidence type, but the student must still articulate them, sort established from possible, and specify the evidence.",
+          "support_quotes": [
+            "The contributor's worry might reflect a credible informal threat or an unsupported personal expectation.",
+            "Independent accounts of club reactions could help distinguish the explanations."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "State the two explanations in the student's own words, mark the contributor's deletion and unchanged publication as established while marking informal pressure as only possible, and name independent accounts of club reactions as discriminating evidence."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "The teaching note supplies a model qualified conclusion, but the student must still formulate one and tie it to the records.",
+          "support_quotes": [
+            "A qualified conclusion may affirm unchanged publication while leaving pre-submission freedom unresolved."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Write a qualified conclusion that affirms unchanged publication while leaving pre-submission freedom unresolved, citing the records."
+        }
+      ],
+      "minimum_sufficient_response": "The editor's claim is only partly supported. The editor says every submission received before Friday was printed, and the policy confirms that received submissions are printed without editorial changes; the contributor's account confirms this for one case, since the essay appeared unchanged. But the contributor also deleted a paragraph before sending it because of worry about losing a club role, and nobody asked for the deletion. The policy therefore resolves only the narrow concern about editorial alteration after submission; it does not resolve the contributor's pre-submission concern about social consequences. Two plausible explanations for the deletion are: (1) the contributor faced a credible informal threat or pressure from club members, or (2) the contributor acted on an unsupported personal expectation of consequences. What is established is that the essay was printed unchanged and that no one explicitly requested deletion; what is only possible is that informal pressure existed. Independent accounts of club reactions, such as statements from club officers or members about whether the contributor's role was discussed, could distinguish these explanations. A qualified conclusion is that the records support freedom from editorial alteration for received submissions, but they leave the contributor's pre-submission freedom unresolved.",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "For undergraduates who have practised distinguishing observations from interpretations and supporting comparisons with quotations, the remaining work is selecting probative details, applying the supplied distinction to the policy and contributor's worry, and constructing a qualified conclusion. The teaching note supplies the key framework, both explanations, the discriminating evidence type, and a model conclusion, so the task is a meaningful familiar application rather than a nonroutine integration requiring independent discovery."
+    }
+  },
+  {
+    "id": "divisibility_hint_v3_1",
+    "case_id": "divisibility_hint",
+    "domain": "mathematics",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明存在一个整除另一个，并明确要求说明构造/分组对任意 n 和任意选取方式成立。提示给出了奇数部分分解和分组思路，但未直接完成全部论证，因此不是无解或自相矛盾的问题。",
+      "cognitive_demand": "routine_application",
+      "supplied_support": [
+        {
+          "quote": "提示：每个正整数唯一写成 2^k·u，其中 k≥0，u 为奇数。",
+          "finding": "提示直接提供了本题核心表示法：正整数唯一分解为 2 的幂与奇数之积，这是构造分组的基础。"
+        },
+        {
+          "quote": "1 到 2n 中只有 n 种可能的奇数部分 u（1,3,…,2n−1）。",
+          "finding": "提示直接给出了奇数部分集合及其个数，学生无需自行发现或证明该计数。"
+        },
+        {
+          "quote": "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。",
+          "finding": "提示已经给出分组方式、抽屉原理的适用点以及同组两数之间的整除关系，核心证明骨架已完整呈现。"
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。",
+          "finding": "学生仍需把提示中的分组和整除关系组织成对任意 n 成立的完整论证，而不是只验证例子。"
+        },
+        {
+          "quote": "请解释这些步骤为何覆盖所有 n 及所有选取方式。",
+          "finding": "学生仍需说明任意选取的 n+1 个数都落入 n 个奇数部分组中，因此抽屉原理必然产生同组两数，并说明该同组关系对任意选取都成立。"
+        }
+      ],
+      "knowledge_integration": "需要整合正整数唯一分解、奇数部分计数、抽屉原理和整除定义。提示已给出这些要素，学生主要工作是将其串联成一般性证明。",
+      "strategy_selection": "策略已由提示指定：按奇数部分 u 分组，再用抽屉原理。学生不需要自行选择非平凡策略，只需理解并执行该策略。",
+      "justification_required": "需要说明为什么 1 到 2n 中奇数部分只有 n 种、为什么 n+1 个数放入 n 组必有两数同组、以及同组两数为何一个整除另一个。提示已给出这些理由，学生需将其表述为覆盖任意 n 和任意选取的证明。",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "该题对已学抽屉原理但未学奇数部分分组技巧的学生而言，核心策略由提示直接给出，因此不是需要独立发现非平凡策略的 hard；但学生仍需理解唯一分解、奇数部分计数和整除关系，并组织成一般性证明，故也不是仅靠记忆即可完成的 easy。",
+      "uncertainty_reasons": [
+        "学生未学过按奇数部分分组的技巧，但提示已完整给出该技巧，可能使实际难度接近 easy。",
+        "若学生能熟练使用抽屉原理并理解唯一分解，剩余工作主要是表述和验证，难度可能偏低；若对唯一分解或一般性论证不熟，则可能接近 hard。"
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。",
+          "finding": "提示已给出分组方法和整除关系，但未替学生写出对任意 n 的完整论证；学生仍需把提示内容组织成一般性证明。",
+          "support_quotes": [
+            "提示：每个正整数唯一写成 2^k·u，其中 k≥0，u 为奇数。",
+            "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "将提示中的分解、分组和整除关系写成适用于任意 n 的完整证明，并说明不是仅检验例子。"
+        },
+        {
+          "quote": "请解释这些步骤为何覆盖所有 n 及所有选取方式。",
+          "finding": "提示已说明奇数部分只有 n 种且 n+1 个数按 u 分组必有两数同组，但学生仍需解释该推理对任意 n 和任意选取都成立。",
+          "support_quotes": [
+            "1 到 2n 中只有 n 种可能的奇数部分 u（1,3,…,2n−1）。",
+            "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "说明任意选取的 n+1 个数都对应到 n 个奇数部分组，因此抽屉原理必然给出同组两数，并说明该结论不依赖于具体选取。"
+        }
+      ],
+      "minimum_sufficient_response": "对任意正整数 n，考虑 1,2,…,2n 中的每个数。每个正整数可唯一写成 2^k·u，其中 k≥0，u 为奇数。在 1 到 2n 中，奇数部分 u 只能是 1,3,5,…,2n−1，共 n 个。现在任取 n+1 个不同整数，按它们的奇数部分 u 分成 n 组。因为共有 n+1 个数而只有 n 个组，由抽屉原理，必有两个数落在同一组，即它们有相同的奇数部分 u，可写成 2^a·u 和 2^b·u。若 a<b，则 2^a·u 整除 2^b·u；若 b<a，则 2^b·u 整除 2^a·u。因此这两个不同数中必有一个整除另一个。上述分组覆盖 1 到 2n 的所有数，且对任意 n 和任意选取的 n+1 个数都成立。",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "该学生已学抽屉原理和数学证明，但未学按奇数部分分组。提示已直接给出奇数部分分解、n 个奇数部分以及同组整除关系，因此剩余瓶颈不是发现非平凡策略，而是理解并表述一般性证明；对已学抽屉原理的学生，这属于熟悉的常规应用，而非需要独立整合多种非平凡思想的 hard。"
+    }
+  },
+  {
+    "id": "editor_base_v3_1",
+    "case_id": "editor_base",
+    "domain": "humanities",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: all material is fictional and the learner is told not to assume external historical facts. It supplies the editor's claim, the contributor's account, the policy, and the absence of other records, then asks for a bounded evaluation, two explanations, a distinction between established and possible, a discriminating-evidence proposal, and a qualified conclusion. No missing condition or contradiction prevents a supported answer.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "The published submission policy says: \"All submissions received before Friday are printed without editorial changes.\"",
+          "finding": "Supplies the policy text that must be interpreted and applied to the contributor's concern."
+        },
+        {
+          "quote": "There are no other records.",
+          "finding": "Supplies the evidential boundary: no external records can be used to resolve the ambiguity."
+        },
+        {
+          "quote": "Multiple supported conclusions are allowed; do not invent facts.",
+          "finding": "Supplies permission for more than one defensible conclusion and a constraint against fabricating evidence."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "The learner must select a detail from the editor's account and a detail from the contributor's account, then use them to assess whether the printed issue proves free speech."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "The learner must interpret the policy's scope and decide whether it addresses the contributor's worry about losing a club role."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "The learner must generate two non-identical explanations, classify claims by evidential status, and propose evidence that would discriminate between the explanations."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "The learner must formulate a hedged conclusion that does not overclaim beyond the fictional records."
+        }
+      ],
+      "knowledge_integration": "The learner must integrate the editor's inference, the contributor's first-person account, the policy's wording, and the absence of other records into a single evidential assessment. The key integration is recognizing that the policy governs editorial changes to printed submissions but does not establish the absence of informal pressure before submission.",
+      "strategy_selection": "The learner must choose a comparison strategy: use one detail from each account, treat the policy as a limited rule rather than a guarantee of freedom, and separate established facts from possible explanations. The learner must also select discriminating evidence rather than merely restating the ambiguity.",
+      "justification_required": "Each claim must be tied to a quoted or paraphrased detail from the fictional records. The qualified conclusion must be supported by those records and must not rely on invented facts or external historical assumptions.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "This is more than routine application because the learner must adjudicate what the policy does and does not establish and must distinguish established facts from possible explanations. It is not hard because the records are short, the relevant details are explicitly supplied, and the learner has practised distinguishing observations from interpretations and supporting comparisons with quotations. The task requires careful reasoning but not a nonroutine proof, iterative investigation, or substantial independent integration beyond the supplied materials.",
+      "uncertainty_reasons": [
+        "The boundary between routine_application and strategic_reasoning is close because the task asks for evaluation and discrimination but supplies all relevant details in a short fictional set.",
+        "The learner profile says they have practised distinguishing observations from interpretations, which may make the classification step familiar rather than novel."
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "The task requires selecting and comparing details from two accounts to assess the editor's inference. The records supply the details, but the learner must perform the comparison and evaluation.",
+          "support_quotes": [
+            "A student editor writes: \"We printed every submission received before Friday. The printed issue proves that everyone could speak freely.\"",
+            "A student contributor writes: \"My essay appeared unchanged. I deleted a paragraph before I sent it because I worried about losing my club role. Nobody asked me to delete it.\""
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Select a detail from each account and explain how the contributor's deletion before submission weakens the editor's claim that printing everything proves everyone could speak freely."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "The policy is supplied, but the learner must interpret its scope and decide whether it addresses the contributor's concern about losing a club role.",
+          "support_quotes": [
+            "The published submission policy says: \"All submissions received before Friday are printed without editorial changes.\""
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Explain that the policy governs editorial changes to printed submissions but does not address informal pressure or self-censorship before submission, so it does not resolve the contributor's concern."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "The learner must generate two explanations, classify claims by evidential status, and propose discriminating evidence. The records supply the facts but not the explanations or the discrimination strategy.",
+          "support_quotes": [
+            "My essay appeared unchanged. I deleted a paragraph before I sent it because I worried about losing my club role. Nobody asked me to delete it.",
+            "There are no other records."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Generate two plausible explanations, such as self-censorship from perceived pressure versus independent caution, distinguish the established fact that the contributor deleted the paragraph from the possible explanations for why, and propose evidence such as contemporaneous notes, messages, or interviews that could distinguish them."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "The learner must formulate a hedged conclusion that does not overclaim beyond the fictional records.",
+          "support_quotes": [
+            "Multiple supported conclusions are allowed; do not invent facts."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Write a qualified conclusion, for example that the records support the claim that submissions were printed without editorial changes but do not establish that everyone could speak freely, because the contributor's deletion shows possible self-censorship before submission."
+        }
+      ],
+      "minimum_sufficient_response": "The editor's claim is not fully supported. The editor says, \"We printed every submission received before Friday,\" and concludes, \"The printed issue proves that everyone could speak freely.\" The contributor says, \"I deleted a paragraph before I sent it because I worried about losing my club role. Nobody asked me to delete it.\" That detail shows a submission was altered before it reached the editor, so the printed issue does not prove the contributor spoke freely. The policy says, \"All submissions received before Friday are printed without editorial changes.\" It resolves only whether the editor changed printed submissions; it does not resolve the contributor's concern about informal pressure or self-censorship before submission. Two plausible explanations for the deletion are: (1) the contributor self-censored because of perceived pressure about the club role, or (2) the contributor independently decided the paragraph was not worth the risk. It is established that the contributor deleted the paragraph and that nobody explicitly asked for the deletion. It is only possible that the deletion was caused by pressure or by independent caution. Additional evidence could distinguish these explanations: contemporaneous messages, notes, or interviews about why the contributor deleted the paragraph, or evidence about whether club-role consequences were discussed. A qualified conclusion is that the records support the claim that received submissions were printed without editorial changes, but they do not establish that everyone could speak freely, because the contributor's pre-submission deletion leaves open the possibility of self-censorship.",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "For undergraduates who have practised distinguishing observations from interpretations and supporting comparisons with quotations, the remaining work is a familiar application: select details, interpret a short policy, generate two explanations, and hedge a conclusion. The task does not require nonroutine strategy, independent research, or a proof, so it is medium rather than hard."
+    }
+  },
+  {
+    "id": "transfer_hint_v3_0",
+    "case_id": "transfer_hint",
+    "domain": "computing",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: it specifies finite accounts with distinct fixed IDs, nonnegative balances, per-account mutexes, transfer semantics, atomic lock acquisition, fair queuing, no crashes/overflow, and a prohibition on a global lock. It asks for pseudocode, lock-protection explanation, correctness argument, and a concrete deadlock counterexample. All conditions needed to answer are student-visible; no private reference is required.",
+      "cognitive_demand": "routine_application",
+      "supplied_support": [
+        {
+          "quote": "可采用以下完整方案：对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。",
+          "finding": "The entire algorithmic strategy is supplied: ordered locking by ID, check under both locks, update under both locks, release on both paths."
+        },
+        {
+          "quote": "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+          "finding": "The lock-protection mapping and the atomicity/balance-invariant reasoning are supplied."
+        },
+        {
+          "quote": "所有等待只从较小 ID 指向较大 ID，不能形成等待环。",
+          "finding": "The deadlock-freedom argument via acyclic wait-for graph is supplied."
+        },
+        {
+          "quote": "反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁。",
+          "finding": "A concrete deadlock counterexample for the wrong locking order is supplied."
+        },
+        {
+          "quote": "请把该方案写成伪代码，并解释上述理由如何覆盖所有允许的交错；无需发现另一种方案。",
+          "finding": "The task is explicitly bounded to transcribing the given scheme and explaining how the supplied reasons cover all interleavings; no alternative solution is required."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "请把该方案写成伪代码",
+          "finding": "The learner must translate the supplied ordered-locking scheme into concrete pseudocode with correct lock/unlock placement."
+        },
+        {
+          "quote": "解释读余额、检查与更新分别受哪些锁保护",
+          "finding": "The learner must state which locks protect reads, the balance check, and the two updates."
+        },
+        {
+          "quote": "论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。",
+          "finding": "The learner must present the correctness argument and the concrete deadlock example in their own answer."
+        },
+        {
+          "quote": "解释上述理由如何覆盖所有允许的交错",
+          "finding": "The learner must connect the supplied invariant and acyclic-wait reasoning to arbitrary interleavings."
+        }
+      ],
+      "knowledge_integration": "The learner must combine mutual exclusion, atomic lock acquisition, fair queuing, balance invariants, and wait-for-graph acyclicity into one explanation. The concepts are familiar from prior coursework, but the multi-object locking pattern is new.",
+      "strategy_selection": "No independent strategy selection is required: the ordered-locking strategy is explicitly given, and the prompt says no alternative scheme need be discovered. The learner selects only how to express the supplied scheme in pseudocode.",
+      "justification_required": "The learner must justify that the supplied scheme preserves the total-balance invariant, prevents overdrafts, and avoids deadlock for all allowed interleavings, and must reproduce the concrete deadlock counterexample.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "Easy is less fitting because the learner must still produce correct pseudocode and articulate why the supplied invariant and acyclic-wait argument cover arbitrary interleavings, which is more than direct retrieval. Hard is less fitting because the full strategy, lock-protection mapping, correctness reasoning, and deadlock counterexample are all supplied; the remaining work is transcription and explanation rather than independent nonroutine design or proof discovery.",
+      "uncertainty_reasons": [
+        "The learner has not practised multi-object lock ordering, so the first encounter with ordered locking may feel harder than a routine application even though the solution is supplied.",
+        "The boundary between easy and medium depends on how much credit is given for restating supplied reasoning versus constructing it independently."
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "请把该方案写成伪代码",
+          "finding": "The scheme is fully described in prose, but the learner must still write syntactically coherent pseudocode with correct lock acquisition, check, update, and release on both success and failure paths.",
+          "support_quotes": [
+            "对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Translate the supplied ordered-locking scheme into pseudocode, ensuring both locks are acquired in ID order, the check and updates occur while both are held, and both are released on success and failure."
+        },
+        {
+          "quote": "解释读余额、检查与更新分别受哪些锁保护",
+          "finding": "The text already states that reads, check, debit, and credit are all under both locks, so the learner mainly needs to restate this mapping accurately.",
+          "support_quotes": [
+            "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏"
+          ],
+          "supplied_extent": "fully_supplied",
+          "residual_task": ""
+        },
+        {
+          "quote": "论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。",
+          "finding": "The correctness argument and the concrete deadlock example are both supplied; the learner must reproduce them in a coherent answer rather than discover them.",
+          "support_quotes": [
+            "每次成功操作扣加相等，失败不改余额。",
+            "所有等待只从较小 ID 指向较大 ID，不能形成等待环。",
+            "反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁。"
+          ],
+          "supplied_extent": "fully_supplied",
+          "residual_task": ""
+        },
+        {
+          "quote": "解释上述理由如何覆盖所有允许的交错",
+          "finding": "The supplied reasons cover arbitrary interleavings, but the learner must explicitly connect the invariant and acyclic-wait argument to the allowed interleavings.",
+          "support_quotes": [
+            "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+            "所有等待只从较小 ID 指向较大 ID，不能形成等待环。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Explain that because every transfer holds both locks during check and update, no interleaving can observe or create an inconsistent balance, and because all waits follow increasing ID order, no cycle can form regardless of scheduling."
+        }
+      ],
+      "minimum_sufficient_response": "伪代码：\n\ntransfer(source, destination, amount):\n  if source.id < destination.id:\n    first, second = source, destination\n  else:\n    first, second = destination, source\n  lock(first)\n  lock(second)\n  if source.balance >= amount:\n    source.balance -= amount\n    destination.balance += amount\n    success = true\n  else:\n    success = false\n  unlock(second)\n  unlock(first)\n  return success\n\n锁保护：source.balance 和 destination.balance 的读取、余额检查、扣款和加款都在两把锁内完成，因此其他转账不能在这些步骤之间插入。\n\n正确性：成功时扣款和加款相等，总余额不变；失败时不修改余额，总余额也不变。由于检查和更新都在两把锁内，任何并发交错都不会让某个转账基于过时余额做决定，也不会出现透支。\n\n死锁避免：所有等待只从较小 ID 指向较大 ID，等待关系无环，因此不会死锁。反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁，形成环而可能死锁。\n\n覆盖所有交错：无论线程如何调度，每个转账在检查与更新期间都持有两把锁，所以余额不变式始终成立；同时所有锁等待都沿 ID 递增方向，不可能形成等待环。",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "The learner knows mutexes, races, and deadlock concepts but has not practised multi-object lock ordering. However, the ordered-locking strategy, lock-protection mapping, correctness argument, and deadlock counterexample are all supplied, so the remaining work is translating and explaining a given solution rather than independently designing or proving one. This is a meaningful familiar application for a computer science undergraduate, not a hard nonroutine integration."
+    }
+  },
+  {
+    "id": "m_missing_v3_1",
+    "case_id": "m_missing",
+    "domain": "mathematics",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "valid",
+    "label": "uncertain",
+    "eligibility": "invalid_question",
+    "result": {
+      "eligibility": "invalid_question",
+      "eligibility_reason": "题目只给出“x、y 为非负实数”，没有任何关于 x、y 的附加条件、方程或不等式，因此 xy 并不唯一确定。例如 x=0,y=1 得 xy=0，而 x=1,y=1 得 xy=1，二者都满足题设。要求“给出 xy 唯一确定的数值”在现有条件下无法完成，属于条件缺失且不可解。",
+      "cognitive_demand": "uncertain",
+      "supplied_support": [],
+      "remaining_demands": [
+        {
+          "quote": "请给出 xy 唯一确定的数值。",
+          "finding": "该要求缺少使 xy 唯一确定所必需的条件；在仅知 x、y 为非负实数时，xy 可取不同值，因此无法给出唯一数值。"
+        }
+      ],
+      "knowledge_integration": "无需整合可解的知识链，因为题目没有提供足以确定 xy 的条件。",
+      "strategy_selection": "不存在可选的合法策略来推出唯一数值；只能指出条件不足。",
+      "justification_required": "若要使题目可解，必须补充额外条件，例如 x+y 为定值、某个方程或不等式，并据此证明 xy 的唯一性。",
+      "estimated_difficulty": "uncertain",
+      "adjacent_level_reason": "题目本身不可解，不能按认知难度分级；因此不适用 easy/medium/hard 的相邻层级比较。",
+      "uncertainty_reasons": [
+        "题目缺少使 xy 唯一确定的关键条件。",
+        "存在多个满足题设但给出不同 xy 值的反例。"
+      ],
+      "confidence": "high",
+      "demand_audit": [
+        {
+          "quote": "请给出 xy 唯一确定的数值。",
+          "finding": "该任务在给定条件下不可完成；没有提供任何方程、不等式或约束来固定 xy。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "需要先补充能唯一确定 xy 的条件；在现有题面下无法给出唯一数值。"
+        }
+      ],
+      "minimum_sufficient_response": "无法给出唯一数值。因为仅知 x、y 为非负实数时，xy 不唯一：取 x=0,y=1，则 xy=0；取 x=1,y=1，则 xy=1。两组都满足题设，却得到不同结果。因此题目缺少条件，不能确定 xy 的唯一值。",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "该题对任何学生都不可解，不是因学生准备不足而难；缺少的是题目条件本身。"
+    }
+  },
+  {
+    "id": "transfer_base_v2_0",
+    "case_id": "transfer_base",
+    "domain": "computing",
+    "arm": "v2",
+    "repeat": 0,
+    "status": "valid",
+    "label": "hard",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整且自洽：账户数有限、ID 固定且不同、余额非负、转账金额为正、source≠destination、锁获取原子、公平排队且持锁线程最终释放。要求设计伪代码、说明锁保护范围、论证正确性并给出错误加锁导致死锁的具体例子，均可基于给定条件完成，不存在矛盾或不可满足的要求。",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。",
+          "finding": "给出了锁语义与公平性/进展假设，学生无需自行证明锁实现或处理饥饿，可将论证集中在加锁顺序与不变量上。"
+        },
+        {
+          "quote": "余额足够时转账恰好一次，否则返回失败且不改余额。",
+          "finding": "明确了转账的原子语义与失败条件，学生只需设计实现该语义的并发协议，而不必重新定义操作规格。"
+        },
+        {
+          "quote": "不允许使用覆盖整个系统的全局锁。",
+          "finding": "排除了最直接的全局串行化方案，限定了设计空间，但也提示需要按账户粒度加锁。"
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。",
+          "finding": "需要同时满足三个并发不变量（中间态总余额守恒、不透支、无死锁），并自行选择按 ID 排序等非平凡加锁策略，属于非例行设计。"
+        },
+        {
+          "quote": "解释读余额、检查与更新分别受哪些锁保护",
+          "finding": "需要把伪代码中的每个读写步骤映射到具体锁，并说明为何检查与更新必须处于同一临界区，涉及细粒度锁的推理。"
+        },
+        {
+          "quote": "论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。",
+          "finding": "需要给出覆盖所有交错的不变量论证，并构造一个具体的循环等待执行序列，属于证据性论证而非套用模板。"
+        }
+      ],
+      "knowledge_integration": "需要整合互斥锁、竞态、死锁、公平排队与原子性等概念，并把它们组合成一个按账户加锁的转账协议；还要把总余额守恒、不透支和无死锁三个性质与具体临界区对应起来。",
+      "strategy_selection": "核心策略是避免持有并等待：按账户 ID 全序加锁，或使用可回退的 tryLock 加锁；学生需在多种可行方案中选择一种并说明其为何不产生循环等待。",
+      "justification_required": "需要给出不变量论证（总余额守恒、余额非负）以及一个具体的循环等待例子来证明错误加锁会死锁，论证必须覆盖任意并发交错。",
+      "estimated_difficulty": "hard",
+      "adjacent_level_reason": "对已学单计数器锁保护但未练习多对象加锁顺序的本科生，本题要求独立设计细粒度加锁协议并给出正确性论证和死锁反例，超出熟悉例程的直接套用；若仅要求写出按 ID 排序的伪代码则接近 medium，但题目还要求锁保护范围说明、正确性论证和具体死锁例子，因此更符合 hard。",
+      "uncertainty_reasons": [
+        "学生已理解死锁含义，可能较快想到按 ID 排序，从而降低实际难度；但正确性论证与具体反例仍需独立完成。",
+        "未提供教师锚点或学习者实测数据，难度判断为定性估计。"
+      ],
+      "confidence": "medium"
+    }
+  },
+  {
+    "id": "transfer_base_v2_1",
+    "case_id": "transfer_base",
+    "domain": "computing",
+    "arm": "v2",
+    "repeat": 1,
+    "status": "valid",
+    "label": "hard",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目给出了完整的系统模型、操作语义、并发假设和明确的设计与论证要求，没有缺失学生可见条件、矛盾或不可回答的要求。",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。",
+          "finding": "提供了锁获取原子性和公平调度假设，学生无需自行证明锁实现或调度公平性。"
+        },
+        {
+          "quote": "余额足够时转账恰好一次，否则返回失败且不改余额。",
+          "finding": "明确了转账的原子语义要求，学生无需自行定义成功/失败条件。"
+        },
+        {
+          "quote": "不允许使用覆盖整个系统的全局锁。",
+          "finding": "给出了关键设计约束，排除了最简单的全局串行化方案。"
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。",
+          "finding": "需要设计多账户加锁协议，同时满足中间状态不变式、不透支和无死锁，属于非例行的并发策略设计。"
+        },
+        {
+          "quote": "解释读余额、检查与更新分别受哪些锁保护",
+          "finding": "需要把伪代码中的每个共享内存访问映射到具体锁保护范围，并说明检查与更新之间的原子性。"
+        },
+        {
+          "quote": "论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。",
+          "finding": "需要给出正确性论证，并构造一个具体并发交错反例来展示错误加锁导致死锁，涉及证据性论证和反例构造。"
+        }
+      ],
+      "knowledge_integration": "需要整合互斥锁、竞态条件、死锁、锁顺序、原子性、公平调度和不变式等概念，并将它们组合成一个多账户转账协议。",
+      "strategy_selection": "需要选择非全局锁的多锁策略，例如按账户 ID 排序加锁或使用两阶段加锁，并决定如何保护读余额、检查与更新。",
+      "justification_required": "需要论证总余额不变式、不透支性质和无死锁性质，并给出错误加锁方式的具体并发死锁例子。",
+      "estimated_difficulty": "hard",
+      "adjacent_level_reason": "该任务不是简单复述锁或死锁定义，也不是只分析单个计数器；它要求为多对象并发设计加锁顺序、证明正确性并构造反例，超出常规应用水平。与 extended_inquiry 相比，它不需要长时间迭代调查或实验，因此 strategic_reasoning 更合适。",
+      "uncertainty_reasons": [
+        "学生尚未练习多对象加锁顺序及其正确性证明，但已具备锁、竞态和死锁的基础，实际独立完成难度可能因个人推理能力而波动。",
+        "题目未要求形式化证明或特定实现语言，正确性论证的严格程度存在一定解释空间。"
+      ],
+      "confidence": "medium"
+    }
+  },
+  {
+    "id": "transfer_base_v3_1",
+    "case_id": "transfer_base",
+    "domain": "computing",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "valid",
+    "label": "hard",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: it specifies finite accounts with distinct fixed IDs, nonnegative integer balances, per-account mutexes, finite concurrent transfers with distinct source/destination and positive integer amounts, all-or-nothing semantics, no other balance access, arbitrary interleaving, no crashes or overflow, atomic lock acquisition, fair queuing, eventual scheduling and release, no global lock, and required deliverables (pseudocode, lock-protection explanation, correctness argument, concrete deadlock example). No missing condition prevents a valid answer.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。",
+          "finding": "Supplies the concurrency model needed for progress and deadlock reasoning: atomic acquisition, fair queuing, eventual scheduling, and eventual release."
+        },
+        {
+          "quote": "只有这些转账操作会读写余额；调用之间可任意交错，线程不崩溃，算术不溢出。",
+          "finding": "Supplies the interference model and removes unrelated failure modes, so the proof can focus on transfer interleavings."
+        },
+        {
+          "quote": "不允许使用覆盖整个系统的全局锁。",
+          "finding": "Supplies a key design constraint that rules out the trivial global-lock solution and forces per-account locking."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。",
+          "finding": "The learner must design a per-account locking protocol that atomically checks and updates both balances, preserves nonnegative balances, and prevents deadlock under arbitrary concurrent transfers."
+        },
+        {
+          "quote": "解释读余额、检查与更新分别受哪些锁保护",
+          "finding": "The learner must map each read, check, and update to the specific account lock(s) that protect it and explain why the protection is sufficient."
+        },
+        {
+          "quote": "论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。",
+          "finding": "The learner must prove mutual exclusion, no-overdraft, total-balance invariant, and deadlock freedom, then construct a concrete interleaving showing how a wrong locking order deadlocks."
+        }
+      ],
+      "knowledge_integration": "Requires combining mutual exclusion, atomic check-and-update, lock ordering or equivalent deadlock-avoidance, fair queuing progress assumptions, and an invariant proof over concurrent transfers.",
+      "strategy_selection": "The learner must choose a nonroutine strategy: acquire both account locks in a global order such as ascending account ID, or use try-lock with backoff, and justify why the chosen strategy prevents deadlock while preserving atomicity.",
+      "justification_required": "A correctness argument is required for mutual exclusion, no overdraft, total-balance preservation, and deadlock freedom, plus a concrete deadlock interleaving for a wrong locking scheme.",
+      "estimated_difficulty": "hard",
+      "adjacent_level_reason": "Medium is less fitting because the learner has only analyzed a single lock protecting one counter and has not practiced multi-object lock ordering or its correctness proof. The task requires independent integration of a new locking protocol, an invariant proof, and a concrete deadlock counterexample. Easy is clearly too low because it is not direct retrieval or a well-practised procedure.",
+      "uncertainty_reasons": [
+        "The learner profile states no practice with multi-object lock ordering, but the exact amount of prior exposure to lock-order proofs is not specified.",
+        "The fair-queuing assumption simplifies progress reasoning, but the core deadlock-avoidance design and proof remain nonroutine for this learner."
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。",
+          "finding": "The question supplies the concurrency model and constraints but not the locking protocol or pseudocode. The learner must invent a per-account locking scheme that atomically checks and updates both balances and avoids deadlock.",
+          "support_quotes": [
+            "锁获取是原子的；锁竞争采用公平排队，已获得锁的线程最终得到调度并执行有限步后释放锁。",
+            "不允许使用覆盖整个系统的全局锁。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Design pseudocode that locks both accounts in a consistent global order, checks sufficient balance under both locks, updates both balances atomically, and releases locks without deadlock."
+        },
+        {
+          "quote": "解释读余额、检查与更新分别受哪些锁保护",
+          "finding": "No explanation of which locks protect reads, checks, and updates is supplied. The learner must state that both source and destination locks are held during the balance check and update, and that reads of each balance are protected by that account's lock.",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "Explain that source balance read/check/update is protected by source lock, destination balance read/update by destination lock, and both locks are held together for the atomic transfer decision."
+        },
+        {
+          "quote": "论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。",
+          "finding": "No correctness proof or deadlock example is supplied. The learner must prove mutual exclusion, no overdraft, total-balance preservation, and deadlock freedom, then give a concrete interleaving for a wrong locking order.",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "Prove the invariants under arbitrary interleavings and construct a concrete deadlock example, such as T1 locking A then B while T2 locks B then A."
+        }
+      ],
+      "minimum_sufficient_response": "Pseudocode: transfer(s,d,a): if s==d return fail; first=min(s,d); second=max(s,d); lock(first); lock(second); if balance[s]>=a: balance[s]-=a; balance[d]+=a; unlock(second); unlock(first); return success; else unlock(second); unlock(first); return fail. Reads/checks/updates: balance[s] is read and checked while holding lock(s); balance[d] is updated while holding lock(d); both locks are held during the check-and-update so no other transfer can interleave between check and update. Correctness: mutual exclusion follows because any transfer touching an account holds that account's lock; no overdraft follows because the check and debit occur under the source lock and no other transfer can change the source balance between them; total balance is preserved because a successful transfer subtracts a from source and adds a to destination, and a failed transfer changes nothing; deadlock freedom follows because all transfers acquire locks in the same global order by account ID, so a cycle in the wait-for graph would require an account ID to be both smaller and larger than another. Concrete deadlock example for wrong locking: T1 transfers A to B and locks A then waits for B; T2 transfers B to A and locks B then waits for A. Each holds one lock and waits for the other, so neither can proceed.",
+      "hard_basis_quote": "设计转账伪代码，使没有任何转账执行到一半时总余额与初始总额相同、任何时刻账户都不透支，并使任意并发转账不会造成死锁。",
+      "learner_relative_basis": "The learner can analyze a single lock protecting one counter, but has not practiced multi-object lock ordering or its correctness proof. The remaining bottleneck is independently designing a two-lock protocol that atomically checks and updates both balances while avoiding deadlock, then proving the invariants and producing a concrete deadlock interleaving. This is not a familiar application because it requires coordinating two locks, a global order, and an invariant proof rather than applying a known single-lock pattern."
+    }
+  },
+  {
+    "id": "transfer_hint_v2_0",
+    "case_id": "transfer_hint",
+    "domain": "computing",
+    "arm": "v2",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：账户数有限、ID 固定且不同、余额非负、转账金额为正、source≠destination、锁原子且公平、无全局锁限制明确。要求设计伪代码、说明锁保护范围、论证正确性并给出错误加锁导致死锁的具体例子，均可由给定条件判定，无矛盾或不可满足之处。",
+      "cognitive_demand": "routine_application",
+      "supplied_support": [
+        {
+          "quote": "可采用以下完整方案：对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。",
+          "finding": "题目直接给出完整可用的加锁顺序方案，学生无需自行发现按 ID 排序这一关键策略。"
+        },
+        {
+          "quote": "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+          "finding": "题目已给出锁保护范围与原子性/守恒性的核心论证要点。"
+        },
+        {
+          "quote": "所有等待只从较小 ID 指向较大 ID，不能形成等待环。",
+          "finding": "题目已给出无死锁的等待图论证，学生只需复述或展开。"
+        },
+        {
+          "quote": "反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁。",
+          "finding": "题目已提供具体死锁反例的骨架，学生只需将其写成完整并发例子。"
+        },
+        {
+          "quote": "请把该方案写成伪代码，并解释上述理由如何覆盖所有允许的交错；无需发现另一种方案。",
+          "finding": "任务被明确限定为把给定方案写成伪代码并解释给定理由，排除了发现新方案的要求。"
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "请把该方案写成伪代码",
+          "finding": "需要把自然语言方案转写为结构正确、锁获取/释放配对、分支清晰的伪代码。"
+        },
+        {
+          "quote": "解释读余额、检查与更新分别受哪些锁保护",
+          "finding": "需要把给定方案中的锁保护范围对应到读、检查、扣款、加款各步骤。"
+        },
+        {
+          "quote": "论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁",
+          "finding": "需要把给定的等待图论证和反例骨架展开为覆盖所有允许交错的正确性论证，并写出具体交错序列。"
+        }
+      ],
+      "knowledge_integration": "需要整合互斥锁、临界区、原子性、公平排队、等待图无环与余额守恒等已学概念，但整合路径已由题目给出，属于对熟悉概念的应用与转写。",
+      "strategy_selection": "策略选择已被题目限定为按 ID 从小到大获取两把锁，学生不需要在多种加锁策略间比较或选择，只需按给定策略实现并解释。",
+      "justification_required": "需要给出正确性论证和死锁反例，但论证要点（两锁保护检查、扣加相等、等待只从较小 ID 指向较大 ID）已在题面中给出，学生主要是展开和覆盖交错情形。",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "对已学互斥锁和竞态、但未练习多对象加锁顺序的本科生，本题需要把给定方案转写为伪代码并展开正确性论证，属于有意义的熟悉应用，故为 medium；因题目已给出完整方案、锁保护范围和等待图论证，独立策略选择很少，故不判为 hard；又因仍需自行写出伪代码、覆盖所有交错并构造具体死锁交错，故不判为 easy。",
+      "uncertainty_reasons": [
+        "题目给出完整方案后，剩余工作更接近转写与展开，可能被部分评估者视为 easy；但覆盖所有允许交错和构造具体反例仍有一定分析量，故 medium 与 easy 的边界不完全确定。"
+      ],
+      "confidence": "medium"
+    }
+  },
+  {
+    "id": "m_missing_v2_1",
+    "case_id": "m_missing",
+    "domain": "mathematics",
+    "arm": "v2",
+    "repeat": 1,
+    "status": "valid",
+    "label": "uncertain",
+    "eligibility": "invalid_question",
+    "result": {
+      "eligibility": "invalid_question",
+      "eligibility_reason": "题目只给出“设 x、y 为非负实数”，没有给出任何关于 x、y 的方程、不等式或其他约束条件，因此 xy 的数值无法唯一确定。例如 x=0,y=0 时 xy=0，而 x=1,y=1 时 xy=1，均满足题设。题目要求“给出 xy 唯一确定的数值”属于不可满足的要求，故为无效题。",
+      "cognitive_demand": "uncertain",
+      "supplied_support": [],
+      "remaining_demands": [
+        {
+          "quote": "设 x、y 为非负实数。请给出 xy 唯一确定的数值。",
+          "finding": "题面仅声明 x、y 为非负实数，未提供任何可推出 xy 具体值的条件；在现有信息下 xy 可取任意非负实数，无法唯一确定，因此该要求不可完成。"
+        }
+      ],
+      "knowledge_integration": "不适用：题目缺少必要约束，无法形成可解的推理链。",
+      "strategy_selection": "不适用：没有可依据的条件来选择求解策略。",
+      "justification_required": "不适用：由于题目本身不可满足，无法要求对唯一数值进行证明。",
+      "estimated_difficulty": "uncertain",
+      "adjacent_level_reason": "无效题不参与难度分级；若强行按表面形式看，它既非可直接检索的常规题，也非有明确条件的推理题，因此只能记为 uncertain。",
+      "uncertainty_reasons": [
+        "题目缺少 x、y 之间的任何约束条件，无法确定 xy 的唯一值。",
+        "无效题按规则不得归类为 hard 或其他难度等级。"
+      ],
+      "confidence": "high"
+    }
+  },
+  {
+    "id": "h_hint_v3_1",
+    "case_id": "h_hint",
+    "domain": "humanities",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "failed",
+    "error": {
+      "type": "ValidationError"
+    }
+  },
+  {
+    "id": "divisibility_base_v3_0",
+    "case_id": "divisibility_base",
+    "domain": "mathematics",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "hard",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目完整明确：给定 n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明必有两个不同数成整除关系，并明确要求说明构造/分组对任意 n 的适用性及整除原因，不允许只检验例子。条件充分，无矛盾，学生可见文本中无缺失关键条件。",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [],
+      "remaining_demands": [
+        {
+          "quote": "证明其中一定存在两个不同数，使一个整除另一个。",
+          "finding": "需要给出完整的存在性证明，而非举例或验证有限情形。"
+        },
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n",
+          "finding": "需要设计或选用一个对任意 n 都成立的分组/构造，并论证其普遍适用性。"
+        },
+        {
+          "quote": "并解释由它得到整除关系的原因",
+          "finding": "需要解释同一组内两个数为何必有一个整除另一个。"
+        },
+        {
+          "quote": "不能只检验几个例子。",
+          "finding": "排除仅靠特例验证，要求一般性论证。"
+        }
+      ],
+      "knowledge_integration": "需要把抽屉原理与一个非平凡的分组方式结合：按奇数部分把 1 到 2n 分成 n 组，每组形如 {m,2m,4m,...}，其中 m 为奇数。学生已学抽屉原理和整除、奇偶性，但未学过按奇数部分分组的技巧，因此需要自行构造或理解这一分组并把它与抽屉原理、整除关系连接起来。",
+      "strategy_selection": "核心策略是选择合适的分组使组数等于 n，从而 n+1 个数中必有两个落入同一组；同时需保证同组任意两个数中较小者整除较大者。学生需要从目标反推分组方式，而不是套用已给类别。",
+      "justification_required": "必须证明两点：一是分组覆盖 1 到 2n 且恰有 n 组，因此由抽屉原理必有同组两数；二是同组两数中一个整除另一个。还需说明该分组对任意 n 成立。",
+      "estimated_difficulty": "hard",
+      "adjacent_level_reason": "该题不是简单套用抽屉原理：学生虽学过抽屉原理，但未学过按奇数部分分组的技巧，必须自行构造分组并证明其普遍性与整除性质。与 medium 的差别在于，medium 通常只需在熟悉类别上应用抽屉原理；这里的关键分组是非平凡的，需要从整除目标反推构造。与 extended_inquiry 的差别在于，本题不需要长期迭代探究，而是一次性构造与证明。",
+      "uncertainty_reasons": [
+        "学生是否能在提示下自行想到按奇数部分分组，可能因个体差异较大。",
+        "若课堂曾隐含接触过类似分组，难度可能降为 medium；但按给定 profile 未学过该技巧。"
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "证明其中一定存在两个不同数，使一个整除另一个。",
+          "finding": "题目只给出待证结论，未提供证明思路或分组方法。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "构造或选用合适分组，并用抽屉原理推出存在两个数同组，再证明同组两数成整除关系。"
+        },
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n",
+          "finding": "题目要求普遍性说明，但未给出任何构造。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "说明按奇数部分分组对任意正整数 n 都恰好给出 n 组并覆盖 1 到 2n。"
+        },
+        {
+          "quote": "并解释由它得到整除关系的原因",
+          "finding": "题目要求解释整除原因，但未提供同组整除性的论证。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "证明同一组内任意两个数中较小者整除较大者，因为二者是同一奇数部分乘以 2 的不同幂。"
+        },
+        {
+          "quote": "不能只检验几个例子。",
+          "finding": "这是对证明方式的限制，排除特例验证，但未提供一般性证明。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "给出适用于任意 n 的一般性证明，而非仅检查若干 n 或若干取数例子。"
+        }
+      ],
+      "minimum_sufficient_response": "把 1,2,…,2n 中的每个数写成 2^k·m，其中 m 为奇数，k≥0。按奇数部分 m 分组：对每个奇数 m≤2n，令 A_m={2^k·m : k≥0, 2^k·m≤2n}。这些组互不相交且覆盖 1 到 2n。1 到 2n 中的奇数 m 共有 n 个，所以共有 n 组。现在任取 n+1 个不同整数，由抽屉原理，必有两个数落在同一组 A_m 中。设这两个数为 2^a·m 和 2^b·m，且 a<b，则 2^a·m 整除 2^b·m。因此存在两个不同数，一个整除另一个。该分组对任意正整数 n 都成立，因为 1 到 2n 中恰有 n 个奇数，且每个数都有唯一的奇数部分。",
+      "hard_basis_quote": "证明其中一定存在两个不同数，使一个整除另一个。",
+      "learner_relative_basis": "学生已学抽屉原理和整除，但未学过按奇数部分分组的技巧。本题的瓶颈不是抽屉原理本身，而是需要自行构造一个非平凡分组，使组数恰为 n 且同组两数必成整除关系；这需要从整除目标反推分组，超出了已练习的“放入已给定类别”的简单题。"
+    }
+  },
+  {
+    "id": "transfer_hint_v3_1",
+    "case_id": "transfer_hint",
+    "domain": "computing",
+    "arm": "v3",
+    "repeat": 1,
+    "status": "valid",
+    "label": "easy",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: it specifies finite accounts with fixed distinct IDs, nonnegative balances, per-account mutexes, atomic lock acquisition, fair queuing, finite interleavings, no crashes/overflow, and a no-global-lock constraint. It asks for pseudocode, lock-protection explanation, correctness argument, and a concrete deadlock counterexample. A complete solution approach is supplied, so the task is answerable and not contradictory.",
+      "cognitive_demand": "routine_application",
+      "supplied_support": [
+        {
+          "quote": "可采用以下完整方案：对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。",
+          "finding": "The entire locking strategy and critical-section body are supplied, including ordering by ID, acquiring both locks, checking, updating, and releasing."
+        },
+        {
+          "quote": "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+          "finding": "The lock-protection explanation and the atomicity/conservation argument are supplied."
+        },
+        {
+          "quote": "所有等待只从较小 ID 指向较大 ID，不能形成等待环。",
+          "finding": "The deadlock-freedom argument is supplied."
+        },
+        {
+          "quote": "反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁。",
+          "finding": "A concrete deadlock counterexample for the wrong locking order is supplied."
+        },
+        {
+          "quote": "请把该方案写成伪代码，并解释上述理由如何覆盖所有允许的交错；无需发现另一种方案。",
+          "finding": "The remaining task is explicitly limited to transcription and explanation of the supplied reasoning, not discovery of a new strategy."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "请把该方案写成伪代码",
+          "finding": "The learner must translate the supplied ordered-locking scheme into executable pseudocode."
+        },
+        {
+          "quote": "解释上述理由如何覆盖所有允许的交错",
+          "finding": "The learner must connect the supplied invariants and ordering argument to arbitrary finite interleavings."
+        }
+      ],
+      "knowledge_integration": "The learner must combine known concepts of mutexes, atomic lock acquisition, race conditions, and deadlock with the supplied ordered-locking pattern. No new synchronization primitive or proof technique is required beyond applying the given argument to interleavings.",
+      "strategy_selection": "The strategy is fully specified: acquire the two account locks in ascending ID order, perform check and update while holding both, then release both. The learner does not choose among alternative strategies.",
+      "justification_required": "The learner must explain why the supplied scheme preserves total balance, prevents overdraft, and avoids deadlock under all allowed interleavings, using the supplied invariants and wait-for ordering.",
+      "estimated_difficulty": "easy",
+      "adjacent_level_reason": "The task is easy rather than medium because the complete solution, correctness argument, and deadlock counterexample are all supplied; the learner mainly transcribes pseudocode and restates how the given reasoning covers interleavings. It is not merely reproduction of a memorized procedure because some explanation is required, but the independent reasoning is minimal.",
+      "uncertainty_reasons": [
+        "The learner has not practised multi-object lock ordering or correctness proofs, which could make even transcription and explanation feel less familiar.",
+        "If the grader expects a fully rigorous induction over interleavings rather than a concise explanation, the task could shift toward medium."
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "请把该方案写成伪代码",
+          "finding": "The pseudocode structure is fully described in prose, but the learner must still write it in concrete pseudocode form.",
+          "support_quotes": [
+            "对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Translate the supplied ordered-locking, check, update, and release steps into clear pseudocode."
+        },
+        {
+          "quote": "解释上述理由如何覆盖所有允许的交错",
+          "finding": "The key invariants and deadlock argument are supplied, but the learner must articulate how they apply to arbitrary finite interleavings.",
+          "support_quotes": [
+            "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+            "所有等待只从较小 ID 指向较大 ID，不能形成等待环。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Explain that mutual exclusion makes check-and-update atomic, conservation preserves total balance, and ascending lock order prevents a wait-for cycle in every interleaving."
+        }
+      ],
+      "minimum_sufficient_response": "伪代码：\n\ntransfer(source, destination, amount):\n    if source.id < destination.id:\n        first, second = source, destination\n    else:\n        first, second = destination, source\n    lock(first)\n    lock(second)\n    if source.balance >= amount:\n        source.balance -= amount\n        destination.balance += amount\n        success = true\n    else:\n        success = false\n    unlock(second)\n    unlock(first)\n    return success\n\n解释：读 source.balance、检查 source.balance >= amount、扣款和加款都在两把锁内完成，因此其他转账不能在这些步骤之间插入并破坏检查。成功时扣款与加款相等，总余额不变；失败时不修改余额，因此任何时刻账户不透支且总余额保持初始总额。死锁方面，每个线程只按 ID 从小到大获取锁，等待关系只能从较小 ID 指向较大 ID，不可能形成等待环，所以任意并发转账不会死锁。错误方式如总先锁 source，则 A→B 与 B→A 可各持一锁再等待另一锁，形成环并死锁。",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "For this learner, the bottleneck is not discovering the ordered-locking strategy or the deadlock proof, because both are supplied. The remaining work is writing pseudocode and restating the supplied invariants for arbitrary interleavings, which is a familiar application of known mutex and deadlock concepts rather than substantial independent integration."
+    }
+  },
+  {
+    "id": "m_missing_v3_0",
+    "case_id": "m_missing",
+    "domain": "mathematics",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "uncertain",
+    "eligibility": "invalid_question",
+    "result": {
+      "eligibility": "invalid_question",
+      "eligibility_reason": "题目只给出“x、y 为非负实数”，没有给出任何关于 x、y 的方程、不等式或其他约束条件，因此 xy 的数值无法唯一确定。例如 x=0,y=1 时 xy=0，而 x=1,y=1 时 xy=1，均满足题设。题目要求“给出 xy 唯一确定的数值”属于不可满足的要求，缺少必要的题设条件。",
+      "cognitive_demand": "uncertain",
+      "supplied_support": [],
+      "remaining_demands": [
+        {
+          "quote": "请给出 xy 唯一确定的数值。",
+          "finding": "该要求无法完成：在仅有“x、y 为非负实数”的条件下，xy 可以取任意非负实数值，不存在唯一确定的数值。"
+        }
+      ],
+      "knowledge_integration": "无需整合知识；题目本身缺少可用的约束条件，无法形成有效推理链。",
+      "strategy_selection": "不存在可选的解题策略，因为没有任何条件可用于确定 xy。",
+      "justification_required": "若要使题目可解，必须补充额外条件（如 x+y=1、x²+y²=1 等），否则无法证明唯一性。",
+      "estimated_difficulty": "uncertain",
+      "adjacent_level_reason": "由于题目无效，无法在 easy/medium/hard 之间进行有意义的区分；任何难度判断都缺乏有效任务基础。",
+      "uncertainty_reasons": [
+        "题目缺少约束条件，无法确定 xy 的唯一值。",
+        "无效题目不应被归类为 hard 或其他有效难度等级。"
+      ],
+      "confidence": "high",
+      "demand_audit": [
+        {
+          "quote": "请给出 xy 唯一确定的数值。",
+          "finding": "该任务要求给出唯一数值，但题面未提供任何足以确定 xy 的条件，因此该要求不可满足。",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "需要补充额外条件才能确定 xy；在当前题面下无法完成。"
+        }
+      ],
+      "minimum_sufficient_response": "无法给出唯一数值。仅由“x、y 为非负实数”不能确定 xy：取 x=0,y=1 得 xy=0；取 x=1,y=1 得 xy=1。两者都满足题设，所以 xy 不唯一。题目需补充额外条件。",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "题目无效，无法针对该学生评估剩余认知瓶颈；缺少条件不是学生准备不足，而是题目本身不可解。"
+    }
+  },
+  {
+    "id": "editor_base_v3_0",
+    "case_id": "editor_base",
+    "domain": "humanities",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: all material is fictional and explicitly provided, no external historical facts are required, and the learner profile (undergraduates practised in distinguishing observation from interpretation and supporting comparisons with quotations) is specified. The task is conditional/open-ended in allowing multiple supported conclusions, which is permitted, and every requested element (evaluate the editor's claim with a detail from each account, address whether the policy resolves the contributor's concern, give two explanations, distinguish established from possible, state distinguishing evidence, propose a qualified conclusion) is answerable from the supplied records.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "The published submission policy says: \"All submissions received before Friday are printed without editorial changes.\"",
+          "finding": "Supplies the policy text that must be interpreted and applied to the contributor's concern; it is raw material, not a worked interpretation."
+        },
+        {
+          "quote": "A student contributor writes: \"My essay appeared unchanged. I deleted a paragraph before I sent it because I worried about losing my club role. Nobody asked me to delete it.\"",
+          "finding": "Supplies the contributor's account, including the self-reported motive and the explicit statement that no one requested the deletion, which constrains but does not resolve the inference."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "Learner must select a relevant detail from each account and use it to assess the editor's inference from printing to free speech."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "Learner must interpret the policy's scope (editorial changes) against the contributor's concern (self-censorship from fear of losing a club role)."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "Learner must generate two competing explanations, sort established facts from possibilities, and specify discriminating evidence."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "Learner must formulate a hedged conclusion that does not overreach the records."
+        }
+      ],
+      "knowledge_integration": "The learner must combine the editor's inference, the contributor's first-person account, and the policy text, then apply the observation/interpretation distinction to separate what the records establish (printing occurred; the essay appeared unchanged; the contributor deleted a paragraph voluntarily) from what is inferred (free speech; editorial pressure; the policy's effect on self-censorship).",
+      "strategy_selection": "The learner must choose to treat the editor's claim as an inference rather than a fact, select one detail per account as evidence, and construct two rival explanations with a discriminating-evidence test rather than settling on a single narrative.",
+      "justification_required": "Each element (evaluation, policy assessment, two explanations, established/possible distinction, additional evidence, qualified conclusion) must be supported by reference to the supplied records, with explicit hedging where the records underdetermine the conclusion.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "Hard is less fitting because the records are short, fully supplied, and the learner profile already includes practised skill in distinguishing observation from interpretation and supporting comparisons with quotations; the task applies familiar moves to a compact fictional case rather than requiring sustained independent integration or nonroutine proof. Easy is less fitting because the learner must generate two rival explanations, adjudicate established versus possible, and specify discriminating evidence, which goes beyond direct retrieval or a well-practised single procedure.",
+      "uncertainty_reasons": [
+        "The boundary between routine_application and strategic_reasoning is close: the observation/interpretation move is practised, but generating two explanations and a discriminating-evidence test adds nonroutine adjudication.",
+        "The boundary between medium and hard depends on how much independent integration the learner must perform; the short supplied records keep integration modest, but the multiple required components could push it upward for some learners."
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "The editor's claim and both accounts are supplied, but no evaluation is provided; the learner must select details and assess the inference.",
+          "support_quotes": [
+            "The printed issue proves that everyone could speak freely.",
+            "My essay appeared unchanged."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Select a detail from each account and use it to judge whether the editor's inference from printing to free speech holds."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "The policy text and the contributor's concern are supplied, but the interpretive link between them is not.",
+          "support_quotes": [
+            "All submissions received before Friday are printed without editorial changes.",
+            "I deleted a paragraph before I sent it because I worried about losing my club role."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Determine that the policy governs editorial changes after submission and therefore does not address the contributor's pre-submission self-censorship."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "The contributor's account supplies one stated motive and the fact that no one asked for the deletion, but the second explanation, the established/possible sorting, and the discriminating evidence are not provided.",
+          "support_quotes": [
+            "I deleted a paragraph before I sent it because I worried about losing my club role.",
+            "Nobody asked me to delete it."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Generate a second plausible explanation, separate established facts from possibilities, and name evidence that would discriminate between the explanations."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "No conclusion is supplied; the learner must construct a hedged conclusion from the records.",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "Formulate a qualified conclusion that stays within what the records support."
+        }
+      ],
+      "minimum_sufficient_response": "The editor's claim is not established. The editor's detail is that every submission received before Friday was printed, but printing shows only that submissions were printed, not that everyone could speak freely. The contributor's detail is that the essay appeared unchanged, yet the contributor deleted a paragraph before sending it out of worry about losing a club role, and no one asked for the deletion. The policy states that submissions received before Friday are printed without editorial changes; this addresses editorial alteration after submission, not the contributor's pre-submission self-censorship, so it does not resolve the concern. Two plausible explanations for the deletion: (1) the contributor self-censored from fear of losing the club role; (2) the contributor deleted the paragraph for an unrelated reason, such as believing it was weak or inaccurate. Established: the essay appeared unchanged, the contributor deleted a paragraph before sending it, and no one asked for the deletion. Only possible: that fear of losing the club role caused the deletion, and that the deletion reflects external pressure. Additional evidence that could distinguish these: a contemporaneous note or message from the contributor stating the reason, testimony from club members about any pressure, or a draft showing whether the deleted paragraph was substantively risky. Qualified conclusion: the records support that the contributor deleted a paragraph voluntarily before submission and that the policy did not require or prevent that deletion, but they do not establish that the editor's free-speech claim is true or that the contributor's deletion was caused by fear of losing the club role.",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "For undergraduates who have practised distinguishing observations from interpretations and supporting comparisons with quotations, the remaining bottleneck is generating a second rival explanation and specifying discriminating evidence while keeping the established/possible distinction clean; the observation/interpretation move itself is familiar, so the task is a meaningful familiar application rather than a nonroutine integration."
+    }
+  },
+  {
+    "id": "h_hint_v2_1",
+    "case_id": "h_hint",
+    "domain": "humanities",
+    "arm": "v2",
+    "repeat": 1,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: it supplies two fictional passages, a perspective note, two competing claims, and six explicit constraints. The learner profile specifies close reading and comparison without outside theory. All required evidence is student-visible, and the task is answerable with multiple defensible interpretations.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "A first-person account gives access to a situated viewpoint, not automatic knowledge of every participant's motives.",
+          "finding": "The note supplies the central interpretive principle that first-person narration is limited, reducing the need to derive this from scratch."
+        },
+        {
+          "quote": "Distinguish a narrator's explicit statement from an inference based on an image, omission or contrast.",
+          "finding": "The note directly supplies the distinction between explicit statement and inference that constraint 1 requires."
+        },
+        {
+          "quote": "The curator's collective we can be read as an aspiration to shared ownership or as a phrase that leaves differences within the group unstated.",
+          "finding": "The note supplies two competing readings of the curator's collective language, scaffolding constraint 3 and the competing-reading requirement."
+        },
+        {
+          "quote": "The volunteer's applause and unopened letter can support readings of tentative belonging, unresolved exclusion, or a mixture, but the text does not establish censorship or identify the letter's contents.",
+          "finding": "The note supplies the interpretive options for the volunteer's details and explicitly rules out censorship and letter contents, scaffolding constraints 2, 5, and 6."
+        },
+        {
+          "quote": "A defensible interpretation compares details from both passages, acknowledges a plausible competing reading, and explains the limits of its claim.",
+          "finding": "The note supplies the criteria for a defensible interpretation, reducing the need to invent standards for evaluating the claims."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Distinguish what each passage explicitly states from inferences about motives, selection, rejection, or withheld information.",
+          "finding": "The learner must apply the supplied distinction to specific details in both passages, not merely repeat the principle."
+        },
+        {
+          "quote": "Use at least one concrete detail from each account as textual support.",
+          "finding": "The learner must select and integrate concrete details from both passages into a coherent argument."
+        },
+        {
+          "quote": "Compare how the curator's collective language and the volunteer's applause coexist with hesitation or unstated difference.",
+          "finding": "The learner must construct a comparative reading that holds collective language and hesitation together without collapsing one into the other."
+        },
+        {
+          "quote": "Address a plausible competing reading drawn from the same passages.",
+          "finding": "The learner must generate or select a competing reading and show how the evidence can support it, then adjudicate."
+        },
+        {
+          "quote": "Decide which claim, if either, better fits the evidence and the constraints, and justify your judgment.",
+          "finding": "The learner must adjudicate between two claims using evidence and constraints, which requires weighing support and overreach."
+        },
+        {
+          "quote": "If neither claim is fully defensible, revise one claim into a qualified sentence that could satisfy the constraints.",
+          "finding": "The learner must produce a revised claim that preserves evidential support while removing unsupported assertions."
+        }
+      ],
+      "knowledge_integration": "The learner must integrate the perspective note's principles with specific details from both passages, the two competing claims, and the six constraints. This requires coordinating explicit statements, inferences, omissions, and competing readings into a single justified interpretation.",
+      "strategy_selection": "The learner must choose which details to use, which competing reading to address, and how to adjudicate or revise the claims. The note supplies interpretive options, but the learner must select and apply them strategically to the specific evidence.",
+      "justification_required": "The task requires justification for the judgment between claims, for the revised claim if needed, and for the interpretation's limits. The note supplies the standard: compare details from both passages, acknowledge a plausible competing reading, and explain the limits of the claim.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "The task is more than routine application because it requires adjudicating competing claims and constructing a qualified interpretation under constraints. However, the supplied note provides substantial scaffolding: it names the interpretive options, states the limits, and gives the criteria for a defensible interpretation. For undergraduates in an introductory humanities seminar who can closely read and compare viewpoints, this is a meaningful familiar application and analysis rather than a nonroutine strategic challenge requiring independent integration of unfamiliar methods. Hard would require the learner to derive the interpretive framework or adjudicate without supplied criteria; easy would be direct retrieval or a well-practised procedure, which this exceeds.",
+      "uncertainty_reasons": [
+        "The boundary between routine_application and strategic_reasoning is blurred because the note supplies the interpretive framework and criteria, reducing the need for independent strategy.",
+        "The learner profile is specified but no empirical data on this cohort's performance is available, so difficulty is provisional."
+      ],
+      "confidence": "medium"
+    }
+  },
+  {
+    "id": "transfer_hint_v2_1",
+    "case_id": "transfer_hint",
+    "domain": "computing",
+    "arm": "v2",
+    "repeat": 1,
+    "status": "valid",
+    "label": "easy",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: it specifies finite accounts with distinct fixed IDs, nonnegative integer balances, per-account mutexes, transfer semantics, atomic lock acquisition, fair queuing, no global lock, and asks for pseudocode plus lock-protection explanation, correctness argument, and a concrete deadlock counterexample. The supplied complete solution and explicit instruction to use it remove ambiguity about the expected answer.",
+      "cognitive_demand": "routine_application",
+      "supplied_support": [
+        {
+          "quote": "可采用以下完整方案：对两个账户按 ID 从小到大获取两把锁；拿齐两锁后检查 source.balance≥amount，成立则在仍持有两锁时执行 source.balance-=amount 与 destination.balance+=amount，否则不修改；无论成败都释放两把锁。",
+          "finding": "The full locking strategy, critical-section placement, and success/failure behavior are supplied, so the learner does not need to invent the algorithm."
+        },
+        {
+          "quote": "读、检查、扣款、加款均在两锁保护内，检查不会被其他转账抢先破坏；每次成功操作扣加相等，失败不改余额。",
+          "finding": "The key correctness invariants and their justification are supplied."
+        },
+        {
+          "quote": "所有等待只从较小 ID 指向较大 ID，不能形成等待环。",
+          "finding": "The deadlock-freedom argument is supplied."
+        },
+        {
+          "quote": "反例：若总先锁 source，A→B 与 B→A 可各持一锁再等待另一锁。",
+          "finding": "A concrete deadlock counterexample is supplied."
+        },
+        {
+          "quote": "请把该方案写成伪代码，并解释上述理由如何覆盖所有允许的交错；无需发现另一种方案。",
+          "finding": "The task is explicitly limited to transcribing the given scheme and explaining the supplied reasoning, not discovering an alternative."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "请把该方案写成伪代码",
+          "finding": "The learner must translate the supplied natural-language scheme into correct pseudocode, including lock acquisition in ID order, critical section, and release in all paths."
+        },
+        {
+          "quote": "解释读余额、检查与更新分别受哪些锁保护",
+          "finding": "The learner must map each operation to the two account locks and state that all reads, checks, and updates occur while both locks are held."
+        },
+        {
+          "quote": "论证正确性并给出一个具体并发例子说明错误的加锁方式为什么可能死锁。",
+          "finding": "The learner must restate the supplied invariant argument and instantiate the supplied source-first counterexample concretely."
+        },
+        {
+          "quote": "解释上述理由如何覆盖所有允许的交错",
+          "finding": "The learner must connect the supplied invariant and lock-order argument to arbitrary interleavings, but the reasoning is already outlined."
+        }
+      ],
+      "knowledge_integration": "The learner must combine prior knowledge of mutexes, race conditions, and deadlock with the supplied lock-ordering scheme. Integration is limited because the scheme, invariants, and counterexample are all provided; the learner mainly organizes them into pseudocode and an explanation.",
+      "strategy_selection": "No independent strategy selection is required: the question explicitly supplies the two-lock ID-order strategy and says no alternative need be found. The learner selects only how to present the given strategy.",
+      "justification_required": "The learner must justify correctness and deadlock freedom, but the required justification is supplied in the prompt: equal debit/credit under both locks, no partial transfer visible, and acyclic wait-for order. The learner restates and applies these reasons rather than constructing a novel proof.",
+      "estimated_difficulty": "easy",
+      "adjacent_level_reason": "Medium would fit if the learner had to choose the lock-ordering strategy or construct the deadlock argument independently. Here the complete solution, invariant explanation, and counterexample are given, so the task reduces to transcription and explanation of supplied material, which is direct application for a learner who already knows mutexes and deadlock.",
+      "uncertainty_reasons": [
+        "The learner has not practised multi-object lock ordering or correctness proofs, so even supplied material may require some care, but the prompt removes the main strategic burden.",
+        "The boundary between easy and medium depends on how much credit is given for explaining arbitrary interleavings; the supplied reasoning makes this largely reproductive."
+      ],
+      "confidence": "high"
+    }
+  },
+  {
+    "id": "transfer_base_v3_0",
+    "case_id": "transfer_base",
+    "domain": "computing",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "failed",
+    "error": {
+      "type": "ValidationError"
+    }
+  },
+  {
+    "id": "editor_base_v2_0",
+    "case_id": "editor_base",
+    "domain": "humanities",
+    "arm": "v2",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained with fictional material, supplies all needed records, and explicitly permits multiple supported conclusions. It asks for evaluation, explanation, two explanations, a distinction between established and possible, additional evidence, and a qualified conclusion—all answerable from the given text without external facts.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "All submissions received before Friday are printed without editorial changes.",
+          "finding": "Supplies the policy text that must be interpreted and applied to the contributor's concern."
+        },
+        {
+          "quote": "My essay appeared unchanged. I deleted a paragraph before I sent it because I worried about losing my club role. Nobody asked me to delete it.",
+          "finding": "Supplies the contributor's account, including the deletion, motive, and absence of external request."
+        },
+        {
+          "quote": "We printed every submission received before Friday. The printed issue proves that everyone could speak freely.",
+          "finding": "Supplies the editor's claim and the inference the student must evaluate."
+        },
+        {
+          "quote": "Multiple supported conclusions are allowed; do not invent facts.",
+          "finding": "Signals that more than one defensible conclusion is acceptable and constrains invention."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "Requires selecting relevant details from both accounts and using them to assess the editor's inference."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "Requires interpreting the policy's scope and determining whether it addresses the contributor's worry about losing a club role."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible",
+          "finding": "Requires generating competing explanations and separating warranted conclusions from speculation."
+        },
+        {
+          "quote": "state what additional evidence could distinguish those explanations",
+          "finding": "Requires identifying evidence that would discriminate between the proposed explanations."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "Requires synthesizing the analysis into a hedged conclusion that does not overclaim."
+        }
+      ],
+      "knowledge_integration": "The task integrates textual interpretation, source evaluation, inference classification, and evidence-based reasoning. The learner must coordinate the editor's claim, the contributor's account, and the policy while avoiding external historical assumptions.",
+      "strategy_selection": "The learner must choose relevant details from each account, interpret the policy's scope, generate two plausible explanations, classify claims as established or possible, and propose discriminating evidence. No single routine procedure suffices; the learner must select and sequence these moves.",
+      "justification_required": "The response must justify the evaluation of the editor's claim, the policy's bearing on the contributor's concern, the distinction between established and possible, and the qualified conclusion, all with reference to the supplied records.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "Medium fits because the learner applies familiar skills—distinguishing observation from interpretation and supporting claims with quotations—to a new but short fictional case. Hard is less fitting because the task is bounded, the records are few, and the reasoning, while multi-step, does not require sustained independent investigation or a nonroutine proof. Easy is less fitting because the learner must generate competing explanations, classify claims, and propose discriminating evidence rather than retrieve a taught answer.",
+      "uncertainty_reasons": [
+        "The learner profile says they have practised distinguishing observations from interpretations, which may make the classification step more routine than the full task suggests.",
+        "The short seminar format and small record set may reduce the integration burden compared with a longer inquiry."
+      ],
+      "confidence": "medium"
+    }
+  },
+  {
+    "id": "divisibility_hint_v2_0",
+    "case_id": "divisibility_hint",
+    "domain": "mathematics",
+    "arm": "v2",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明存在一个整除另一个，并明确要求说明构造/分组对任意 n 和任意选取方式成立。提示给出了唯一分解 2^k·u、奇数部分只有 n 种、按 u 分组、同组两数成倍数关系等关键步骤，因此学生可见文本足以支持一个完整证明，不存在矛盾或不可回答的要求。",
+      "cognitive_demand": "routine_application",
+      "supplied_support": [
+        {
+          "quote": "提示：每个正整数唯一写成 2^k·u，其中 k≥0，u 为奇数。",
+          "finding": "提示直接提供了证明所需的核心表示法：正整数唯一分解为 2 的幂与奇数之积，学生无需自行发现或证明该分解。"
+        },
+        {
+          "quote": "1 到 2n 中只有 n 种可能的奇数部分 u（1,3,…,2n−1）。",
+          "finding": "提示已给出奇数部分 u 的完整取值范围和个数，学生只需接受并引用这一计数，无需自行推导 1 到 2n 中奇数部分的种类数。"
+        },
+        {
+          "quote": "将选出的 n+1 个数按 u 分组，必有两个属于同组；",
+          "finding": "提示直接指定了分组策略并指出抽屉原理的结论，学生不需要自行选择分组方式或判断应把什么作为抽屉。"
+        },
+        {
+          "quote": "它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。",
+          "finding": "提示已给出同组两数的形式及整除结论，学生只需解释指数较小者整除指数较大者，属于对已给步骤的说明。"
+        },
+        {
+          "quote": "请解释这些步骤为何覆盖所有 n 及所有选取方式。",
+          "finding": "题目明确要求论证任意性，这提示学生需要把已给步骤一般化，而不是仅验证例子。"
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "证明其中一定存在两个不同数，使一个整除另一个。",
+          "finding": "学生仍需把提示中的各步骤组织成完整证明：说明每个数都有奇数部分、奇数部分只有 n 种、n+1 个数放入 n 组必有两数同组、同组两数成倍数关系，从而得到结论。"
+        },
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。",
+          "finding": "学生必须显式论证分组方法对任意 n 成立，并解释同组两数为何一个整除另一个，不能仅靠举例；这要求把提示中的一般性断言转化为可检验的推理。"
+        },
+        {
+          "quote": "请解释这些步骤为何覆盖所有 n 及所有选取方式。",
+          "finding": "学生需要说明抽屉原理的适用条件：任意选取的 n+1 个数都落入这 n 个奇数部分类别中，因此无论怎样选取都必有两个同组，从而覆盖所有选取方式。"
+        }
+      ],
+      "knowledge_integration": "需要整合正整数唯一分解为 2^k·u、奇数部分的计数、抽屉原理以及整除的定义。提示已给出分解形式和分组方式，学生主要需要把这些知识点串联成一条从任意选取到存在整除关系的证明链。",
+      "strategy_selection": "策略已由提示指定：按奇数部分 u 分组，再用抽屉原理。学生不需要在多种方法之间选择或自行发现分组技巧，只需理解并执行该策略。",
+      "justification_required": "需要给出一般性证明，而非例子验证。关键论证包括：每个正整数唯一写成 2^k·u；1 到 2n 中奇数部分只有 n 种；n+1 个数放入 n 组必有两数同组；同组两数 2^a·u 与 2^b·u 在 a<b 时前者整除后者。",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "对已学抽屉原理但未学按奇数部分分组技巧的高中生，本题不是纯记忆复述，因为需要理解唯一分解、奇数部分计数和抽屉原理如何配合，并写出一般性证明；但提示已给出核心构造和整除结论，学生不需要自行发现分组策略，因此也不达到需要大量独立整合或非例行策略的 hard。最接近的相邻水平是 easy，但 easy 更适用于直接套用已练过的固定分组或仅需复述步骤；本题仍要求解释任意性和整除原因，故 medium 更合适。",
+      "uncertainty_reasons": [
+        "学生未学过按奇数部分分组的技巧，但提示已完整给出该技巧，实际难度取决于学生能否把提示转化为一般性证明。",
+        "高中证明经验差异较大，部分学生可能只需复述提示即可完成，部分学生仍需较多解释性推理。",
+        "没有课堂表现或作业数据，无法判断该提示对特定学生是降低到 easy 还是仍保持 medium。"
+      ],
+      "confidence": "medium"
+    }
+  },
+  {
+    "id": "editor_hint_v2_0",
+    "case_id": "editor_hint",
+    "domain": "humanities",
+    "arm": "v2",
+    "repeat": 0,
+    "status": "failed",
+    "error": {
+      "type": "ValueError"
+    }
+  },
+  {
+    "id": "divisibility_hint_v3_0",
+    "case_id": "divisibility_hint",
+    "domain": "mathematics",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明存在一个整除另一个，并明确要求说明构造/分组对任意 n 和任意选取方式成立。提示给出了唯一分解、奇数部分种类数和分组论证，因此问题可解且无矛盾。",
+      "cognitive_demand": "routine_application",
+      "supplied_support": [
+        {
+          "quote": "提示：每个正整数唯一写成 2^k·u，其中 k≥0，u 为奇数。",
+          "finding": "提示直接提供了唯一分解这一关键事实，学生无需自行发现或证明该分解。"
+        },
+        {
+          "quote": "1 到 2n 中只有 n 种可能的奇数部分 u（1,3,…,2n−1）。",
+          "finding": "提示直接给出了奇数部分只有 n 种这一计数结论，学生无需自行推导。"
+        },
+        {
+          "quote": "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。",
+          "finding": "提示已经给出分组方法、抽屉原理的应用以及整除关系的核心推理，学生只需解释和验证其普遍性。"
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。",
+          "finding": "学生仍需把提示中的分组方法一般化说明：对任意 n，奇数部分恰有 n 种，n+1 个数放入 n 组必有一组含两个，并解释同组两数的指数大小关系导致整除。"
+        },
+        {
+          "quote": "请解释这些步骤为何覆盖所有 n 及所有选取方式。",
+          "finding": "学生仍需论证该分组不依赖于具体选取，且对任意 n 都成立，即说明论证的普遍性而非仅验证例子。"
+        }
+      ],
+      "knowledge_integration": "需要整合正整数唯一分解、奇数部分计数、抽屉原理和整除定义。提示已给出这些要素，学生主要做的是把它们组织成对任意 n 和任意选取都成立的证明。",
+      "strategy_selection": "策略已由提示指定：按奇数部分 u 分组，再用抽屉原理。学生不需要自行选择非平凡策略，只需理解并说明该策略为何有效。",
+      "justification_required": "需要解释：1 到 2n 中奇数部分只有 n 种；选出的 n+1 个数按奇数部分分成至多 n 组；抽屉原理保证同组两数；同组两数写成 2^a·u 和 2^b·u 后，指数较小者整除指数较大者。",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "对已学抽屉原理但未学按奇数部分分组技巧的学生，本题不是纯记忆复述，因为需要理解唯一分解与分组计数如何配合；但提示已给出核心构造和整除推理，剩余工作主要是解释普遍性，因此达不到需要独立发现非平凡策略的 hard。相比 easy，它仍要求把提示中的步骤组织成覆盖任意 n 和任意选取的证明，而非直接套用熟悉模板。",
+      "uncertainty_reasons": [
+        "学生未学过按奇数部分分组技巧，但提示已完整给出该技巧，因此其独立发现难度被大幅降低。",
+        "若评分严格要求学生自行补全唯一分解的证明或抽屉原理的严格表述，难度可能上升；但题目提示已把这些作为已知步骤给出。"
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。",
+          "finding": "提示给出了分组方法和整除关系，但未展开说明为何对任意 n 都适用；学生需补足一般性论证。",
+          "support_quotes": [
+            "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "说明对任意 n，奇数部分恰有 n 种，因此 n+1 个数放入 n 组必有两个同组；并解释同组两数指数不同时较小指数者整除较大指数者。"
+        },
+        {
+          "quote": "请解释这些步骤为何覆盖所有 n 及所有选取方式。",
+          "finding": "提示未显式论证任意选取下分组仍然有效；学生需说明论证不依赖于具体选取。",
+          "support_quotes": [
+            "1 到 2n 中只有 n 种可能的奇数部分 u（1,3,…,2n−1）。",
+            "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。"
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "指出任意选取的 n+1 个数都落在同样的 n 个奇数部分类别中，因此抽屉原理对每一种选取都适用，从而证明覆盖所有 n 和所有选取方式。"
+        }
+      ],
+      "minimum_sufficient_response": "对任意正整数 n，把 1 到 2n 中每个数写成 2^k·u，其中 u 为奇数。由于 1 到 2n 中的奇数只有 1,3,…,2n−1，共 n 个，所以所有数的奇数部分 u 只有 n 种。任取 n+1 个不同整数，按它们的奇数部分 u 分成至多 n 组。由抽屉原理，n+1 个数放入 n 组，必有两个数在同一组，即它们有相同的奇数部分 u，可写成 2^a·u 和 2^b·u。若 a<b，则 2^a·u 整除 2^b·u；若 b<a，则 2^b·u 整除 2^a·u。因此这两个不同数中必有一个整除另一个。该论证只用到奇数部分只有 n 种这一事实，不依赖于具体选取了哪些数，所以对任意 n 和任意选取方式都成立。",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "该学生已学抽屉原理和数学证明，但未学按奇数部分分组技巧；不过题目提示已给出唯一分解、奇数部分种类数和分组整除推理，因此剩余瓶颈只是把提示组织成对任意 n 和任意选取都成立的解释，属于熟悉方法的应用而非独立非平凡策略发现。"
+    }
+  },
+  {
+    "id": "h_hint_v3_0",
+    "case_id": "h_hint",
+    "domain": "humanities",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained: it supplies three fictional excerpts, a teaching note on perspective, two competing claims, and six explicit constraints plus three follow-up tasks. All people, places, and events are fictional teaching material, and the task explicitly permits multiple defensible interpretations. No missing condition, contradiction, or unanswerable demand is present.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "A first-person account gives access to a situated viewpoint, not automatic knowledge of every participant's motives. Distinguish a narrator's explicit statement from an inference based on an image, omission or contrast.",
+          "finding": "The note supplies the core interpretive method: treating first-person narration as situated and separating explicit statement from inference."
+        },
+        {
+          "quote": "The curator's collective we can be read as an aspiration to shared ownership or as a phrase that leaves differences within the group unstated.",
+          "finding": "The note supplies two competing readings of the curator's 'we,' so the learner need not invent the alternative interpretation from scratch."
+        },
+        {
+          "quote": "The volunteer's applause and unopened letter can support readings of tentative belonging, unresolved exclusion, or a mixture, but the text does not establish censorship or identify the letter's contents.",
+          "finding": "The note supplies the range of defensible readings of the volunteer's behavior and explicitly rules out censorship and letter-content claims."
+        },
+        {
+          "quote": "A defensible interpretation compares details from both passages, acknowledges a plausible competing reading, and explains the limits of its claim.",
+          "finding": "The note supplies the success criteria for a defensible interpretation, reducing uncertainty about what the task expects."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Distinguish what each passage explicitly states from inferences about motives, selection, rejection, or withheld information.",
+          "finding": "The learner must apply the supplied distinction to specific sentences in both passages, sorting stated facts from inferences."
+        },
+        {
+          "quote": "Use at least one concrete detail from each account as textual support.",
+          "finding": "The learner must select and quote or paraphrase concrete details from both passages and connect them to the interpretation."
+        },
+        {
+          "quote": "Compare how the curator's collective language and the volunteer's applause coexist with hesitation or unstated difference.",
+          "finding": "The learner must construct a comparison showing how collective language and applause coexist with the volunteer's hesitation, rather than treating them as simply contradictory."
+        },
+        {
+          "quote": "Address a plausible competing reading drawn from the same passages.",
+          "finding": "The learner must articulate a rival reading grounded in the passages and explain why it is plausible, even if ultimately rejected."
+        },
+        {
+          "quote": "Limit claims to what the passages establish; do not assert censorship, the letter's contents, or unstated visitor reactions.",
+          "finding": "The learner must police the boundary of the evidence and avoid overclaiming beyond what the excerpts establish."
+        },
+        {
+          "quote": "Explain how a specific omission or ambiguity shapes your interpretation and state the uncertainty that remains.",
+          "finding": "The learner must identify a specific omission or ambiguity and explain its interpretive effect and the residual uncertainty."
+        }
+      ],
+      "knowledge_integration": "The learner must integrate close-reading skills across two passages, the supplied perspective note, and the two competing claims. This requires coordinating explicit statements, inferences, omissions, and the limits of evidence into a single defensible interpretation.",
+      "strategy_selection": "The learner must choose which details to cite, which competing reading to address, which omission or ambiguity to foreground, and whether to endorse, reject, or revise the claims. The note supplies the method, but the learner must select and apply it to specific textual moments.",
+      "justification_required": "The learner must justify the judgment about the two claims, justify the revised claim if neither is fully defensible, and justify what additional evidence would be needed to support the rejected stronger claim. Each justification must be tied to specific passages and constrained by the no-invention rule.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "The task is more than routine application because the learner must adjudicate between competing claims, construct a qualified interpretation, and manage evidentiary limits. However, the teaching note supplies the interpretive framework, the two competing readings of the 'we,' the range of readings of the volunteer's behavior, and the success criteria, so the learner is not inventing a nonroutine method. For prepared undergraduates in an introductory humanities seminar, this is a meaningful familiar application of close-reading and evidence-weighing skills rather than a hard independent integration. The boundary with hard is that the learner must still coordinate multiple constraints and produce a qualified revision, but the supplied scaffolding makes the task tractable within the seminar's stated preparation.",
+      "uncertainty_reasons": [
+        "The line between medium and hard depends on how much the teaching note's supplied readings reduce the learner's independent interpretive work; reasonable evaluators could differ.",
+        "The learner profile specifies close-reading and viewpoint-comparison skills but does not specify prior experience with adjudicating competing claims under explicit evidentiary constraints."
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "Distinguish what each passage explicitly states from inferences about motives, selection, rejection, or withheld information.",
+          "finding": "The note supplies the general distinction between explicit statement and inference, but the learner must apply it to specific sentences in both passages.",
+          "support_quotes": [
+            "A first-person account gives access to a situated viewpoint, not automatic knowledge of every participant's motives. Distinguish a narrator's explicit statement from an inference based on an image, omission or contrast."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Apply the distinction to specific sentences in Passage A and Passage B, identifying which claims are explicit and which are inferential."
+        },
+        {
+          "quote": "Use at least one concrete detail from each account as textual support.",
+          "finding": "No specific detail is supplied as the required support; the learner must select details from both passages.",
+          "support_quotes": [],
+          "supplied_extent": "not_supplied",
+          "residual_task": "Select and cite at least one concrete detail from each passage and connect it to the interpretation."
+        },
+        {
+          "quote": "Compare how the curator's collective language and the volunteer's applause coexist with hesitation or unstated difference.",
+          "finding": "The note supplies the two readings of the 'we' and the range of readings of the volunteer's behavior, but the learner must construct the comparison.",
+          "support_quotes": [
+            "The curator's collective we can be read as an aspiration to shared ownership or as a phrase that leaves differences within the group unstated.",
+            "The volunteer's applause and unopened letter can support readings of tentative belonging, unresolved exclusion, or a mixture, but the text does not establish censorship or identify the letter's contents."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Build a comparison showing how the collective language and the applause coexist with hesitation or unstated difference, using specific textual details."
+        },
+        {
+          "quote": "Address a plausible competing reading drawn from the same passages.",
+          "finding": "The note supplies the success criterion of acknowledging a competing reading but does not supply the specific competing reading the learner must address.",
+          "support_quotes": [
+            "A defensible interpretation compares details from both passages, acknowledges a plausible competing reading, and explains the limits of its claim."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Articulate a specific plausible competing reading grounded in the passages and explain why it is plausible."
+        },
+        {
+          "quote": "Limit claims to what the passages establish; do not assert censorship, the letter's contents, or unstated visitor reactions.",
+          "finding": "The note explicitly rules out censorship and letter-content claims, supplying the boundary, but the learner must apply it throughout the interpretation.",
+          "support_quotes": [
+            "The volunteer's applause and unopened letter can support readings of tentative belonging, unresolved exclusion, or a mixture, but the text does not establish censorship or identify the letter's contents."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Apply the evidentiary boundary consistently, avoiding assertions about censorship, letter contents, or unstated visitor reactions."
+        },
+        {
+          "quote": "Explain how a specific omission or ambiguity shapes your interpretation and state the uncertainty that remains.",
+          "finding": "The note identifies some omissions and ambiguities but does not supply the learner's specific interpretive explanation or residual uncertainty.",
+          "support_quotes": [
+            "The passage is narrated by someone responsible for the exhibition. It does not identify who selected the photographs, list rejected contributions, or report every visitor's reaction.",
+            "The narrator reports gratitude and hesitation but does not state why the letter was withheld, whether anybody rejected it, or what it contained."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Select a specific omission or ambiguity, explain how it shapes the interpretation, and state the uncertainty that remains."
+        }
+      ],
+      "minimum_sufficient_response": "Claim 1 overstates the evidence: the curator's 'we' and the volunteer's applause are explicit, but the passage does not establish that everyone experienced belonging. Passage A states that volunteers carried boxes and children stopped before the photographs, and the curator says the opening 'felt like a beginning, not a finished history.' Passage B states that the volunteer recognized her father's coat, was glad someone kept the picture, applauded when the curator thanked the volunteers, but kept the letter inside her bag. The applause is explicit; the hesitation is also explicit. Claim 2 is not defensible: the text does not establish censorship or the letter's contents. A qualified revision of Claim 1 could be: 'The curator's collective language and the volunteer's applause suggest a shared public occasion, but the volunteer's unopened letter leaves open whether that belonging was fully experienced by everyone.' A plausible competing reading is that the 'we' is aspirational and the applause is social courtesy rather than evidence of belonging; this reading is supported by the volunteer's decision to keep the letter private. The specific omission of why the letter was withheld shapes the interpretation: it prevents any claim about rejection or censorship and leaves the volunteer's motive uncertain. Additional evidence needed to support the stronger original claim would include the volunteer's own statement that she felt full belonging, or a curator's account confirming that all contributions were welcomed and that no one withheld anything.",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "For undergraduates who can closely read supplied passages and compare narrative viewpoints, the remaining bottleneck is adjudicating between two competing claims under explicit evidentiary constraints and producing a qualified revision. The teaching note supplies the interpretive framework, the competing readings of the 'we,' the range of readings of the volunteer's behavior, and the success criteria, so the learner is applying familiar close-reading skills to a structured task rather than inventing a nonroutine method. The task is therefore medium rather than hard for this profile."
+    }
+  },
+  {
+    "id": "editor_hint_v3_0",
+    "case_id": "editor_hint",
+    "domain": "humanities",
+    "arm": "v3",
+    "repeat": 0,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "The question is self-contained with fictional materials, clear instructions, and a teaching note. It asks for evaluation, explanation, distinction, evidence, and a qualified conclusion, all answerable from the supplied text without external facts.",
+      "cognitive_demand": "strategic_reasoning",
+      "supplied_support": [
+        {
+          "quote": "Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission.",
+          "finding": "Supplies the key distinction between editorial alteration and pre-submission social pressure, which is central to evaluating the editor's claim."
+        },
+        {
+          "quote": "The contributor's worry might reflect a credible informal threat or an unsupported personal expectation.",
+          "finding": "Supplies two plausible explanations for the contributor's deletion, satisfying that sub-requirement."
+        },
+        {
+          "quote": "Nobody requesting deletion rules out that particular explicit request but does not establish whether informal pressure existed.",
+          "finding": "Supplies the inference about what the absence of an explicit deletion request does and does not establish."
+        },
+        {
+          "quote": "Independent accounts of club reactions could help distinguish the explanations.",
+          "finding": "Supplies a type of additional evidence that could distinguish the two explanations."
+        },
+        {
+          "quote": "A qualified conclusion may affirm unchanged publication while leaving pre-submission freedom unresolved.",
+          "finding": "Supplies a model qualified conclusion that meets the conclusion requirement."
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "The learner must select a relevant detail from the editor's account and a relevant detail from the contributor's account, then use them to assess the editor's claim."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "The learner must explain that the policy addresses editorial changes after submission but does not resolve the contributor's pre-submission worry about losing a club role."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "The learner must present two explanations, separate established facts from possibilities, and propose additional evidence that could distinguish the explanations."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "The learner must formulate a conclusion that is qualified and supported by the supplied records."
+        }
+      ],
+      "knowledge_integration": "The learner must integrate the editor's claim, the contributor's account, and the published policy, while applying the distinction between editorial alteration and pre-submission social pressure. The teaching note supplies the key conceptual distinction, but the learner must still connect it to specific textual details.",
+      "strategy_selection": "The learner must choose relevant details from each account, decide how the policy bears on the contributor's concern, generate two plausible explanations, classify what is established versus possible, and select additional evidence that would distinguish the explanations.",
+      "justification_required": "The learner must justify the evaluation of the editor's claim with textual details, justify the explanation of whether the policy resolves the concern, and support the qualified conclusion with the records.",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "The task is not easy because it requires applying a supplied distinction to specific evidence and constructing a qualified conclusion. It is not hard because the teaching note supplies the central interpretive framework, the two plausible explanations, the inference about the absence of an explicit request, and a model qualified conclusion, leaving the learner to select and apply these to the text rather than invent a nonroutine strategy.",
+      "uncertainty_reasons": [
+        "The teaching note supplies substantial scaffolding, which may reduce the task to routine application for prepared undergraduates.",
+        "The boundary between medium and hard depends on how much independent integration is required beyond selecting and applying the supplied points."
+      ],
+      "confidence": "medium",
+      "demand_audit": [
+        {
+          "quote": "Evaluate the editor's claim using a detail from each account.",
+          "finding": "The teaching note supplies the evaluative framework but not the specific textual details from each account.",
+          "support_quotes": [
+            "Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Select a detail from the editor's account and a detail from the contributor's account, then use them to show that the editor's claim overreaches."
+        },
+        {
+          "quote": "Explain whether the policy resolves the contributor's concern.",
+          "finding": "The teaching note supplies the distinction needed to answer, but the learner must apply it to the policy and the contributor's concern.",
+          "support_quotes": [
+            "Printing received submissions unchanged establishes freedom from editorial alteration at that stage; it does not establish freedom from anticipated social consequences before submission."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Explain that the policy addresses editorial changes after submission but does not resolve the contributor's pre-submission worry about losing a club role."
+        },
+        {
+          "quote": "Give two plausible explanations for the contributor's deletion, distinguish what is established from what is only possible, and state what additional evidence could distinguish those explanations.",
+          "finding": "The teaching note supplies two explanations and a type of additional evidence, but the learner must still distinguish established facts from possibilities and apply the evidence suggestion.",
+          "support_quotes": [
+            "The contributor's worry might reflect a credible informal threat or an unsupported personal expectation.",
+            "Independent accounts of club reactions could help distinguish the explanations."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "State the two explanations, identify what is established (the essay appeared unchanged, the contributor deleted a paragraph, nobody asked for deletion) versus what is only possible (informal pressure or personal expectation), and explain how independent accounts of club reactions could distinguish them."
+        },
+        {
+          "quote": "Propose one qualified conclusion supported by the records.",
+          "finding": "The teaching note supplies a model qualified conclusion, but the learner must still formulate one supported by the records.",
+          "support_quotes": [
+            "A qualified conclusion may affirm unchanged publication while leaving pre-submission freedom unresolved."
+          ],
+          "supplied_extent": "partly_supplied",
+          "residual_task": "Write a qualified conclusion that affirms unchanged publication while leaving pre-submission freedom unresolved, supported by the records."
+        }
+      ],
+      "minimum_sufficient_response": "The editor's claim is not fully supported. The editor says every submission received before Friday was printed, and the policy confirms submissions were printed without editorial changes. The contributor says the essay appeared unchanged, which supports freedom from editorial alteration. However, the contributor also deleted a paragraph before sending it because of worry about losing a club role, and nobody asked for deletion. The policy does not resolve this concern because it only governs what happens after submission, not pre-submission social pressure. Two plausible explanations for the deletion are: (1) the contributor faced a credible informal threat or pressure, or (2) the contributor had an unsupported personal expectation of consequences. What is established is that the essay was printed unchanged, the contributor deleted a paragraph, and nobody explicitly asked for deletion. What is only possible is whether informal pressure existed. Additional evidence such as independent accounts of club reactions could help distinguish these explanations. A qualified conclusion is that the records support freedom from editorial alteration at the printing stage, but they do not establish that everyone could speak freely before submission.",
+      "hard_basis_quote": null,
+      "learner_relative_basis": "For undergraduates who have practised distinguishing observations from interpretations and supporting comparisons with quotations, the task is a familiar application of those skills to a short fictional case. The teaching note supplies the central distinction, the two explanations, the inference about the absence of an explicit request, and a model conclusion, so the remaining work is selection and application rather than nonroutine integration."
+    }
+  },
+  {
+    "id": "divisibility_hint_v2_1",
+    "case_id": "divisibility_hint",
+    "domain": "mathematics",
+    "arm": "v2",
+    "repeat": 1,
+    "status": "valid",
+    "label": "medium",
+    "eligibility": "eligible",
+    "result": {
+      "eligibility": "eligible",
+      "eligibility_reason": "题目条件完整：n 为任意正整数，从 1 到 2n 中取 n+1 个不同整数，要求证明存在一个整除另一个，并明确要求说明构造/分组对任意 n 和任意选取方式成立。提示给出了唯一分解、奇数部分分组和整除推理，学生可见文本足以支持一个完整证明，不存在矛盾或不可回答的要求。",
+      "cognitive_demand": "routine_application",
+      "supplied_support": [
+        {
+          "quote": "提示：每个正整数唯一写成 2^k·u，其中 k≥0，u 为奇数。",
+          "finding": "提示直接给出唯一分解这一关键表示，学生无需自行发现或证明该分解。"
+        },
+        {
+          "quote": "1 到 2n 中只有 n 种可能的奇数部分 u（1,3,…,2n−1）。",
+          "finding": "提示已给出分组类别的数量上界，学生只需接受并说明该计数。"
+        },
+        {
+          "quote": "将选出的 n+1 个数按 u 分组，必有两个属于同组；它们分别为 2^a·u 和 2^b·u，设 a<b，则前者整除后者。",
+          "finding": "提示完整给出抽屉原理的适用方式、同组两数的形式以及整除结论，学生主要任务是复述并解释其覆盖性。"
+        }
+      ],
+      "remaining_demands": [
+        {
+          "quote": "你需要说明构造或分组方法为何适用于任意 n，并解释由它得到整除关系的原因，不能只检验几个例子。",
+          "finding": "学生仍需把提示中的分组方法组织成对任意 n 成立的证明，并解释同组两数为何一个整除另一个，而不是仅验证特例。"
+        },
+        {
+          "quote": "请解释这些步骤为何覆盖所有 n 及所有选取方式。",
+          "finding": "需要说明奇数部分只有 n 种、选取 n+1 个数必落入同一组，且该论证不依赖于具体选取，从而覆盖任意选取方式。"
+        }
+      ],
+      "knowledge_integration": "需要整合正整数唯一分解为 2^k·u、奇数部分的范围计数、抽屉原理以及整除定义。由于提示已给出这些要素，整合主要是把已给步骤串联成完整证明，而非独立发现新联系。",
+      "strategy_selection": "策略已由提示指定：按奇数部分 u 分组，再用抽屉原理找同组两数。学生不需要在多种方法间选择或构造非平凡策略，只需理解并执行该策略。",
+      "justification_required": "需要给出一般性论证：说明 1 到 2n 中奇数部分恰有 n 种，n+1 个数放入 n 组必有两个同组，并说明同组两数写成 2^a·u 与 2^b·u 后，较小指数者整除较大指数者。",
+      "estimated_difficulty": "medium",
+      "adjacent_level_reason": "对已学抽屉原理但未学按奇数部分分组技巧的学生，本题不是纯记忆复述，因为需要理解唯一分解、奇数部分计数和整除关系如何结合；但提示已给出核心构造和结论，独立选择策略的空间很小，因此低于需要自主发现非例行策略的 hard，高于几乎无选择的 easy。",
+      "uncertainty_reasons": [
+        "学生未学过按奇数部分分组的技巧，但提示已完整给出该技巧，实际难度取决于学生能否把提示转化为一般性证明。",
+        "若学生能直接套用提示，任务接近常规应用；若要求完全内化唯一分解与覆盖性论证，则可能偏难，边界不完全确定。"
+      ],
+      "confidence": "medium"
+    }
+  }
+]

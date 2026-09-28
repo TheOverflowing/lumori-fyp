@@ -1,0 +1,136 @@
+[
+  {
+    "id": "termination_local_correction_0",
+    "case_id": "termination_local_correction",
+    "repeat": 0,
+    "status": "valid",
+    "audit": {
+      "findings": [],
+      "status": "no_issue_found",
+      "resolved_evidence": [],
+      "original_grade_preserved": true,
+      "human_validated": false
+    }
+  },
+  {
+    "id": "termination_observed_1",
+    "case_id": "termination_observed",
+    "repeat": 1,
+    "status": "valid",
+    "audit": {
+      "findings": [
+        {
+          "category": "internal_contradiction",
+          "certainty": "definite",
+          "question_ids": [
+            "S014"
+          ],
+          "review_ids": [
+            "R011",
+            "R005"
+          ],
+          "explanation": "The minimum answer and task[0] claim a=[1,2], t=2 makes the loop 'never make progress' and 'returns 0'. The host witness shows this input actually causes nontermination (repeated state l=0,r=1,m=0), not a return of 0. The stated failing input does not match the asserted failure mode.",
+          "suggested_correction": "Either use a=[1], t=2 (witness: returns 0, correct 1) as the concrete failing input, or describe a=[1,2], t=2 as nonterminating rather than returning 0."
+        }
+      ],
+      "status": "correction_required",
+      "resolved_evidence": [
+        {
+          "question": [
+            {
+              "id": "S014",
+              "start": 379,
+              "end": 610,
+              "text": "Give one concrete input where it fails, repair it while retaining O(log n) worst-case running time, and justify both termination and the returned boundary for all allowed arrays, including duplicates and a target above all entries."
+            }
+          ],
+          "review": [
+            {
+              "id": "R011",
+              "start": 29,
+              "end": 170,
+              "text": "Initially l=0, r=1, m=0; a[0]=1<2 so l=m=0, and l<r still holds, so the loop never makes progress and returns 0, but the correct answer is 1.",
+              "path": "minimum_answer"
+            },
+            {
+              "id": "R005",
+              "start": 91,
+              "end": 192,
+              "text": "a=[1,2], t=2 (or a=[1], t=2), where l stays 0 and the loop returns 0 instead of the correct boundary.",
+              "path": "tasks[0].residual_work"
+            }
+          ]
+        }
+      ],
+      "original_grade_preserved": true,
+      "human_validated": false
+    }
+  },
+  {
+    "id": "termination_local_correction_1",
+    "case_id": "termination_local_correction",
+    "repeat": 1,
+    "status": "valid",
+    "audit": {
+      "findings": [],
+      "status": "no_issue_found",
+      "resolved_evidence": [],
+      "original_grade_preserved": true,
+      "human_validated": false
+    }
+  },
+  {
+    "id": "termination_observed_0",
+    "case_id": "termination_observed",
+    "repeat": 0,
+    "status": "valid",
+    "audit": {
+      "findings": [
+        {
+          "category": "internal_contradiction",
+          "certainty": "definite",
+          "question_ids": [
+            "S014"
+          ],
+          "review_ids": [
+            "R011",
+            "R010"
+          ],
+          "explanation": "The minimum_answer claims for a=[1,2], t=2 that 'the loop never makes progress and returns 0'. Host witness shows this input causes nontermination (repeated state l=0,r=1,m=0), not a return of 0. The answer conflates nontermination with returning an incorrect value.",
+          "suggested_correction": "State that a=[1,2], t=2 causes the loop to repeat state l=0,r=1,m=0 forever (nontermination), not that it returns 0. Use a=[1], t=2 as the example that returns 0 incorrectly."
+        }
+      ],
+      "status": "correction_required",
+      "resolved_evidence": [
+        {
+          "question": [
+            {
+              "id": "S014",
+              "start": 379,
+              "end": 610,
+              "text": "Give one concrete input where it fails, repair it while retaining O(log n) worst-case running time, and justify both termination and the returned boundary for all allowed arrays, including duplicates and a target above all entries."
+            }
+          ],
+          "review": [
+            {
+              "id": "R011",
+              "start": 29,
+              "end": 170,
+              "text": "Initially l=0, r=1, m=0; a[0]=1<2 so l=m=0, and l<r still holds, so the loop never makes progress and returns 0, but the correct answer is 1.",
+              "path": "minimum_answer"
+            },
+            {
+              "id": "R010",
+              "start": 0,
+              "end": 28,
+              "text": "Failing input: a=[1,2], t=2.",
+              "path": "minimum_answer"
+            }
+          ]
+        }
+      ],
+      "original_grade_preserved": true,
+      "human_validated": false
+    }
+  }
+]

@@ -1,0 +1,735 @@
+{
+  "kind": "same_prompt_shadow_judge_repeat",
+  "source_run": "/Users/theoverflow/Downloads/FYP/docs/difficulty/shadow/REAL_TASKS_20260925_R2",
+  "source_asset_sha256": "43569207231f6753e9bf177d05da7a2cf8e818f806088a5d5bb945ac69383964",
+  "prompt_sha256": "950a673b3020e8736984f6b516967a9e94c4af3ac46b33979396837ae1178d31",
+  "prior_isolated_run_calls": 24,
+  "other_failed_run_call_records": 1,
+  "planned_repeats": 2,
+  "human_validated": false,
+  "affects_primary_decision": false,
+  "records": [
+    {
+      "repeat": 1,
+      "status": "validated",
+      "response": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目给出了三种窗口/状态场景和五项明确要求，所需概念（流量控制、拥塞控制、有效窗口）在课程资料中已提供，计算机专业本科生具备理解基础，无缺失条件或矛盾要求。",
+        "cognitive_demand": "routine_application",
+        "tasks": [
+          {
+            "request_ids": [
+              "S019"
+            ],
+            "condition_ids": [],
+            "solution_ids": [
+              "S007"
+            ],
+            "residual_work": "需用自己的话复述并对比两类控制的目标与作用范围，资料已给出完整内容，基本为直接再现。",
+            "mode": "reproduce"
+          },
+          {
+            "request_ids": [
+              "S020"
+            ],
+            "condition_ids": [],
+            "solution_ids": [
+              "S010"
+            ],
+            "residual_work": "需说明有效窗口取拥塞窗口与通告窗口的较小值，资料已直接给出结论。",
+            "mode": "reproduce"
+          },
+          {
+            "request_ids": [
+              "S021"
+            ],
+            "condition_ids": [
+              "S015",
+              "S016",
+              "S017"
+            ],
+            "solution_ids": [
+              "S011"
+            ],
+            "residual_work": "需将“较小窗口决定限制方”的规则分别套用到三个具体数值场景，并指出依据的窗口或状态；属于熟悉规则的直接应用。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S022"
+            ],
+            "condition_ids": [
+              "S015",
+              "S017"
+            ],
+            "solution_ids": [
+              "S007",
+              "S010"
+            ],
+            "residual_work": "需把“接收端读取慢→接收缓冲被占满→通告窗口减小→最终为0→发送方被阻塞”的因果链串起来，并说明通告窗口为0时发送方不能发送新数据；资料提供了流量控制目标和窗口关系，但未直接给出该逐步阻塞过程，需要少量独立整合。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S023"
+            ],
+            "condition_ids": [
+              "S015",
+              "S016",
+              "S017"
+            ],
+            "solution_ids": [
+              "S011"
+            ],
+            "residual_work": "需说明一侧约束放松后限制方可能转移到另一侧，并指出两者接近时共同作用等边界情形；资料已给出判断原则，主要是应用与解释。",
+            "mode": "apply_familiar"
+          }
+        ],
+        "minimum_answer": "(1) 流量控制防止发送方压垮接收端的处理与缓冲能力，是端到端问题；拥塞控制防止过多数据注入网络导致交换机或链路过载，关注主机与网络的交互。(2) TCP允许的未确认数据量由拥塞窗口和通告窗口共同约束，取两者中的较小值，即有效窗口=min(Cwnd, AdvertisedWindow)。(3) 情况1：AdvertisedWindow=8KB < Cwnd=64KB，接收端是限制方，依据是通告窗口更小且接收端应用读取慢。情况2：Cwnd=8KB < AdvertisedWindow=64KB，网络是限制方，依据是拥塞窗口更小且链路负载重。情况3：AdvertisedWindow=0，接收端是限制方，依据是通告窗口为0，发送方不能发送新数据。(4) 接收端应用读取缓慢时，接收缓冲逐渐被未读数据占满，通告窗口随之减小；当缓冲完全占满时通告窗口降为0，发送方被阻塞，不能发送新的未确认数据（只能发送零窗口探测等必要报文）。(5) 当某一侧约束放松后，若另一侧窗口更小，限制方会转移到另一侧；若两者接近则共同作用。判断时需注意窗口为0、窗口接近相等、以及窗口动态变化等边界情形。",
+        "decision": {
+          "candidates": [
+            "easy",
+            "medium"
+          ],
+          "hard_task_index": null,
+          "reason": "该题核心是复述资料中已给出的两类控制差异与有效窗口规则，并将“较小窗口决定限制方”直接套用到三个数值场景。对已学习课程资料的计算机专业本科生，这属于熟悉概念的再现与直接应用，独立构造成分很少；但第(4)问需要把接收端读取慢到通告窗口为0再到阻塞发送方的因果链稍作整合，因此不能完全排除中等。easy与medium的边界在于：若仅按资料复述规则并套用数值，偏easy；若认为因果链整合需要额外独立说明，则偏medium。由于缺少学习者实际熟练度信息，保留相邻两个候选。"
+        }
+      },
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目给出了三种窗口/状态场景和五项明确要求，所需概念（流量控制、拥塞控制、有效窗口）在课程资料中已提供，计算机专业本科生具备理解基础，无缺失条件或矛盾要求。",
+        "cognitive_demand": "routine_application",
+        "tasks": [
+          {
+            "request_ids": [
+              "S019"
+            ],
+            "condition_ids": [],
+            "solution_ids": [
+              "S007"
+            ],
+            "residual_work": "需用自己的话复述并对比两类控制的目标与作用范围，资料已给出完整内容，基本为直接再现。",
+            "mode": "reproduce"
+          },
+          {
+            "request_ids": [
+              "S020"
+            ],
+            "condition_ids": [],
+            "solution_ids": [
+              "S010"
+            ],
+            "residual_work": "需说明有效窗口取拥塞窗口与通告窗口的较小值，资料已直接给出结论。",
+            "mode": "reproduce"
+          },
+          {
+            "request_ids": [
+              "S021"
+            ],
+            "condition_ids": [
+              "S015",
+              "S016",
+              "S017"
+            ],
+            "solution_ids": [
+              "S011"
+            ],
+            "residual_work": "需将“较小窗口决定限制方”的规则分别套用到三个具体数值场景，并指出依据的窗口或状态；属于熟悉规则的直接应用。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S022"
+            ],
+            "condition_ids": [
+              "S015",
+              "S017"
+            ],
+            "solution_ids": [
+              "S007",
+              "S010"
+            ],
+            "residual_work": "需把“接收端读取慢→接收缓冲被占满→通告窗口减小→最终为0→发送方被阻塞”的因果链串起来，并说明通告窗口为0时发送方不能发送新数据；资料提供了流量控制目标和窗口关系，但未直接给出该逐步阻塞过程，需要少量独立整合。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S023"
+            ],
+            "condition_ids": [
+              "S015",
+              "S016",
+              "S017"
+            ],
+            "solution_ids": [
+              "S011"
+            ],
+            "residual_work": "需说明一侧约束放松后限制方可能转移到另一侧，并指出两者接近时共同作用等边界情形；资料已给出判断原则，主要是应用与解释。",
+            "mode": "apply_familiar"
+          }
+        ],
+        "minimum_answer": "(1) 流量控制防止发送方压垮接收端的处理与缓冲能力，是端到端问题；拥塞控制防止过多数据注入网络导致交换机或链路过载，关注主机与网络的交互。(2) TCP允许的未确认数据量由拥塞窗口和通告窗口共同约束，取两者中的较小值，即有效窗口=min(Cwnd, AdvertisedWindow)。(3) 情况1：AdvertisedWindow=8KB < Cwnd=64KB，接收端是限制方，依据是通告窗口更小且接收端应用读取慢。情况2：Cwnd=8KB < AdvertisedWindow=64KB，网络是限制方，依据是拥塞窗口更小且链路负载重。情况3：AdvertisedWindow=0，接收端是限制方，依据是通告窗口为0，发送方不能发送新数据。(4) 接收端应用读取缓慢时，接收缓冲逐渐被未读数据占满，通告窗口随之减小；当缓冲完全占满时通告窗口降为0，发送方被阻塞，不能发送新的未确认数据（只能发送零窗口探测等必要报文）。(5) 当某一侧约束放松后，若另一侧窗口更小，限制方会转移到另一侧；若两者接近则共同作用。判断时需注意窗口为0、窗口接近相等、以及窗口动态变化等边界情形。",
+        "decision": {
+          "candidates": [
+            "easy",
+            "medium"
+          ],
+          "hard_task_index": null,
+          "reason": "该题核心是复述资料中已给出的两类控制差异与有效窗口规则，并将“较小窗口决定限制方”直接套用到三个数值场景。对已学习课程资料的计算机专业本科生，这属于熟悉概念的再现与直接应用，独立构造成分很少；但第(4)问需要把接收端读取慢到通告窗口为0再到阻塞发送方的因果链稍作整合，因此不能完全排除中等。easy与medium的边界在于：若仅按资料复述规则并套用数值，偏easy；若认为因果链整合需要额外独立说明，则偏medium。由于缺少学习者实际熟练度信息，保留相邻两个候选。"
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S019",
+                "start": 830,
+                "end": 889,
+                "text": "(1) 分别说明接收端流量控制与网络拥塞控制要防止的问题，以及它们的作用范围（端到端 vs 主机与网络交互）有何不同。"
+              }
+            ],
+            "condition_ids": [],
+            "solution_ids": [
+              {
+                "id": "S007",
+                "start": 196,
+                "end": 268,
+                "text": "流量控制防止发送方压垮接收端的处理与缓冲能力，属于端到端问题；拥塞控制防止过多数据被注入网络、导致交换机或链路过载，关注的是主机与网络如何交互。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S020",
+                "start": 890,
+                "end": 930,
+                "text": "(2) 说明 TCP 允许的未确认数据量由哪些窗口共同约束，以及它们之间的关系。"
+              }
+            ],
+            "condition_ids": [],
+            "solution_ids": [
+              {
+                "id": "S010",
+                "start": 354,
+                "end": 427,
+                "text": "TCP 允许同时处于未确认状态的数据量，取拥塞窗口与通告窗口中的较小值；也就是说，发送方不能快于“网络或目的主机中最慢的那个部件”所能承受的程度。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S021",
+                "start": 931,
+                "end": 997,
+                "text": "(3) 针对情况 1、2、3，分别指出当前实际限制发送方的是接收端还是网络（或两者共同作用），并说明你依据的是哪一项窗口或哪一状态。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S015",
+                "start": 620,
+                "end": 687,
+                "text": "情况 1：接收端通告窗口 AdvertisedWindow 为 8 KB，拥塞窗口 Cwnd 为 64 KB，接收端应用读取数据很慢。"
+              },
+              {
+                "id": "S016",
+                "start": 688,
+                "end": 752,
+                "text": "情况 2：AdvertisedWindow 为 64 KB，Cwnd 为 8 KB，网络中多条连接共享同一段链路，链路负载较重。"
+              },
+              {
+                "id": "S017",
+                "start": 753,
+                "end": 816,
+                "text": "情况 3：某个时刻 AdvertisedWindow 降为 0，而 Cwnd 仍为 32 KB；此前发送的数据都已被成功确认。"
+              }
+            ],
+            "solution_ids": [
+              {
+                "id": "S011",
+                "start": 429,
+                "end": 491,
+                "text": "因此判断限制方，关键是看哪个窗口更小：通告窗口更小说明接收端成为瓶颈，拥塞窗口更小说明网络成为瓶颈；两者接近时则共同起作用。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S022",
+                "start": 998,
+                "end": 1066,
+                "text": "(4) 结合“接收端应用读取缓慢”这一条件，说明接收端一侧的约束如何逐步发展为阻塞发送进程，以及在通告窗口为 0 时发送方能否发送数据。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S015",
+                "start": 620,
+                "end": 687,
+                "text": "情况 1：接收端通告窗口 AdvertisedWindow 为 8 KB，拥塞窗口 Cwnd 为 64 KB，接收端应用读取数据很慢。"
+              },
+              {
+                "id": "S017",
+                "start": 753,
+                "end": 816,
+                "text": "情况 3：某个时刻 AdvertisedWindow 降为 0，而 Cwnd 仍为 32 KB；此前发送的数据都已被成功确认。"
+              }
+            ],
+            "solution_ids": [
+              {
+                "id": "S007",
+                "start": 196,
+                "end": 268,
+                "text": "流量控制防止发送方压垮接收端的处理与缓冲能力，属于端到端问题；拥塞控制防止过多数据被注入网络、导致交换机或链路过载，关注的是主机与网络如何交互。"
+              },
+              {
+                "id": "S010",
+                "start": 354,
+                "end": 427,
+                "text": "TCP 允许同时处于未确认状态的数据量，取拥塞窗口与通告窗口中的较小值；也就是说，发送方不能快于“网络或目的主机中最慢的那个部件”所能承受的程度。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S023",
+                "start": 1067,
+                "end": 1110,
+                "text": "(5) 说明当某一侧约束放松后，限制方会发生什么变化，并指出判断时需要注意的边界情形。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S015",
+                "start": 620,
+                "end": 687,
+                "text": "情况 1：接收端通告窗口 AdvertisedWindow 为 8 KB，拥塞窗口 Cwnd 为 64 KB，接收端应用读取数据很慢。"
+              },
+              {
+                "id": "S016",
+                "start": 688,
+                "end": 752,
+                "text": "情况 2：AdvertisedWindow 为 64 KB，Cwnd 为 8 KB，网络中多条连接共享同一段链路，链路负载较重。"
+              },
+              {
+                "id": "S017",
+                "start": 753,
+                "end": 816,
+                "text": "情况 3：某个时刻 AdvertisedWindow 降为 0，而 Cwnd 仍为 32 KB；此前发送的数据都已被成功确认。"
+              }
+            ],
+            "solution_ids": [
+              {
+                "id": "S011",
+                "start": 429,
+                "end": 491,
+                "text": "因此判断限制方，关键是看哪个窗口更小：通告窗口更小说明接收端成为瓶颈，拥塞窗口更小说明网络成为瓶颈；两者接近时则共同起作用。"
+              }
+            ]
+          }
+        ],
+        "reviewer_type": "AI",
+        "human_validated": false
+      }
+    },
+    {
+      "repeat": 2,
+      "status": "validated",
+      "response": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目给出了完整的三类窗口场景、明确的五项回答要求，且学习者已学习所给课程资料（含流量控制/拥塞控制定义、有效窗口取较小值、限制方判断规则），无需未说明的实现知识即可作答。",
+        "cognitive_demand": "routine_application",
+        "tasks": [
+          {
+            "request_ids": [
+              "S019"
+            ],
+            "condition_ids": [
+              "S007",
+              "S008"
+            ],
+            "solution_ids": [
+              "S007"
+            ],
+            "residual_work": "只需按资料复述两类控制的目标与作用范围差异，无独立推理。",
+            "mode": "reproduce"
+          },
+          {
+            "request_ids": [
+              "S020"
+            ],
+            "condition_ids": [
+              "S008",
+              "S010"
+            ],
+            "solution_ids": [
+              "S010"
+            ],
+            "residual_work": "直接引用有效窗口取较小值的规则，无需额外推导。",
+            "mode": "reproduce"
+          },
+          {
+            "request_ids": [
+              "S021"
+            ],
+            "condition_ids": [
+              "S015",
+              "S016",
+              "S017"
+            ],
+            "solution_ids": [
+              "S011"
+            ],
+            "residual_work": "需将给定的较小值判断规则逐一映射到三个具体窗口数值上，属熟悉规则的应用。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S022"
+            ],
+            "condition_ids": [
+              "S015",
+              "S017"
+            ],
+            "solution_ids": [
+              "S007"
+            ],
+            "residual_work": "需结合接收端读取缓慢与通告窗口为0，说明缓冲耗尽、窗口收缩至零、发送方被阻塞，并指出零窗口时不能发送新数据（仅可发探测/零窗口探测）。资料未直接给出零窗口行为，需少量常识性补充。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S023"
+            ],
+            "condition_ids": [
+              "S011",
+              "S014"
+            ],
+            "solution_ids": [
+              "S011"
+            ],
+            "residual_work": "需说明放松一侧后较小者可能转移，并指出两者接近时共同作用等边界情形。",
+            "mode": "apply_familiar"
+          }
+        ],
+        "minimum_answer": "(1) 流量控制防止发送方压垮接收端的处理与缓冲能力，是端到端问题；拥塞控制防止过多数据注入网络导致交换机/链路过载，关注主机与网络的交互。(2) TCP 允许的未确认数据量（有效窗口）由拥塞窗口与通告窗口共同约束，取两者较小值，即发送方不能快于网络或目的主机中最慢的部件。(3) 情况1：AdvertisedWindow=8KB < Cwnd=64KB，接收端为限制方（依据通告窗口更小，且接收端应用读取慢）。情况2：Cwnd=8KB < AdvertisedWindow=64KB，网络为限制方（依据拥塞窗口更小，链路负载重）。情况3：AdvertisedWindow=0，接收端为限制方（依据通告窗口为零）。(4) 接收端应用读取缓慢→接收缓冲被占满→通告窗口逐步收缩→最终降为0，发送方有效窗口为0，无法再发送新的未确认数据，发送进程被阻塞（只能发送零窗口探测以等待窗口重开）。(5) 当某一侧约束放松（如接收端应用恢复读取使通告窗口增大，或网络拥塞缓解使 Cwnd 增大），较小者可能改变，限制方随之转移；需注意两者接近时共同作用、通告窗口为0时无论 Cwnd 多大都不能发送、以及窗口更新需经确认等边界情形。",
+        "decision": {
+          "candidates": [
+            "easy",
+            "medium"
+          ],
+          "hard_task_index": null,
+          "reason": "题目要求覆盖五部分，但核心判断规则（有效窗口取较小值、较小者即限制方）已在资料中完整给出，学习者只需将规则套用到三个给定数值场景并复述两类控制的目标与范围，属熟悉概念的直接应用。第(4)问涉及零窗口时发送方能否发送数据，资料未直接说明，需少量常识补充，略高于纯复述，但未构成非例行策略瓶颈。因此边界落在 easy 与 medium 之间：若仅按资料复述并套用规则则偏 easy，若需补充零窗口行为并组织完整解释则偏 medium，现有信息不足以确定唯一等级。"
+        }
+      },
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目给出了完整的三类窗口场景、明确的五项回答要求，且学习者已学习所给课程资料（含流量控制/拥塞控制定义、有效窗口取较小值、限制方判断规则），无需未说明的实现知识即可作答。",
+        "cognitive_demand": "routine_application",
+        "tasks": [
+          {
+            "request_ids": [
+              "S019"
+            ],
+            "condition_ids": [
+              "S007",
+              "S008"
+            ],
+            "solution_ids": [
+              "S007"
+            ],
+            "residual_work": "只需按资料复述两类控制的目标与作用范围差异，无独立推理。",
+            "mode": "reproduce"
+          },
+          {
+            "request_ids": [
+              "S020"
+            ],
+            "condition_ids": [
+              "S008",
+              "S010"
+            ],
+            "solution_ids": [
+              "S010"
+            ],
+            "residual_work": "直接引用有效窗口取较小值的规则，无需额外推导。",
+            "mode": "reproduce"
+          },
+          {
+            "request_ids": [
+              "S021"
+            ],
+            "condition_ids": [
+              "S015",
+              "S016",
+              "S017"
+            ],
+            "solution_ids": [
+              "S011"
+            ],
+            "residual_work": "需将给定的较小值判断规则逐一映射到三个具体窗口数值上，属熟悉规则的应用。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S022"
+            ],
+            "condition_ids": [
+              "S015",
+              "S017"
+            ],
+            "solution_ids": [
+              "S007"
+            ],
+            "residual_work": "需结合接收端读取缓慢与通告窗口为0，说明缓冲耗尽、窗口收缩至零、发送方被阻塞，并指出零窗口时不能发送新数据（仅可发探测/零窗口探测）。资料未直接给出零窗口行为，需少量常识性补充。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S023"
+            ],
+            "condition_ids": [
+              "S011",
+              "S014"
+            ],
+            "solution_ids": [
+              "S011"
+            ],
+            "residual_work": "需说明放松一侧后较小者可能转移，并指出两者接近时共同作用等边界情形。",
+            "mode": "apply_familiar"
+          }
+        ],
+        "minimum_answer": "(1) 流量控制防止发送方压垮接收端的处理与缓冲能力，是端到端问题；拥塞控制防止过多数据注入网络导致交换机/链路过载，关注主机与网络的交互。(2) TCP 允许的未确认数据量（有效窗口）由拥塞窗口与通告窗口共同约束，取两者较小值，即发送方不能快于网络或目的主机中最慢的部件。(3) 情况1：AdvertisedWindow=8KB < Cwnd=64KB，接收端为限制方（依据通告窗口更小，且接收端应用读取慢）。情况2：Cwnd=8KB < AdvertisedWindow=64KB，网络为限制方（依据拥塞窗口更小，链路负载重）。情况3：AdvertisedWindow=0，接收端为限制方（依据通告窗口为零）。(4) 接收端应用读取缓慢→接收缓冲被占满→通告窗口逐步收缩→最终降为0，发送方有效窗口为0，无法再发送新的未确认数据，发送进程被阻塞（只能发送零窗口探测以等待窗口重开）。(5) 当某一侧约束放松（如接收端应用恢复读取使通告窗口增大，或网络拥塞缓解使 Cwnd 增大），较小者可能改变，限制方随之转移；需注意两者接近时共同作用、通告窗口为0时无论 Cwnd 多大都不能发送、以及窗口更新需经确认等边界情形。",
+        "decision": {
+          "candidates": [
+            "easy",
+            "medium"
+          ],
+          "hard_task_index": null,
+          "reason": "题目要求覆盖五部分，但核心判断规则（有效窗口取较小值、较小者即限制方）已在资料中完整给出，学习者只需将规则套用到三个给定数值场景并复述两类控制的目标与范围，属熟悉概念的直接应用。第(4)问涉及零窗口时发送方能否发送数据，资料未直接说明，需少量常识补充，略高于纯复述，但未构成非例行策略瓶颈。因此边界落在 easy 与 medium 之间：若仅按资料复述并套用规则则偏 easy，若需补充零窗口行为并组织完整解释则偏 medium，现有信息不足以确定唯一等级。"
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S019",
+                "start": 830,
+                "end": 889,
+                "text": "(1) 分别说明接收端流量控制与网络拥塞控制要防止的问题，以及它们的作用范围（端到端 vs 主机与网络交互）有何不同。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S007",
+                "start": 196,
+                "end": 268,
+                "text": "流量控制防止发送方压垮接收端的处理与缓冲能力，属于端到端问题；拥塞控制防止过多数据被注入网络、导致交换机或链路过载，关注的是主机与网络如何交互。"
+              },
+              {
+                "id": "S008",
+                "start": 270,
+                "end": 338,
+                "text": "在 TCP 中，这两类控制各有一个窗口：通告窗口（接收窗口）反映接收端还能承受多少数据，拥塞窗口反映发送方认为网络当前还能容纳多少数据。"
+              }
+            ],
+            "solution_ids": [
+              {
+                "id": "S007",
+                "start": 196,
+                "end": 268,
+                "text": "流量控制防止发送方压垮接收端的处理与缓冲能力，属于端到端问题；拥塞控制防止过多数据被注入网络、导致交换机或链路过载，关注的是主机与网络如何交互。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S020",
+                "start": 890,
+                "end": 930,
+                "text": "(2) 说明 TCP 允许的未确认数据量由哪些窗口共同约束，以及它们之间的关系。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S008",
+                "start": 270,
+                "end": 338,
+                "text": "在 TCP 中，这两类控制各有一个窗口：通告窗口（接收窗口）反映接收端还能承受多少数据，拥塞窗口反映发送方认为网络当前还能容纳多少数据。"
+              },
+              {
+                "id": "S010",
+                "start": 354,
+                "end": 427,
+                "text": "TCP 允许同时处于未确认状态的数据量，取拥塞窗口与通告窗口中的较小值；也就是说，发送方不能快于“网络或目的主机中最慢的那个部件”所能承受的程度。"
+              }
+            ],
+            "solution_ids": [
+              {
+                "id": "S010",
+                "start": 354,
+                "end": 427,
+                "text": "TCP 允许同时处于未确认状态的数据量，取拥塞窗口与通告窗口中的较小值；也就是说，发送方不能快于“网络或目的主机中最慢的那个部件”所能承受的程度。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S021",
+                "start": 931,
+                "end": 997,
+                "text": "(3) 针对情况 1、2、3，分别指出当前实际限制发送方的是接收端还是网络（或两者共同作用），并说明你依据的是哪一项窗口或哪一状态。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S015",
+                "start": 620,
+                "end": 687,
+                "text": "情况 1：接收端通告窗口 AdvertisedWindow 为 8 KB，拥塞窗口 Cwnd 为 64 KB，接收端应用读取数据很慢。"
+              },
+              {
+                "id": "S016",
+                "start": 688,
+                "end": 752,
+                "text": "情况 2：AdvertisedWindow 为 64 KB，Cwnd 为 8 KB，网络中多条连接共享同一段链路，链路负载较重。"
+              },
+              {
+                "id": "S017",
+                "start": 753,
+                "end": 816,
+                "text": "情况 3：某个时刻 AdvertisedWindow 降为 0，而 Cwnd 仍为 32 KB；此前发送的数据都已被成功确认。"
+              }
+            ],
+            "solution_ids": [
+              {
+                "id": "S011",
+                "start": 429,
+                "end": 491,
+                "text": "因此判断限制方，关键是看哪个窗口更小：通告窗口更小说明接收端成为瓶颈，拥塞窗口更小说明网络成为瓶颈；两者接近时则共同起作用。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S022",
+                "start": 998,
+                "end": 1066,
+                "text": "(4) 结合“接收端应用读取缓慢”这一条件，说明接收端一侧的约束如何逐步发展为阻塞发送进程，以及在通告窗口为 0 时发送方能否发送数据。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S015",
+                "start": 620,
+                "end": 687,
+                "text": "情况 1：接收端通告窗口 AdvertisedWindow 为 8 KB，拥塞窗口 Cwnd 为 64 KB，接收端应用读取数据很慢。"
+              },
+              {
+                "id": "S017",
+                "start": 753,
+                "end": 816,
+                "text": "情况 3：某个时刻 AdvertisedWindow 降为 0，而 Cwnd 仍为 32 KB；此前发送的数据都已被成功确认。"
+              }
+            ],
+            "solution_ids": [
+              {
+                "id": "S007",
+                "start": 196,
+                "end": 268,
+                "text": "流量控制防止发送方压垮接收端的处理与缓冲能力，属于端到端问题；拥塞控制防止过多数据被注入网络、导致交换机或链路过载，关注的是主机与网络如何交互。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S023",
+                "start": 1067,
+                "end": 1110,
+                "text": "(5) 说明当某一侧约束放松后，限制方会发生什么变化，并指出判断时需要注意的边界情形。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S011",
+                "start": 429,
+                "end": 491,
+                "text": "因此判断限制方，关键是看哪个窗口更小：通告窗口更小说明接收端成为瓶颈，拥塞窗口更小说明网络成为瓶颈；两者接近时则共同起作用。"
+              },
+              {
+                "id": "S014",
+                "start": 548,
+                "end": 618,
+                "text": "请阅读下面三种情况的描述，逐一判断当前真正限制发送方的是接收端、网络，还是两者共同作用，并给出判断依据；最后说明这种限制关系何时会发生转移。"
+              }
+            ],
+            "solution_ids": [
+              {
+                "id": "S011",
+                "start": 429,
+                "end": 491,
+                "text": "因此判断限制方，关键是看哪个窗口更小：通告窗口更小说明接收端成为瓶颈，拥塞窗口更小说明网络成为瓶颈；两者接近时则共同起作用。"
+              }
+            ]
+          }
+        ],
+        "reviewer_type": "AI",
+        "human_validated": false
+      }
+    }
+  ],
+  "status": "complete",
+  "new_calls": 2,
+  "call_rows": [
+    {
+      "id": "5a58f3cdec7b424ca6d83a9e627a935b",
+      "job_id": "70e12f480d0646b9a553444717b03c1b",
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 3409,
+        "completion_tokens": 1006,
+        "total_tokens": 4415,
+        "prompt_tokens_details": {
+          "cached_tokens": 3200
+        },
+        "prompt_cache_hit_tokens": 3200,
+        "prompt_cache_miss_tokens": 209
+      },
+      "created_at": "2026-09-25T02:26:03.772249+00:00",
+      "duration_ms": 4758,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    },
+    {
+      "id": "e467a69aa021417697dbcfae31fc3852",
+      "job_id": "70e12f480d0646b9a553444717b03c1b",
+      "capability": "text",
+      "model": "deepseek-flash",
+      "status": "succeeded",
+      "usage": {
+        "prompt_tokens": 3409,
+        "completion_tokens": 919,
+        "total_tokens": 4328,
+        "prompt_tokens_details": {
+          "cached_tokens": 3200
+        },
+        "prompt_cache_hit_tokens": 3200,
+        "prompt_cache_miss_tokens": 209
+      },
+      "created_at": "2026-09-25T02:26:08.538979+00:00",
+      "duration_ms": 4647,
+      "http_status": 200,
+      "response_model": "deepseek-flash"
+    }
+  ]
+}

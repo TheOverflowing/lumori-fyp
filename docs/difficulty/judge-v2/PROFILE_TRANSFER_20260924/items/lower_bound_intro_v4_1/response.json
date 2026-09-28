@@ -1,0 +1,68 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "The problem is self-contained: array properties, target semantics, the proposed code, and all requirements (counterexample, repair, termination and boundary justification) are stated. The learner profile supplies relevant prior knowledge (loop tracing, sorted arrays, integer division, invariants, O(log n), ordinary exact-match binary search) and explicitly notes the gap (no prior implementation/proof of a first-greater-or-equal boundary search or its non-progress cases). No missing exercise facts or contradictory demands.",
+  "cognitive_demand": "strategic_reasoning",
+  "tasks": [
+    {
+      "request_ids": [
+        "S014"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S005",
+        "S006",
+        "S007",
+        "S008",
+        "S009",
+        "S010",
+        "S011",
+        "S012",
+        "S013",
+        "S015",
+        "S016"
+      ],
+      "solution_ids": [],
+      "residual_work": "Find a concrete failing input by tracing the proposed loop, e.g. a=[1,2], t=2: l=0,r=1,m=0,a[0]<2 so l=0, loop exits returning 0, but the correct answer is 1. This requires independent tracing of the buggy code, not supplied.",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S014"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S015",
+        "S016"
+      ],
+      "solution_ids": [],
+      "residual_work": "Design a corrected boundary search retaining O(log n). A standard repair uses a half-open interval [l,r) with r=len(a), m=(l+r)//2, if a[m]<t then l=m+1 else r=m, returning l. The learner must choose/adapt an interval convention and ensure progress (l strictly increases or r strictly decreases) so the loop terminates.",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S014"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S015"
+      ],
+      "solution_ids": [],
+      "residual_work": "Prove termination and correctness of the returned boundary for all allowed arrays, including duplicates and t above all entries. This requires establishing a loop invariant (e.g. all indices < l have a[i]<t and all indices >= r have a[i]>=t, with answer in [l,r]) and showing the interval shrinks each iteration, then concluding l is the smallest index with a[i]>=t or len(a). No proof is supplied; this is the central nonroutine bottleneck.",
+      "mode": "construct_argument"
+    }
+  ],
+  "minimum_answer": "Counterexample: a=[1,2], t=2. Trace: l=0, r=1, m=0, a[0]=1<2 so l=m=0; loop ends (l<r false), returns 0, but the smallest index with a[i]>=2 is 1. The bug is l=m (no progress) and r=len(a)-1 excluding the sentinel position len(a). Repair (half-open interval): l=0; r=len(a); while l<r: m=(l+r)//2; if a[m]<t: l=m+1 else: r=m; return l. Termination: each iteration either sets l=m+1>l (since m>=l) or r=m<r (since m<r), so the interval [l,r) strictly shrinks and the loop ends. Correctness invariant: all indices <l have a[i]<t, all indices >=r have a[i]>=t, and the answer lies in [l,r]. Initially l=0, r=len(a) satisfy this vacuously. If a[m]<t, then m and all indices <=m are <t, so l=m+1 preserves the invariant; otherwise a[m]>=t, so m and all indices >=m are >=t, so r=m preserves it. On exit l=r, so every index <l has a[i]<t and every index >=l has a[i]>=t, hence l is the smallest index with a[i]>=t, or len(a) if none exists (including t above all entries). Duplicates are handled because the else branch moves r left past equal elements. O(log n) holds since the interval halves each step.",
+  "decision": {
+    "candidates": [
+      "hard"
+    ],
+    "hard_task_index": 2,
+    "reason": "The learner can trace loops, understands sorted arrays, integer division, invariants, and O(log n), and has traced ordinary exact-match binary search. However, they have not implemented or proved a first-greater-or-equal boundary search or debugged its non-progress cases. The task requires (1) independently finding a concrete counterexample by tracing buggy code, (2) designing/adapting a corrected half-open-interval search with guaranteed progress, and (3) constructing a full invariant-based proof of termination and boundary correctness for all arrays including duplicates and t above all entries. The proof and the non-progress repair are not supplied and are nonroutine relative to the stated preparation, making this hard rather than a familiar application. The nearest boundary is medium: if the learner had already implemented or proved a boundary search, the repair and proof would be routine application; here the missing preparation makes the invariant construction and progress argument the specific bottleneck."
+  }
+}

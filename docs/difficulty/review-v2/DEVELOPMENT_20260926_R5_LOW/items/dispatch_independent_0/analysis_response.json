@@ -1,0 +1,61 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题面给出全部必要规则与数据，条件明确，可判定资格、计算优先分并选出唯一工单。",
+  "solution": "有资格：B、C。A工时4>3，D材料不齐，均无资格。优先分：B=2×3+1=7；C=2×4+0=8。最高为C，故选C。不选A是因为A工时4小时超过本轮可用3小时，无资格。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S005"
+      ],
+      "condition_ids": [
+        "S001",
+        "S004"
+      ],
+      "provided_ids": [],
+      "residual_work": "逐单核对材料齐全且工时≤3，筛出B、C，排除A、D。",
+      "mode": "apply_familiar"
+    },
+    {
+      "request_ids": [
+        "S005"
+      ],
+      "condition_ids": [
+        "S002",
+        "S004"
+      ],
+      "provided_ids": [],
+      "residual_work": "对B、C分别代入等待天数与紧急标志，算出优先分7和8。",
+      "mode": "apply_familiar"
+    },
+    {
+      "request_ids": [
+        "S005"
+      ],
+      "condition_ids": [
+        "S003"
+      ],
+      "provided_ids": [],
+      "residual_work": "比较B、C优先分，选最高者C；同分规则未触发。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S005"
+      ],
+      "condition_ids": [
+        "S001",
+        "S004"
+      ],
+      "provided_ids": [],
+      "residual_work": "用A工时4超过3这一条，写一句说明A无资格。",
+      "mode": "construct_argument"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "medium"
+    ],
+    "boundary_reason": "学生已分别练过筛选和公式计算，但未练过组合；本题需先筛资格再算分比较，属于两项熟悉规则的整合应用，无高难非例行瓶颈，故为medium。",
+    "hard_task_index": null
+  }
+}

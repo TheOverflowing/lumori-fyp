@@ -1,0 +1,53 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目条件完整：图、费用、两条简单路径、单边关闭容错及费用上界均明确；学生具备最短路与路径费用基础，允许枚举构造，可判定。",
+  "solution": "取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-C-T，费用2+1+1=4；总费7≤8。任意一条走廊关闭时：若关闭S-A或A-C或C-T，P1断但P2仍通；若关闭S-B或B-C，P2断但P1仍通；若关闭C-T，P1、P2都断，故该方案不抗C-T关闭。需换方案：P1=S-A-B-T，费用1+1+3=5；P2=S-B-C-T，费用2+1+1=4；总费9>8，不行。正确费≤8方案：P1=S-A-C-T，费用3；P2=S-B-T，费用2+3=5；总费8。检查单边关闭：S-A、A-C、C-T只断P1，P2通；S-B、B-T只断P2，P1通；A-B、B-C不在路径上，关闭不影响。故抗任意单边关闭。证明≤7不可能：若总费≤7，两条S-T路径费用分别至少为3（最短路S-A-C-T或S-A-B-C-T等费用3），故只能为3和4或3和3。费用3的S-T路径必用C-T（因S到T不经C-T的最短路为S-A-B-T费用5），费用4的S-T路径也必用C-T（S-B-C-T费用4或S-A-C-T费用3；费用4路径均含C-T）。因此两条路径都含C-T，关闭C-T时全断，不能保证。故≤7不可能。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "在给定图中枚举两条S-T简单路径，计算费用并检验总费≤8及单边关闭容错。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "对候选方案逐条走廊关闭验证至少一条路径完整，或给出覆盖所有关闭边的论证。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S002",
+        "S004"
+      ],
+      "provided_ids": [],
+      "residual_work": "证明总登记费≤7时两条路径必共用某条关键走廊，从而存在关闭使其全断。",
+      "mode": "construct_argument"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "medium",
+      "hard"
+    ],
+    "boundary_reason": "构造费≤8容错方案并逐边验证属于熟悉最短路与路径费用的直接应用，可判medium；但证明≤7不可能需发现费用≤7的两条S-T路径都必含C-T，这是相对入门准备的非平凡瓶颈，故可判hard。",
+    "hard_task_index": 2
+  }
+}

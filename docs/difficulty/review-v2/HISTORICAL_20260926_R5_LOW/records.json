@@ -1,0 +1,1515 @@
+[
+  {
+    "case_id": "real_tasks_20260925_r3_q1",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "47170bdb782ed25e350a6ca94e47862bc540bb0b16c9f3cac062c6b5c1ad48e2",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 15945,
+      "prompt_sha256": "faa9f5d03a1a49e0988fd1fd18f117de9503502b07261cf3f97ebe10c4642a50",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "All six tasks are answerable from the supplied text and standard undergraduate OS concepts; no missing essential condition or ambiguous boundary prevents grading.",
+        "solution": "1) 计数器被 A 与 clockintr 并发读改写，需 tickslock 串行化。交错来源：多处理器并行、线程切换、中断处理程序与可被中断代码同时修改。\n2) A 持锁且中断开启，本 CPU 递交时钟中断，clockintr 再取同一锁而自旋等待；A 被中断打断无法继续，故锁不会被释放，本 CPU 死锁/停滞。其他 CPU 若也需该锁会自旋等待，波及系统。\n3) 约束：会被中断处理程序使用的锁，持锁期间本 CPU 必须关中断。acquire 先关中断再置 locked；release 先释放锁再恢复中断。颠倒则关中断前或释放后开中断前存在窗口，中断可插入并请求同一锁。\n4) push_off/pop_off 记录本 CPU 持锁层数，仅层数归零才恢复到最外层进入前的中断使能状态；每次释放都开中断会破坏外层临界区。\n5) S：A 成立，本 CPU 中断处理程序等待线程释放锁会死锁；B 不适用/不成立，因无另一 CPU。P：A 成立，本 CPU 中断等待本 CPU 线程仍可死锁；B 成立，另一 CPU 中断可等待线程释放锁，但线程可在其他 CPU 运行并释放，故不一定死锁。\n6) 不能替代。禁止同 CPU 重复取锁只防自等待，不防本 CPU 中断在持锁期间打断并请求同一锁；持锁关中断才阻止该中断递交。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S021"
+            ],
+            "condition_ids": [
+              "S016",
+              "S017",
+              "S014"
+            ],
+            "provided_ids": [
+              "S009",
+              "S014"
+            ],
+            "residual_work": "结合计数器读改写与两类访问者，说明互斥需求并列出三类并发来源。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S023",
+              "S024"
+            ],
+            "condition_ids": [
+              "S017",
+              "S018",
+              "S010"
+            ],
+            "provided_ids": [
+              "S003",
+              "S010"
+            ],
+            "residual_work": "逐步推出中断处理程序自旋等待、A 无法释放、本 CPU 停滞及对其他 CPU 的影响。",
+            "mode": "construct_argument"
+          },
+          {
+            "request_ids": [
+              "S026"
+            ],
+            "condition_ids": [
+              "S010",
+              "S011"
+            ],
+            "provided_ids": [
+              "S011"
+            ],
+            "residual_work": "说明设计约束、acquire/release 次序，并解释颠倒次序的危险窗口。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S028"
+            ],
+            "condition_ids": [
+              "S012"
+            ],
+            "provided_ids": [
+              "S012"
+            ],
+            "residual_work": "解释 push_off/pop_off 层数归零才恢复中断，以及无条件开中断为何破坏嵌套。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S030",
+              "S031",
+              "S032",
+              "S033",
+              "S034"
+            ],
+            "condition_ids": [
+              "S015",
+              "S031",
+              "S032"
+            ],
+            "provided_ids": [
+              "S005",
+              "S015"
+            ],
+            "residual_work": "在单 CPU 与多 CPU 下分别判断 A、B，并用关中断作用范围论证。",
+            "mode": "select_or_adapt"
+          },
+          {
+            "request_ids": [
+              "S036",
+              "S037"
+            ],
+            "condition_ids": [
+              "S006",
+              "S010"
+            ],
+            "provided_ids": [
+              "S006"
+            ],
+            "residual_work": "论证禁止同 CPU 重复取锁与持锁关中断针对不同故障模式，不能互相替代。",
+            "mode": "construct_argument"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "medium",
+            "hard"
+          ],
+          "boundary_reason": "任务 2、5、6 需要把自旋锁、中断递交、CPU 作用范围与死锁因果链整合成论证，超出直接复述；但课程资料已给出关键约束，属于熟悉概念的综合应用。任务 6 的替代性论证存在非例行瓶颈，故边界落在 medium 与 hard 之间。",
+          "hard_task_index": 5
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S021",
+                "start": 905,
+                "end": 962,
+                "text": "说明为什么该计数器需要 tickslock 保护，并列出可能使 A 与 clockintr 的访问交错的并发来源。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S016",
+                "start": 718,
+                "end": 748,
+                "text": "内核中有一把自旋锁 tickslock，保护一个计数器变量。"
+              },
+              {
+                "id": "S017",
+                "start": 748,
+                "end": 828,
+                "text": "内核线程 A 在函数 f() 中取 tickslock、读改写该计数器、再释放锁；时钟中断处理程序 clockintr 也会取同一把锁并在临界区内更新该计数器。"
+              },
+              {
+                "id": "S014",
+                "start": 559,
+                "end": 616,
+                "text": "并发指多个指令流交错执行，其来源有三类：多处理器并行、线程切换、以及中断处理程序与可被中断的代码同时修改同一数据。"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S009",
+                "start": 310,
+                "end": 351,
+                "text": "有些自旋锁保护的数据同时被内核线程和中断处理程序使用，锁定用于把这两类访问串行化。"
+              },
+              {
+                "id": "S014",
+                "start": 559,
+                "end": 616,
+                "text": "并发指多个指令流交错执行，其来源有三类：多处理器并行、线程切换、以及中断处理程序与可被中断的代码同时修改同一数据。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S023",
+                "start": 966,
+                "end": 1041,
+                "text": "设 A 在 f() 中已取到 tickslock，但此临界区内中断处于开启状态；此时一个时钟中断在本 CPU 上被递交，clockintr 开始执行。"
+              },
+              {
+                "id": "S024",
+                "start": 1041,
+                "end": 1082,
+                "text": "逐步分析锁最终是否可能被释放、该 CPU 会处于什么状态、是否会波及系统其他部分。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S017",
+                "start": 748,
+                "end": 828,
+                "text": "内核线程 A 在函数 f() 中取 tickslock、读改写该计数器、再释放锁；时钟中断处理程序 clockintr 也会取同一把锁并在临界区内更新该计数器。"
+              },
+              {
+                "id": "S018",
+                "start": 828,
+                "end": 878,
+                "text": "锁的 acquire 与 release 采用“取锁时关本 CPU 中断、释放锁时恢复中断”的策略。"
+              },
+              {
+                "id": "S010",
+                "start": 353,
+                "end": 399,
+                "text": "由此产生一条关键约束：若某自旋锁会被中断处理程序使用，CPU 就绝不能在中断开启时持有该锁。"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S003",
+                "start": 56,
+                "end": 93,
+                "text": "分析持锁且中断开启时被中断处理程序再次请求同一锁所形成的自等待死锁因果链。"
+              },
+              {
+                "id": "S010",
+                "start": 353,
+                "end": 399,
+                "text": "由此产生一条关键约束：若某自旋锁会被中断处理程序使用，CPU 就绝不能在中断开启时持有该锁。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S026",
+                "start": 1086,
+                "end": 1181,
+                "text": "给出避免任务 2 后果的设计约束，并说明 acquire 与 release 中“取锁/释放锁”与“关中断/恢复中断”两组操作的相对先后次序要求；解释次序颠倒为什么会打开一个危险的时间窗口。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S010",
+                "start": 353,
+                "end": 399,
+                "text": "由此产生一条关键约束：若某自旋锁会被中断处理程序使用，CPU 就绝不能在中断开启时持有该锁。"
+              },
+              {
+                "id": "S011",
+                "start": 399,
+                "end": 476,
+                "text": "取锁与开/关中断的相对次序因此很重要：acquire 必须先把本 CPU 的中断关掉，再置位 locked；release 必须先释放锁，之后才恢复中断。"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S011",
+                "start": 399,
+                "end": 476,
+                "text": "取锁与开/关中断的相对次序因此很重要：acquire 必须先把本 CPU 的中断关掉，再置位 locked；release 必须先释放锁，之后才恢复中断。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S028",
+                "start": 1185,
+                "end": 1228,
+                "text": "说明嵌套临界区中如何决定何时才真正恢复中断，以及为什么不能在每次释放锁时无条件开中断。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S012",
+                "start": 476,
+                "end": 541,
+                "text": "嵌套临界区通过 push_off/pop_off 记录本 CPU 上的持锁层数，只有层数归零时才恢复到最外层进入前的中断使能状态。"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S012",
+                "start": 476,
+                "end": 541,
+                "text": "嵌套临界区通过 push_off/pop_off 记录本 CPU 上的持锁层数，只有层数归零时才恢复到最外层进入前的中断使能状态。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S030",
+                "start": 1232,
+                "end": 1285,
+                "text": "分别在下列两种硬件场景下，判断断言 A 与断言 B 是否成立，并结合“禁用（或开启）中断的作用范围”论证："
+              },
+              {
+                "id": "S031",
+                "start": 1286,
+                "end": 1302,
+                "text": "场景 S：系统只有一个 CPU。"
+              },
+              {
+                "id": "S032",
+                "start": 1303,
+                "end": 1380,
+                "text": "场景 P：系统有多个 CPU，A 与 clockintr 都可能运行在其中任一 CPU 上，且 tickslock 可能被不同 CPU 上的代码同时请求。"
+              },
+              {
+                "id": "S033",
+                "start": 1381,
+                "end": 1416,
+                "text": "断言 A：本 CPU 上的中断处理程序可以一直等待某个线程释放自旋锁。"
+              },
+              {
+                "id": "S034",
+                "start": 1417,
+                "end": 1452,
+                "text": "断言 B：另一个 CPU 上的中断处理程序可以等待某个线程释放自旋锁。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S015",
+                "start": 618,
+                "end": 716,
+                "text": "因此，同一个共享锁在不同来源下防的是不同交错；而“关中断”这一类手段只作用于执行它的那个 CPU：它阻止本 CPU 上会使用该锁的中断在临界区内被递交，却不影响其他 CPU 上的执行者取同一把锁。"
+              },
+              {
+                "id": "S031",
+                "start": 1286,
+                "end": 1302,
+                "text": "场景 S：系统只有一个 CPU。"
+              },
+              {
+                "id": "S032",
+                "start": 1303,
+                "end": 1380,
+                "text": "场景 P：系统有多个 CPU，A 与 clockintr 都可能运行在其中任一 CPU 上，且 tickslock 可能被不同 CPU 上的代码同时请求。"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S005",
+                "start": 126,
+                "end": 165,
+                "text": "比较同一共享锁在单 CPU 与多处理器下的后果差异，并界定禁用中断的作用范围。"
+              },
+              {
+                "id": "S015",
+                "start": 618,
+                "end": 716,
+                "text": "因此，同一个共享锁在不同来源下防的是不同交错；而“关中断”这一类手段只作用于执行它的那个 CPU：它阻止本 CPU 上会使用该锁的中断在临界区内被递交，却不影响其他 CPU 上的执行者取同一把锁。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S036",
+                "start": 1456,
+                "end": 1481,
+                "text": "对“CPU 重复取得自己已持有的锁”存在两种立场。"
+              },
+              {
+                "id": "S037",
+                "start": 1481,
+                "end": 1515,
+                "text": "请说明禁止同 CPU 重复取锁是否可以替代在持锁期间关中断，并论证。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S006",
+                "start": 166,
+                "end": 204,
+                "text": "区分禁止同 CPU 重复取锁与持锁关中断两种防护，说明其针对的故障模式不同。"
+              },
+              {
+                "id": "S010",
+                "start": 353,
+                "end": 399,
+                "text": "由此产生一条关键约束：若某自旋锁会被中断处理程序使用，CPU 就绝不能在中断开启时持有该锁。"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S006",
+                "start": 166,
+                "end": 204,
+                "text": "区分禁止同 CPU 重复取锁与持锁关中断两种防护，说明其针对的故障模式不同。"
+              }
+            ]
+          }
+        ],
+        "case_sha256": "e6bb687a3e1ee2424e69c34b6fc0891254cae6ba4d84e7752512787f5068b0ba",
+        "protocol_revision": "difficulty-review-v2.3-evidence-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "1f85c63339ac8a34dcd1f798e4feed266557f22a1bce4129e4a70d07037c246e"
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 57303,
+      "prompt_sha256": "60ce1b96edc8e8c3c6b55dd1a03db59ea5749e725c335900856c02595356e875",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "Tasks 1-6 are scoped; task2 counterfactual is explicit; assertion A/B conditions clear under the ordinary productive-wait reading used by sources.",
+            "evidence_ids": [
+              "E0021",
+              "E0023",
+              "E0026",
+              "E0028",
+              "E0030",
+              "E0033",
+              "E0034",
+              "E0037"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "说明为什么该计数器需要 tickslock 保护，并列出可能使 A 与 clockintr 的访问交错的并发来源。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设 A 在 f() 中已取到 tickslock，但此临界区内中断处于开启状态；此时一个时钟中断在本 CPU 上被递交，clockintr 开始执行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "给出避免任务 2 后果的设计约束，并说明 acquire 与 release 中“取锁/释放锁”与“关中断/恢复中断”两组操作的相对先后次序要求；解释次序颠倒为什么会打开一个危险的时间窗口。"
+              },
+              {
+                "document_id": "student",
+                "quote": "说明嵌套临界区中如何决定何时才真正恢复中断，以及为什么不能在每次释放锁时无条件开中断。"
+              },
+              {
+                "document_id": "student",
+                "quote": "分别在下列两种硬件场景下，判断断言 A 与断言 B 是否成立，并结合“禁用（或开启）中断的作用范围”论证："
+              },
+              {
+                "document_id": "student",
+                "quote": "断言 A：本 CPU 上的中断处理程序可以一直等待某个线程释放自旋锁。"
+              },
+              {
+                "document_id": "student",
+                "quote": "断言 B：另一个 CPU 上的中断处理程序可以等待某个线程释放自旋锁。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请说明禁止同 CPU 重复取锁是否可以替代在持锁期间关中断，并论证。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "fail",
+            "reason": "Analysis solution marks assertion A as 成立 in scenarios S and P, while reference key says A 不成立 in both; contradictory task-5 outcome.",
+            "evidence_ids": [
+              "E0051",
+              "E0052",
+              "E0077",
+              "E0078"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "任务 5：断言 A——场景 S 不成立，场景 P 同样不成立。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "本 CPU 上的中断处理程序一旦自旋等待自己打断的那个持锁线程，该线程就无法继续运行来释放锁，等待只能是死锁而非正常等待；在场景 P 中，被本 CPU 中断打断的线程仍只能等待该中断返回，因此结论与场景 S 相同。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\\n5) S：A 成立，本 CPU 中断处理程序等待线程释放锁会死锁；B 不适用/不成立，因无另一 CPU。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "P：A 成立，本 CPU 中断等待本 CPU 线程仍可死锁；B 成立，另一 CPU 中断可等待线程释放锁，但线程可在其他 CPU 运行并释放，故不一定死锁。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "Explanation states A is false in both scenarios and B only in multiprocessor, matching key and student's same/other CPU scope.",
+            "evidence_ids": [
+              "E0063",
+              "E0064",
+              "E0051",
+              "E0053",
+              "E0033",
+              "E0034"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "任务 5 是最容易出错处：断言 A 在两种场景中都只能得到“不能一直等待”，因为等待者与被等待者在同一 CPU 上；断言 B 只在多处理器场景成立，因为持锁线程在别的 CPU 上仍可推进。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "作答必须把“关中断只作用于本 CPU”这一范围说清楚，并且不要把断言 A 与断言 B 混为一谈。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "任务 5：断言 A——场景 S 不成立，场景 P 同样不成立。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "断言 B——场景 S 中不存在其他 CPU，该情形不可发生；场景 P 中成立。"
+              },
+              {
+                "document_id": "student",
+                "quote": "断言 A：本 CPU 上的中断处理程序可以一直等待某个线程释放自旋锁。"
+              },
+              {
+                "document_id": "student",
+                "quote": "断言 B：另一个 CPU 上的中断处理程序可以等待某个线程释放自旋锁。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "Tickslock, same-CPU deadlock, acquire/release order, nested push_off/pop_off, CPU scope, and reentrant prohibition are all present; task-6 conclusion follows from the combined sources.",
+            "evidence_ids": [
+              "E0096",
+              "E0101",
+              "E0104",
+              "E0106",
+              "E0111",
+              "E0109",
+              "E0121",
+              "E0092",
+              "E0039",
+              "E0040",
+              "E0042",
+              "E0045",
+              "E0055",
+              "E0057"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:context_6e969ab61218a462f2abc58f726040a4",
+                "quote": "Some xv6 spinlocks protect data that is used by both threads and interrupt handlers."
+              },
+              {
+                "document_id": "source:context_cb9db0d5737606abbb40cb3532c7e1f8",
+                "quote": "clockintr would try to acquire tickslock, see it was held, and wait for it to be released."
+              },
+              {
+                "document_id": "source:context_cb9db0d5737606abbb40cb3532c7e1f8",
+                "quote": "To avoid this situation, if a spinlock is used by an interrupt handler, a CPU must never hold that lock with interrupts enabled."
+              },
+              {
+                "document_id": "source:context_cb9db0d5737606abbb40cb3532c7e1f8",
+                "quote": "Interrupts may still occur on other CPUs, so an interrupt’s acquire can wait for a thread to release a spinlock; just not on the same CPU."
+              },
+              {
+                "document_id": "source:context_788a42237a3fb0dd9dc62368670d58e4",
+                "quote": "It is important that acquire call push_off strictly before setting lk->locked."
+              },
+              {
+                "document_id": "source:context_788a42237a3fb0dd9dc62368670d58e4",
+                "quote": "When that count reaches zero, pop_off restores the interrupt enable state that existed at the start of the outermost critical section."
+              },
+              {
+                "document_id": "source:context_253cf66a589aa0d41532d4d6533fc9fe",
+                "quote": "The word concurrency refers to situations in which multiple instruction streams are interleaved, due to multiprocessor parallelism, thread switching, or interrupts."
+              },
+              {
+                "document_id": "source:context_6e969ab61218a462f2abc58f726040a4",
+                "quote": "Xv6 takes this latter view, and forbids a CPU that currently holds a lock from re-acquiring it."
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "任务 1：该计数器被内核线程 A 与中断处理程序 clockintr 共同访问，两者可能交错，因此需要锁把两类访问串行化。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "并发来源有三类：多处理器并行、本 CPU 上的线程切换、以及中断处理程序打断可被中断的代码。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "任务 2：clockintr 会尝试取 tickslock，发现已被 A 持有，于是在本 CPU 上自旋等待。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "任务 3：约束是——只要某自旋锁会被中断处理程序使用，本 CPU 就绝不能在中断开启时持有该锁。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "关键范围差异是：关中断只影响执行它的那个 CPU，不能阻止其他 CPU 上的中断处理程序取同一把锁并等待；它也只能阻止“本 CPU 上会使用该锁的中断在临界区内被递交”，不能覆盖已在本 CPU 上、在临界区之外开始等待同一把锁的中断。"
+              },
+              {
+                "document_id": "reference_answer",
+                "quote": "禁止同 CPU 重复取锁针对的是同一执行上下文再次请求自己已持有的锁，即把这类重入当成错误；而任务 2 的问题是异步中断在持锁期间打断执行并请求同一把锁，并不是同一上下文的重入，禁止重复取锁无法阻止这种交错。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "All six tasks are listed with residual work; boundary medium/hard is tied to non-routine task-6 integration and learner profile assumes only supplied materials and introductory concepts.",
+            "evidence_ids": [
+              "E0066",
+              "E0067",
+              "E0068",
+              "E0021",
+              "E0023",
+              "E0026",
+              "E0028",
+              "E0030",
+              "E0033",
+              "E0034",
+              "E0037",
+              "E0038"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"任务 2、5、6 需要把自旋锁、中断递交、CPU 作用范围与死锁因果链整合成论证，超出直接复述；但课程资料已给出关键约束，属于熟悉概念的综合应用。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "任务 6 的替代性论证存在非例行瓶颈，故边界落在 medium 与 hard 之间。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"candidates\": [\"medium\", \"hard\"], \"hard_task_index\": 5}, \"eligibility\": \"eligible\", \"eligibility_reason\": \"All six tasks are answerable from the supplied text and standard undergraduate OS concepts; no missing essential condition or ambiguous boundary prevents grading."
+              },
+              {
+                "document_id": "student",
+                "quote": "说明为什么该计数器需要 tickslock 保护，并列出可能使 A 与 clockintr 的访问交错的并发来源。"
+              },
+              {
+                "document_id": "student",
+                "quote": "设 A 在 f() 中已取到 tickslock，但此临界区内中断处于开启状态；此时一个时钟中断在本 CPU 上被递交，clockintr 开始执行。"
+              },
+              {
+                "document_id": "student",
+                "quote": "给出避免任务 2 后果的设计约束，并说明 acquire 与 release 中“取锁/释放锁”与“关中断/恢复中断”两组操作的相对先后次序要求；解释次序颠倒为什么会打开一个危险的时间窗口。"
+              },
+              {
+                "document_id": "student",
+                "quote": "说明嵌套临界区中如何决定何时才真正恢复中断，以及为什么不能在每次释放锁时无条件开中断。"
+              },
+              {
+                "document_id": "student",
+                "quote": "分别在下列两种硬件场景下，判断断言 A 与断言 B 是否成立，并结合“禁用（或开启）中断的作用范围”论证："
+              },
+              {
+                "document_id": "student",
+                "quote": "断言 A：本 CPU 上的中断处理程序可以一直等待某个线程释放自旋锁。"
+              },
+              {
+                "document_id": "student",
+                "quote": "断言 B：另一个 CPU 上的中断处理程序可以等待某个线程释放自旋锁。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请说明禁止同 CPU 重复取锁是否可以替代在持锁期间关中断，并论证。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "e6bb687a3e1ee2424e69c34b6fc0891254cae6ba4d84e7752512787f5068b0ba",
+        "analysis_sha256": "877c92ce25a284947a19373e58db0e3948e2da94e967a24fdf160db3a7f577e8",
+        "protocol_revision": "difficulty-review-v2.3-evidence-capacity-20260926",
+        "human_validated": false
+      }
+    },
+    "decision": {
+      "status": "content_issue",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "failed:reference_correct"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 103557
+  },
+  {
+    "case_id": "real_tasks_20260925_r5_q1",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "3becd06f5ca311d30df2b567c477b9a8ee0944099b8c52ce62fe807b194e5c05",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 12765,
+      "prompt_sha256": "6f3d0a2d2fdaaa7b7eef1371defd2aa62f4649456fb9b1cb4555147e25e1a8b4",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目给出完整到达序列、起始序号、累积确认与 NextByteExpected 定义，条件一致且选项可判定；无缺失必要条件。",
+        "solution": "正确选项为 B。接收方已连续收到第 1～200 字节，因此 NextByteExpected 指向第 201 字节；第 201～500 字节尚未到达，构成最先缺失区间。虽然第 501～700 和第 901～1000 字节已到达，但前面有缺口，不能越过缺口累积确认，也不能允许应用读取。故累积确认值指向第 201 字节，最先缺失区间为第 201～500 字节。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S022",
+              "S023"
+            ],
+            "condition_ids": [
+              "S009",
+              "S016",
+              "S017",
+              "S018",
+              "S019",
+              "S020",
+              "S021"
+            ],
+            "provided_ids": [
+              "S012",
+              "S013"
+            ],
+            "residual_work": "依据累积确认规则，从已连续收到的 1～200 字节推出确认值指向 201，并识别最先缺失区间为 201～500。",
+            "mode": "apply_familiar"
+          },
+          {
+            "request_ids": [
+              "S023"
+            ],
+            "condition_ids": [
+              "S016",
+              "S017",
+              "S018",
+              "S019",
+              "S020"
+            ],
+            "provided_ids": [
+              "S025",
+              "S027",
+              "S029",
+              "S031"
+            ],
+            "residual_work": "比较四个选项与累积确认及缺失区间结论，排除 A、C、D，选择 B。",
+            "mode": "select_or_adapt"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "easy",
+            "medium"
+          ],
+          "boundary_reason": "该题只需把已给的累积确认定义直接应用到明确到达序列：连续前缀止于 200，故确认 201，缺失区间 201～500。属于熟悉规则的单步应用，但需在多个干扰选项间正确选择，故介于 easy 与 medium。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S022",
+                "start": 741,
+                "end": 803,
+                "text": "请依据“面向字节序号 + 累积确认”规则，判断接收方此刻应发送的累积确认值指向哪个字节位置，并定位数据中最先出现的缺失区间。"
+              },
+              {
+                "id": "S023",
+                "start": 805,
+                "end": 819,
+                "text": "请选择最符合上述规则的一项。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S009",
+                "start": 301,
+                "end": 326,
+                "text": "约定本情境中起始序号为 1，序号连续递增、不回收。"
+              },
+              {
+                "id": "S016",
+                "start": 575,
+                "end": 594,
+                "text": "1) 第 1～200 字节已按序收到。"
+              },
+              {
+                "id": "S017",
+                "start": 595,
+                "end": 615,
+                "text": "2) 第 201～500 字节尚未到达。"
+              },
+              {
+                "id": "S018",
+                "start": 616,
+                "end": 645,
+                "text": "3) 第 501～700 字节已到达，但它们前面存在缺口。"
+              },
+              {
+                "id": "S019",
+                "start": 646,
+                "end": 666,
+                "text": "4) 第 701～900 字节尚未到达。"
+              },
+              {
+                "id": "S020",
+                "start": 667,
+                "end": 687,
+                "text": "5) 第 901～1000 字节已到达。"
+              },
+              {
+                "id": "S021",
+                "start": 688,
+                "end": 739,
+                "text": "6) 此情境假设接收方不发送延迟确认、不重传，接收缓冲足够大，且发送方不重传第 201～500 字节。"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S012",
+                "start": 359,
+                "end": 466,
+                "text": "NextByteExpected 指向最新的“已收到且其前所有字节都已收到”的字节之后的那个字节：若数据按序到达，它指向 LastByteRcvd 之后；若出现乱序，则它指向数据中第一个缺失字节，即缺失区间的起点。"
+              },
+              {
+                "id": "S013",
+                "start": 466,
+                "end": 501,
+                "text": "一个字节只有在被收到、且其前面所有字节也都已收到之后，才可被应用读取。"
+              }
+            ]
+          },
+          {
+            "request_ids": [
+              {
+                "id": "S023",
+                "start": 805,
+                "end": 819,
+                "text": "请选择最符合上述规则的一项。"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S016",
+                "start": 575,
+                "end": 594,
+                "text": "1) 第 1～200 字节已按序收到。"
+              },
+              {
+                "id": "S017",
+                "start": 595,
+                "end": 615,
+                "text": "2) 第 201～500 字节尚未到达。"
+              },
+              {
+                "id": "S018",
+                "start": 616,
+                "end": 645,
+                "text": "3) 第 501～700 字节已到达，但它们前面存在缺口。"
+              },
+              {
+                "id": "S019",
+                "start": 646,
+                "end": 666,
+                "text": "4) 第 701～900 字节尚未到达。"
+              },
+              {
+                "id": "S020",
+                "start": 667,
+                "end": 687,
+                "text": "5) 第 901～1000 字节已到达。"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S025",
+                "start": 824,
+                "end": 866,
+                "text": "确认值指向第 501 字节（即已连续收到 1～500，缺口从第 501 字节开始）。"
+              },
+              {
+                "id": "S027",
+                "start": 871,
+                "end": 906,
+                "text": "确认值指向第 201 字节，且最先缺失区间为第 201～500 字节。"
+              },
+              {
+                "id": "S029",
+                "start": 911,
+                "end": 949,
+                "text": "确认值指向第 1001 字节，接收方已允许应用读取全部 1～1000 字节。"
+              },
+              {
+                "id": "S031",
+                "start": 954,
+                "end": 988,
+                "text": "确认值指向第 901 字节，最先缺失区间为第 701～901 字节。"
+              }
+            ]
+          }
+        ],
+        "case_sha256": "cfdb4ed84cee884f1c0dc4f352b61ae6c3167fcfca98080f80313256efa4247b",
+        "protocol_revision": "difficulty-review-v2.3-evidence-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "089f8ada0d3083e7d44e7530b3e18b9969f6594c38be385deeb7eb3c7cf84e33"
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 34720,
+      "prompt_sha256": "919d20c9790887a4581b541475ad78f4457fbc86b78b572d08fef635324f52a9",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "到达序列覆盖1-1000，缺口与乱序状态明确，补充假设不冲突；普通阅读下无缺失条件。",
+            "evidence_ids": [
+              "E0014",
+              "E0016",
+              "E0017",
+              "E0018",
+              "E0019",
+              "E0020",
+              "E0021",
+              "E0022"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "某 TCP 连接的接收方正在处理一个反向流量的单向数据流，字节序号从 1 开始连续编号。"
+              },
+              {
+                "document_id": "student",
+                "quote": "1) 第 1～200 字节已按序收到。"
+              },
+              {
+                "document_id": "student",
+                "quote": "2) 第 201～500 字节尚未到达。"
+              },
+              {
+                "document_id": "student",
+                "quote": "3) 第 501～700 字节已到达，但它们前面存在缺口。"
+              },
+              {
+                "document_id": "student",
+                "quote": "4) 第 701～900 字节尚未到达。"
+              },
+              {
+                "document_id": "student",
+                "quote": "5) 第 901～1000 字节已到达。"
+              },
+              {
+                "document_id": "student",
+                "quote": "6) 此情境假设接收方不发送延迟确认、不重传，接收缓冲足够大，且发送方不重传第 201～500 字节。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请依据“面向字节序号 + 累积确认”规则，判断接收方此刻应发送的累积确认值指向哪个字节位置，并定位数据中最先出现的缺失区间。"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "连续前缀1-200使ACK指向201；A/C/D分别因越过缺口或错误起点被排除，B为唯一正确项。",
+            "evidence_ids": [
+              "E0033",
+              "E0037",
+              "E0038",
+              "E0039",
+              "E0040",
+              "E0044",
+              "E0045",
+              "E0047"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "B"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "所以正确结论是：累积确认指向第 201 字节，最先缺失区间为 201～500。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "A 错在把缺口起点误当成 501，并把已到达的 501～700 视为已连续。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "C 错在假设缺口不影响可确认范围，把 1001 当成可确认位置。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "D 错在缺口起点与累积确认位置均被错误定位。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"正确选项为 B。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "接收方已连续收到第 1～200 字节，因此 NextByteExpected 指向第 201 字节；第 201～500 字节尚未到达，构成最先缺失区间。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "故累积确认值指向第 201 字节，最先缺失区间为第 201～500 字节。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "pass",
+            "reason": "解释将累积确认指向第一个缺失字节201，与NextByteExpected定义一致；未混淆指针201与缺失区间。",
+            "evidence_ids": [
+              "E0012",
+              "E0013",
+              "E0034",
+              "E0035",
+              "E0036",
+              "E0037"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "NextByteExpected 指向最新的“已收到且其前所有字节都已收到”的字节之后的那个字节：若数据按序到达，它指向 LastByteRcvd 之后；若出现乱序，则它指向数据中第一个缺失字节，即缺失区间的起点。"
+              },
+              {
+                "document_id": "student",
+                "quote": "一个字节只有在被收到、且其前面所有字节也都已收到之后，才可被应用读取。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "TCP 面向字节，每个字节都有序号，接收方用累积确认表示“该序号之前的字节都已连续收到”。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "第 1～200 字节连续到达，第 201 字节缺失，于是 NextByteExpected 指向第一个缺失字节，即第 201 字节。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "虽然第 501～700、901～1000 字节已到达，但它们前面的 201～500 存在缺口，因此这些乱序字节不能被越过缺口确认；接收缓冲即便暂存了它们，应用也不能读取连续状态下的第 201 字节及之后数据。"
+              },
+              {
+                "document_id": "reference_explanation",
+                "quote": "所以正确结论是：累积确认指向第 201 字节，最先缺失区间为 201～500。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "pass",
+            "reason": "来源支持面向字节序号、接收缓存、NextByteExpected指向首个缺口及连续性读取前提；题中定义由这些来源覆盖。",
+            "evidence_ids": [
+              "E0062",
+              "E0063",
+              "E0069",
+              "E0070",
+              "E0072",
+              "E0075",
+              "E0076",
+              "E0078",
+              "E0006",
+              "E0007",
+              "E0011",
+              "E0012",
+              "E0013"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:context_199c09ce877546cc6641001e1dd6ead4",
+                "quote": "Because TCP is a byte-oriented protocol, each byte of data has a sequence number."
+              },
+              {
+                "document_id": "source:context_199c09ce877546cc6641001e1dd6ead4",
+                "quote": "The SequenceNum field contains the sequence number for the first byte of data carried in that segment, and the Acknowledgement and AdvertisedWindow fields carry information about the flow of data going in the other direction."
+              },
+              {
+                "document_id": "source:context_4d79e8b0335c674e0ef7061b94ee3471",
+                "quote": "On the receiving side, TCP maintains a receive buffer."
+              },
+              {
+                "document_id": "source:context_4d79e8b0335c674e0ef7061b94ee3471",
+                "quote": "This buffer holds data that arrives out of order, as well as data that is in the correct order (i."
+              },
+              {
+                "document_id": "source:context_4d79e8b0335c674e0ef7061b94ee3471",
+                "quote": ", there are no missing bytes earlier in the stream) but that the application process has not yet had the chance to read."
+              },
+              {
+                "document_id": "source:context_4d79e8b0335c674e0ef7061b94ee3471",
+                "quote": "is true because a byte cannot be read by the application until it is received and all preceding bytes have also been received."
+              },
+              {
+                "document_id": "source:context_4d79e8b0335c674e0ef7061b94ee3471",
+                "quote": "NextByteExpected points to the byte immediately after the latest byte to meet this criterion."
+              },
+              {
+                "document_id": "source:context_4880e8f2cd6feb858236c20181921f5c",
+                "quote": "since, if data has arrived in order, NextByteExpected points to the byte after LastByteRcvd, whereas if data has arrived out of order, then NextByteExpected points to the start of the first gap in the data, as in Figure 132."
+              },
+              {
+                "document_id": "student",
+                "quote": "TCP 是面向字节的协议：发送进程写入字节流，接收进程读出字节流，而网络上传输的是包含一段字节流的报文段。"
+              },
+              {
+                "document_id": "student",
+                "quote": "因为面向字节，每个字节都有序号；SequenceNum 字段给出该段所携带数据的第一个字节的序号。"
+              },
+              {
+                "document_id": "student",
+                "quote": "接收方维护接收缓冲，可暂存乱序到达的数据。"
+              },
+              {
+                "document_id": "student",
+                "quote": "NextByteExpected 指向最新的“已收到且其前所有字节都已收到”的字节之后的那个字节：若数据按序到达，它指向 LastByteRcvd 之后；若出现乱序，则它指向数据中第一个缺失字节，即缺失区间的起点。"
+              },
+              {
+                "document_id": "student",
+                "quote": "一个字节只有在被收到、且其前面所有字节也都已收到之后，才可被应用读取。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "题目提供完整状态和规则，仅需映射连续前缀并排除选项；profile明确已学课程资料，easy-medium边界合理。",
+            "evidence_ids": [
+              "E0041",
+              "E0042",
+              "E0043",
+              "E0048",
+              "E0049",
+              "E0016",
+              "E0017",
+              "E0018",
+              "E0019",
+              "E0020",
+              "E0022",
+              "E0023",
+              "E0027",
+              "E0032"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"该题只需把已给的累积确认定义直接应用到明确到达序列：连续前缀止于 200，故确认 201，缺失区间 201～500。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "属于熟悉规则的单步应用，但需在多个干扰选项间正确选择，故介于 easy 与 medium。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"candidates\": [\"easy\", \"medium\"], \"hard_task_index\": null}, \"eligibility\": \"eligible\", \"eligibility_reason\": \"题目给出完整到达序列、起始序号、累积确认与 NextByteExpected 定义，条件一致且选项可判定；无缺失必要条件。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S009\", \"S016\", \"S017\", \"S018\", \"S019\", \"S020\", \"S021\"], \"mode\": \"apply_familiar\", \"provided_ids\": [\"S012\", \"S013\"], \"request_ids\": [\"S022\", \"S023\"], \"residual_work\": \"依据累积确认规则，从已连续收到的 1～200 字节推出确认值指向 201，并识别最先缺失区间为 201～500。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\"}, {\"condition_ids\": [\"S016\", \"S017\", \"S018\", \"S019\", \"S020\"], \"mode\": \"select_or_adapt\", \"provided_ids\": [\"S025\", \"S027\", \"S029\", \"S031\"], \"request_ids\": [\"S023\"], \"residual_work\": \"比较四个选项与累积确认及缺失区间结论，排除 A、C、D，选择 B。"
+              },
+              {
+                "document_id": "student",
+                "quote": "1) 第 1～200 字节已按序收到。"
+              },
+              {
+                "document_id": "student",
+                "quote": "2) 第 201～500 字节尚未到达。"
+              },
+              {
+                "document_id": "student",
+                "quote": "3) 第 501～700 字节已到达，但它们前面存在缺口。"
+              },
+              {
+                "document_id": "student",
+                "quote": "4) 第 701～900 字节尚未到达。"
+              },
+              {
+                "document_id": "student",
+                "quote": "5) 第 901～1000 字节已到达。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请依据“面向字节序号 + 累积确认”规则，判断接收方此刻应发送的累积确认值指向哪个字节位置，并定位数据中最先出现的缺失区间。"
+              },
+              {
+                "document_id": "student",
+                "quote": "请选择最符合上述规则的一项。"
+              },
+              {
+                "document_id": "student",
+                "quote": "确认值指向第 201 字节，且最先缺失区间为第 201～500 字节。"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "cfdb4ed84cee884f1c0dc4f352b61ae6c3167fcfca98080f80313256efa4247b",
+        "analysis_sha256": "5ddd56a2ea543ac48b1432f1ffb5b1330273d154574372d731dd109c3e51a60e",
+        "protocol_revision": "difficulty-review-v2.3-evidence-capacity-20260926",
+        "human_validated": false
+      }
+    },
+    "decision": {
+      "status": "boundary",
+      "candidates": [
+        "easy",
+        "medium"
+      ],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "plausible",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "difficulty_boundary"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 48218
+  },
+  {
+    "case_id": "real_tasks_20260925_r6_q1",
+    "repeat": 0,
+    "status": "complete",
+    "input_sha256": "7e7f16f8bbb38e1d234a419ea19619a94e7fd12ad66c345f110168a275084368",
+    "analysis": {
+      "status": "validated",
+      "prompt_bytes": 10893,
+      "prompt_sha256": "13e81ba079e759115d64568fe2a9ea1baaea82f9e1beb17c0e4aaa24feda7a81",
+      "result": {
+        "eligibility": "eligible",
+        "eligibility_reason": "题目给出初始 NextByteExpected=1000、各段序号与长度，并明确累积确认规则；条件完整且无歧义，可唯一确定答案。",
+        "solution": "段 P 覆盖 [1200,1400)，段 Q 覆盖 [1000,1100)，段 R 覆盖 [1400,1700)。接收端从 1000 开始，Q 到达后连续收到 [1000,1100)，故 NextByteExpected 变为 1100；P 与 R 虽已到达，但 [1100,1200) 缺失，不能与已收前缀连续，不能抬高累积确认号。因此有效累积确认号停在缺失区间起点 1100，选 C。",
+        "tasks": [
+          {
+            "request_ids": [
+              "S017"
+            ],
+            "condition_ids": [
+              "S012",
+              "S014",
+              "S015",
+              "S016"
+            ],
+            "provided_ids": [
+              "S006",
+              "S009",
+              "S010",
+              "S011"
+            ],
+            "residual_work": "由各段序号与长度写出覆盖区间，按到达顺序维护连续已收前缀，识别 [1100,1200) 缺失，并据此确定确认号。",
+            "mode": "apply_familiar"
+          }
+        ],
+        "decision": {
+          "candidates": [
+            "easy",
+            "medium"
+          ],
+          "boundary_reason": "该题只需把已给的序号、长度和累积确认规则直接套到三个段上，属于熟悉规则的直接应用；但需要按到达顺序维护连续前缀并识别缺失区间，不是单纯复述答案，故介于 easy 与 medium，取相邻候选。",
+          "hard_task_index": null
+        },
+        "estimated_difficulty": "uncertain",
+        "resolved_evidence": [
+          {
+            "request_ids": [
+              {
+                "id": "S017",
+                "start": 650,
+                "end": 712,
+                "text": "问题：按 TCP 的字节序号与累积确认规则，此时接收端可回送的有效累积确认号（Acknowledgement 值）应为多少？"
+              }
+            ],
+            "condition_ids": [
+              {
+                "id": "S012",
+                "start": 437,
+                "end": 529,
+                "text": "某单向 TCP 连接的数据流：初始 NextByteExpected = 1000，接收端尚未收到任何数据字节；每个数据段携带连续的整数个数据字节，段长由“长度”给出，且各段互不重叠。"
+              },
+              {
+                "id": "S014",
+                "start": 544,
+                "end": 578,
+                "text": "1) 段 P：SequenceNum = 1200，长度 = 200"
+              },
+              {
+                "id": "S015",
+                "start": 579,
+                "end": 613,
+                "text": "2) 段 Q：SequenceNum = 1000，长度 = 100"
+              },
+              {
+                "id": "S016",
+                "start": 614,
+                "end": 648,
+                "text": "3) 段 R：SequenceNum = 1400，长度 = 300"
+              }
+            ],
+            "provided_ids": [
+              {
+                "id": "S006",
+                "start": 154,
+                "end": 212,
+                "text": "段的 SequenceNum 字段给出该段所载数据的第一个字节的序号，因此一个到达段覆盖从该序号开始的连续若干字节。"
+              },
+              {
+                "id": "S009",
+                "start": 280,
+                "end": 355,
+                "text": "接收端的 NextByteExpected 指向第一个空缺（尚未收到的连续字节）的起点；若数据按序到达，它指向 LastByteRcvd 之后的字节。"
+              },
+              {
+                "id": "S010",
+                "start": 356,
+                "end": 403,
+                "text": "累积确认只反映到第一个空缺之前连续收到的字节；乱序到达但不与已收前缀连续的数据不能抬高确认号。"
+              },
+              {
+                "id": "S011",
+                "start": 404,
+                "end": 435,
+                "text": "因此在存在缺失字节区间时，有效累积确认号停在缺失区间的起点前。"
+              }
+            ]
+          }
+        ],
+        "case_sha256": "582f95d4ac12a91906c4d0c49c17a212cd52d4edc9160e458adc41fbc85121e2",
+        "protocol_revision": "difficulty-review-v2.3-evidence-capacity-20260926",
+        "human_validated": false,
+        "analysis_sha256": "55322d30ac3ca0856114dc5cee21c0fe58b94e8b1bf7227dc5d86f707ea9910f"
+      }
+    },
+    "verification": {
+      "status": "validated",
+      "prompt_bytes": 34226,
+      "prompt_sha256": "0cfce9935cd6e0548c69264bb91e51eb3761e6987c0645bd31264dcbac91d891",
+      "result": {
+        "checks": {
+          "conditions_complete": {
+            "status": "pass",
+            "reason": "给出初始期望序号、各段序号/长度、到达顺序与非重叠，足以按累积确认规则唯一确定 ACK=1100；无缺失条件。",
+            "evidence_ids": [
+              "E0012",
+              "E0014",
+              "E0015",
+              "E0016",
+              "E0017"
+            ],
+            "evidence": [
+              {
+                "document_id": "student",
+                "quote": "某单向 TCP 连接的数据流：初始 NextByteExpected = 1000，接收端尚未收到任何数据字节；每个数据段携带连续的整数个数据字节，段长由“长度”给出，且各段互不重叠。"
+              },
+              {
+                "document_id": "student",
+                "quote": "1) 段 P：SequenceNum = 1200，长度 = 200"
+              },
+              {
+                "document_id": "student",
+                "quote": "2) 段 Q：SequenceNum = 1000，长度 = 100"
+              },
+              {
+                "document_id": "student",
+                "quote": "3) 段 R：SequenceNum = 1400，长度 = 300"
+              },
+              {
+                "document_id": "student",
+                "quote": "问题：按 TCP 的字节序号与累积确认规则，此时接收端可回送的有效累积确认号（Acknowledgement 值）应为多少？"
+              }
+            ]
+          },
+          "reference_correct": {
+            "status": "pass",
+            "reason": "Q 覆盖 1000–1099 后连续前缀到 1099，缺失 1100–1199，ACK 只能为 1100；A/B/D 均越过或落在非边界，C 正确。",
+            "evidence_ids": [
+              "E0027",
+              "E0035",
+              "E0036",
+              "E0037"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_answer",
+                "quote": "C"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"solution\": \"段 P 覆盖 [1200,1400)，段 Q 覆盖 [1000,1100)，段 R 覆盖 [1400,1700)。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "接收端从 1000 开始，Q 到达后连续收到 [1000,1100)，故 NextByteExpected 变为 1100；P 与 R 虽已到达，但 [1100,1200) 缺失，不能与已收前缀连续，不能抬高累积确认号。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "因此有效累积确认号停在缺失区间起点 1100，选 C。"
+              }
+            ]
+          },
+          "explanation_consistent": {
+            "status": "uncertain",
+            "reason": "E0011 称确认号停在缺失区间起点前，若按字面取 1099；但 E0030 将 ACK=1100（缺口起点），与 E0009 一致但与 E0011 冲突。",
+            "evidence_ids": [
+              "E0030",
+              "E0009",
+              "E0011"
+            ],
+            "evidence": [
+              {
+                "document_id": "reference_explanation",
+                "quote": "C 选项 1100：段 Q 已按序到达并覆盖 1000–1099，之后 1100–1199 缺失，因此第一个空缺起点是 1100，累积确认号停在 1100，正确。"
+              },
+              {
+                "document_id": "student",
+                "quote": "接收端的 NextByteExpected 指向第一个空缺（尚未收到的连续字节）的起点；若数据按序到达，它指向 LastByteRcvd 之后的字节。"
+              },
+              {
+                "document_id": "student",
+                "quote": "因此在存在缺失字节区间时，有效累积确认号停在缺失区间的起点前。"
+              }
+            ]
+          },
+          "source_support": {
+            "status": "uncertain",
+            "reason": "E0052 支持 SequenceNum 首字节，E0074 支持乱序时 NextByteExpected 指向首缺口，但未提供来源说明 ACK 值等于该指针，E0010/E0011 无直接出处。",
+            "evidence_ids": [
+              "E0052",
+              "E0074",
+              "E0006",
+              "E0009",
+              "E0010",
+              "E0011"
+            ],
+            "evidence": [
+              {
+                "document_id": "source:context_50cce0b14f8a0a967a4fa7d49fd473c6",
+                "quote": "The SequenceNum field contains the sequence number for the first byte of data carried in that segment, and the Acknowledgement and AdvertisedWindow fields carry information about the flow of data going in the other direction."
+              },
+              {
+                "document_id": "source:context_9a0e0a8fe960219d9262b9eb78135d3f",
+                "quote": "since, if data has arrived in order, NextByteExpected points to the byte after LastByteRcvd, whereas if data has arrived out of order, then NextByteExpected points to the start of the first gap in the data, as in Figure 132."
+              },
+              {
+                "document_id": "student",
+                "quote": "段的 SequenceNum 字段给出该段所载数据的第一个字节的序号，因此一个到达段覆盖从该序号开始的连续若干字节。"
+              },
+              {
+                "document_id": "student",
+                "quote": "接收端的 NextByteExpected 指向第一个空缺（尚未收到的连续字节）的起点；若数据按序到达，它指向 LastByteRcvd 之后的字节。"
+              },
+              {
+                "document_id": "student",
+                "quote": "累积确认只反映到第一个空缺之前连续收到的字节；乱序到达但不与已收前缀连续的数据不能抬高确认号。"
+              },
+              {
+                "document_id": "student",
+                "quote": "因此在存在缺失字节区间时，有效累积确认号停在缺失区间的起点前。"
+              }
+            ]
+          },
+          "demand_supported": {
+            "status": "pass",
+            "reason": "需用给定规则维护连续前缀并识别缺口，非直接检索；profile 表明学过课程/入门概念，足以支持 apply_familiar，未虚构练习。",
+            "evidence_ids": [
+              "E0033",
+              "E0038",
+              "E0012",
+              "E0014",
+              "E0015",
+              "E0016",
+              "E0017",
+              "E0026"
+            ],
+            "evidence": [
+              {
+                "document_id": "analysis",
+                "quote": "{\"decision\": {\"boundary_reason\": \"该题只需把已给的序号、长度和累积确认规则直接套到三个段上，属于熟悉规则的直接应用；但需要按到达顺序维护连续前缀并识别缺失区间，不是单纯复述答案，故介于 easy 与 medium，取相邻候选。"
+              },
+              {
+                "document_id": "analysis",
+                "quote": "\", \"tasks\": [{\"condition_ids\": [\"S012\", \"S014\", \"S015\", \"S016\"], \"mode\": \"apply_familiar\", \"provided_ids\": [\"S006\", \"S009\", \"S010\", \"S011\"], \"request_ids\": [\"S017\"], \"residual_work\": \"由各段序号与长度写出覆盖区间，按到达顺序维护连续已收前缀，识别 [1100,1200) 缺失，并据此确定确认号。"
+              },
+              {
+                "document_id": "student",
+                "quote": "某单向 TCP 连接的数据流：初始 NextByteExpected = 1000，接收端尚未收到任何数据字节；每个数据段携带连续的整数个数据字节，段长由“长度”给出，且各段互不重叠。"
+              },
+              {
+                "document_id": "student",
+                "quote": "1) 段 P：SequenceNum = 1200，长度 = 200"
+              },
+              {
+                "document_id": "student",
+                "quote": "2) 段 Q：SequenceNum = 1000，长度 = 100"
+              },
+              {
+                "document_id": "student",
+                "quote": "3) 段 R：SequenceNum = 1400，长度 = 300"
+              },
+              {
+                "document_id": "student",
+                "quote": "问题：按 TCP 的字节序号与累积确认规则，此时接收端可回送的有效累积确认号（Acknowledgement 值）应为多少？"
+              },
+              {
+                "document_id": "learner_profile",
+                "quote": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。"
+              }
+            ]
+          }
+        },
+        "case_sha256": "582f95d4ac12a91906c4d0c49c17a212cd52d4edc9160e458adc41fbc85121e2",
+        "analysis_sha256": "db67d5d448aeae74b50c08a14063756613104098f3d5bb350c4e3c78b8f15ab8",
+        "protocol_revision": "difficulty-review-v2.3-evidence-capacity-20260926",
+        "human_validated": false
+      }
+    },
+    "decision": {
+      "status": "insufficient_evidence",
+      "candidates": [],
+      "estimated_difficulty": "uncertain",
+      "target_relation": "unknown",
+      "recommendation": "manual_review",
+      "reason_codes": [
+        "uncertain:explanation_consistent",
+        "uncertain:source_support"
+      ],
+      "enforcement_enabled": false,
+      "human_validated": false
+    },
+    "duration_ms": 81684
+  }
+]

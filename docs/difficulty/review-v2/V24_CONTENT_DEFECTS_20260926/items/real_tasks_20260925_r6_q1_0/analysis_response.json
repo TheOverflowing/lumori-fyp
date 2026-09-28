@@ -1,0 +1,33 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目给出初始 NextByteExpected、各段序号与长度，规则完整且选项互斥；按累积确认可唯一确定答案。",
+  "solution": "段 P 覆盖 [1200,1400)，段 Q 覆盖 [1000,1100)，段 R 覆盖 [1400,1700)。初始 NextByteExpected=1000，Q 到达后连续收到 [1000,1100)，故确认号可到 1100；但 [1100,1200) 缺失，P、R 虽已到达也不能抬高累积确认。因此有效累积确认号为 1100，选 C。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S017"
+      ],
+      "condition_ids": [
+        "S012",
+        "S014",
+        "S015",
+        "S016"
+      ],
+      "provided_ids": [
+        "S006",
+        "S009",
+        "S010",
+        "S011"
+      ],
+      "residual_work": "计算各段覆盖区间，找出首个空缺 [1100,1200)，据此确定累积确认号并匹配选项。",
+      "mode": "apply_familiar"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "easy"
+    ],
+    "boundary_reason": "该题只需把已给序号与长度转成区间，并直接套用已给累积确认规则；无多规则整合或非例行瓶颈，属于即时应用。",
+    "hard_task_index": null
+  }
+}

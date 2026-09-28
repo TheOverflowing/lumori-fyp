@@ -1,0 +1,94 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "pass",
+      "reason": "到达序列、起始序号、累积确认与NextByteExpected定义、无延迟确认/不重传/缓冲足够等条件齐备且互不冲突；单向流与字节序号范围明确。",
+      "evidence": [
+        {
+          "document_id": "student",
+          "quote": "约定本情境中起始序号为 1，序号连续递增、不回收。"
+        },
+        {
+          "document_id": "student",
+          "quote": "此情境假设接收方不发送延迟确认、不重传，接收缓冲足够大，且发送方不重传第 201～500 字节。"
+        },
+        {
+          "document_id": "student",
+          "quote": "NextByteExpected 指向最新的“已收到且其前所有字节都已收到”的字节之后的那个字节"
+        }
+      ]
+    },
+    "reference_correct": {
+      "status": "pass",
+      "reason": "连续前缀仅1～200，201缺失，累积确认与NextByteExpected均指向201；501～700、901～1000因缺口不可越过确认，最先缺失区间201～500，B正确。",
+      "evidence": [
+        {
+          "document_id": "reference_answer",
+          "quote": "B"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "接收方已连续收到第1～200字节，第201字节起缺失；第501～700、901～1000字节虽到达，但因前面有缺口，不能使累积确认前移。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "NextByteExpected 指向第一个缺失字节，即第201字节；累积确认值也指向第201字节"
+        }
+      ]
+    },
+    "explanation_consistent": {
+      "status": "pass",
+      "reason": "解释与B一致：累积确认指向201，最先缺失201～500；并正确区分“指向201的确认值”与“201～500缺失区间”，未把指针值等同于区间。",
+      "evidence": [
+        {
+          "document_id": "reference_explanation",
+          "quote": "累积确认指向第 201 字节，最先缺失区间为 201～500。"
+        },
+        {
+          "document_id": "student",
+          "quote": "NextByteExpected 指向数据中第一个缺失字节，即缺失区间的起点。"
+        },
+        {
+          "document_id": "reference_explanation",
+          "quote": "A 错在把缺口起点误当成 501，并把已到达的 501～700 视为已连续。"
+        }
+      ]
+    },
+    "source_support": {
+      "status": "pass",
+      "reason": "来源支持字节序号、接收缓冲暂存乱序、NextByteExpected指向首个缺口起点等关键事实，足以支撑B的判定。",
+      "evidence": [
+        {
+          "document_id": "source:context_199c09ce877546cc6641001e1dd6ead4",
+          "quote": "Because TCP is a byte-oriented protocol, each byte of data has a sequence number."
+        },
+        {
+          "document_id": "source:context_4d79e8b0335c674e0ef7061b94ee3471",
+          "quote": "This buffer holds data that arrives out of order, as well as data that is in the correct order"
+        },
+        {
+          "document_id": "source:context_4880e8f2cd6feb858236c20181921f5c",
+          "quote": "if data has arrived out of order, then NextByteExpected points to the start of the first gap in the data"
+        }
+      ]
+    },
+    "demand_supported": {
+      "status": "pass",
+      "reason": "任务覆盖识别连续前缀、定位缺口、匹配选项；分析将给定定义与求解步骤分开，剩余工作仅为直接应用规则，easy边界有依据。",
+      "evidence": [
+        {
+          "document_id": "analysis",
+          "quote": "该题只需按已给定义识别连续前缀并匹配选项，属于对累积确认规则的直接应用；无多步非例行瓶颈，故为easy。"
+        },
+        {
+          "document_id": "student",
+          "quote": "请依据“面向字节序号 + 累积确认”规则，判断接收方此刻应发送的累积确认值指向哪个字节位置，并定位数据中最先出现的缺失区间。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "把已到达区间与连续前缀区分开，确定累积确认只能覆盖1～200，并据此选出B。"
+        }
+      ]
+    }
+  }
+}

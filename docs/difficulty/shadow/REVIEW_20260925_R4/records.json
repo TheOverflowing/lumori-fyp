@@ -1,0 +1,27 @@
+[
+  {
+    "case_id": "REAL_TASKS_20260925_R4_task_1_q1",
+    "job_id": "ec4569680c3b461caab8f8b89360fbf1",
+    "content_id": "7d1f2ad0da5c4b62be558b326dc4ba5f",
+    "source_directory": "docs/difficulty/shadow/REAL_TASKS_20260925_R4",
+    "asset_sha256": "51ad3783e4bd4efc9b16b409edb53cd6aa696f60deb492103c5a28ea07fa3919",
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "student_visible_text": "Learning objectives:\n说出事务原子性“全有或全无”的含义。\n判断转账中途失败时，已执行但未提交的更新是否应生效。\n区分 PostgreSQL 中 COMMIT 与 ROLLBACK 对事务内更新的不同结果。\n\n事务的原子性\n事务把多个步骤捆绑成一个单一的全有或全无操作。\n中间状态对其他并发事务不可见：若某次故障使事务无法完成，那么已执行的任何步骤都不影响数据库。\n资料中的银行例子：不能出现 Bob 收到 100 美元却没有从 Alice 账户扣款，也不能出现扣了 Alice 却没有贷记 Bob。\n从其他事务的角度看，事务要么完全发生，要么根本不发生。\n\nPostgreSQL 中的 BEGIN、COMMIT 与 ROLLBACK\n在 PostgreSQL 中，用 BEGIN 和 COMMIT 把事务的 SQL 命令包起来，形成事务块。\n若事务进行到一半决定不提交（例如刚发现 Alice 的余额变成负数），可以改为发出 ROLLBACK，此前所有更新都会被取消。\n未提交的更新对其他事务不可见；提交时，已提交的更改作为一个整体对其它会话可见，被回滚的更改则完全不会变得可见。\n若不发出 BEGIN，每条单独的语句都有隐式的 BEGIN，并在成功时被 COMMIT 包裹。\n\nAlice 向 Bob 转账 100 美元，其 PostgreSQL 事务用 BEGIN 开始，包含“从 Alice 账户扣款 100”和“向 Bob 账户贷记 100”两条更新。\n\n条件：\n1. 事务尚未发出 COMMIT。\n2. 在写入两条更新期间发生故障，事务无法完成。\n3. 资料中的银行例子要求：不应出现 Bob 收到 100 美元却没有从 Alice 账户扣款，也不应出现扣了 Alice 却未贷记 Bob。\n\n下面哪一项描述符合资料对原子性以及 COMMIT/ROLLBACK 作用的说明？\n\nA. 该事务是原子的：在没有 COMMIT 的情况下，任何已执行的更新都不会生效；若改为发出 ROLLBACK，此前所有更新也会被取消。\n\nB. 只有“向 Bob 账户贷记 100”会保留下来，因为它是事务中最后执行的一句。\n\nC. 两条更新会立即生效并永久保存，因为 PostgreSQL 会把每条 SQL 语句各自当作一个事务并自动 COMMIT。\n\nD. 由于已经执行了至少一条更新，事务完成后必然把两条更新都写入磁盘，只有 ROLLBACK 才能阻止第二条生效。",
+    "original_difficulty": "easy",
+    "published_difficulty": "easy",
+    "target_difficulty": "easy",
+    "acceptance_status": "strict",
+    "strict_passed": true,
+    "judge_status": "validated",
+    "eligibility": "eligible",
+    "candidates": [
+      "easy"
+    ],
+    "comparison": "agrees",
+    "published_comparison": "agrees",
+    "judge_reason": "该题是直接检索与匹配：资料已明确给出原子性“全有或全无”、未提交更新不生效、ROLLBACK 取消此前更新，以及 BEGIN 包裹语句形成事务块。学习者只需识别选项 A 与这些陈述一致，并排除三个与资料直接矛盾的干扰项，属于熟悉材料的复述与辨认，不涉及新的策略或论证瓶颈。最近边界为 easy 与 medium：本题不要求独立证据选择或整合多个未直接给出的概念，因为正确选项的完整理由已在资料中逐条陈述，故定为 easy。",
+    "audit_status": "no_issue_found",
+    "audit_findings": [],
+    "shadow_duration_ms": 3662
+  }
+]

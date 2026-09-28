@@ -1,0 +1,612 @@
+{
+  "id": "7d1f2ad0da5c4b62be558b326dc4ba5f",
+  "course_id": "68dcd1190afb438f8f86d83b71e6dcd7",
+  "job_id": "ec4569680c3b461caab8f8b89360fbf1",
+  "version": 1,
+  "status": "draft",
+  "asset": {
+    "title": "识别简单 PostgreSQL 转账中的事务原子性，以及 COMMIT 和 ROLLBACK 的作用。",
+    "evidence_sufficient": true,
+    "evidence_note": "",
+    "learning_objectives": [
+      "说出事务原子性“全有或全无”的含义。",
+      "判断转账中途失败时，已执行但未提交的更新是否应生效。",
+      "区分 PostgreSQL 中 COMMIT 与 ROLLBACK 对事务内更新的不同结果。"
+    ],
+    "section_scope": "shared",
+    "sections": [
+      {
+        "heading": "事务的原子性",
+        "text": "事务把多个步骤捆绑成一个单一的全有或全无操作。\n中间状态对其他并发事务不可见：若某次故障使事务无法完成，那么已执行的任何步骤都不影响数据库。\n资料中的银行例子：不能出现 Bob 收到 100 美元却没有从 Alice 账户扣款，也不能出现扣了 Alice 却没有贷记 Bob。\n从其他事务的角度看，事务要么完全发生，要么根本不发生。",
+        "citation_ids": [
+          "context_5272194b24cbab69fac1132aab4c49e3"
+        ]
+      },
+      {
+        "heading": "PostgreSQL 中的 BEGIN、COMMIT 与 ROLLBACK",
+        "text": "在 PostgreSQL 中，用 BEGIN 和 COMMIT 把事务的 SQL 命令包起来，形成事务块。\n若事务进行到一半决定不提交（例如刚发现 Alice 的余额变成负数），可以改为发出 ROLLBACK，此前所有更新都会被取消。\n未提交的更新对其他事务不可见；提交时，已提交的更改作为一个整体对其它会话可见，被回滚的更改则完全不会变得可见。\n若不发出 BEGIN，每条单独的语句都有隐式的 BEGIN，并在成功时被 COMMIT 包裹。",
+        "citation_ids": [
+          "context_061768d877b186a640e491e8ef69d909",
+          "context_92433ce91f957a3ac489c075dad91e1f",
+          "context_6f8d6b6c0cf24e5f381c70638f7570a3"
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "slot_id": "q1",
+        "difficulty": "easy",
+        "difficulty_design": {
+          "cognitive_process": "understand",
+          "concepts": [
+            "事务原子性",
+            "全有或全无",
+            "COMMIT",
+            "ROLLBACK",
+            "未提交更新的不可见性"
+          ],
+          "expected_steps": [
+            "指出原子性要求一组更新要么全部生效、要么全部不生效，中途失败时已执行步骤不生效。",
+            "区分 COMMIT 保留并使更新生效，而 ROLLBACK 取消事务内已执行的更新。"
+          ]
+        },
+        "kind": "mcq",
+        "stem": "Alice 向 Bob 转账 100 美元，其 PostgreSQL 事务用 BEGIN 开始，包含“从 Alice 账户扣款 100”和“向 Bob 账户贷记 100”两条更新。\n\n条件：\n1. 事务尚未发出 COMMIT。\n2. 在写入两条更新期间发生故障，事务无法完成。\n3. 资料中的银行例子要求：不应出现 Bob 收到 100 美元却没有从 Alice 账户扣款，也不应出现扣了 Alice 却未贷记 Bob。\n\n下面哪一项描述符合资料对原子性以及 COMMIT/ROLLBACK 作用的说明？",
+        "options": [
+          "该事务是原子的：在没有 COMMIT 的情况下，任何已执行的更新都不会生效；若改为发出 ROLLBACK，此前所有更新也会被取消。",
+          "只有“向 Bob 账户贷记 100”会保留下来，因为它是事务中最后执行的一句。",
+          "两条更新会立即生效并永久保存，因为 PostgreSQL 会把每条 SQL 语句各自当作一个事务并自动 COMMIT。",
+          "由于已经执行了至少一条更新，事务完成后必然把两条更新都写入磁盘，只有 ROLLBACK 才能阻止第二条生效。"
+        ],
+        "answer": "A",
+        "explanation": "资料把事务描述为把多个步骤捆绑成单一的全有或全无操作，中途失败时已执行的步骤都不影响数据库，这正是选项 A 的表述。\nB 错在“最后一条语句保留”：原子性不允许只保留部分更新，故障时已执行的更新都不生效。\nC 错在把 BEGIN 事务块的整组语句说成每条都立即生效并自动提交；资料说的是未发出 BEGIN 时，每条单独语句才被隐式 BEGIN 与 COMMIT 包裹，而此处事务由 BEGIN 开始且尚未提交。\nD 错在“必然写入磁盘”：资料说明只有事务完成并被确认后才保证永久记录，且 ROLLBACK 会取消此前所有更新，而不是只阻止第二条生效。",
+        "difficulty_reason": "本题考查对原子性定义及 COMMIT/ROLLBACK 结果差异的直接理解，条件与失败情形已在题干给出，只需把资料中的“全有或全无”结论对应到转账例子上，属于简单层级的记忆与理解。",
+        "citation_ids": [
+          "context_5272194b24cbab69fac1132aab4c49e3",
+          "context_061768d877b186a640e491e8ef69d909",
+          "context_92433ce91f957a3ac489c075dad91e1f",
+          "context_6f8d6b6c0cf24e5f381c70638f7570a3"
+        ]
+      }
+    ],
+    "visual_prompt": ""
+  },
+  "sources": [
+    {
+      "id": "context_5272194b24cbab69fac1132aab4c49e3",
+      "document_id": "1150816e119e4977bf7289ae3f6d6950",
+      "document_name": "db_atomicity.md",
+      "page": 1,
+      "text": "3.4. Transactions #\n\nTransactions are a fundamental concept of all database systems. The essential point of a transaction is that it bundles multiple steps into a single, all-or-nothing operation. The intermediate states between the steps are not visible to other concurrent transactions, and if some failure occurs that prevents the transaction from completing, then none of the steps affect the database at all.\n\nThe details of these commands are not important here; the important point is that there are several separate updates involved to accomplish this rather simple operation. Our bank's officers will want to be assured that either all these updates happen, or none of them happen. It would certainly not do for a system failure to result in Bob receiving $100.00 that was not debited from Alice. Nor would Alice long remain a happy customer if she was debited without Bob being credited. We need a guarantee that if something goes wrong partway through the operation, none of the steps executed so far will take effect. Grouping the updates into a transaction gives us this guarantee. A transaction is said to be atomic: from the point of view of other transactions, it either happens completely or not at all.",
+      "metadata": {
+        "heading_path": [],
+        "keywords": [
+          "Transactions",
+          "all",
+          "transaction",
+          "steps",
+          "point",
+          "operation",
+          "none",
+          "updates"
+        ],
+        "token_count": 236,
+        "token_limit": 256,
+        "protected_block_split": false,
+        "section_start": 0,
+        "section_end": 4399,
+        "chunk_strategy": "recursive_token_v1_no_overlap",
+        "chunking_version": "recursive_token_v1",
+        "chunking_config": {
+          "strategy": "recursive_token_v1",
+          "max_chars": 1200,
+          "overlap_chars": 0,
+          "max_tokens": 256,
+          "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+          "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+        },
+        "chunk_index": 0,
+        "page_char_start": 0,
+        "page_char_end": 1220,
+        "source_page_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+        "coordinate_system": "parsed_page_python_chars_v1",
+        "language": "en",
+        "split_reason": "recursive_token_budget",
+        "protected_block_types": [],
+        "source_format": ".md",
+        "source_document_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+        "parser_version": "local-document-parser-v1",
+        "extraction_method": "utf8-sig-v1",
+        "extraction_status": "good",
+        "extraction_warnings": [],
+        "source_asset_ids": [],
+        "coordinate_basis": "extracted_page_text",
+        "ocr_accuracy_verified": false,
+        "context_expansion": "none",
+        "retrieved_chunk_ids": [
+          "7726b0d1816f2ce07dc670f6b9d37513"
+        ]
+      },
+      "score": 0.6379811697379592,
+      "retrieval": {
+        "version": "retrieval-v2",
+        "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+        "strategy": "hybrid_dense_lexical_v1",
+        "effective_strategy": "hybrid_dense_lexical_v1",
+        "fallback_reason": null,
+        "dense_score": 0.6379811697379592,
+        "lexical_score": 0.0,
+        "dense_rank": 2,
+        "lexical_rank": null,
+        "fusion_score": null,
+        "selection_rank": 2,
+        "selection_score": 0.6379811697379592,
+        "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+        "mmr_relevance": null,
+        "mmr_redundancy": null,
+        "normalized_lexical_score": 0.0,
+        "lexical_bonus": 0.0,
+        "rerank_score": 0.75390625
+      }
+    },
+    {
+      "id": "context_92433ce91f957a3ac489c075dad91e1f",
+      "document_id": "1150816e119e4977bf7289ae3f6d6950",
+      "document_name": "db_atomicity.md",
+      "page": 1,
+      "text": "We also want a guarantee that once a transaction is completed and acknowledged by the database system, it has indeed been permanently recorded and won't be lost even if a crash ensues shortly thereafter. For example, if we are recording a cash withdrawal by Bob, we do not want any chance that the debit to his account will disappear in a crash just after he walks out the bank door. A transactional database guarantees that all the updates made by a transaction are logged in permanent storage (i.e., on disk) before the transaction is reported complete.\n\nAnother important property of transactional databases is closely related to the notion of atomic updates: when multiple transactions are running concurrently, each one should not be able to see the incomplete changes made by others. For example, if one transaction is busy totalling all the branch balances, it would not do for it to include the debit from Alice's branch but not the credit to Bob's branch, nor vice versa. So transactions must be all-or-nothing not only in terms of their permanent effect on the database, but also in terms of their visibility as they happen. The updates made so far by an open transaction are invisible to other transactions until the transaction completes, whereupon all the updates become visible simultaneously.",
+      "metadata": {
+        "heading_path": [],
+        "keywords": [
+          "transaction",
+          "updates",
+          "database",
+          "all",
+          "made",
+          "transactions",
+          "branch",
+          "want"
+        ],
+        "token_count": 249,
+        "token_limit": 256,
+        "protected_block_split": false,
+        "section_start": 0,
+        "section_end": 4399,
+        "chunk_strategy": "recursive_token_v1_no_overlap",
+        "chunking_version": "recursive_token_v1",
+        "chunking_config": {
+          "strategy": "recursive_token_v1",
+          "max_chars": 1200,
+          "overlap_chars": 0,
+          "max_tokens": 256,
+          "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+          "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+        },
+        "chunk_index": 1,
+        "page_char_start": 1222,
+        "page_char_end": 2529,
+        "source_page_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+        "coordinate_system": "parsed_page_python_chars_v1",
+        "language": "en",
+        "split_reason": "recursive_token_budget",
+        "protected_block_types": [],
+        "source_format": ".md",
+        "source_document_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+        "parser_version": "local-document-parser-v1",
+        "extraction_method": "utf8-sig-v1",
+        "extraction_status": "good",
+        "extraction_warnings": [],
+        "source_asset_ids": [],
+        "coordinate_basis": "extracted_page_text",
+        "ocr_accuracy_verified": false,
+        "context_expansion": "none",
+        "retrieved_chunk_ids": [
+          "cd06226c0e3f045eb1f0d79bf7d6d402"
+        ]
+      },
+      "score": 0.5752214294173413,
+      "retrieval": {
+        "version": "retrieval-v2",
+        "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+        "strategy": "hybrid_dense_lexical_v1",
+        "effective_strategy": "hybrid_dense_lexical_v1",
+        "fallback_reason": null,
+        "dense_score": 0.5752214294173413,
+        "lexical_score": 0.0,
+        "dense_rank": 3,
+        "lexical_rank": null,
+        "fusion_score": null,
+        "selection_rank": 3,
+        "selection_score": 0.5752214294173413,
+        "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+        "mmr_relevance": null,
+        "mmr_redundancy": null,
+        "normalized_lexical_score": 0.0,
+        "lexical_bonus": 0.0,
+        "rerank_score": 0.0634765625
+      }
+    },
+    {
+      "id": "context_061768d877b186a640e491e8ef69d909",
+      "document_id": "1150816e119e4977bf7289ae3f6d6950",
+      "document_name": "db_atomicity.md",
+      "page": 1,
+      "text": "In PostgreSQL, a transaction is set up by surrounding the SQL commands of the transaction with BEGIN and COMMIT commands. So our banking transaction would actually look like:\n\nIf, partway through the transaction, we decide we do not want to commit (perhaps we just noticed that Alice's balance went negative), we can issue the command ROLLBACK instead of COMMIT, and all our updates so far will be canceled.\n\nPostgreSQL actually treats every SQL statement as being executed within a transaction. If you do not issue a BEGIN command, then each individual statement has an implicit BEGIN and (if successful) COMMIT wrapped around it. A group of statements surrounded by BEGIN and COMMIT is sometimes called a transaction block.\n\nIt's possible to control the statements in a transaction in a more granular fashion through the use of savepoints. Savepoints allow you to selectively discard parts of the transaction, while committing the rest. After defining a savepoint with SAVEPOINT, you can if needed roll back to the savepoint with ROLLBACK TO. All the transaction's database changes between defining the savepoint and rolling back to it are discarded, but changes earlier than the savepoint are kept.",
+      "metadata": {
+        "heading_path": [],
+        "keywords": [
+          "transaction",
+          "COMMIT",
+          "savepoint",
+          "BEGIN",
+          "PostgreSQL",
+          "SQL",
+          "commands",
+          "actually"
+        ],
+        "token_count": 232,
+        "token_limit": 256,
+        "protected_block_split": false,
+        "section_start": 0,
+        "section_end": 4399,
+        "chunk_strategy": "recursive_token_v1_no_overlap",
+        "chunking_version": "recursive_token_v1",
+        "chunking_config": {
+          "strategy": "recursive_token_v1",
+          "max_chars": 1200,
+          "overlap_chars": 0,
+          "max_tokens": 256,
+          "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+          "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+        },
+        "chunk_index": 2,
+        "page_char_start": 2531,
+        "page_char_end": 3732,
+        "source_page_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+        "coordinate_system": "parsed_page_python_chars_v1",
+        "language": "en",
+        "split_reason": "recursive_token_budget",
+        "protected_block_types": [],
+        "source_format": ".md",
+        "source_document_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+        "parser_version": "local-document-parser-v1",
+        "extraction_method": "utf8-sig-v1",
+        "extraction_status": "good",
+        "extraction_warnings": [],
+        "source_asset_ids": [],
+        "coordinate_basis": "extracted_page_text",
+        "ocr_accuracy_verified": false,
+        "context_expansion": "none",
+        "retrieved_chunk_ids": [
+          "ff556e4bce95d915a3f7ba8baf8b5106"
+        ]
+      },
+      "score": 0.7643358850355795,
+      "retrieval": {
+        "version": "retrieval-v2",
+        "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+        "strategy": "hybrid_dense_lexical_v1",
+        "effective_strategy": "hybrid_dense_lexical_v1",
+        "fallback_reason": null,
+        "dense_score": 0.7643358850355795,
+        "lexical_score": 7.037036238602445,
+        "dense_rank": 1,
+        "lexical_rank": 1,
+        "fusion_score": null,
+        "selection_rank": 1,
+        "selection_score": 0.8143358850355795,
+        "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+        "mmr_relevance": null,
+        "mmr_redundancy": null,
+        "normalized_lexical_score": 1.0,
+        "lexical_bonus": 0.05,
+        "rerank_score": 0.99609375
+      }
+    },
+    {
+      "id": "context_6f8d6b6c0cf24e5f381c70638f7570a3",
+      "document_id": "1150816e119e4977bf7289ae3f6d6950",
+      "document_name": "db_atomicity.md",
+      "page": 1,
+      "text": "After rolling back to a savepoint, it continues to be defined, so you can roll back to it several times. Conversely, if you are sure you won't need to roll back to a particular savepoint again, it can be released, so the system can free some resources. Keep in mind that either releasing or rolling back to a savepoint will automatically release all savepoints that were defined after it.\n\nAll this is happening within the transaction block, so none of it is visible to other database sessions. When and if you commit the transaction block, the committed actions become visible as a unit to other sessions, while the rolled-back actions never become visible at all.",
+      "metadata": {
+        "heading_path": [],
+        "keywords": [
+          "back",
+          "savepoint",
+          "all",
+          "visible",
+          "After",
+          "rolling",
+          "defined",
+          "roll"
+        ],
+        "token_count": 134,
+        "token_limit": 256,
+        "protected_block_split": false,
+        "section_start": 0,
+        "section_end": 4399,
+        "chunk_strategy": "recursive_token_v1_no_overlap",
+        "chunking_version": "recursive_token_v1",
+        "chunking_config": {
+          "strategy": "recursive_token_v1",
+          "max_chars": 1200,
+          "overlap_chars": 0,
+          "max_tokens": 256,
+          "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+          "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+        },
+        "chunk_index": 3,
+        "page_char_start": 3734,
+        "page_char_end": 4399,
+        "source_page_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+        "coordinate_system": "parsed_page_python_chars_v1",
+        "language": "en",
+        "split_reason": "recursive_token_budget",
+        "protected_block_types": [],
+        "source_format": ".md",
+        "source_document_sha256": "058364197c9c042ed5a41d1de5ce417972345d21786fc45e3dd98d55e6108a4a",
+        "parser_version": "local-document-parser-v1",
+        "extraction_method": "utf8-sig-v1",
+        "extraction_status": "good",
+        "extraction_warnings": [],
+        "source_asset_ids": [],
+        "coordinate_basis": "extracted_page_text",
+        "ocr_accuracy_verified": false,
+        "context_expansion": "none",
+        "retrieved_chunk_ids": [
+          "a97e2f8990882902be1d98bc3cc6688d"
+        ]
+      },
+      "score": 0.5527110197467021,
+      "retrieval": {
+        "version": "retrieval-v2",
+        "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+        "strategy": "hybrid_dense_lexical_v1",
+        "effective_strategy": "hybrid_dense_lexical_v1",
+        "fallback_reason": null,
+        "dense_score": 0.5527110197467021,
+        "lexical_score": 1.2462103226670802,
+        "dense_rank": 4,
+        "lexical_rank": 4,
+        "fusion_score": null,
+        "selection_rank": 5,
+        "selection_score": 0.5615656730440012,
+        "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+        "mmr_relevance": null,
+        "mmr_redundancy": null,
+        "normalized_lexical_score": 0.1770930659459809,
+        "lexical_bonus": 0.008854653297299045,
+        "rerank_score": 0.26953125
+      }
+    }
+  ],
+  "config": {
+    "course_id": "68dcd1190afb438f8f86d83b71e6dcd7",
+    "topic": "识别简单 PostgreSQL 转账中的事务原子性，以及 COMMIT 和 ROLLBACK 的作用。",
+    "material": "quiz",
+    "difficulty": "easy",
+    "difficulty_distribution": null,
+    "learner_profile": "已学习所给课程资料和入门概念的计算机专业本科生；不假定题目未说明的特定实现知识。",
+    "question_type": "mcq",
+    "count": 1,
+    "language": "zh",
+    "document_ids": [
+      "1150816e119e4977bf7289ae3f6d6950",
+      "af9f088166f6425faf26a385bcfe7970",
+      "f8bf6dc6a8be4602807bfaaaecd334fe",
+      "c881722db65048508b6d8ff24abd1e3f"
+    ],
+    "use_subagents": true,
+    "include_explanations": true,
+    "prompt_version": "education-agent-v1",
+    "text_model": "deepseek-flash",
+    "agent_prompt_revision": "20260924-grounded-task-v6",
+    "text_json_mode": true,
+    "tool_contract_sha256": "68744aa7e8427fbc9e9e7982a82a988241e98807815ab4861964d6c47c9204b1",
+    "text_endpoint_signature": "135d1baf7e282b6975b8",
+    "embedding_signature": "91fab32d24999992076e",
+    "retrieval": {
+      "version": "retrieval-v2",
+      "strategy": "hybrid_dense_lexical_v1",
+      "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+      "top_k": 5,
+      "candidate_k": 20,
+      "rrf_k": 60,
+      "mmr_lambda": 0.7,
+      "bm25_k1": 1.2,
+      "bm25_b": 0.75,
+      "query_term_frequency": "binary",
+      "candidate_pool": "top_candidate_k_per_route_then_top_candidate_k_fused_for_mmr",
+      "mmr_relevance": "rrf_score_divided_by_max_candidate_rrf_score",
+      "mmr_redundancy": "maximum_nonnegative_cosine_to_already_selected_chunks",
+      "dense_lexical_bonus_cap": 0.05,
+      "dense_lexical_score": "cosine_plus_capped_max_normalized_bm25",
+      "tie_break": "input_order",
+      "no_lexical_matches": "dense_fallback_for_hybrid_empty_for_bm25",
+      "score_semantics": "original_query_chunk_cosine",
+      "document_encoding": "title_path_v1",
+      "query_encoding": "cs_instruction_v1",
+      "context_tokens": 1024,
+      "expansion": "none",
+      "context_tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d",
+      "context_budget_unit": "qwen_source_serialization_tokens_v1",
+      "reranker_model": "qwen/qwen3-reranker-8b",
+      "reranker_signature": "ea51c5866aec287fbb13"
+    },
+    "rubric_version": "difficulty-rubric-v1",
+    "difficulty_plan": [
+      {
+        "slot_id": "q1",
+        "difficulty": "easy"
+      }
+    ],
+    "max_repairs": 1,
+    "max_calls": 14,
+    "context_chars": 48000,
+    "orchestration": {
+      "mode": "supervisor_v2",
+      "planner_revision": "assessment-contracts-v7-20260925",
+      "plan_schema_sha256": "45745d5edd37fcac5c053e7d0aaea6127382c3a88d49535540d9b6476c2f6077",
+      "batch_size": 8,
+      "dispatch": "bounded_parallel_workers_v1",
+      "assembly": "deterministic_verified_assets",
+      "previous_briefs_window": 16,
+      "max_parallel_questions": 20,
+      "answer_policy": "freeform_with_requirement_checks",
+      "review_schema_sha256": "b9bc396adc270812a610dfe43f4e9c483d9b5559bb6bee1afc5f521bd4d10d6a",
+      "composition_schema_sha256": "22ad441b93ea24488f7e568aedb50254d446cbccb817869b0390a0381baa7294",
+      "failure_recovery": "isolated-question-recovery-v1"
+    },
+    "harness": {
+      "runtime": "0.1.5rc1",
+      "adapter": "harness-acp-20260924-v8",
+      "quality_revision": "20260919-correctness-first-v1",
+      "reasoning_effort": "off",
+      "response_format": "json_object",
+      "schema_repairs": 1,
+      "max_requests": 4,
+      "max_output_tokens": 8192,
+      "timeout": 240.0
+    },
+    "difficulty_shadow": {
+      "mode": "shadow",
+      "revision": "difficulty-shadow-v2-repeat-policy",
+      "protocol_sha256": "b0866a7be453e6d911e53b7ba5004de43a424348068e8da8ad4aae9f7144fb27",
+      "judge_revision": "difficulty-judge-v4.1-reference-capacity-20260924",
+      "audit_revision": "difficulty-semantic-audit-v2-witness-20260924",
+      "max_calls": 4,
+      "max_questions": 1,
+      "timeout": 30,
+      "context_chars": 48000,
+      "repeat_disagreements": true,
+      "parameters": {
+        "thinking": {
+          "type": "disabled"
+        },
+        "temperature": 0,
+        "max_tokens": 6000
+      },
+      "audit_max_tokens": 3000,
+      "transport": "configured_text_api_json",
+      "sampling": "first_accepted_questions",
+      "audit_selection": "each_sampled_question_if_budget_remains",
+      "failure_policy": "observe_only_no_retry"
+    },
+    "difficulty_policy": {
+      "revision": "difficulty-calibration-v1",
+      "strict_rounds": 3,
+      "relaxation_tiers": [
+        "adjacent_level",
+        "any_level"
+      ],
+      "correctness_relaxed": false,
+      "note": "After three bounded rounds, reuse the closest candidate whose other quality gates passed. Requested labels remain authoring targets; assessed levels are reported separately. Combined low-confidence quality judgments are never relaxed."
+    },
+    "repair_policy": {
+      "revision": "question-repair-v2",
+      "minimum_rounds": 3,
+      "manual_extension_rounds": 3,
+      "format_compatibility": "preserve_content_v1",
+      "quality_gates_relaxed": false
+    },
+    "review_policy_revision": "20260922-quality-contract-v1",
+    "difficulty_acceptance": {
+      "policy_revision": "difficulty-calibration-v1",
+      "status": "strict",
+      "strict_passed": true,
+      "rounds": 2,
+      "acceptance_reason": "target_matched",
+      "correctness_relaxed": false,
+      "items": [
+        {
+          "slot_id": "q1",
+          "assessed_difficulty": "easy",
+          "confidence": "high",
+          "target_difficulty": "easy",
+          "strict_passed": true,
+          "level_distance": 0,
+          "rounds": 2,
+          "accepted_attempt": 2,
+          "acceptance_reason": "target_matched"
+        }
+      ]
+    }
+  },
+  "created_at": "2026-09-25T03:38:04.285707+00:00",
+  "media": [],
+  "difficulty_assessment": {
+    "status": "model_checked",
+    "version": 1,
+    "items": [
+      {
+        "slot_id": "q1",
+        "assessed_difficulty": "easy",
+        "confidence": "high",
+        "target_difficulty": "easy",
+        "strict_passed": true,
+        "level_distance": 0,
+        "rounds": 2,
+        "accepted_attempt": 2,
+        "acceptance_reason": "target_matched"
+      }
+    ],
+    "limitation": "模型按认知要求复核，不等于教师确认或学生实际作答难度。",
+    "acceptance": {
+      "policy_revision": "difficulty-calibration-v1",
+      "status": "strict",
+      "strict_passed": true,
+      "rounds": 2,
+      "acceptance_reason": "target_matched",
+      "correctness_relaxed": false,
+      "items": [
+        {
+          "slot_id": "q1",
+          "assessed_difficulty": "easy",
+          "confidence": "high",
+          "target_difficulty": "easy",
+          "strict_passed": true,
+          "level_distance": 0,
+          "rounds": 2,
+          "accepted_attempt": 2,
+          "acceptance_reason": "target_matched"
+        }
+      ]
+    }
+  },
+  "difficulty_shadow": {
+    "mode": "shadow",
+    "status": "completed",
+    "affects_primary_decision": false,
+    "calls_reserved": 2,
+    "duration_ms": 3662,
+    "questions": [
+      {
+        "slot_id": "q1",
+        "original_difficulty": "easy",
+        "target_difficulty": "easy",
+        "published_difficulty": "easy",
+        "judge_status": "validated",
+        "estimated_difficulty": "easy",
+        "candidates": [
+          "easy"
+        ],
+        "audit_status": "no_issue_found",
+        "repeat_status": null,
+        "repeat_audit_status": null,
+        "counterfactual_rework": {
+          "action": "no_difficulty_rework",
+          "scope": "difficulty_only",
+          "enforcement_enabled": false,
+          "human_validated": false,
+          "reason": "target_remains_plausible"
+        },
+        "manual_review_recommended": false,
+        "review_flags": []
+      }
+    ],
+    "observed_content_version": 1,
+    "matches_current_content": true
+  },
+  "evaluation": null
+}

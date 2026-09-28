@@ -1,0 +1,1060 @@
+{
+  "kind": "preregistered_fixed_analysis_verifier_audit",
+  "version": "20260926-v1",
+  "frozen_at_utc": "2026-09-26T03:15:45.236127+00:00",
+  "status": "frozen_before_this_verifier_comparison",
+  "row_count": 10,
+  "provenance": "AI independent audit with finite executable checks, not human teacher gold. The auditor previously authored several cases and reviewed these solver outputs; this is not a newly blinded solver evaluation. Only the upcoming verifier comparison outcomes are held unseen.",
+  "scope": {
+    "read_analysis_raw": true,
+    "read_original_question_reference_and_sources": true,
+    "read_math_oracle": true,
+    "read_verification_response": false,
+    "read_summary": false,
+    "read_previous_audit_reports_this_round": false,
+    "new_provider_calls": 0,
+    "teacher_gold": false,
+    "unique_difficulty_labels_required": false,
+    "dataset_expected_difficulty_not_used_as_decisive_truth": true,
+    "read_records_files_or_host_decisions": false,
+    "read_analysis_difficulty_decision": true
+  },
+  "interpretation_rules": [
+    "A wrong blind solution must not by itself fail the reference, explanation or source-support checks.",
+    "Uncertain demand support is an abstention/evidence gap, not a demonstrated wrong difficulty label or a quality pass.",
+    "A pass for demand_supported can approve a well-supported adjacent candidate set; it does not certify a unique grade.",
+    "Permitted methods do not establish prior practice or proof fluency. Missing support is not proof the learner lacks the skill.",
+    "The current audit does not evaluate output-schema compliance, verifier decisions or production readiness.",
+    "The intentionally wrong exchange reference is a content defect; the student question and its correct blind solution remain valid."
+  ],
+  "case_content_reviews": {
+    "laboratory_slots": {
+      "checks": {
+        "conditions_complete": {
+          "status": "pass",
+          "reason": "容量、整数时段、严格先序、两组设备互斥和无其他限制全部给出，问题有可行解。",
+          "evidence": [
+            {
+              "document_id": "student",
+              "quote": "虚构实验室有任务A、B、C、D、E、F，每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务。\n先后规则：C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。设备规则：A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制，允许一个时段只做一项。\n请给出完成全部任务的最少时段数及具体安排，并证明任何更少时段的安排都不可能。证明须同时考虑先后与设备限制，不能仅用6÷2估算。"
+            }
+          ]
+        },
+        "reference_correct": {
+          "status": "pass",
+          "reason": "参考安排(1,2,2,3,4,5)合法；枚举4段无解、5段有解，最少5及下界证明正确。",
+          "evidence": [
+            {
+              "document_id": "reference_answer",
+              "quote": "最少5个时段：1:A；2:B、C；3:D；4:E；5:F。若总共只用4个时段，因F严格晚于E，E必须不晚于第3时段；所以C、D都必须在前2个时段完成。它们各自需要A、B在更早时段完成，因此C、D都不能在第1时段，只能都在第2时段；这既违反C、D不能同时使用试验箱，也要求A、B同时在第1时段使用唯一校准仪。故4个时段不可能，更少也不可能；5个时段的构造满足所有规则。"
+            }
+          ]
+        },
+        "explanation_consistent": {
+          "status": "pass",
+          "reason": "说明B与C可并行并向前反推E/F约束，与参考安排及设备规则一致。",
+          "evidence": [
+            {
+              "document_id": "reference_explanation",
+              "quote": "构造通过让B与已完成前置任务的C重叠来节省时段；下界由E、F的后置关系向前推回C、D及A、B，与设备限制冲突。须自行选择这种组合约束证明。"
+            }
+          ]
+        },
+        "source_support": {
+          "status": "pass",
+          "reason": "来源逐项给出容量、依赖和设备限制；参考只推导这些规则的后果，没有外加假设。",
+          "evidence": [
+            {
+              "document_id": "source:laboratory_capacity",
+              "quote": "任务A、B、C、D、E、F每项恰占一个完整时段，只执行一次。时段从1开始编号，每个时段最多执行两项任务，允许一个时段只做一项。"
+            },
+            {
+              "document_id": "source:laboratory_dependencies",
+              "quote": "C必须在A完成后的更晚时段；D必须在B完成后的更晚时段；E必须在C和D都完成后的更晚时段；F必须在E完成后的更晚时段。"
+            },
+            {
+              "document_id": "source:laboratory_equipment",
+              "quote": "A与B共用唯一校准仪，不能处于同一时段；C与D共用唯一试验箱，不能处于同一时段。除此之外没有设备或先后限制。"
+            }
+          ]
+        }
+      },
+      "scope_note": "Content checks evaluate student question, reference and sources, not whether the saved blind solver made an error."
+    },
+    "courier_single_failure_corrected": {
+      "checks": {
+        "conditions_complete": {
+          "status": "pass",
+          "reason": "边表、简单路径、只登记两条、单边关闭后不能改路及总费用均明确。",
+          "evidence": [
+            {
+              "document_id": "student",
+              "quote": "虚构快递网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。\n规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。\n请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。"
+            }
+          ]
+        },
+        "reference_correct": {
+          "status": "pass",
+          "reason": "S-A-C-T=3与S-B-T=5边不相交；枚举最优8；不用中间边的直达两路总费已修正为10。",
+          "evidence": [
+            {
+              "document_id": "reference_answer",
+              "quote": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。它们无共用走廊，任意关闭一条走廊最多破坏其中一条。若两条路径有共用走廊，关闭该走廊会同时破坏它们，因此任何合格方案都必须没有共用走廊。两条路径离开S必须分别用S-A和S-B，费用至少3；进入T必须用不同走廊，最便宜两条是C-T与B-T，合计至少4。还至少需要一条中间走廊，因为S不直接连C，且若完全不用中间走廊，只能走S-A-T与S-B-T，费用10。因此总费不能为7或更少。"
+            }
+          ]
+        },
+        "explanation_consistent": {
+          "status": "pass",
+          "reason": "无中间边时总费10；有中间边时首边3、不同末边至少4、中间边至少1，得至少8，与构造一致。",
+          "evidence": [
+            {
+              "document_id": "reference_explanation",
+              "quote": "更严格的下界分情况：不使用中间走廊时，只能选S-A-T和S-B-T，总费10；使用至少一条中间走廊时，首边合计3、末边合计至少4、中间边至少1，故总费至少8。构造恰好达到8。困难来自自行识别单点关闭要求对应的共用边约束，并把构造与必要性证明连接。"
+            }
+          ]
+        },
+        "source_support": {
+          "status": "pass",
+          "reason": "图与费用均由来源给出，单边关闭要求推出无共边；费用下界是可检验推导，来源无需逐字给出证明。",
+          "evidence": [
+            {
+              "document_id": "source:courier_map",
+              "quote": "网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+            },
+            {
+              "document_id": "source:courier_contract",
+              "quote": "事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+            }
+          ]
+        }
+      },
+      "scope_note": "Content checks evaluate student question, reference and sources, not whether the saved blind solver made an error."
+    },
+    "glyph_table_lookup_v2": {
+      "checks": {
+        "conditions_complete": {
+          "status": "pass",
+          "reason": "完整查码表与待查字纹均明确，没有额外编码推断规则。",
+          "evidence": [
+            {
+              "document_id": "student",
+              "quote": "虚构字纹登记处只使用下列完整查码表，不存在按字形、顺序或其他信息推断代码的规则。\n晨星纹→41；苔叶纹→26；波纹→73；方格纹→58。\n一张登记卡清楚标注“波纹”。请写出它对应的代码，并指出查到的表项。"
+            }
+          ]
+        },
+        "reference_correct": {
+          "status": "pass",
+          "reason": "波纹条目代码73，参考直接检索正确。",
+          "evidence": [
+            {
+              "document_id": "reference_answer",
+              "quote": "73；表项是“波纹→73”。"
+            }
+          ]
+        },
+        "explanation_consistent": {
+          "status": "pass",
+          "reason": "解释仅说明读取已给条目，无新增计算或规则。",
+          "evidence": [
+            {
+              "document_id": "reference_explanation",
+              "quote": "查码表直接给出“波纹→73”，题目要求的代码就是73；不需要从其他表项计算。"
+            }
+          ]
+        },
+        "source_support": {
+          "status": "pass",
+          "reason": "来源表直接给出波纹→73，查码规则支持直接检索。",
+          "evidence": [
+            {
+              "document_id": "source:glyph_complete_table",
+              "quote": "晨星纹→41；苔叶纹→26；波纹→73；方格纹→58。"
+            },
+            {
+              "document_id": "source:glyph_rule",
+              "quote": "只按给定完整查码表确定代码，不存在按字形、顺序或其他信息推断代码的规则。"
+            }
+          ]
+        }
+      },
+      "scope_note": "Content checks evaluate student question, reference and sources, not whether the saved blind solver made an error."
+    },
+    "odd_sum_conditional_draw_v2": {
+      "checks": {
+        "conditions_complete": {
+          "status": "pass",
+          "reason": "四个不同标号、均匀有序无放回抽取、灯亮当且仅当和值奇数均明确，条件事件概率非零。",
+          "evidence": [
+            {
+              "document_id": "student",
+              "quote": "虚构抽签游戏中，袋内恰有标为1、2、3、4的四枚不同签，每种标号各一枚。先均匀随机抽出一枚，记为x；不放回，再从余签中均匀随机抽出一枚，记为y。记录有序结果(x,y)，抽取顺序不同算不同结果。\n主持人只在x+y为奇数时亮灯，否则不亮灯；亮灯的必要且充分条件就是x+y为奇数，没有其他筛选规则。你只观察到灯已亮。\n求此时x×y大于3的条件概率，写成最简分数；说明分母应包含哪些结果，并给出条件内不满足x×y大于3的全部结果。"
+            }
+          ]
+        },
+        "reference_correct": {
+          "status": "pass",
+          "reason": "12个等可能原始结果中，条件内8个、有利6个，6/8=3/4；反例恰(1,2),(2,1)。",
+          "evidence": [
+            {
+              "document_id": "reference_answer",
+              "quote": "条件概率为3/4。亮灯后的条件样本共有8个有序结果，其中乘积大于3的有6个，所以6/8=3/4；不满足的结果恰为(1,2)、(2,1)。"
+            }
+          ]
+        },
+        "explanation_consistent": {
+          "status": "pass",
+          "reason": "条件样本列表、计数、乘积和分母均与参考分数一致，经逐项枚举。",
+          "evidence": [
+            {
+              "document_id": "reference_explanation",
+              "quote": "原抽取共有12个等可能有序结果。亮灯条件下只保留(1,2)、(1,4)、(2,1)、(2,3)、(3,2)、(3,4)、(4,1)、(4,3)，共8个，它们条件下仍等可能。两个不满足结果的乘积均为2，其余6个的乘积大于3；因此分母为8而非12，概率为6/8=3/4。"
+            }
+          ]
+        },
+        "source_support": {
+          "status": "pass",
+          "reason": "来源明确抽取与亮灯规则；条件概率为这些规则的直接推导，未引入额外选择偏差。",
+          "evidence": [
+            {
+              "document_id": "source:token_draw_rule",
+              "quote": "袋内恰有标为1、2、3、4的四枚不同签，每种标号各一枚。先均匀随机抽出一枚，记为x；不放回，再从余签中均匀随机抽出一枚，记为y。记录有序结果(x,y)，抽取顺序不同算不同结果。"
+            },
+            {
+              "document_id": "source:token_signal_rule",
+              "quote": "亮灯的必要且充分条件为x+y是奇数，没有其他筛选规则；目标事件为x×y大于3。"
+            }
+          ]
+        }
+      },
+      "scope_note": "Content checks evaluate student question, reference and sources, not whether the saved blind solver made an error."
+    },
+    "adaptive_pair_identification_v2": {
+      "checks": {
+        "conditions_complete": {
+          "status": "pass",
+          "reason": "8个可能对象、每次恰报两个不同名字、可复用已排除名字、准确回答与唯一候选才能停止均明确。",
+          "evidence": [
+            {
+              "document_id": "student",
+              "quote": "虚构探询游戏开始时，盒内隐藏的对象恰为A、B、C、D、E、F、G、H之一，所有对象起初都可能。每次询问必须报出恰好两个不同对象名；这两个名字可以来自完整名单，也允许再次使用已排除或曾询问过的名字。设备回答“是”的必要且充分条件是隐藏对象属于本次所报的这两个名字，否则回答“否”，设备从不说谎。\n下一次询问可以依据此前回答改变。每次询问费用相同；当且仅当当前候选集合只剩一个对象时，才允许停止并报出该对象。\n请设计一种无论隐藏对象是谁都能确定答案的策略，使最坏情况下的询问次数最少。给出完整的分支策略，说明最坏次数，并证明任何更少次数的策略都不可能保证识别。"
+            }
+          ]
+        },
+        "reference_correct": {
+          "status": "pass",
+          "reason": "参考策略对8个隐藏对象均正确，最坏4问；所有255非空候选状态的动态规划确认最优4。",
+          "evidence": [
+            {
+              "document_id": "reference_answer",
+              "quote": "最少的最坏询问次数是4。先问{A,B}：若是，再问{A,C}，是则A，否则B。若首次为否，再问{C,D}：若是，再问{C,A}，是则C，否则D；若否，再问{E,F}：若是，再问{E,A}，是则E，否则F；若否，再问{G,A}，是则G，否则H。各终点都唯一，最多询问4次。"
+            }
+          ]
+        },
+        "explanation_consistent": {
+          "status": "pass",
+          "reason": "已排除名字可作补充与规则一致；连续3次否最多排除6个仍至少2个候选的下界正确。",
+          "evidence": [
+            {
+              "document_id": "reference_explanation",
+              "quote": "每次恰好询问两个不同名字，已排除的名字仍可使用：首次回答是时C已排除，首次回答否时A已排除，所以后续分支中的补充名字合法且不会引入额外候选。要证明至少4次，考虑连续3次都回答否的分支：每次否最多排除2个对象，3次最多排除6个，初始8个中仍至少剩2个；这一分支与至少一个真实隐藏对象相容，尚不能停止。给出的策略在每个隐藏对象上都正确，最坏为4次，故达到下界。"
+            }
+          ]
+        },
+        "source_support": {
+          "status": "pass",
+          "reason": "来源明确复用名字及自适应询问权限；完整分支策略与下界由规则推出，无新增权限。",
+          "evidence": [
+            {
+              "document_id": "source:pair_game_objects",
+              "quote": "隐藏对象恰为A、B、C、D、E、F、G、H之一，所有对象起初都可能。"
+            },
+            {
+              "document_id": "source:pair_query_rule",
+              "quote": "每次必须报出恰好两个不同对象名，可以来自完整名单，允许再次使用已排除或曾询问过的名字。回答是的必要且充分条件是隐藏对象属于所报的这两个名字，否则回答否，设备从不说谎。"
+            },
+            {
+              "document_id": "source:pair_stopping_rule",
+              "quote": "下一次询问可以依据此前回答改变；每次询问费用相同。当且仅当当前候选集合只剩一个对象时，才允许停止并报出该对象。目标是对每个可能隐藏对象都保证正确，并最小化最坏询问次数。"
+            }
+          ]
+        }
+      },
+      "scope_note": "Content checks evaluate student question, reference and sources, not whether the saved blind solver made an error."
+    },
+    "whole_bundle_wrong_key_v2": {
+      "checks": {
+        "conditions_complete": {
+          "status": "pass",
+          "reason": "必须完整3枚兑换1枚、余数不换、无其他规则、初始14枚全部明确，题目本身可唯一解答。",
+          "evidence": [
+            {
+              "document_id": "student",
+              "quote": "虚构兑换处的完整规则：每凑满3枚筹码，且仅当交出这一完整组3枚筹码时，才能换得1枚水晶；筹码交出后消耗。未满一组的余筹码只能保留，不能兑换。没有赠送、借筹码、补贴、四舍五入或其他兑换规则。\n某人起初只有14枚筹码、没有水晶。问他按规则最多能换得多少枚水晶？写出商和余数，说明余筹码如何处理。"
+            }
+          ]
+        },
+        "reference_correct": {
+          "status": "fail",
+          "reason": "参考声称5枚，但14//3=4，5枚需15枚筹码，超过14。",
+          "evidence": [
+            {
+              "document_id": "reference_answer",
+              "quote": "最多5枚水晶；14枚筹码拆成4组，每组3枚，余下2枚；余筹码再换1枚水晶。"
+            }
+          ]
+        },
+        "explanation_consistent": {
+          "status": "fail",
+          "reason": "解释虽正确列14=4×3+2，随后允许余2枚再计1枚，与题面明确禁止余数兑换冲突。",
+          "evidence": [
+            {
+              "document_id": "reference_explanation",
+              "quote": "14=4×3+2。完整组可换4枚水晶；虽然余下2枚不足一组，也额外计1枚，所以共5枚。"
+            }
+          ]
+        },
+        "source_support": {
+          "status": "fail",
+          "reason": "参考关于未满一组仍额外兑换的实质规则主张直接与来源相反；这是错误参考的来源支持问题，与正确盲解无关。",
+          "evidence": [
+            {
+              "document_id": "source:crystal_exchange_rule",
+              "quote": "每凑满3枚筹码，且仅当交出这一完整组3枚筹码时，才能换得1枚水晶；筹码交出后消耗。未满一组的余筹码只能保留，不能兑换。没有赠送、借筹码、补贴、四舍五入或其他兑换规则。"
+            },
+            {
+              "document_id": "source:crystal_initial_state",
+              "quote": "起初只有14枚筹码、没有水晶。"
+            },
+            {
+              "document_id": "reference_explanation",
+              "quote": "虽然余下2枚不足一组，也额外计1枚"
+            }
+          ]
+        }
+      },
+      "scope_note": "Content checks evaluate student question, reference and sources, not whether the saved blind solver made an error."
+    }
+  },
+  "records": [
+    {
+      "row_key": "SOLVER_OPT_20260926_CANDIDATE/laboratory_slots_0",
+      "source_run": "SOLVER_OPT_20260926_CANDIDATE",
+      "case_id": "laboratory_slots",
+      "repeat": 0,
+      "control_role": "fixed_analysis_input",
+      "analysis_raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/items/laboratory_slots_0/analysis_response.json",
+      "analysis_raw_sha256": "662260a007cd77db51a61203f99736c0a54760bfe9395979cceb054745a34960",
+      "dataset_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/dataset.json",
+      "dataset_file_sha256": "efadbf5103c7cff545e8d88b714501874b97e8e70ef006bcf270050aa7fe1f25",
+      "input_case_sha256_canonical_compact": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+      "expected": {
+        "conditions_complete": "pass",
+        "reference_correct": "pass",
+        "explanation_consistent": "pass",
+        "source_support": "pass",
+        "solution_correct": "pass",
+        "demand_supported": "uncertain"
+      },
+      "content_review_case_id": "laboratory_slots",
+      "solution_review": {
+        "status": "pass",
+        "reason": "最终安排(1,2,2,3,4,5)合法；4段时两条链迫使A=B=1、C=D=2，证明至少5。",
+        "evidence": [
+          {
+            "document_id": "analysis.solution",
+            "quote": "最少5时段。可行安排：1:A；2:B、C；3:D；4:E；5:F。检查：C在A后、D在B后、E在C和D后、F在E后；A与B不同段，C与D不同段，每段最多两项。证明：A<C<E<F形成先序链，至少需4个时段。假设仅4个时段，则该链必占1,2,3,4且A=1,C=2,E=3,F=4。又B<D<E且E=3，故B、D必须在1,2且B=1,D=2。这样A与B同在1，C与D同在2，违反设备规则，矛盾。因此至少5时段；上述安排达到5，故最少5。"
+          }
+        ]
+      },
+      "demand_review": {
+        "status": "uncertain",
+        "reason": "题目全部要求已覆盖；但把允许使用枚举/反证升格为学习者具备该基础，缺少背景依据。medium/hard边界本可讨论，不能以这项未证实训练压低难度。",
+        "evidence": [
+          {
+            "document_id": "analysis.eligibility_reason",
+            "quote": "学习者具备单链调度、并行无依赖及枚举/反证基础"
+          },
+          {
+            "document_id": "learner_profile",
+            "quote": "允许用枚举、反证或约束推理，不要求专门算法。"
+          },
+          {
+            "document_id": "learner_profile",
+            "quote": "未学过带共享设备的任务图调度或最短工期证明。"
+          }
+        ],
+        "flags": [
+          {
+            "type": "unsupported_preparation_claim",
+            "certainty": "evidence_gap",
+            "detail": "允许采用一种方法不等于已经学习或练习这种证明方法；不是据此证明学生必然不会。"
+          }
+        ],
+        "required_tasks_covered": true,
+        "confirmed_supplied_answer_miscounted_as_discovery": false,
+        "unique_difficulty_label_required": false
+      },
+      "reported_difficulty_candidates_for_context_only": [
+        "medium"
+      ]
+    },
+    {
+      "row_key": "SOLVER_OPT_20260926_CANDIDATE/laboratory_slots_1",
+      "source_run": "SOLVER_OPT_20260926_CANDIDATE",
+      "case_id": "laboratory_slots",
+      "repeat": 1,
+      "control_role": "fixed_analysis_input",
+      "analysis_raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/items/laboratory_slots_1/analysis_response.json",
+      "analysis_raw_sha256": "df9f5361e1453ee05e2c63ad0ec35590b9285fcbcd83d5fd1c0ba352eebb2754",
+      "dataset_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/dataset.json",
+      "dataset_file_sha256": "efadbf5103c7cff545e8d88b714501874b97e8e70ef006bcf270050aa7fe1f25",
+      "input_case_sha256_canonical_compact": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+      "expected": {
+        "conditions_complete": "pass",
+        "reference_correct": "pass",
+        "explanation_consistent": "pass",
+        "source_support": "pass",
+        "solution_correct": "pass",
+        "demand_supported": "pass"
+      },
+      "content_review_case_id": "laboratory_slots",
+      "solution_review": {
+        "status": "pass",
+        "reason": "最终5段安排合法；反推E≤3、C,D≤2迫使A=B=1，与设备互斥矛盾。",
+        "evidence": [
+          {
+            "document_id": "analysis.solution",
+            "quote": "最少5个时段。安排：1:A；2:B,C；3:D；4:E；5:F。核验：A与B不同时段，C与D不同时段；C>A，D>B，E>C,D，F>E；每时段至多两项。反证：若T≤4，因F>E，E≤3；因E>C,D，C,D≤2。由C>A且时段从1开始，得C=2,A=1；由D>B得D=2,B=1。于是A、B同在时段1，违反共用校准仪不能同处一时段。故≤4不可能。5时段可行，因此最少为5。"
+          }
+        ]
+      },
+      "demand_review": {
+        "status": "pass",
+        "reason": "任务覆盖构造、约束核查、下界与最优值；准确引用单链/简单并行训练及缺少最优性证明训练，明确提出相邻候选而非伪造唯一难度。",
+        "evidence": [
+          {
+            "document_id": "analysis.decision.boundary_reason",
+            "quote": "未受过最短工期证明训练"
+          },
+          {
+            "document_id": "analysis.decision.boundary_reason",
+            "quote": "从F/E倒推并把数值排序与设备冲突结合"
+          },
+          {
+            "document_id": "learner_profile",
+            "quote": "未学过带共享设备的任务图调度或最短工期证明。"
+          }
+        ],
+        "flags": [],
+        "required_tasks_covered": true,
+        "confirmed_supplied_answer_miscounted_as_discovery": false,
+        "unique_difficulty_label_required": false
+      },
+      "reported_difficulty_candidates_for_context_only": [
+        "medium",
+        "hard"
+      ]
+    },
+    {
+      "row_key": "SOLVER_OPT_20260926_CANDIDATE/courier_single_failure_corrected_0",
+      "source_run": "SOLVER_OPT_20260926_CANDIDATE",
+      "case_id": "courier_single_failure_corrected",
+      "repeat": 0,
+      "control_role": "fixed_analysis_input",
+      "analysis_raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/items/courier_single_failure_corrected_0/analysis_response.json",
+      "analysis_raw_sha256": "77866810c262b1b2e4e8610a6688f3279deda046e1413430d991bdb99b3dd1a6",
+      "dataset_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/dataset.json",
+      "dataset_file_sha256": "efadbf5103c7cff545e8d88b714501874b97e8e70ef006bcf270050aa7fe1f25",
+      "input_case_sha256_canonical_compact": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+      "expected": {
+        "conditions_complete": "pass",
+        "reference_correct": "pass",
+        "explanation_consistent": "pass",
+        "source_support": "pass",
+        "solution_correct": "pass",
+        "demand_supported": "uncertain"
+      },
+      "content_review_case_id": "courier_single_failure_corrected",
+      "solution_review": {
+        "status": "pass",
+        "reason": "最终采用3+5=8且不共边的两路；总费≤7必须包含唯一3费路径，所有其他≤4费路径均与其共边。",
+        "evidence": [
+          {
+            "document_id": "analysis.solution",
+            "quote": "方案：P1=S-A-C-T，费用1+1+1=3；P2=S-B-T，费用2+3=5；总费用8。二者无共用走廊（P1用SA、AC、CT，P2用SB、BT），任意一条走廊关闭只会影响至多一条路径，另一条仍完整，因此方案能抵抗任意单条走廊关闭。\n\n证明≤7不可能：要抵抗任意单条走廊关闭，两条已登记路径不能共用任何走廊，否则关闭该共用走廊会使两条都失效，所以必须边不相交。图的最短S-T路径为S-A-C-T，费用3；不存在费用≤2的路径（从S-A出发至少再经A-C、C-T共3；从S-B出发至少经B-C-T或B-T，费用≥4）。故唯一费用3路径是S-A-C-T。总费用≤7时，另一条路径费用必须≤4。枚举所有费用≤4的S-T路径：仅S-B-C-T（费用4，边SB、BC、CT）和S-A-B-C-T（费用4，边SA、AB、BC、CT），二者分别与P1共用CT或SA，不能与P1边不相交。因此总费用≤7不可行。8的方案存在，所以最小总登记费为8。"
+          }
+        ],
+        "interpretation_note": "“所有≤4路径”按前文另一条路径理解，省略已知P1自身；自身显然共边且不可重复登记为合格路径。不因可补明的省略否定结论。"
+      },
+      "demand_review": {
+        "status": "uncertain",
+        "reason": "构造、容错与下界工作均未提供且分析覆盖完整；从可枚举及不需高级定理推出不存在非例行难点，不能充分排除hard。medium与hard都可讨论，不因旧AI预期是hard直接判fail。",
+        "evidence": [
+          {
+            "document_id": "analysis.decision.boundary_reason",
+            "quote": "题目明确允许枚举，未出现非例行难点，故不定为hard。"
+          },
+          {
+            "document_id": "learner_profile",
+            "quote": "没有学过容错网络、边不相交路径或网络流。"
+          },
+          {
+            "document_id": "analysis.decision.boundary_reason",
+            "quote": "需要把关闭规则转化为边不相交，并进行小规模枚举和排除"
+          }
+        ],
+        "flags": [
+          {
+            "type": "boundary_justification_gap",
+            "certainty": "judgment_boundary",
+            "detail": "许可枚举不表明枚举方案与一般下界证明已成为熟练步骤。"
+          }
+        ],
+        "required_tasks_covered": true,
+        "confirmed_supplied_answer_miscounted_as_discovery": false,
+        "unique_difficulty_label_required": false
+      },
+      "reported_difficulty_candidates_for_context_only": [
+        "medium"
+      ]
+    },
+    {
+      "row_key": "SOLVER_OPT_20260926_CANDIDATE/courier_single_failure_corrected_1",
+      "source_run": "SOLVER_OPT_20260926_CANDIDATE",
+      "case_id": "courier_single_failure_corrected",
+      "repeat": 1,
+      "control_role": "fixed_analysis_input",
+      "analysis_raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/items/courier_single_failure_corrected_1/analysis_response.json",
+      "analysis_raw_sha256": "dafdad551c1d27abf4268d3f0827788de071ff048112644b181f383af933f885",
+      "dataset_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/dataset.json",
+      "dataset_file_sha256": "efadbf5103c7cff545e8d88b714501874b97e8e70ef006bcf270050aa7fe1f25",
+      "input_case_sha256_canonical_compact": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+      "expected": {
+        "conditions_complete": "pass",
+        "reference_correct": "pass",
+        "explanation_consistent": "pass",
+        "source_support": "pass",
+        "solution_correct": "pass",
+        "demand_supported": "uncertain"
+      },
+      "content_review_case_id": "courier_single_failure_corrected",
+      "solution_review": {
+        "status": "pass",
+        "reason": "SA首路唯一最低3、SB首路唯一最低4，唯一7费组合共CT；因此整数总费至少8，最终构造达到8。",
+        "evidence": [
+          {
+            "document_id": "analysis.solution",
+            "quote": "设计：P1=S-A-C-T（边SA,AC,CT，费用1+1+1=3），P2=S-B-T（边SB,BT，费用2+3=5），总费用8。两条路径没有公共边。任意关闭一条走廊：若关闭P1中的SA、AC或CT，P2仍完整；若关闭P2中的SB或BT，P1仍完整；关闭其他走廊时两条都完整。下界：合法两条简单S-T路径必须无公共边，否则关闭公共边会使两条同时失效。S只有两条出边SA和SB，且简单路径不能重复经过S，所以一条必须从SA离开，另一条从SB离开。从SA离开的最便宜路径是S-A-C-T费用3；从SB离开的最便宜路径是S-B-C-T费用4，但它们共用CT，不能同时选。因此任何合法两条路径费用至少3+4=7，且等于7的唯一组合已被CT冲突排除，所以总费用≥8。"
+          }
+        ]
+      },
+      "demand_review": {
+        "status": "uncertain",
+        "reason": "完整覆盖两路设计、容错证明、费用下界，并承认学生未学容错；单档medium仍需要解释为何自行完成策略转化只是熟悉应用。现有证据允许medium/hard边界讨论。",
+        "evidence": [
+          {
+            "document_id": "analysis.decision.boundary_reason",
+            "quote": "学习者具备基本图枚举和费用计算"
+          },
+          {
+            "document_id": "analysis.decision.boundary_reason",
+            "quote": "这超出直接取最短路的熟悉应用，但不依赖高级定理或大规模搜索。"
+          },
+          {
+            "document_id": "learner_profile",
+            "quote": "本题允许自行枚举、分类或构造证明，不要求引用定理。"
+          }
+        ],
+        "flags": [
+          {
+            "type": "inferred_preparation_and_boundary",
+            "certainty": "evidence_gap",
+            "detail": "背景明确给出小图最短路能力；基本图枚举能力可推测但未单独声明，更不能由此推出策略证明已经熟练。"
+          }
+        ],
+        "required_tasks_covered": true,
+        "confirmed_supplied_answer_miscounted_as_discovery": false,
+        "unique_difficulty_label_required": false
+      },
+      "reported_difficulty_candidates_for_context_only": [
+        "medium"
+      ]
+    },
+    {
+      "row_key": "SOLVER_OPT_20260926_HELDOUT/glyph_table_lookup_v2_0",
+      "source_run": "SOLVER_OPT_20260926_HELDOUT",
+      "case_id": "glyph_table_lookup_v2",
+      "repeat": 0,
+      "control_role": "fixed_analysis_input",
+      "analysis_raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/items/glyph_table_lookup_v2_0/analysis_response.json",
+      "analysis_raw_sha256": "d5f0fc519879f4aaf57ac2768de28892f82ea827fef44c8671022255abe80f7a",
+      "dataset_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/dataset.json",
+      "dataset_file_sha256": "27159bedef62232ba9e47a51951b87093e6587843da0d84d52130fd8f442c815",
+      "input_case_sha256_canonical_compact": "2b670f005a4671347937c1c5ac3c7360506b2b7bf2e2c3fce915b037f22f01a7",
+      "expected": {
+        "conditions_complete": "pass",
+        "reference_correct": "pass",
+        "explanation_consistent": "pass",
+        "source_support": "pass",
+        "solution_correct": "pass",
+        "demand_supported": "pass"
+      },
+      "content_review_case_id": "glyph_table_lookup_v2",
+      "solution_review": {
+        "status": "pass",
+        "reason": "查询波纹条目，答案73及所引表项都正确。",
+        "evidence": [
+          {
+            "document_id": "analysis.solution",
+            "quote": "代码：73。查到的表项：波纹→73。在给出的完整查码表中直接找到与登记卡标注“波纹”相同的表项，对应代码为73，不必按字形或顺序推断。"
+          }
+        ]
+      },
+      "demand_review": {
+        "status": "pass",
+        "reason": "准确识别题面已给答案表项，以reproduce描述查找并抄录，没有虚构独立发现或遗漏指出表项的要求。",
+        "evidence": [
+          {
+            "document_id": "analysis.tasks.0.residual_work",
+            "quote": "在表中找出“波纹”这一项并抄录其代码73，同时指出该表项；无需计算或推断。"
+          },
+          {
+            "document_id": "learner_profile",
+            "quote": "能识别相同汉字词组并从对应表逐项查找"
+          }
+        ],
+        "flags": [],
+        "required_tasks_covered": true,
+        "confirmed_supplied_answer_miscounted_as_discovery": false,
+        "unique_difficulty_label_required": false
+      },
+      "reported_difficulty_candidates_for_context_only": [
+        "easy"
+      ]
+    },
+    {
+      "row_key": "SOLVER_OPT_20260926_HELDOUT/odd_sum_conditional_draw_v2_0",
+      "source_run": "SOLVER_OPT_20260926_HELDOUT",
+      "case_id": "odd_sum_conditional_draw_v2",
+      "repeat": 0,
+      "control_role": "fixed_analysis_input",
+      "analysis_raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/items/odd_sum_conditional_draw_v2_0/analysis_response.json",
+      "analysis_raw_sha256": "f050aae34dea8cc48161de5da859b5b02ebe4f917652694b59a273d6d6b5238e",
+      "dataset_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/dataset.json",
+      "dataset_file_sha256": "27159bedef62232ba9e47a51951b87093e6587843da0d84d52130fd8f442c815",
+      "input_case_sha256_canonical_compact": "cb6e48bd712ab7af758181852719417dbb411e18034f3e2afd7699e961cb8cb7",
+      "expected": {
+        "conditions_complete": "pass",
+        "reference_correct": "pass",
+        "explanation_consistent": "pass",
+        "source_support": "pass",
+        "solution_correct": "pass",
+        "demand_supported": "uncertain"
+      },
+      "content_review_case_id": "odd_sum_conditional_draw_v2",
+      "solution_review": {
+        "status": "pass",
+        "reason": "12项原样本、8项条件样本、6项有利样本与2项反例均可逐项枚举核对，概率3/4。",
+        "evidence": [
+          {
+            "document_id": "analysis.solution",
+            "quote": "所有有序结果共12个：(1,2),(1,3),(1,4),(2,1),(2,3),(2,4),(3,1),(3,2),(3,4),(4,1),(4,2),(4,3)。条件x+y为奇时，一奇一偶，条件结果8个：(1,2),(1,4),(2,1),(2,3),(3,2),(3,4),(4,1),(4,3)；这些是分母，仍等可能。其中x×y>3的有6个：(1,4),(2,3),(3,2),(3,4),(4,1),(4,3)。所以条件概率=6/8=3/4。条件内不满足x×y>3的全部结果为(1,2),(2,1)。"
+          }
+        ]
+      },
+      "demand_review": {
+        "status": "uncertain",
+        "reason": "五项必要工作均覆盖，背景中的子技能训练引用基本准确；但“按题目明确顺序机械组合”把求解者生成的程序描述成题面给定，且组合条件此前未练。easy/medium可合理分歧，要求体现此边界，不强制以旧AI medium预期判fail。",
+        "evidence": [
+          {
+            "document_id": "analysis.decision.boundary_reason",
+            "quote": "按题目明确顺序机械组合"
+          },
+          {
+            "document_id": "learner_profile",
+            "quote": "分别练过有序抽取的枚举与整数奇偶判断，未做过本题的组合条件。"
+          },
+          {
+            "document_id": "student",
+            "quote": "求此时x×y大于3的条件概率，写成最简分数；说明分母应包含哪些结果，并给出条件内不满足x×y大于3的全部结果。"
+          }
+        ],
+        "flags": [
+          {
+            "type": "possible_overstatement_of_supplied_method",
+            "certainty": "evidence_gap",
+            "detail": "题面要求几个输出，但没有直接给出列12项、筛8项、计6项的完整求解步骤；单项熟练不自动证明组合熟练。"
+          }
+        ],
+        "required_tasks_covered": true,
+        "confirmed_supplied_answer_miscounted_as_discovery": false,
+        "unique_difficulty_label_required": false
+      },
+      "reported_difficulty_candidates_for_context_only": [
+        "easy"
+      ]
+    },
+    {
+      "row_key": "SOLVER_OPT_20260926_HELDOUT/adaptive_pair_identification_v2_0",
+      "source_run": "SOLVER_OPT_20260926_HELDOUT",
+      "case_id": "adaptive_pair_identification_v2",
+      "repeat": 0,
+      "control_role": "fixed_analysis_input",
+      "analysis_raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/items/adaptive_pair_identification_v2_0/analysis_response.json",
+      "analysis_raw_sha256": "5eab67f6df73411ada7eb5a4e750a7d5685f7b51f68c390ef01e66725e2cf154",
+      "dataset_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/dataset.json",
+      "dataset_file_sha256": "27159bedef62232ba9e47a51951b87093e6587843da0d84d52130fd8f442c815",
+      "input_case_sha256_canonical_compact": "0a705f43f5bf794523eb1f14dca58253868dce1bcfa752b89e0da1c9f14e1aa2",
+      "expected": {
+        "conditions_complete": "pass",
+        "reference_correct": "pass",
+        "explanation_consistent": "pass",
+        "source_support": "pass",
+        "solution_correct": "pass",
+        "demand_supported": "pass"
+      },
+      "content_review_case_id": "adaptive_pair_identification_v2",
+      "solution_review": {
+        "status": "pass",
+        "reason": "逐对象执行其实际替代查询策略均到达唯一正确终点，最坏4；首问否后6候选而两问最多4种回答，证明少于4不够。",
+        "evidence": [
+          {
+            "document_id": "analysis.solution",
+            "quote": "策略：先问{A,B}。若答是，问{A,C}：是则为A，否为B。若答否，问{C,D}。若答是，问{C,E}：是则为C，否为D。若答否，问{E,F}。若答是，问{E,G}：是则为E，否为F。若答否，问{G,E}：是则为G，否为H。最坏4次（路径：否、否、是/否、第四问；其他路径最多3次）。证明：任何3次策略首问只能报两个名字，故“是”后至多2个候选，“否”后至少6个候选。若答否，剩余2次询问至多产生2²=4种不同回答序列，无法区分6个对象，必有不同对象同路径。故至少4次，策略达到最优。"
+          }
+        ]
+      },
+      "demand_review": {
+        "status": "pass",
+        "reason": "分析没有声称已经练过自适应策略或下界；覆盖完整分支、最坏计数及一般不可能性证明，指出首问2/6分支与两次回答容量的全新结合，并保留medium/hard相邻不确定性。",
+        "evidence": [
+          {
+            "document_id": "analysis.decision.boundary_reason",
+            "quote": "未见于已练习的单一询问更新或简单的排除法"
+          },
+          {
+            "document_id": "learner_profile",
+            "quote": "未学习自适应识别策略、决策树或最坏次数下界证明。"
+          },
+          {
+            "document_id": "analysis.decision.boundary_reason",
+            "quote": "材料允许穷举而无决策树/下界证明训练"
+          }
+        ],
+        "flags": [],
+        "required_tasks_covered": true,
+        "confirmed_supplied_answer_miscounted_as_discovery": false,
+        "unique_difficulty_label_required": false
+      },
+      "reported_difficulty_candidates_for_context_only": [
+        "medium",
+        "hard"
+      ]
+    },
+    {
+      "row_key": "SOLVER_OPT_20260926_HELDOUT/whole_bundle_wrong_key_v2_0",
+      "source_run": "SOLVER_OPT_20260926_HELDOUT",
+      "case_id": "whole_bundle_wrong_key_v2",
+      "repeat": 0,
+      "control_role": "fixed_analysis_input",
+      "analysis_raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/items/whole_bundle_wrong_key_v2_0/analysis_response.json",
+      "analysis_raw_sha256": "18e362b03eebc526a03b9680d47d49f391fe377c521eb362e23f1fabb29685f6",
+      "dataset_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/dataset.json",
+      "dataset_file_sha256": "27159bedef62232ba9e47a51951b87093e6587843da0d84d52130fd8f442c815",
+      "input_case_sha256_canonical_compact": "50f0ceca5bbe45be9f8ed3f13a88de4b5734c8eecb2f0a7508cf5d4b794bf3f2",
+      "expected": {
+        "conditions_complete": "pass",
+        "reference_correct": "fail",
+        "explanation_consistent": "fail",
+        "source_support": "fail",
+        "solution_correct": "pass",
+        "demand_supported": "pass"
+      },
+      "content_review_case_id": "whole_bundle_wrong_key_v2",
+      "solution_review": {
+        "status": "pass",
+        "reason": "盲解4枚水晶、余2筹码正确；它与错误参考5不同不构成解题错误。",
+        "evidence": [
+          {
+            "document_id": "analysis.solution",
+            "quote": "14枚筹码，每3枚一组：14÷3=4组余2枚。最多可换4枚水晶，剩余2枚筹码因不足一组只能保留，不能兑换。商=4，余数=2；无四舍五入、借补或赠送。"
+          }
+        ]
+      },
+      "demand_review": {
+        "status": "pass",
+        "reason": "背景明确已掌握商余数与完整组计数；需自行算商余数、按题面给定规则说明余数处理，两项均覆盖。错误参考不使正确的低需求分析失效。",
+        "evidence": [
+          {
+            "document_id": "analysis.tasks.0.residual_work",
+            "quote": "用总筹码14除以每组3，得到商4、余数2"
+          },
+          {
+            "document_id": "learner_profile",
+            "quote": "已经掌握整数除法、商与余数，能按完整组数计数"
+          },
+          {
+            "document_id": "analysis.tasks.1.residual_work",
+            "quote": "按规则只能保留，不能兑换"
+          }
+        ],
+        "flags": [],
+        "required_tasks_covered": true,
+        "confirmed_supplied_answer_miscounted_as_discovery": false,
+        "unique_difficulty_label_required": false
+      },
+      "reported_difficulty_candidates_for_context_only": [
+        "easy"
+      ]
+    },
+    {
+      "row_key": "SOLVER_OPT_20260926_BASELINE/laboratory_slots_0",
+      "source_run": "SOLVER_OPT_20260926_BASELINE",
+      "case_id": "laboratory_slots",
+      "repeat": 0,
+      "control_role": "negative_solver_control",
+      "analysis_raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_BASELINE/items/laboratory_slots_0/analysis_response.json",
+      "analysis_raw_sha256": "16063ec2450e5113ff8be40c7b9f5785c812e995341219fbc9250cf49a668948",
+      "dataset_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_BASELINE/dataset.json",
+      "dataset_file_sha256": "efadbf5103c7cff545e8d88b714501874b97e8e70ef006bcf270050aa7fe1f25",
+      "input_case_sha256_canonical_compact": "2ca1e97ed42310383879059f0ef69c44fe435bc5f6196142d8f677a4a684a319",
+      "expected": {
+        "conditions_complete": "pass",
+        "reference_correct": "pass",
+        "explanation_consistent": "pass",
+        "source_support": "pass",
+        "solution_correct": "fail",
+        "demand_supported": "pass"
+      },
+      "content_review_case_id": "laboratory_slots",
+      "solution_review": {
+        "status": "fail",
+        "reason": "最终构造把A,B都放1、C,D都放2，违反两项互斥；下界5及最终数字5正确仍不能补救无效构造。",
+        "evidence": [
+          {
+            "document_id": "analysis.solution",
+            "quote": "最少为5个时段。安排：时段1：A、B；时段2：C、D；时段3：E；时段4：F。检查：A与B不同时段，C与D不同时段；C在A后，D在B后，E在C、D后，F在E后。证明不可能少于5：E必须在C、D之后，而C在A后、D在B后，所以E之前至少要有A、B、C、D四项完成。A与B不能同段，C与D不能同段，因此这四项至少占2个时段；又因C、D分别晚于A、B，不能把A、B、C、D全部塞进2个时段：若2个时段完成四项，每段恰两项，且A、B分属两段、C、D分属两段；但C所在段必须晚于A所在段，D所在段必须晚于B所在段，两个段无法同时满足两个“更晚”，故至少需3个时段完成A、B、C、D。E还需在其后，F又在E后，所以总时段至少3+1+1=5。上述安排达到5，故最少为5。"
+          }
+        ]
+      },
+      "demand_review": {
+        "status": "pass",
+        "reason": "任务分解覆盖题目要求，背景与非例行证明瓶颈描述有据；相邻候选承认边界。实际构造错误由solution_correct处理，不因此认定参考错误或任务需求不存在。",
+        "evidence": [
+          {
+            "document_id": "analysis.decision.boundary_reason",
+            "quote": "学生能读先后约束并安排单链，但未学过带共享设备的任务图调度或最短工期证明。"
+          },
+          {
+            "document_id": "analysis.tasks.1.residual_work",
+            "quote": "结合A/B、C/D设备冲突及C、D分别晚于A、B推出至少5段"
+          }
+        ],
+        "flags": [],
+        "required_tasks_covered": true,
+        "confirmed_supplied_answer_miscounted_as_discovery": false,
+        "unique_difficulty_label_required": false
+      },
+      "reported_difficulty_candidates_for_context_only": [
+        "medium",
+        "hard"
+      ]
+    },
+    {
+      "row_key": "SOLVER_OPT_20260926_BASELINE/courier_single_failure_corrected_0",
+      "source_run": "SOLVER_OPT_20260926_BASELINE",
+      "case_id": "courier_single_failure_corrected",
+      "repeat": 0,
+      "control_role": "negative_solver_control",
+      "analysis_raw_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_BASELINE/items/courier_single_failure_corrected_0/analysis_response.json",
+      "analysis_raw_sha256": "33ab7472a7c90643e746ca9c6b2aaab3c69caab5a55253092be182d1e871b928",
+      "dataset_path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_BASELINE/dataset.json",
+      "dataset_file_sha256": "efadbf5103c7cff545e8d88b714501874b97e8e70ef006bcf270050aa7fe1f25",
+      "input_case_sha256_canonical_compact": "2dca8850a59bc3a9aefa3abc909a394794c83b0f1444b2c282bfaa82dc14a659",
+      "expected": {
+        "conditions_complete": "pass",
+        "reference_correct": "pass",
+        "explanation_consistent": "pass",
+        "source_support": "pass",
+        "solution_correct": "fail",
+        "demand_supported": "fail"
+      },
+      "content_review_case_id": "courier_single_failure_corrected",
+      "solution_review": {
+        "status": "fail",
+        "reason": "最终两条登记路径都含C-T，关闭后全断；下界漏掉T入边C-T而假称至少10，被正确8费方案反驳。",
+        "evidence": [
+          {
+            "document_id": "analysis.solution",
+            "quote": "取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-C-T，费用2+1+1=4。总登记费=7≤8。\n容错：P1用边SA,AC,CT；P2用边SB,BC,CT。任意一条走廊关闭时，若关的是P1的边，则P2仍完整；若关的是P2的边，则P1仍完整；若关的是其他边，两条都仍完整。故至少一条可通行。\n下界：若总费≤7且要抗任意单边关闭，两条S-T路径必须边不相交。否则存在公共边e，关闭e后两条都断。边不相交时，从S出发的两条路径首边不同，只能分别用SA(1)和SB(2)；到达T的两条路径末边不同，只能分别用AT(4)和BT(3)。于是两条路径费用至少为(1+4)与(2+3)，总和至少10，矛盾。因此总费≤7不可能。"
+          }
+        ]
+      },
+      "demand_review": {
+        "status": "fail",
+        "reason": "虽任务类别与背景描述基本相关，判级依据明确引用不存在的“至少10”下界作为实际所需论证；这是可反驳的数学依据错误，不能只因相邻候选看似合理而将该依据标pass。",
+        "evidence": [
+          {
+            "document_id": "analysis.decision.boundary_reason",
+            "quote": "利用S、T处边费用推出至少10"
+          },
+          {
+            "document_id": "student",
+            "quote": "C-T:1"
+          },
+          {
+            "document_id": "reference_answer",
+            "quote": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。"
+          }
+        ],
+        "flags": [
+          {
+            "type": "false_mathematical_basis_in_demand_reason",
+            "certainty": "confirmed",
+            "detail": "正确可行方案总费8直接否定至少10；这也出现在盲解下界错误中，但此处仅指出已用于判级理由的假事实。"
+          }
+        ],
+        "required_tasks_covered": true,
+        "confirmed_supplied_answer_miscounted_as_discovery": false,
+        "unique_difficulty_label_required": false
+      },
+      "reported_difficulty_candidates_for_context_only": [
+        "medium",
+        "hard"
+      ]
+    }
+  ],
+  "negative_control_row_keys": [
+    "SOLVER_OPT_20260926_BASELINE/laboratory_slots_0",
+    "SOLVER_OPT_20260926_BASELINE/courier_single_failure_corrected_0"
+  ],
+  "executable_checks": {
+    "laboratory_valid_assignments_by_slot_count": {
+      "4": 0,
+      "5": 2
+    },
+    "courier_simple_paths": 10,
+    "courier_disjoint_path_pairs": 9,
+    "courier_minimum_fee": 8,
+    "new_task_oracle_results": {
+      "glyph_table_lookup_v2": {
+        "reference_correct": true,
+        "lookup": "波纹",
+        "code": 73
+      },
+      "odd_sum_conditional_draw_v2": {
+        "reference_correct": true,
+        "initial_outcomes": 12,
+        "condition_outcomes": 8,
+        "favourable_outcomes": 6,
+        "probability": "3/4",
+        "counterexamples": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            1
+          ]
+        ]
+      },
+      "adaptive_pair_identification_v2": {
+        "reference_correct": true,
+        "candidate_states_checked": 255,
+        "queries_available": 28,
+        "all_no_sequences_checked": 21952,
+        "optimal_worst_queries": 4,
+        "reference_queries_by_hidden_object": {
+          "A": 2,
+          "B": 2,
+          "C": 3,
+          "D": 3,
+          "E": 4,
+          "F": 4,
+          "G": 4,
+          "H": 4
+        },
+        "minimum_survivors_after_three_no_answers": 2
+      },
+      "whole_bundle_wrong_key_v2": {
+        "reference_correct": false,
+        "question_answerable": true,
+        "correct_maximum": 4,
+        "remainder": 2,
+        "claimed_maximum": 5,
+        "claimed_result_requires_tokens": 15,
+        "available_tokens": 14,
+        "defect": "An incomplete remainder cannot buy an extra crystal."
+      }
+    },
+    "actual_adaptive_solver_queries_by_hidden_object": {
+      "A": 2,
+      "B": 2,
+      "C": 3,
+      "D": 3,
+      "E": 4,
+      "F": 4,
+      "G": 4,
+      "H": 4
+    }
+  },
+  "files_read": [
+    {
+      "path": "benchmarks/difficulty_review_v2/solver_holdout_20260926_v2_oracle.py",
+      "sha256": "c1cac4a48c72a24f93d4fc4dfd932eecd2569e9c1217f5b1714b4e2ee26b375d"
+    },
+    {
+      "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_BASELINE/dataset.json",
+      "sha256": "efadbf5103c7cff545e8d88b714501874b97e8e70ef006bcf270050aa7fe1f25"
+    },
+    {
+      "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_BASELINE/items/courier_single_failure_corrected_0/analysis_response.json",
+      "sha256": "33ab7472a7c90643e746ca9c6b2aaab3c69caab5a55253092be182d1e871b928"
+    },
+    {
+      "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_BASELINE/items/laboratory_slots_0/analysis_response.json",
+      "sha256": "16063ec2450e5113ff8be40c7b9f5785c812e995341219fbc9250cf49a668948"
+    },
+    {
+      "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/dataset.json",
+      "sha256": "efadbf5103c7cff545e8d88b714501874b97e8e70ef006bcf270050aa7fe1f25"
+    },
+    {
+      "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/items/courier_single_failure_corrected_0/analysis_response.json",
+      "sha256": "77866810c262b1b2e4e8610a6688f3279deda046e1413430d991bdb99b3dd1a6"
+    },
+    {
+      "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/items/courier_single_failure_corrected_1/analysis_response.json",
+      "sha256": "dafdad551c1d27abf4268d3f0827788de071ff048112644b181f383af933f885"
+    },
+    {
+      "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/items/laboratory_slots_0/analysis_response.json",
+      "sha256": "662260a007cd77db51a61203f99736c0a54760bfe9395979cceb054745a34960"
+    },
+    {
+      "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_CANDIDATE/items/laboratory_slots_1/analysis_response.json",
+      "sha256": "df9f5361e1453ee05e2c63ad0ec35590b9285fcbcd83d5fd1c0ba352eebb2754"
+    },
+    {
+      "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/dataset.json",
+      "sha256": "27159bedef62232ba9e47a51951b87093e6587843da0d84d52130fd8f442c815"
+    },
+    {
+      "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/items/adaptive_pair_identification_v2_0/analysis_response.json",
+      "sha256": "5eab67f6df73411ada7eb5a4e750a7d5685f7b51f68c390ef01e66725e2cf154"
+    },
+    {
+      "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/items/glyph_table_lookup_v2_0/analysis_response.json",
+      "sha256": "d5f0fc519879f4aaf57ac2768de28892f82ea827fef44c8671022255abe80f7a"
+    },
+    {
+      "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/items/odd_sum_conditional_draw_v2_0/analysis_response.json",
+      "sha256": "f050aae34dea8cc48161de5da859b5b02ebe4f917652694b59a273d6d6b5238e"
+    },
+    {
+      "path": "docs/difficulty/review-v2/SOLVER_OPT_20260926_HELDOUT/items/whole_bundle_wrong_key_v2_0/analysis_response.json",
+      "sha256": "18e362b03eebc526a03b9680d47d49f391fe377c521eb362e23f1fabb29685f6"
+    }
+  ]
+}

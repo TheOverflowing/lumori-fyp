@@ -1,0 +1,110 @@
+{
+  "cases": [
+    {
+      "id": "dispatch_scaffold",
+      "split": "development",
+      "domain": "invented_dispatch_rules",
+      "learner_profile": "入门学生，会做整数加乘和大小比较；分别练过按条件筛选记录、按公式计算优先分，尚未练过把这两项规则组合。所有必要规则均在题面。",
+      "student_visible_text": "虚构派工课规则：只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。优先分=2×等待天数+紧急标志（标志只取0或1）。从有资格的工单中选优先分最高的一单；同分选字母较前者。\n数据：A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。\n已给出的完整解法：A、B、C、D优先分分别为9、7、8、10。A因4>3不合资格，D因材料不齐不合资格；有资格的集合是{B,C}。C的8分高于B的7分，因此选C。A的9分虽更高，但优先分只用于合资格的工单，所以不能选A。\n作答：列出有资格的工单，写出本轮应选哪单，并用一句话解释为何不选A。",
+      "reference_answer": "有资格的是B、C，选C。A的工时4小时超过可用的3小时，即使分数较高也不合资格。",
+      "reference_explanation": "先应用资格条件，再在B的7分与C的8分之间选择。题面完整解法已给出全部需要报告的结论和理由。",
+      "sources": [
+        {
+          "id": "dispatch_rules",
+          "text": "只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。优先分=2×等待天数+紧急标志（标志只取0或1）。从有资格的工单中选优先分最高的一单；同分选字母较前者。"
+        },
+        {
+          "id": "dispatch_records",
+          "text": "A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "easy"
+        ],
+        "content_status": "pass",
+        "issue": "完整解法已给出资格集合、分数、选择与排除A的理由；学生只需读取并复述，不应把已提供的两阶段推理算作独立工作。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    },
+    {
+      "id": "dispatch_independent",
+      "split": "development",
+      "domain": "invented_dispatch_rules",
+      "learner_profile": "入门学生，会做整数加乘和大小比较；分别练过按条件筛选记录、按公式计算优先分，尚未练过把这两项规则组合。所有必要规则均在题面。",
+      "student_visible_text": "虚构派工课规则：只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。优先分=2×等待天数+紧急标志（标志只取0或1）。从有资格的工单中选优先分最高的一单；同分选字母较前者。\n数据：A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。\n作答：列出有资格的工单，写出本轮应选哪单，并用一句话解释为何不选A。",
+      "reference_answer": "有资格的是B、C，选C。A的工时4小时超过可用的3小时，即使分数较高也不合资格。",
+      "reference_explanation": "A超过工时上限，D材料不齐，均须先排除。B得2×3+1=7分，C得2×4+0=8分，所以选C。高分不能抵消资格不足。",
+      "sources": [
+        {
+          "id": "dispatch_rules",
+          "text": "只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。优先分=2×等待天数+紧急标志（标志只取0或1）。从有资格的工单中选优先分最高的一单；同分选字母较前者。"
+        },
+        {
+          "id": "dispatch_records",
+          "text": "A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "medium"
+        ],
+        "content_status": "pass",
+        "issue": "须独立把资格筛选与优先分计算、比较组合，抵抗A和D的高分干扰；每步规则已给出，无需发明新方法。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    },
+    {
+      "id": "courier_single_failure",
+      "split": "development",
+      "domain": "invented_courier_network",
+      "learner_profile": "入门离散数学学生，理解无向图、简单路径、路径费用相加，会在小图中找最短路；没有学过容错网络、边不相交路径或网络流。本题允许自行枚举、分类或构造证明，不要求引用定理。",
+      "student_visible_text": "虚构快递网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。\n规则：事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。\n请设计总登记费不超过8的方案，说明它为何能抵抗任意一条走廊关闭，并证明总登记费不超过7不可能达到同一保证。",
+      "reference_answer": "登记S-A-C-T（费用3）与S-B-T（费用5），总费8。它们无共用走廊，任意关闭一条走廊最多破坏其中一条。若两条路径有共用走廊，关闭该走廊会同时破坏它们，因此任何合格方案都必须没有共用走廊。两条路径离开S必须分别用S-A和S-B，费用至少3；进入T必须用不同走廊，最便宜两条是C-T与B-T，合计至少4。还至少需要一条中间走廊，因为S不直接连C，且若完全不用中间走廊，只能走S-A-T与S-B-T，费用9。因此总费不能为7或更少。",
+      "reference_explanation": "更严格的下界分情况：不使用中间走廊时，只能选S-A-T和S-B-T，总费9；使用至少一条中间走廊时，首边合计3、末边合计至少4、中间边至少1，故总费至少8。构造恰好达到8。困难来自自行识别单点关闭要求对应的共用边约束，并把构造与必要性证明连接。",
+      "sources": [
+        {
+          "id": "courier_map",
+          "text": "网络只有S、A、B、C、T五个站。无向走廊及费用为：S-A:1，S-B:2，A-T:4，B-T:3，A-B:1，A-C:1，B-C:1，C-T:1；没有其他走廊。"
+        },
+        {
+          "id": "courier_contract",
+          "text": "事先登记两条从S到T的简单路径，每条路径不得重复经过站点。登记费是两条路径费用之和；即使共用走廊也须在两条路径中分别计费。登记后，网络中的任意一条走廊可能关闭；你不能修改已登记的路径，但至少一条登记路径必须仍完整可通行。"
+        }
+      ],
+      "expected": {
+        "eligibility": "eligible",
+        "candidates": [
+          "hard"
+        ],
+        "content_status": "pass",
+        "issue": "相对只学过单条最短路的背景，须自行选择两路容错条件、构造方案并证明费用下界；题面未提供边不相交或下界分解方法。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    },
+    {
+      "id": "notice_boundary_ambiguous",
+      "split": "development",
+      "domain": "invented_notice_policy",
+      "learner_profile": "已掌握整数大小比较以及≤、≥符号的入门学生。只能使用题面政策，不假设额外惯例。",
+      "student_visible_text": "虚构场馆政策全文：温度≤10时，通知A合规；温度≥10时，通知B合规。管理员每天只张贴一份合规通知。政策没有优先级、平局规则或其他条款。\n今天温度恰为10。单选题：按此政策，唯一合规的通知是什么？A.通知A；B.通知B。必须选出唯一正确选项。",
+      "reference_answer": "A.通知A。",
+      "reference_explanation": "温度10满足≤10，因此只有A合规。",
+      "sources": [
+        {
+          "id": "notice_policy_full",
+          "text": "温度≤10时，通知A合规；温度≥10时，通知B合规。管理员每天只张贴一份合规通知。政策没有优先级、平局规则或其他条款。"
+        }
+      ],
+      "expected": {
+        "eligibility": "invalid_question",
+        "candidates": [],
+        "content_status": "fail",
+        "issue": "10同时满足两个条件，A或B都可作为当天唯一张贴的一份；只张贴一份并不使合规选择唯一。题目要求唯一正确选项但没有消除平局，参考解释错误排除了B。"
+      },
+      "label_provenance": "AI_authored_development_expectation_not_human_gold"
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "pass",
+      "reason": "Graph, costs, two simple paths, per-path fee, single-corridor closure, and ≤8/≤7 requirements are explicit and internally consistent; no missing endpoint or quantifier ambiguity.",
+      "evidence_ids": [
+        "E0001",
+        "E0002",
+        "E0003",
+        "E0004",
+        "E0005",
+        "E0006"
+      ]
+    },
+    "solution_correct": {
+      "status": "fail",
+      "reason": "Analysis proposes S-A-C-T and S-B-C-T, total 7, but both use C-T. If C-T closes, both paths are blocked, violating the at-least-one requirement in E0005.",
+      "evidence_ids": [
+        "E0020",
+        "E0022",
+        "E0002",
+        "E0005"
+      ]
+    },
+    "reference_correct": {
+      "status": "pass",
+      "reason": "Reference scheme S-A-C-T and S-B-T costs 8 and is edge-disjoint, so any single closure preserves one path. The lower-bound shared-edge, first/last/middle cost case split is valid.",
+      "evidence_ids": [
+        "E0009",
+        "E0010",
+        "E0011",
+        "E0012",
+        "E0013",
+        "E0014",
+        "E0002",
+        "E0005"
+      ]
+    },
+    "explanation_consistent": {
+      "status": "pass",
+      "reason": "Explanation case split matches the graph: no middle gives S-A-T + S-B-T = 10; with middle, first≥3, last≥4, middle≥1 gives ≥8. Construction and difficulty note align with reference key.",
+      "evidence_ids": [
+        "E0015",
+        "E0016",
+        "E0017",
+        "E0002",
+        "E0003",
+        "E0005"
+      ]
+    },
+    "source_support": {
+      "status": "pass",
+      "reason": "Sources list stations, all edge costs and the path/fee/closure rules, directly supporting the student conditions and the reference construction and lower-bound cost facts.",
+      "source_ids": [
+        "E0034",
+        "E0035",
+        "E0036",
+        "E0037",
+        "E0038"
+      ],
+      "claim_ids": [
+        "E0002",
+        "E0003",
+        "E0004",
+        "E0005",
+        "E0009",
+        "E0012",
+        "E0013",
+        "E0015"
+      ]
+    },
+    "demand_supported": {
+      "status": "pass",
+      "reason": "Tasks cover designing a ≤8 scheme, checking closure resilience, and proving ≤7 impossible. The medium/hard boundary fits an introductory profile without fault-tolerance background; no unsupported prior mastery is assumed.",
+      "analysis_ids": [
+        "E0018",
+        "E0030",
+        "E0032",
+        "E0033"
+      ],
+      "student_ids": [
+        "E0006",
+        "E0005",
+        "E0002"
+      ],
+      "profile_ids": [
+        "E0007",
+        "E0008"
+      ]
+    }
+  }
+}

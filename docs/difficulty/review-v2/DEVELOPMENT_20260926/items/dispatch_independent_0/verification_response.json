@@ -1,0 +1,82 @@
+{
+  "checks": {
+    "conditions_complete": {
+      "status": "pass",
+      "reason": "规则、数据、作答要求齐全；工时上限、紧急标志取值、同分规则均明确，无缺失量词或端点。",
+      "evidence": [
+        {
+          "document_id": "student",
+          "quote": "只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。"
+        },
+        {
+          "document_id": "student",
+          "quote": "优先分=2×等待天数+紧急标志（标志只取0或1）。"
+        },
+        {
+          "document_id": "student",
+          "quote": "从有资格的工单中选优先分最高的一单；同分选字母较前者。"
+        }
+      ]
+    },
+    "reference_correct": {
+      "status": "pass",
+      "reason": "按规则筛出B、C；B=7，C=8，最高为C；A工时4>3无资格，答案与解释一致。",
+      "evidence": [
+        {
+          "document_id": "reference_answer",
+          "quote": "有资格的是B、C，选C。A的工时4小时超过可用的3小时，即使分数较高也不合资格。"
+        },
+        {
+          "document_id": "analysis",
+          "quote": "有资格：B、C。A工时4>3，不合格；D材料不齐，不合格。优先分：B=2×3+1=7；C=2×4+0=8。最高为C，故选C。"
+        }
+      ]
+    },
+    "explanation_consistent": {
+      "status": "pass",
+      "reason": "解释先排除A、D，再算B=7、C=8并选C，与答案及题面定义一致；数值指针与范围未混淆。",
+      "evidence": [
+        {
+          "document_id": "reference_explanation",
+          "quote": "A超过工时上限，D材料不齐，均须先排除。B得2×3+1=7分，C得2×4+0=8分，所以选C。"
+        },
+        {
+          "document_id": "student",
+          "quote": "优先分=2×等待天数+紧急标志（标志只取0或1）。"
+        }
+      ]
+    },
+    "source_support": {
+      "status": "pass",
+      "reason": "来源摘录完整支持规则与数据；学生答案中的资格筛选、分数计算和选择均可由摘录直接推出。",
+      "evidence": [
+        {
+          "document_id": "source:dispatch_rules",
+          "quote": "只有材料齐全且工时不超过本轮可用的3小时的工单才有资格。优先分=2×等待天数+紧急标志（标志只取0或1）。"
+        },
+        {
+          "document_id": "source:dispatch_records",
+          "quote": "A：材料齐全，工时4，等待4天，紧急1；B：材料齐全，工时2，等待3天，紧急1；C：材料齐全，工时3，等待4天，紧急0；D：材料不齐，工时1，等待5天，紧急0。"
+        },
+        {
+          "document_id": "student",
+          "quote": "有资格的是B、C，选C。"
+        }
+      ]
+    },
+    "demand_supported": {
+      "status": "pass",
+      "reason": "分析将任务拆为筛选、计算、比较、论证四步，均为已练规则的直接组合；学生已分别练过筛选与公式计算，剩余工作与medium边界相符。",
+      "evidence": [
+        {
+          "document_id": "analysis",
+          "quote": "该任务需先按资格条件筛选，再按公式计算优先分并比较选择；学生分别练过筛选和公式计算，但尚未组合两项规则。"
+        },
+        {
+          "document_id": "student",
+          "quote": "分别练过按条件筛选记录、按公式计算优先分，尚未练过把这两项规则组合。"
+        }
+      ]
+    }
+  }
+}

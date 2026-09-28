@@ -1,0 +1,56 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目条件完整：图、费用、两条简单路径、单边关闭容错要求及费用上界均明确；入门离散数学准备足以通过枚举和分类完成。",
+  "solution": "取两条路径：P1=S-A-C-T，费用1+1+1=3；P2=S-B-T，费用2+3=5。总登记费8。P1用边SA,AC,CT；P2用边SB,BT。任意一条走廊关闭：若关闭P1的边，P2仍完整；若关闭P2的边，P1仍完整；关闭其他边不影响。故抵抗任意单边关闭。证明≤7不可能：两条S-T简单路径必须边不相交，否则若共用某边，关闭该边两条同时失效。图中S-T边不相交路径只有两条：S-A-C-T费用3和S-B-T费用5，总费用8；其他候选如S-A-B-T费用1+1+3=5与S-B-C-T费用2+1+1=4共用边SB或AB等，不能同时容错。因此最小总费为8，≤7不可能。",
+  "tasks": [
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "枚举并选择两条简单S-T路径，计算总费用，验证不超过8且覆盖单边关闭。",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S002",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "对所选两条路径逐边检查：任意一条走廊关闭后至少一条路径完整。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S006"
+      ],
+      "condition_ids": [
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "provided_ids": [],
+      "residual_work": "证明总费≤7不可能：说明容错要求迫使两条路径边不相交，并枚举所有边不相交S-T路径对。",
+      "mode": "construct_argument"
+    }
+  ],
+  "decision": {
+    "candidates": [
+      "medium",
+      "hard"
+    ],
+    "boundary_reason": "任务需在给定小图中自行选择两条路径并证明最优性；虽可枚举，但需发现单边容错等价于两条路径边不相交，并排除所有≤7方案，超出直接套用最短路。入门准备未涉及容错网络，故接近hard；但图很小且允许枚举，故保留medium为相邻下界。",
+    "hard_task_index": 2
+  }
+}

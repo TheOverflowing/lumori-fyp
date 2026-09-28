@@ -1,0 +1,83 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "题目条件完整：账户、ID、余额、锁、转账语义、公平排队与原子获取均已给出；要求明确（伪代码、锁保护说明、正确性论证、死锁反例），且明确允许采用所给完整方案，不存在矛盾或不可解要求。学习者画像提供了先修知识（互斥锁、竞态、死锁含义、单计数器锁分析），足以判定相对难度。",
+  "cognitive_demand": "routine_application",
+  "tasks": [
+    {
+      "request_ids": [
+        "S006",
+        "S016"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S004",
+        "S005",
+        "S007"
+      ],
+      "solution_ids": [
+        "S009",
+        "S010",
+        "S011",
+        "S012"
+      ],
+      "residual_work": "把已给出的按 ID 升序加两锁、持锁检查与扣加、成败均释放的步骤转写为规范伪代码（含加锁顺序、失败返回、释放路径），无需自行设计新方案。",
+      "mode": "reproduce"
+    },
+    {
+      "request_ids": [
+        "S008"
+      ],
+      "condition_ids": [
+        "S001",
+        "S004",
+        "S005"
+      ],
+      "solution_ids": [
+        "S013"
+      ],
+      "residual_work": "将已给出的“读、检查、扣款、加款均在两锁保护内”对应到具体语句，说明各操作分别由哪把/哪些锁保护，并指出检查与更新不可被其他转账插入。",
+      "mode": "reproduce"
+    },
+    {
+      "request_ids": [
+        "S008"
+      ],
+      "condition_ids": [
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+      ],
+      "solution_ids": [
+        "S013",
+        "S014"
+      ],
+      "residual_work": "把已给出的两条理由（成功时扣加相等、失败不改余额；等待只从较小 ID 指向较大 ID 故无等待环）展开为覆盖任意交错的不变量论证，需自行组织“总余额不变、不透支、无死锁”三部分的推理链条。",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S008"
+      ],
+      "condition_ids": [
+        "S002",
+        "S005"
+      ],
+      "solution_ids": [
+        "S015"
+      ],
+      "residual_work": "把已给出的 A→B 与 B→A 各持一锁再互等的反例具体化为可执行的并发交错序列，说明为何形成等待环而无法推进。",
+      "mode": "reproduce"
+    }
+  ],
+  "minimum_answer": "伪代码：transfer(s,d,amt){ if s.id<d.id {lock(s.lock); lock(d.lock);} else {lock(d.lock); lock(s.lock);} if s.balance>=amt { s.balance-=amt; d.balance+=amt; ok=true; } else ok=false; unlock both; return ok; }。锁保护：读 s.balance、比较 amt、扣款、加款全部在两把锁持有期间完成，故检查与更新原子，其他转账无法在检查与扣款之间插入。正确性：成功时扣加相等，失败时余额不变，故总余额恒等于初始总额；扣款前检查余额足够且扣款在锁内，故任何账户余额非负；等待关系只从较小 ID 指向较大 ID，是严格偏序，不可能出现等待环，故无死锁。反例：若统一先锁 source，则 A→B 持 A 等 B，B→A 持 B 等 A，形成环而永久阻塞。",
+  "decision": {
+    "candidates": [
+      "easy"
+    ],
+    "hard_task_index": null,
+    "reason": "题目已给出完整方案（按 ID 升序加两锁、持锁检查与扣加、成败均释放）以及正确性理由（扣加相等、失败不改、等待只从小 ID 指向大 ID）和死锁反例（A→B 与 B→A 各持一锁互等）。学习者已掌握互斥锁、竞态、死锁含义并能分析单计数器加锁代码，因此最低要求是把方案转写为伪代码、把已给理由对应到具体语句并展开为覆盖所有交错的说明、把反例具体化——属于对已提供论证的复述与整理，而非发现新策略或新证明。最近边界：若要求自行发现加锁顺序方案或独立构造无死锁证明，则需非平凡策略整合，会升为 medium/hard；但本题明确“无需发现另一种方案”，故判为 easy。"
+  }
+}

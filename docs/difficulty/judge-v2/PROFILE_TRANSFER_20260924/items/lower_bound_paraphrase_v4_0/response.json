@@ -1,0 +1,68 @@
+{
+  "eligibility": "eligible",
+  "eligibility_reason": "The problem is self-contained: array properties, target semantics, the proposed code, and all requirements are stated. The learner profile supplies relevant preparation (sorted arrays, floor division, O(log n), loop invariants, exact-match binary search tracing) but no lower-bound search construction or proof experience, which is sufficient to judge relative demand.",
+  "cognitive_demand": "strategic_reasoning",
+  "tasks": [
+    {
+      "request_ids": [
+        "S014"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S005",
+        "S006",
+        "S007",
+        "S008",
+        "S009",
+        "S010",
+        "S011",
+        "S012",
+        "S013",
+        "S015",
+        "S016"
+      ],
+      "solution_ids": [],
+      "residual_work": "Find a concrete failing input by tracing the supplied code, e.g. a=[1,2], t=2: l=0,r=1,m=0,a[0]<2 so l=0, loop repeats forever. This requires constructing a counterexample, not supplied.",
+      "mode": "construct_argument"
+    },
+    {
+      "request_ids": [
+        "S014"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S015",
+        "S016"
+      ],
+      "solution_ids": [],
+      "residual_work": "Design a corrected lower-bound search retaining O(log n). A standard fix uses half-open [l,r) with r=len(a), m=(l+r)//2, if a[m]<t then l=m+1 else r=m, returning l. The learner must choose/adapt an interval convention and ensure progress.",
+      "mode": "select_or_adapt"
+    },
+    {
+      "request_ids": [
+        "S014"
+      ],
+      "condition_ids": [
+        "S001",
+        "S002",
+        "S003",
+        "S015"
+      ],
+      "solution_ids": [],
+      "residual_work": "Prove termination and correctness for all allowed arrays, including duplicates and t above all entries. This requires a loop invariant and boundary argument not supplied; the learner must establish that the returned l is the smallest index with a[l]>=t or len(a).",
+      "mode": "construct_argument"
+    }
+  ],
+  "minimum_answer": "Failure example: a=[1,2], t=2. Trace: l=0,r=1,m=0; a[0]=1<2 so l=0; loop condition l<r still holds, so it repeats forever (no progress). Repair: use half-open interval [l,r) with l=0, r=len(a); while l<r: m=(l+r)//2; if a[m]<t: l=m+1 else r=m; return l. This keeps O(log n) because each iteration strictly shrinks r-l. Termination: r-l decreases every iteration (either l increases past m or r becomes m), so the loop ends. Correctness: maintain invariant that all indices <l have a[i]<t and all indices >=r have a[i]>=t (or r=len(a)); when l==r, l is the first index with a[l]>=t, or len(a) if none. Duplicates and t above all entries are handled because the invariant covers all positions.",
+  "decision": {
+    "candidates": [
+      "hard"
+    ],
+    "hard_task_index": 2,
+    "reason": "The learner is familiar with exact-match binary search tracing and loop invariants, but has no practice constructing or proving a lower-bound search, especially with non-advancing loops. The bottleneck is not recalling binary search but designing a correct half-open interval update and proving the boundary invariant for all cases, including duplicates and t above all entries. This is a specific nonroutine integration/strategy task relative to the stated preparation, so it is hard rather than a familiar application. The nearest boundary is medium: if the learner had previously constructed lower-bound searches, the repair and proof would be routine application; here the missing construction/proof experience makes it hard."
+  }
+}

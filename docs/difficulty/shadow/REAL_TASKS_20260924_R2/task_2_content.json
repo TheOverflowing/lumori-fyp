@@ -1,0 +1,326 @@
+{
+  "id": "0f6efb3a520b45b790272eadc375dd51",
+  "course_id": "7614695598dd4d0d8fb3e5a94802af8c",
+  "job_id": "a0251f9e7238444da965814eff831ab3",
+  "version": 1,
+  "status": "draft",
+  "asset": {
+    "title": "检索命中相似文本但证据不足时，如何判断引用是否可用并处理资料缺口。请出一道条件完整的中等应用简答题。",
+    "evidence_sufficient": true,
+    "evidence_note": "",
+    "learning_objectives": [
+      "能依据嵌入模型版本与索引版本的一致性，判断一次高相似度命中是否可作为本课程的检索依据。",
+      "能结合当前课程权限与资料启用/删除状态，判断命中文本能否进入引用。",
+      "能在证据不足时说明引用可用性、缺口处理方式与不能确定之处，且不编造事实或使用无权限文本。"
+    ],
+    "section_scope": "shared",
+    "sections": [
+      {
+        "heading": "课程检索与证据检查规则",
+        "text": "1. 文档向量由指定版本的嵌入模型生成；查询向量必须由同一嵌入模型版本生成，才能在该索引中比较相似度。\n2. 更换嵌入模型后，应为需要使用的课程资料重建向量索引并记录新的模型版本，不能直接用新查询向量与旧文档向量混合检索。\n3. 检索应限定在当前账号有权限访问的当前课程资料中，只使用已启用且未删除的资料；索引重建不会扩大资料权限，也不能恢复已删除资料。\n4. 索引版本不一致时，应先确认模型与索引版本，再重建对应课程的索引，完成后检查索引版本和检索范围。\n5. 检索相似度较高只说明文本相近，不自动证明答案正确。生成答案时要检查题干条件是否完整、答案是否得到资料支持、引用是否准确。",
+        "citation_ids": [
+          "context_bd45d72046d6e2dd7928e2e3d9a3e740"
+        ]
+      },
+      {
+        "heading": "引用定位与资料缺口处理",
+        "text": "1. 检索与重建过程应保留原文和来源标识，使每个引用都能定位到正确资料。\n2. 资料不足时应明确说明缺口并补充有权限的资料，不能编造事实，也不能从无权限课程取用文本。\n3. 对多种可行解释，应指出各自依据和不能确定的部分。\n4. 以上为本课程的操作性规则，不涉及外部行业法规。",
+        "citation_ids": [
+          "context_bd45d72046d6e2dd7928e2e3d9a3e740"
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "slot_id": "q1",
+        "difficulty": "medium",
+        "difficulty_design": {
+          "cognitive_process": "analyze",
+          "concepts": [
+            "嵌入模型版本一致性",
+            "课程权限与资料状态",
+            "相似度不等于正确性",
+            "引用定位与来源标识",
+            "资料缺口处理"
+          ],
+          "expected_steps": [
+            "依据嵌入模型版本一致性与当前课程权限/资料状态，判断该命中能否作为本课程证据。",
+            "说明高相似度只说明文本相近，需继续核对题干条件是否完整、答案是否得到资料支持、引用能否定位到正确资料。",
+            "说明资料不足时应明确缺口并补充有权限资料，不得编造或取用无权限课程文本；指出多种解释时说明各自依据与不确定部分。"
+          ]
+        },
+        "kind": "short_answer",
+        "stem": "某课程检索系统的一次操作记录如下：\n\n- 当前索引中的文档向量由嵌入模型 A 生成。\n- 本次查询向量由嵌入模型 B 生成，索引尚未按 B 重建，新模型版本也未记录。\n- 命中文本来自另一门课的资料库；当前账号对该课程没有访问权限。\n- 该资料在当前课程中已被删除。\n- 命中文本与题干术语高度相似，相似度分数很高。\n- 命中文本的原文与来源标识被保留，引用可定位到资料库中的该条目。\n\n请结合课程资料中的检索索引、课程隔离与证据检查规则，回答：这条高相似度命中能否作为当前题目答案的引用依据？需要补充或修正哪些条件？在资料仍不足时，应如何说明缺口与处理方式，以及如何对待存在多种可行解释的情况？\n\n请分点作答，并说明每条判断所依据的规则。",
+        "options": [],
+        "answer": "这条命中不能作为当前题目答案的引用依据，需要对版本、权限与资料状态分别修正后才能重新判断。可接受的分析如下（顺序可调整，只要覆盖以下要点）：\n\n1. 版本一致性：文档向量由嵌入模型 A 生成，查询向量由嵌入模型 B 生成，二者不是同一嵌入模型版本，因此不能在该索引中比较相似度；应先确认模型与索引版本，为需要使用的课程资料重建向量索引并记录新的模型版本，完成后检查索引版本和检索范围。相似度高是在这个不一致状态下得到的，不能直接采信。\n2. 权限与资料状态：命中文本来自当前账号无访问权限的另一门课，且在当前课程中已被删除。检索应限定在当前账号有权限访问的当前课程资料中，只使用已启用且未删除的资料；索引重建不会扩大资料权限，也不能恢复已删除资料。因此即使重建索引，这条文本也不能被取用。\n3. 相似度不等于正确性：检索相似度较高只说明文本相近，不自动证明答案正确。需要检查题干条件是否完整、答案是否得到资料支持、引用是否准确，并确认原文与来源标识能把引用定位到正确的、有权限且未删除的资料。\n4. 资料不足时的处理：应明确说明缺口，并补充有权限的资料；不能编造事实，也不能从无权限课程取用文本。若资料补充后仍不足，应把缺口和不能确定的部分写清楚，而不是用高相似度文本填空。\n5. 多种可行解释：若存在多种可行解释，应指出各自的依据和不能确定的部分，不做唯一无依据的断言。\n\n补充条件示例：为当前课程重建索引并记录模型版本，使查询向量与文档向量版本一致；确认候选文本属于当前账号有权限访问的当前课程、已启用且未删除；保留原文与来源标识并能定位到该资料。",
+        "explanation": "评分关注三点：一是识别版本不一致使相似度比较不成立，需重建索引并记录版本；二是识别权限与删除状态使该命中不可用，且重建不能扩大权限或恢复删除；三是说明高相似度不等于正确性，并给出资料缺口、不得编造或越权取用、以及多种解释的处理方式。只答“相似度高所以可用”或只重复定义而无情境判断，均不满足要求。\n\n本题按 multiple_defensible 处理：只要学生明确区分版本、权限与资料状态，并说明缺口处理与不确定性，具体措辞和顺序可不同。",
+        "difficulty_reason": "学生需把版本一致性、课程权限、资料启用/删除状态与引用定位规则组合到同一情境中，判断高相似度命中的可用性，并说明缺口与多种解释的处理；不能只复述单条定义。",
+        "citation_ids": [
+          "context_bd45d72046d6e2dd7928e2e3d9a3e740"
+        ]
+      }
+    ],
+    "visual_prompt": ""
+  },
+  "sources": [
+    {
+      "id": "context_bd45d72046d6e2dd7928e2e3d9a3e740",
+      "document_id": "5e3274cd26ba4ce28f0a3b91e72a7f4f",
+      "document_name": "shadow-course.md",
+      "page": 1,
+      "text": "课程资料：检索索引、课程隔离与证据检查\n向量索引中的文档向量由指定版本的嵌入模型生成。查询向量必须由同一嵌入模型版本生成，才能在这个索引中比较相似度。更换嵌入模型后，应当为需要使用的课程资料重建向量索引，记录新的模型版本；不能直接拿新查询向量与旧文档向量混合检索。\n不同课程的资料分别归属相应课程。检索应当限定在当前账号有权限访问的当前课程资料中，只使用已启用且未删除的资料。另一门课即使出现相同术语，也不能因此自动加入当前题目的依据。索引重建不会扩大资料权限，也不能恢复已删除资料。\n如果索引版本不一致，应先确认模型与索引版本，再重建对应课程的索引，完成后检查索引版本和检索范围。这个过程应保留原文和来源标识，使每个引用都能定位到正确资料。检索相似度较高只说明文本相近，不自动证明答案正确。\n生成答案时需检查题干条件是否完整、答案是否得到资料支持、引用是否准确。资料不足时应明确说明缺口并补充有权限的资料，不能编造事实或从无权限课程取用文本。对多种可行解释，应指出各自依据和不能确定的部分。以上是本课程的操作性规则，不涉及外部行业法规。",
+      "metadata": {
+        "heading_path": [],
+        "keywords": [],
+        "token_count": 241,
+        "token_limit": 256,
+        "protected_block_split": false,
+        "section_start": 0,
+        "section_end": 469,
+        "chunk_strategy": "recursive_token_v1_no_overlap",
+        "chunking_version": "recursive_token_v1",
+        "chunking_config": {
+          "strategy": "recursive_token_v1",
+          "max_chars": 1200,
+          "overlap_chars": 0,
+          "max_tokens": 256,
+          "tokenizer_path": "/Users/theoverflow/Downloads/FYP/.rag-models/embedding-tokenizer/tokenizer.json",
+          "tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d"
+        },
+        "chunk_index": 0,
+        "page_char_start": 0,
+        "page_char_end": 469,
+        "source_page_sha256": "cba7fb39281ff01b528829053faeb6499e5a8512444bebceb14709dbd391fc18",
+        "coordinate_system": "parsed_page_python_chars_v1",
+        "language": "zh",
+        "split_reason": "recursive_token_budget",
+        "protected_block_types": [],
+        "source_format": ".md",
+        "source_document_sha256": "cba7fb39281ff01b528829053faeb6499e5a8512444bebceb14709dbd391fc18",
+        "parser_version": "local-document-parser-v1",
+        "extraction_method": "utf8-sig-v1",
+        "extraction_status": "good",
+        "extraction_warnings": [],
+        "source_asset_ids": [],
+        "coordinate_basis": "extracted_page_text",
+        "ocr_accuracy_verified": false,
+        "context_expansion": "none",
+        "retrieved_chunk_ids": [
+          "dd844c4613d3a05911d43b896e85f7da",
+          "e0378228822649f35d140530953dabe6"
+        ]
+      },
+      "score": 0.4749828960222476,
+      "retrieval": {
+        "version": "retrieval-v2",
+        "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+        "strategy": "hybrid_dense_lexical_v1",
+        "effective_strategy": "hybrid_dense_lexical_v1",
+        "fallback_reason": null,
+        "dense_score": 0.4749828960222476,
+        "lexical_score": 24.02908163131447,
+        "dense_rank": 2,
+        "lexical_rank": 1,
+        "fusion_score": null,
+        "selection_rank": 2,
+        "selection_score": 0.5249828960222476,
+        "selection_score_semantics": "query_chunk_cosine_plus_capped_lexical_bonus",
+        "mmr_relevance": null,
+        "mmr_redundancy": null,
+        "normalized_lexical_score": 1.0,
+        "lexical_bonus": 0.05,
+        "rerank_score": 0.11279296875
+      }
+    }
+  ],
+  "config": {
+    "course_id": "7614695598dd4d0d8fb3e5a94802af8c",
+    "topic": "检索命中相似文本但证据不足时，如何判断引用是否可用并处理资料缺口。请出一道条件完整的中等应用简答题。",
+    "material": "quiz",
+    "difficulty": "medium",
+    "difficulty_distribution": null,
+    "learner_profile": "已学习所附课程资料的本科生，能理解模型版本、课程权限和引用定位规则，尚未独立处理过混合情境。",
+    "question_type": "short_answer",
+    "count": 1,
+    "language": "zh",
+    "document_ids": [
+      "5e3274cd26ba4ce28f0a3b91e72a7f4f"
+    ],
+    "use_subagents": true,
+    "include_explanations": true,
+    "prompt_version": "education-agent-v1",
+    "text_model": "deepseek-flash",
+    "agent_prompt_revision": "20260924-grounded-task-v6",
+    "text_json_mode": true,
+    "tool_contract_sha256": "68744aa7e8427fbc9e9e7982a82a988241e98807815ab4861964d6c47c9204b1",
+    "text_endpoint_signature": "135d1baf7e282b6975b8",
+    "embedding_signature": "91fab32d24999992076e",
+    "retrieval": {
+      "version": "retrieval-v2",
+      "strategy": "hybrid_dense_lexical_v1",
+      "tokenizer_version": "nfkc-casefold-cjk-unigram-bigram-code-v1",
+      "top_k": 5,
+      "candidate_k": 20,
+      "rrf_k": 60,
+      "mmr_lambda": 0.7,
+      "bm25_k1": 1.2,
+      "bm25_b": 0.75,
+      "query_term_frequency": "binary",
+      "candidate_pool": "top_candidate_k_per_route_then_top_candidate_k_fused_for_mmr",
+      "mmr_relevance": "rrf_score_divided_by_max_candidate_rrf_score",
+      "mmr_redundancy": "maximum_nonnegative_cosine_to_already_selected_chunks",
+      "dense_lexical_bonus_cap": 0.05,
+      "dense_lexical_score": "cosine_plus_capped_max_normalized_bm25",
+      "tie_break": "input_order",
+      "no_lexical_matches": "dense_fallback_for_hybrid_empty_for_bm25",
+      "score_semantics": "original_query_chunk_cosine",
+      "document_encoding": "title_path_v1",
+      "query_encoding": "cs_instruction_v1",
+      "context_tokens": 1024,
+      "expansion": "none",
+      "context_tokenizer_sha256": "83cdf8c3a34f68862319cb1810ee7b1e2c0a44e0864ae930194ddb76bb7feb8d",
+      "context_budget_unit": "qwen_source_serialization_tokens_v1",
+      "reranker_model": "qwen/qwen3-reranker-8b",
+      "reranker_signature": "ea51c5866aec287fbb13"
+    },
+    "rubric_version": "difficulty-rubric-v1",
+    "difficulty_plan": [
+      {
+        "slot_id": "q1",
+        "difficulty": "medium"
+      }
+    ],
+    "max_repairs": 1,
+    "max_calls": 14,
+    "context_chars": 48000,
+    "orchestration": {
+      "mode": "supervisor_v2",
+      "planner_revision": "assessment-contracts-v6-20260924",
+      "plan_schema_sha256": "45745d5edd37fcac5c053e7d0aaea6127382c3a88d49535540d9b6476c2f6077",
+      "batch_size": 8,
+      "dispatch": "bounded_parallel_workers_v1",
+      "assembly": "deterministic_verified_assets",
+      "previous_briefs_window": 16,
+      "max_parallel_questions": 20,
+      "answer_policy": "freeform_with_requirement_checks",
+      "review_schema_sha256": "b9bc396adc270812a610dfe43f4e9c483d9b5559bb6bee1afc5f521bd4d10d6a",
+      "composition_schema_sha256": "22ad441b93ea24488f7e568aedb50254d446cbccb817869b0390a0381baa7294",
+      "failure_recovery": "isolated-question-recovery-v1"
+    },
+    "harness": {
+      "runtime": "0.1.5rc1",
+      "adapter": "harness-acp-20260924-v8",
+      "quality_revision": "20260919-correctness-first-v1",
+      "reasoning_effort": "off",
+      "response_format": "json_object",
+      "schema_repairs": 1,
+      "max_requests": 4,
+      "max_output_tokens": 8192,
+      "timeout": 240.0
+    },
+    "difficulty_shadow": {
+      "mode": "shadow",
+      "revision": "difficulty-shadow-v1",
+      "protocol_sha256": "b0866a7be453e6d911e53b7ba5004de43a424348068e8da8ad4aae9f7144fb27",
+      "judge_revision": "difficulty-judge-v4.1-reference-capacity-20260924",
+      "audit_revision": "difficulty-semantic-audit-v2-witness-20260924",
+      "max_calls": 2,
+      "max_questions": 1,
+      "timeout": 30,
+      "context_chars": 48000,
+      "parameters": {
+        "thinking": {
+          "type": "disabled"
+        },
+        "temperature": 0,
+        "max_tokens": 6000
+      },
+      "audit_max_tokens": 3000,
+      "transport": "configured_text_api_json",
+      "sampling": "first_accepted_questions",
+      "audit_selection": "each_sampled_question_if_budget_remains",
+      "failure_policy": "observe_only_no_retry"
+    },
+    "difficulty_policy": {
+      "revision": "difficulty-calibration-v1",
+      "strict_rounds": 3,
+      "relaxation_tiers": [
+        "adjacent_level",
+        "any_level"
+      ],
+      "correctness_relaxed": false,
+      "note": "After three bounded rounds, reuse the closest candidate whose other quality gates passed. Requested labels remain authoring targets; assessed levels are reported separately. Combined low-confidence quality judgments are never relaxed."
+    },
+    "repair_policy": {
+      "revision": "question-repair-v2",
+      "minimum_rounds": 3,
+      "manual_extension_rounds": 3,
+      "format_compatibility": "preserve_content_v1",
+      "quality_gates_relaxed": false
+    },
+    "review_policy_revision": "20260922-quality-contract-v1",
+    "difficulty_acceptance": {
+      "policy_revision": "difficulty-calibration-v1",
+      "status": "strict",
+      "strict_passed": true,
+      "rounds": 1,
+      "acceptance_reason": "target_matched",
+      "correctness_relaxed": false,
+      "items": [
+        {
+          "slot_id": "q1",
+          "assessed_difficulty": "medium",
+          "confidence": "high",
+          "target_difficulty": "medium",
+          "strict_passed": true,
+          "level_distance": 0,
+          "rounds": 1,
+          "accepted_attempt": 1,
+          "acceptance_reason": "target_matched"
+        }
+      ]
+    }
+  },
+  "created_at": "2026-09-24T08:50:02.883899+00:00",
+  "media": [],
+  "difficulty_assessment": {
+    "status": "model_checked",
+    "version": 1,
+    "items": [
+      {
+        "slot_id": "q1",
+        "assessed_difficulty": "medium",
+        "confidence": "high",
+        "target_difficulty": "medium",
+        "strict_passed": true,
+        "level_distance": 0,
+        "rounds": 1,
+        "accepted_attempt": 1,
+        "acceptance_reason": "target_matched"
+      }
+    ],
+    "limitation": "模型按认知要求复核，不等于教师确认或学生实际作答难度。",
+    "acceptance": {
+      "policy_revision": "difficulty-calibration-v1",
+      "status": "strict",
+      "strict_passed": true,
+      "rounds": 1,
+      "acceptance_reason": "target_matched",
+      "correctness_relaxed": false,
+      "items": [
+        {
+          "slot_id": "q1",
+          "assessed_difficulty": "medium",
+          "confidence": "high",
+          "target_difficulty": "medium",
+          "strict_passed": true,
+          "level_distance": 0,
+          "rounds": 1,
+          "accepted_attempt": 1,
+          "acceptance_reason": "target_matched"
+        }
+      ]
+    }
+  },
+  "evaluation": null
+}
