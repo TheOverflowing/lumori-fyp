@@ -48,7 +48,7 @@ class ApiProviders:
                   'query','documents','top_n'}
         if reserved & ep.extra.keys():
             raise ProviderError('EXTRA_JSON 不能覆盖模型、输入或协议关键字段；请使用对应的配置项。')
-        call_id=self.store.reserve_call(job_id,capability,ep.model,self.settings.max_daily_calls)
+        call_id=self.store.reserve_call(job_id,capability,ep.model,self.settings.effective_daily_call_limit)
         body={**payload,'model':ep.model,**ep.extra}
         started=time.perf_counter();status='failed';usage={};http_status=None;response_model=None
         try:

@@ -71,7 +71,7 @@ def upload(client,images=True,tier='advanced'):
     return cid,result['id'],job
 
 
-def test_parse_enrich_retrieve_and_cache(rig):
+def test_parse_enrich_retrieve_and_cache(rig,monkeypatch):
     c,app,wire=rig
     cid,did,parse=upload(c)
     figures=await_job(c,parse['result']['figures_job']['job_id'])
@@ -83,9 +83,24 @@ def test_parse_enrich_retrieve_and_cache(rig):
     assert report['assets'][0]['bbox']==[.1,.1,.8,.8]
     assert report['figures'][0]['annotation']['verified'] is False
     assert 'storage_name' not in report['assets'][0]
-    assert done(c,c.post(f'/api/documents/{did}/index'))['status']=='succeeded'
+    listing=c.get('/api/documents',params={'course_id':cid}).json()[0]
+    assert listing['status']=='parsed' and not listing['index_current']
+    assert listing['figures'][0]['indexed'] is True
+    assert app.state.store.document_chunks(did)[0]['vector'] is None
+    assert '建立索引' in figures['result']['message']
+    with monkeypatch.context() as paused_queue:
+        paused_queue.setattr(app.state.pipeline,'enqueue',lambda jid:None)
+        indexing=c.post(f'/api/documents/{did}/index')
+        queued=c.get('/api/documents',params={'course_id':cid}).json()[0]
+        assert not queued['index_current']
+        assert queued['active_jobs']==[{'id':indexing.json()['job_id'],'kind':'index','status':'queued'}]
+        c.portal.call(app.state.pipeline.run,indexing.json()['job_id'])
+    assert done(c,indexing)['status']=='succeeded'
+    indexed=c.get('/api/documents',params={'course_id':cid}).json()[0]
+    assert indexed['index_current'] and not indexed['active_jobs']
     result=c.portal.call(app.state.pipeline.retrieve,GenerateRequest(course_id=cid,topic='binary tree',material='lesson',request_key='fixture-query'),'fixture-query')
     figure=next(r for r in result if r['metadata'].get('source_kind')=='figure')
+    assert any(r['metadata'].get('source_kind')!='figure' for r in result)
     assert figure['metadata']['source_asset_ids']==['figure-fixture']
     assert '二叉树' in figure['text']
     retried=done(c,c.post(f'/api/documents/{did}/figures/retry'))

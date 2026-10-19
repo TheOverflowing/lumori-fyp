@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {parsingDialog, parsingPage} from '../app/static/parsing.js';
+import {parsingDialog, parsingPage, documentIndexNote, figureCard} from '../app/static/parsing.js';
 
 const visibleText = html => html.replace(/<[^>]*>/g, '');
 const report = () => ({
@@ -131,9 +131,35 @@ test('new parser options are opt-in and localized',async()=>{
     assert.match(html,/type="checkbox" name="images" value="true" >/);
     assert.doesNotMatch(visibleText(html),/[\u4e00-\u9fff]/);
     assert.match(visibleText(html),/Understand figures and include them in retrieval/);
+    assert.match(visibleText(html),/Sources are indexed automatically after parsing and optional figure processing/);
     assert.match(parserControls({tier:'advanced',images:true}),/value="advanced" selected/);
   });
 });
+
+test('embedded figures on an unindexed document explain the retry without claiming retrieval is ready',()=>{
+  const doc={status:'parsed',index_current:false,figures:[{asset_id:'a',status:'ready',indexed:true}],active_jobs:[]};
+  inLanguage('en',()=>{
+    const text=visibleText(documentIndexNote(doc)+figureCard(doc.figures[0],'d'));
+    assert.match(text,/Figures are ready, but the source is not fully indexed\. Click Index to retry/);
+    assert.match(text,/Figure ready/);
+    assert.doesNotMatch(text,/Searchable|[\u4e00-\u9fff]/);
+    assert.equal(documentIndexNote({...doc,index_current:true}), '');
+  });
+  inLanguage('zh-CN',()=>assert.match(visibleText(documentIndexNote(doc)),/配图已处理，但资料索引尚未完成/));
+});
+
+test('a queued document index shows progress instead of prompting another indexing request',()=>inLanguage('en',()=>{
+  const html=documentIndexNote({status:'parsed',index_current:false,active_jobs:[{kind:'index',status:'queued'}]});
+  assert.match(visibleText(html),/Indexing this source/);
+  assert.doesNotMatch(visibleText(html),/Click Index/);
+}));
+
+test('index failures retain a clear escaped explanation and retry action',()=>inLanguage('en',()=>{
+  const html=documentIndexNote({status:'parsed',index_current:false,index_error:'<script>upstream failed</script>'});
+  assert.match(visibleText(html),/Indexing failed\. Check Activity for details or click Index to retry/);
+  assert.match(html,/&lt;script&gt;upstream failed&lt;\/script&gt;/);
+  assert.doesNotMatch(html,/<script>/);
+}));
 test('figure annotations escape model text and distinguish edited provenance',async()=>{
   const {figureCard}=await import('../app/static/parsing.js');
   inLanguage('en',()=>{

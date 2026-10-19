@@ -17,6 +17,7 @@ import time
 from dataclasses import replace
 
 from . import document_backends, document_storage, exploration_sources, job_progress
+from .chunking import compatible_chunking
 from .document_lifecycle import state as document_state
 from .document_parsing import ParsedDocument, ParsedPage
 from .providers import ProviderError
@@ -322,7 +323,7 @@ def validate_frozen_sources(pipeline, request, selected):
             metadata.setdefault('source_document_sha256', document['sha256'])
         if digest != document['sha256'] or digest != metadata.get('source_document_sha256'):
             raise ValueError('自动探索引用的原文校验失败，请新建任务。')
-        if pipeline.store.chunking_configuration(did) != pipeline.chunking_configuration():
+        if not compatible_chunking(pipeline.store.chunking_configuration(did), pipeline.chunking_configuration()):
             raise ValueError('自动探索引用的切分配置已变化，请重新索引后新建任务。')
         chunks = pipeline.store.document_chunks(did)
         if any(row['embedding_signature'] != pipeline.embedding_signature() for row in chunks):
@@ -484,7 +485,7 @@ class _Run:
             # generation call limits. Curated invocations are local, zero-token work.
             provider = self.options['provider']
             call_id = self.store.reserve_call(self.job_id, 'search', provider,
-                self.pipeline.settings.max_daily_calls)
+                self.pipeline.settings.effective_daily_call_limit)
             status = 'failed'; started = time.monotonic()
             try:
                 result = await exploration_sources.search(self.pipeline.settings,

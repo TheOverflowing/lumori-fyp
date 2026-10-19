@@ -226,7 +226,7 @@ test('restore request controls are localized and escape their task identifiers',
     assert.match(html,/Edit request/);
     assert.match(html,/Your request is saved\. Return to edit it and try again\./);
     assert.match(html,/data-id="&quot;&gt;&lt;img/);
-    assert.doesNotMatch(html,/<img|onerror="alert/);
+    assert.doesNotMatch(html,/<img(?! src="\/static\/assets\/lumori-companion(?:-reading|-celebrate)?\.svg" width="180" height="180" alt="" decoding="async">)|onerror="alert/);
   } finally {document.documentElement.lang='zh-CN';}
 });
 
@@ -385,7 +385,7 @@ test('known provider failure details translate to English while unknown messages
     }
     const html=renderGenerationProgress(job({status:'failed',error:'Unknown <img src=x onerror=attack()>'}));
     assert.match(html,/Unknown &lt;img src=x onerror=attack\(\)&gt;/);
-    assert.doesNotMatch(html,/<img/);
+    assert.doesNotMatch(html,/<img(?! src="\/static\/assets\/lumori-companion(?:-reading|-celebrate)?\.svg" width="180" height="180" alt="" decoding="async">)/);
   } finally {document.documentElement.lang='zh-CN';}
 });
 

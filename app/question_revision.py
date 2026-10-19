@@ -22,6 +22,7 @@ REVISION = 'question-revision-v1'
 
 
 class RevisionRequest(Model):
+    auto_review: bool = Field(default=False, strict=True)
     version: int = Field(ge=1, strict=True)
     instruction: str = Field(min_length=2, max_length=2000)
     mode: Literal['rewrite', 'explanation'] = 'rewrite'
@@ -80,7 +81,7 @@ def prepare_revision(store, row, slot_id, request):
                   request_key=request.request_key)
     for key in ('preparation_id', 'clarification_action', 'clarification_answer'):
         fields.pop(key, None)
-    return {'content_id': row['id'], 'course_id': row['course_id'], 'base_version': row['version'],
+    return {**({'auto_review':True} if request.auto_review else {}), 'content_id': row['id'], 'course_id': row['course_id'], 'base_version': row['version'],
             'slot_id': slot_id, 'index': index, 'mode': request.mode,
             'instruction': request.instruction, 'base_asset': asset, 'base_config': config,
             'base_sources': sources, 'sources': frozen_sources, 'context': deepcopy(context),
@@ -151,7 +152,8 @@ def partial_content(store, job_id):
 
 
 class RevisionAgent(GenerationAgent):
-    def __init__(self, pipeline, payload, job_id):
+    def __init__(self, pipeline, payload, job_id, *, on_saved=None):
+        self.on_saved = on_saved
         isolated = copy(pipeline)
         isolated.settings = replace(pipeline.settings, agent_orchestration='sequential_v1',
                                     agent_question_spec='none')
@@ -311,6 +313,8 @@ class RevisionAgent(GenerationAgent):
                 raise ValueError('内容已有新版本，已保留现有内容；请刷新后再修改。')
             db.execute('INSERT INTO revisions VALUES(?,?,?,?)',
                        (self.payload['content_id'], version, dumps(asset), now()))
+            if self.on_saved is not None:
+                self.on_saved(db, asset, config, version)
             self.state.update(status='completed', phase='completed', content_id=self.payload['content_id'])
             self.evidence['published_version'] = version
             db.execute('UPDATE job_evidence SET evidence=?,updated_at=? WHERE job_id=?',
@@ -318,5 +322,5 @@ class RevisionAgent(GenerationAgent):
         return {'content_id': self.payload['content_id'], 'version': version}
 
 
-async def execute_revision(pipeline, payload, job_id):
-    return await RevisionAgent(pipeline, payload, job_id).run()
+async def execute_revision(pipeline, payload, job_id, *, on_saved=None):
+    return await RevisionAgent(pipeline, payload, job_id, on_saved=on_saved).run()

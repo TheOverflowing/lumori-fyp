@@ -41,7 +41,7 @@ def test_library_lists_every_course_and_preserves_explicit_course_scope(rig):
     assert [row['created_at'] for row in rows] == sorted((row['created_at'] for row in rows), reverse=True)
     for row in rows:
         course, name, material, document = expected[row['id']]
-        assert set(row) == {'id', 'version', 'status', 'created_at', 'course_id', 'course_name', 'title', 'material'}
+        assert set(row) == {'id', 'version', 'status', 'created_at', 'course_id', 'course_name', 'title', 'material', 'approval_method'}
         assert (row['course_id'], row['course_name'], row['material']) == (course, name, material)
         assert row['status'] == 'draft' and row['version'] == 1 and row['title']
         content = client.get('/api/contents/' + row['id']).json()

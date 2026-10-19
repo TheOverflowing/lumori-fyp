@@ -9,11 +9,12 @@ export function createSessionClient({fetchImpl = (...args) => fetch(...args), on
   let session = {user:null, csrf_token:null}, epoch = 0;
   const pending = new Set();
   const invalidate = () => { epoch++; for (const controller of pending) controller.abort(); pending.clear(); };
-  function apply(next, {force = false, reason = ''} = {}) {
+  function apply(next, {force = false, reason = '', initial = false} = {}) {
     if (next?.user && (!next.user.id || !next.csrf_token)) throw new Error('登录响应无效，请重试。');
     const normalized = {user:next?.user || null, csrf_token:next?.csrf_token || null};
+    if (normalized.user && typeof next.demo_course_id === 'string' && next.demo_course_id) normalized.demo_course_id = next.demo_course_id;
     const changed = normalized.user?.id !== session.user?.id;
-    if (changed || force) { invalidate(); onReset(reason); }
+    if (changed || force) { invalidate(); if (!initial) onReset(reason); }
     session = normalized;
     onSession(session, {changed:changed || force, reason});
     return session;
@@ -80,11 +81,18 @@ export function createSessionClient({fetchImpl = (...args) => fetch(...args), on
     get session() { return session; },
     get epoch() { return epoch; },
     request,
+    initialize(next) { return apply(next, {initial:epoch===0 && !session.user}); },
+    clear(reason = 'account_changed') { return apply(null, {force:true, reason}); },
     async restore() { return apply(await request('/auth/session','GET',undefined,{publicRequest:true})); },
     async authenticate(mode, fields) {
       if (!['login','register'].includes(mode)) throw new Error('Invalid authentication mode');
       const next = await request('/auth/' + mode,'POST',fields,{publicRequest:true});
       return apply(next, {force:true});
+    },
+    async enterDemo(token, beforeApply = () => {}) {
+      const next = await request('/auth/demo-login','POST',{token},{publicRequest:true});
+      beforeApply(next);
+      return apply(next);
     },
     async logout() {
       // Clear visible data and abort old reads before the logout network round-trip.

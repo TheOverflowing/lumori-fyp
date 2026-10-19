@@ -6,7 +6,7 @@ globalThis.document = {documentElement:{lang:'zh-CN'}};
 const content = overrides => ({id:'own-result',title:'同一个学习目标',material:'quiz',version:1,status:'draft',created_at:'2026-09-20T08:00:00Z',course_id:'ml',course_name:'机器学习',...overrides});
 
 test('lesson, quiz and assignment rows identify their actual saved task type with the creation icons', () => {
-  for(const [material,icon,label] of [['lesson','book-open','学习讲解'],['quiz','layers','测验练习'],['assignment','file-text','课后作业']]) {
+  for(const [material,icon,label] of [['lesson','book-open','学习讲解'],['quiz','check-square','测验练习'],['assignment','file-text','课后作业']]) {
     const html=renderLibraryRow(content({material}));
     assert.match(html,new RegExp(`src="/static/icons/${icon}\\.svg"`));
     assert.match(html,new RegExp(`data-material="${material}"`));
@@ -54,4 +54,25 @@ test('course scope excludes other courses, unassigned rows and absent selection'
   assert.deepEqual(courseLibraryRows(rows,undefined),[]);
   assert.deepEqual(courseLibraryRows(rows,'deleted-course'),[]);
   assert.equal(rows.length,4);
+});
+
+test('each Open button names its own material and retains live-localizable action text', () => {
+  for (const [lang, label] of [['zh-CN','打开'], ['en','Open']]) {
+    document.documentElement.lang = lang;
+    try {
+      const ids = new Set();
+      for (const id of ['own-result', 'another result', 'another%20result']) {
+        const html = renderLibraryRow(content({id, title:'原有学习目标'}));
+        const titleId = html.match(/<h3 id="([^"]+)">原有学习目标<\/h3>/)?.[1];
+        const references = html.match(/aria-labelledby="([^"]+)"/)?.[1].split(' ');
+        assert.equal(references?.length, 2);
+        assert.equal(references[1], titleId);
+        assert.ok(html.includes(`<span id="${references[0]}"><span data-i18n="打开" data-i18n-values="{}">${label}</span></span>`));
+        for (const reference of references) {
+          assert.ok(!ids.has(reference), 'each row uses distinct ID references');
+          ids.add(reference);
+        }
+      }
+    } finally { document.documentElement.lang = 'zh-CN'; }
+  }
 });

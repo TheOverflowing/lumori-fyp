@@ -1,28 +1,15 @@
-/* Quiet writing surfaces and native controls share the same material. */
+/* Shared field aliases follow the current Lumori theme. */
 :root {
-  --field-fill: rgb(235 242 234 / .62);
-  --field-focus-fill: rgb(252 254 250 / .97);
-  --field-border: rgb(75 105 85 / .15);
-  --field-rim: rgb(255 255 255 / .85);
-  --field-focus-border: #799987;
-  --field-focus-halo: rgb(103 142 117 / .12);
-  --field-placeholder: #738078;
-  --field-disabled: #e9eee8;
-  --stepper-hover: rgb(76 111 87 / .09);
-  --stepper-press: rgb(76 111 87 / .15);
-}
-
-html[data-theme="dark"] {
-  --field-fill: rgb(69 87 73 / .25);
-  --field-focus-fill: rgb(63 83 69 / .46);
-  --field-border: rgb(171 199 179 / .18);
-  --field-rim: rgb(232 249 237 / .045);
-  --field-focus-border: #91b49c;
-  --field-focus-halo: rgb(157 193 169 / .1);
-  --field-placeholder: #9bac9f;
-  --field-disabled: #2b352e;
-  --stepper-hover: rgb(189 219 198 / .09);
-  --stepper-press: rgb(189 219 198 / .16);
+  --field-fill: var(--surface-soft);
+  --field-focus-fill: var(--surface-raised);
+  --field-border: var(--border-soft);
+  --field-rim: transparent;
+  --field-focus-border: var(--focus-ring);
+  --field-focus-halo: color-mix(in srgb, var(--focus-ring) 14%, transparent);
+  --field-placeholder: var(--placeholder);
+  --field-disabled: var(--disabled-bg);
+  --stepper-hover: var(--accent-soft);
+  --stepper-press: color-mix(in srgb, var(--accent) 16%, var(--surface));
 }
 
 input:is(:not([type]), [type="text"], [type="search"], [type="number"], [type="email"], [type="url"], [type="password"]),
@@ -45,13 +32,13 @@ html[data-theme="dark"] dialog select {
   min-height: 44px;
   padding: 11px 14px;
   border: 1px solid var(--field-border);
-  border-radius: 13px;
+  border-radius: var(--radius-control);
   background: var(--field-fill);
   color: var(--text);
   box-shadow: inset 0 1px 0 var(--field-rim);
   font-size: .86rem;
   font-weight: 400;
-  transition: border-color 130ms ease, background-color 130ms ease, box-shadow 130ms ease;
+  transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
 }
 
 input::placeholder,
@@ -187,7 +174,7 @@ html[data-theme="dark"] .learner-profile textarea {
   min-height: 44px;
   padding: 9px 12px;
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: var(--radius-control);
   color: var(--secondary);
   font-size: .78rem;
 }
@@ -219,10 +206,10 @@ html[data-theme="dark"] .difficulty-presets button {
   margin-top: 7px;
   padding: 0 1px;
   border: 1px solid var(--field-border);
-  border-radius: 13px;
+  border-radius: var(--radius-control);
   background: var(--field-fill);
   box-shadow: inset 0 1px 0 var(--field-rim);
-  transition: border-color 130ms ease, background-color 130ms ease, box-shadow 130ms ease;
+  transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
 }
 .number-stepper:focus-within {
   background: var(--field-focus-fill);
@@ -381,23 +368,15 @@ html[data-theme="dark"] .search input { padding-left: 39px; }
   input, textarea, select, .number-stepper, .number-stepper button.stepper-button { transition: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  :root { --field-fill: #f0f4ee; --field-focus-fill: #fcfefa; }
-  html[data-theme="dark"] { --field-fill: #2c3930; --field-focus-fill: #34443a; }
+  :root { --field-fill: var(--surface-soft); --field-focus-fill: var(--surface-raised); }
 }
 @media (prefers-contrast: more) {
   :root {
-    --field-fill: #fff;
-    --field-focus-fill: #fff;
-    --field-border: #6f8376;
-    --field-focus-border: #315c42;
-    --field-placeholder: #566b5e;
-  }
-  html[data-theme="dark"] {
-    --field-fill: #202b24;
-    --field-focus-fill: #202b24;
-    --field-border: #a5bcae;
-    --field-focus-border: #c8e3d0;
-    --field-placeholder: #b1c8b8;
+    --field-fill: var(--surface-raised);
+    --field-focus-fill: var(--surface-raised);
+    --field-border: var(--border-strong);
+    --field-focus-border: var(--text-primary);
+    --field-placeholder: var(--text-secondary);
   }
   .number-stepper button.stepper-button[aria-disabled="true"],
   html[data-theme="dark"] .number-stepper button.stepper-button[aria-disabled="true"] { opacity: .65; }
@@ -405,12 +384,17 @@ html[data-theme="dark"] .search input { padding-left: 39px; }
 
 /* The page owns file-picker copy; the native input still owns selection and upload. */
 .file-field { margin: 18px 0; font-size: .86rem; }
-.localized-file-picker { position: relative; display: flex; align-items: center; gap: 16px; min-height: 92px; padding: 18px; margin: 8px 0 0; border: 1px dashed var(--field-border); border-radius: 16px; background: var(--field-fill); cursor: pointer; }
-.localized-file-picker .localized-file-input { position: absolute; width: 1px; height: 1px; min-height: 0; padding: 0; margin: 0; border: 0; clip-path: inset(50%); overflow: hidden; }
-.file-picker-button { flex-shrink: 0; display: inline-flex; align-items: center; min-height: 44px; padding: 10px 14px; border: 1px solid var(--field-border); border-radius: 11px; background: var(--paper); }
-.localized-file-picker [data-file-name] { min-width: 0; overflow-wrap: anywhere; color: var(--secondary); }
+.localized-file-picker { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; min-height: 212px; padding: 30px 22px; margin: 10px 0 0; border: 1.5px dashed var(--border-strong); border-radius: 24px; background: var(--accent-soft); cursor: pointer; text-align: center; transition: background-color 180ms ease, border-color 180ms ease; }
+/* The transparent native input owns click, drop, validation, and keyboard focus. */
+.localized-file-picker .localized-file-input { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; min-height: 0; padding: 0; margin: 0; border: 0; border-radius: inherit; opacity: 0; clip-path: none; cursor: pointer; }
+.localized-file-picker .file-picker-icon { width: 44px; height: 44px; padding: 9px; border-radius: var(--radius-control); background: var(--surface); opacity: .85; }
+html[data-theme="dark"] .localized-file-picker .file-picker-icon { filter: invert(1); background: transparent; }
+.file-picker-button { flex-shrink: 0; display: inline-flex; align-items: center; min-height: 44px; padding: 10px 14px; border: 1px solid var(--field-border); border-radius: var(--radius-pill); background: var(--surface); color: var(--accent); }
+.localized-file-picker [data-file-name] { min-width: 0; max-width: 100%; overflow-wrap: anywhere; color: var(--secondary); font-size: .85rem; line-height: 1.6; }
 .localized-file-picker:focus-within { outline: 2px solid var(--field-focus-border); outline-offset: 3px; }
-@media (max-width: 480px) { .localized-file-picker { flex-wrap: wrap; gap: 10px; padding: 14px; } }
+@media (hover: hover) and (pointer: fine) { .localized-file-picker:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 80%, var(--surface)); } }
+@media (max-width: 480px) { .localized-file-picker { min-height: 192px; gap: 12px; padding: 24px 16px; } }
+@media (forced-colors: active) { .localized-file-picker { border-color: ButtonText; } .file-picker-button { color: ButtonText; border-color: ButtonText; } }
 
 .difficulty-adjusted-label { display:inline-block; margin-left:12px; color:var(--secondary); font-weight:400; }
 .difficulty-adjustment-detail>summary { min-height:44px; display:flex; align-items:center; cursor:pointer; }

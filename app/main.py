@@ -9,7 +9,7 @@ import sqlite3
 import shutil
 from urllib.parse import urlparse, quote
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, Response, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, ConfigDict, Field
@@ -19,13 +19,17 @@ from .config import Settings
 from .store import Store, uid, now, dumps, Conflict
 from .providers import ApiProviders
 from .pipeline import Pipeline, parse_document, validate_asset, document_chunk_ids
+from .chunking import compatible_chunking
 from .models import CourseCreate, GenerateRequest, ReviewRequest, MediaRequest, MediaReview, EvaluationRequest, LearningAsset
 from .auth import AuthService, AuthError
 from . import document_storage, document_jobs, document_backends, document_lifecycle
 from .document_parsing import parser_capabilities
 from . import generation_preparation
 from .content_evaluations import current_evaluation, save_evaluation, CURRENT_EXPORT_SQL
+from .ai_review import current_ai_review, current_approval
+from .ai_review_jobs import submit_review, schedule_automatic_review
 from .question_revision import RevisionRequest, prepare_revision, partial_content, validate_revision_asset
+from .review_chat import ChatRequest, UndoRequest, chat_history, submit_chat, undo_chat
 
 STATIC=Path(__file__).parent/'static'
 
@@ -42,6 +46,11 @@ class FigureEdit(BaseModel):
     model_config=ConfigDict(extra='forbid')
     description: str = Field(min_length=1,max_length=2400)
 
+class AiReviewRequest(BaseModel):
+    model_config=ConfigDict(extra='forbid')
+    version:int=Field(ge=1,strict=True)
+    request_key:str=Field(min_length=8,max_length=100)
+
 class RegisterRequest(BaseModel):
     model_config=ConfigDict(extra='forbid')
     email:str=Field(min_length=3,max_length=254)
@@ -56,6 +65,10 @@ class LoginRequest(BaseModel):
 class LegacyClaimRequest(BaseModel):
     model_config=ConfigDict(extra='forbid')
     token:str=Field(min_length=20,max_length=256)
+
+class DemoLoginRequest(BaseModel):
+    model_config=ConfigDict(extra='forbid')
+    token:str=Field(min_length=43,max_length=43)
 
 def create_app(settings=None,providers_factory=ApiProviders):
     settings=settings or Settings.from_env()
@@ -95,13 +108,15 @@ def create_app(settings=None,providers_factory=ApiProviders):
         if request.url.path.startswith('/api/'):
             session=auth.authenticate(request.cookies.get(settings.auth_cookie_name))
             request.state.auth_session=session
-            public=request.url.path in ('/api/auth/session','/api/auth/register','/api/auth/login')
+            public=request.url.path in ('/api/auth/session','/api/auth/register','/api/auth/login','/api/auth/demo-login')
             if not public and session is None:
                 return guarded_response({'detail':'请先登录。','code':'authentication_required'},401)
             expected=request.headers.get('x-account-id')
             if expected and (session is None or expected!=session.user['id']):
                 return guarded_response({'detail':'账号已切换，请重新载入当前工作区。','code':'account_changed'},401)
-            if session and request.method not in ('GET','HEAD','OPTIONS') and not auth.check_csrf(session,request.headers.get('x-csrf-token')):
+            # The demo bearer authenticates this login itself. The origin guard
+            # still applies, including when an old cookie belongs to another user.
+            if session and request.method not in ('GET','HEAD','OPTIONS') and request.url.path!='/api/auth/demo-login' and not auth.check_csrf(session,request.headers.get('x-csrf-token')):
                 return guarded_response({'detail':'登录状态已更新，请刷新页面后重试。','code':'csrf_invalid'},403)
         result=await call_next(request)
         result.headers['X-Content-Type-Options']='nosniff'
@@ -195,12 +210,27 @@ def create_app(settings=None,providers_factory=ApiProviders):
             temporary.replace(source)
         finally:temporary.unlink(missing_ok=True)
 
+    def session_payload(session):
+        payload=session.response() if session else {'user':None,'csrf_token':None}
+        course=settings.demo_login_course_id
+        if (session and course and session.user['email']==settings.demo_login_email.strip().lower()
+            and store.one('SELECT course_id FROM course_owners WHERE course_id=? AND user_id=?',(course,session.user['id']))):
+            payload['demo_course_id']=course
+        return payload
+
     @app.get('/')
-    async def index():return FileResponse(STATIC/'index.html')
+    async def index(request:Request):
+        session=auth.authenticate(request.cookies.get(settings.auth_cookie_name))
+        payload=session_payload(session)
+        encoded=json.dumps(payload,ensure_ascii=False).replace('&','\\u0026').replace('<','\\u003c').replace('>','\\u003e')
+        html=(STATIC/'index.html').read_text().replace('<!-- SESSION_BOOTSTRAP -->',
+            '<script type="application/json" id="session-bootstrap">'+encoded+'</script>')
+        html=html.replace('<!-- WORKSPACE_STARTUP -->','<script>'+(STATIC/'workspace-startup.js').read_text()+'</script>')
+        return HTMLResponse(html)
     @app.get('/api/auth/session')
     async def auth_session(request:Request):
         session=request.state.auth_session
-        response=JSONResponse(session.response() if session else {'user':None,'csrf_token':None})
+        response=JSONResponse(session_payload(session))
         if session is None and request.cookies.get(settings.auth_cookie_name):auth.clear_cookie(response)
         return response
     @app.post('/api/auth/register',status_code=201)
@@ -208,13 +238,23 @@ def create_app(settings=None,providers_factory=ApiProviders):
         session=await run_in_threadpool(auth.register,payload.email,payload.password,payload.display_name,
             client_ip=request.client.host if request.client else 'unknown')
         auth.logout(request.cookies.get(settings.auth_cookie_name))
-        response=JSONResponse(session.response(),201);auth.set_cookie(response,session);return response
+        response=JSONResponse(session_payload(session),201);auth.set_cookie(response,session);return response
     @app.post('/api/auth/login')
     async def login(payload:LoginRequest,request:Request):
         session=await run_in_threadpool(auth.login,payload.email,payload.password,
             client_ip=request.client.host if request.client else 'unknown')
         auth.logout(request.cookies.get(settings.auth_cookie_name))
-        response=JSONResponse(session.response());auth.set_cookie(response,session);return response
+        response=JSONResponse(session_payload(session));auth.set_cookie(response,session);return response
+    @app.post('/api/auth/demo-login')
+    async def demo_login(payload:DemoLoginRequest,request:Request):
+        session=await run_in_threadpool(auth.demo_login,payload.token,
+            client_ip=request.client.host if request.client else 'unknown',
+            existing_session=request.state.auth_session)
+        if session.token != request.cookies.get(settings.auth_cookie_name):
+            auth.logout(request.cookies.get(settings.auth_cookie_name))
+        payload=session_payload(session)
+        response=JSONResponse(payload|{'demo_course_id':payload.get('demo_course_id','')})
+        auth.set_cookie(response,session);return response
     @app.post('/api/auth/logout')
     async def logout(request:Request):
         auth.logout(request.cookies.get(settings.auth_cookie_name))
@@ -233,9 +273,11 @@ def create_app(settings=None,providers_factory=ApiProviders):
         caps={name:{'configured':getattr(settings,name).configured,'model':getattr(settings,name).model} for name in ('text','embedding','speech','image','vision')}
         used=store.one('''SELECT count(*) AS n FROM calls c JOIN job_owners o ON o.job_id=c.job_id
             WHERE o.user_id=? AND substr(c.created_at,1,10)=?''',(account_id(request),now()[:10]))['n']
-        return {'version':'0.1.0','capabilities':caps,'calls_today':used,'daily_call_limit':settings.max_daily_calls,'mode':'local-development',
+        daily_limit = settings.effective_daily_call_limit
+        return {'version':'0.1.0','capabilities':caps,'calls_today':used,'daily_call_limit':daily_limit,'mode':'local-development',
+                'daily_call_limit_suspended_until':settings.daily_api_limit_suspended_until if daily_limit is None else None,
                 'auto_exploration':exploration_capabilities(settings),
-                'document_parser':parser_capabilities()|document_backends.capabilities(settings)|{'ocr_engine':settings.document_ocr_engine},
+                'document_parser':parser_capabilities()|document_backends.capabilities(settings)|{'ocr_engine':settings.document_ocr_engine,'auto_index':settings.document_auto_index},
                 'retrieval':retrieval,'chunking':chunking}
     @app.get('/api/courses')
     async def courses(request:Request):return store.all('''SELECT c.* FROM courses c JOIN course_owners o ON o.course_id=c.id
@@ -257,13 +299,15 @@ def create_app(settings=None,providers_factory=ApiProviders):
             incompatible=store.one('SELECT count(*) AS n FROM chunks WHERE document_id=? AND (embedding_signature IS NULL OR embedding_signature!=?)',(row['id'],pipeline.embedding_signature()))['n']
             row['index_current']=not incompatible and row['status']=='ready'
             row['chunking']=store.chunking_configuration(row['id'])
-            row['chunking_current']=row['chunking']==pipeline.chunking_configuration()
+            row['chunking_current']=compatible_chunking(row['chunking'],pipeline.chunking_configuration())
             row['parsing']=document_storage.summary(document_storage.report_for(store,row['id']))
             row['parser_options']=document_jobs.options_for(store,row['id'])
             from .exploration_policy import document_source
             row['external_source']=document_source(store,row['id'])
             row['figures']=document_jobs.public_figures(store,row['id'])
-            row['active_jobs']=store.all("SELECT id,kind,status FROM jobs WHERE kind IN ('parse','figures') AND json_extract(payload,'$.document_id')=? AND status IN ('queued','running')",(row['id'],))
+            row['active_jobs']=store.all("SELECT id,kind,status FROM jobs WHERE kind IN ('parse','figures','index') AND json_extract(payload,'$.document_id')=? AND status IN ('queued','running')",(row['id'],))
+            latest_index=store.one("SELECT status,error FROM jobs WHERE kind='index' AND json_extract(payload,'$.document_id')=? ORDER BY created_at DESC LIMIT 1",(row['id'],))
+            row['index_error']=latest_index['error'] if latest_index and latest_index['status']=='failed' else None
         return rows
     @app.patch('/api/documents/{did}')
     async def document_enabled(did:str,payload:DocumentEnabled,request:Request):
@@ -293,7 +337,9 @@ def create_app(settings=None,providers_factory=ApiProviders):
             source=settings.data_dir/'documents'/(previous['id']+Path(previous['name']).suffix.lower())
             restored=not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest()!=digest
             if restored:await asyncio.to_thread(save_source,source,raw)
-            return previous|{'duplicate':True,'source_restored':restored}|document_lifecycle.state(store,previous['id'])
+            lifecycle=document_lifecycle.state(store,previous['id'])
+            indexing={} if lifecycle['deleted_at'] else document_jobs.auto_index(pipeline,previous['id'],account_id(request))
+            return previous|{'duplicate':True,'source_restored':restored}|lifecycle|indexing
         if tier is not None and tier not in ('standard','advanced'):raise HTTPException(422,'解析档位无效。')
         if Path(name).suffix.lower() not in ('.txt','.md') and (settings.document_backend=='mineru' or tier is not None):
             try:pages=document_backends.validate_source(settings,name,raw)
@@ -339,7 +385,7 @@ def create_app(settings=None,providers_factory=ApiProviders):
             source.unlink(missing_ok=True)
             if asset_directory:shutil.rmtree(asset_directory,ignore_errors=True)
             raise
-        return row|{'chunks':len(chunks),'chunking':configuration,'parsing':document_storage.summary(report)}
+        return row|{'chunks':len(chunks),'chunking':configuration,'parsing':document_storage.summary(report)}|document_jobs.auto_index(pipeline,did,account_id(request))
     @app.get('/api/documents/{did}/parsing')
     async def document_parsing(did:str,request:Request):
         need_document(did,request)
@@ -404,7 +450,7 @@ def create_app(settings=None,providers_factory=ApiProviders):
             except Exception:
                 shutil.rmtree(directory,ignore_errors=True)
                 raise
-        return {'document_id':did,'chunks':len(chunks),'parsing':document_storage.summary(report),'index_rebuild_required':True}
+        return {'document_id':did,'chunks':len(chunks),'parsing':document_storage.summary(report),'index_rebuild_required':True}|document_jobs.auto_index(pipeline,did,account_id(request))
     @app.get('/api/documents/{did}/figures')
     async def figures(did:str,request:Request):
         need_document(did,request)
@@ -486,6 +532,8 @@ def create_app(settings=None,providers_factory=ApiProviders):
             CASE j.kind
                 WHEN 'generate' THEN json_extract(j.payload,'$.topic')
                 WHEN 'revise_question' THEN json_extract(c.asset,'$.title')
+                WHEN 'review_content' THEN json_extract(c.asset,'$.title')
+                WHEN 'review_chat' THEN json_extract(c.asset,'$.title')
                 WHEN 'media' THEN json_extract(c.asset,'$.title')
                 WHEN 'index' THEN d.name
                 WHEN 'parse' THEN d.name
@@ -500,15 +548,17 @@ def create_app(settings=None,providers_factory=ApiProviders):
                 WHEN 'parse' THEN d.course_id
                 WHEN 'figures' THEN d.course_id
                 WHEN 'media' THEN c.course_id
+                WHEN 'review_content' THEN c.course_id
+                WHEN 'review_chat' THEN c.course_id
             END AS course_id,
             COALESCE(
                 CASE WHEN j.status='succeeded' THEN json_extract(j.result,'$.content_id') END,
-                CASE WHEN j.kind IN ('media','revise_question') THEN json_extract(j.payload,'$.content_id') END
+                CASE WHEN j.kind IN ('media','revise_question','review_content','review_chat') THEN json_extract(j.payload,'$.content_id') END
             ) AS content_id
         FROM jobs j
         JOIN job_owners o ON o.job_id=j.id
         LEFT JOIN documents d ON j.kind IN ('index','parse','figures') AND d.id=json_extract(j.payload,'$.document_id')
-        LEFT JOIN contents c ON j.kind IN ('media','revise_question') AND c.id=json_extract(j.payload,'$.content_id')
+        LEFT JOIN contents c ON j.kind IN ('media','revise_question','review_content','review_chat') AND c.id=json_extract(j.payload,'$.content_id')
     '''
     @app.get('/api/jobs')
     async def jobs(request:Request,course_id:str|None=None):
@@ -545,6 +595,7 @@ def create_app(settings=None,providers_factory=ApiProviders):
         if agent_progress:
             row['progress']=agent_progress
             row['progress']['calls']=store.one('SELECT count(*) AS n FROM calls WHERE job_id=?',(jid,))['n']
+            if row['kind']=='review_chat':row['progress']['resumable']=False
             exploration=store.one('SELECT state FROM exploration_runs WHERE job_id=?',(jid,))
             if exploration:
                 try:exploration_state=json.loads(exploration['state'])
@@ -593,7 +644,7 @@ def create_app(settings=None,providers_factory=ApiProviders):
         resolved['include_explanations']=raw.get('include_explanations',configuration.get('include_explanations',True))
         fields=('course_id','topic','material','difficulty','difficulty_distribution',
                 'learner_profile','question_type','count','language','document_ids',
-                'query_fusion','auto_explore','use_subagents','include_explanations')
+                'query_fusion','auto_explore','auto_review','use_subagents','include_explanations')
         return {'request':{key:resolved[key] for key in fields if key in resolved}}
     @app.get('/api/jobs/{jid}/evidence')
     async def job_evidence(jid:str,request:Request):
@@ -612,7 +663,8 @@ def create_app(settings=None,providers_factory=ApiProviders):
         where=' WHERE o.user_id=?'+(' AND c.course_id=?' if course_id is not None else '')
         return store.all('''SELECT c.id,c.version,c.status,c.created_at,c.course_id,
             courses.name AS course_name,json_extract(c.asset,'$.title') AS title,
-            COALESCE(json_extract(c.config,'$.material'),'quiz') AS material
+            COALESCE(json_extract(c.config,'$.material'),'quiz') AS material,
+            (SELECT a.method FROM content_approvals a WHERE a.content_id=c.id AND a.version=c.version) AS approval_method
             FROM contents c JOIN courses ON courses.id=c.course_id JOIN course_owners o ON o.course_id=c.course_id'''+where+
             ' ORDER BY c.created_at DESC',(account_id(request),course_id) if course_id is not None else (account_id(request),))
     @app.get('/api/contents/{cid}')
@@ -624,7 +676,19 @@ def create_app(settings=None,providers_factory=ApiProviders):
         row['difficulty_assessment']=difficulty_assessment_for(row)
         row['difficulty_shadow']=difficulty_shadow_for(row)
         row['evaluation']=current_evaluation(store,cid,row['version'])
+        row['approval']=current_approval(store,cid,row['version'])
+        row['ai_review']=current_ai_review(store,cid,row['version'])
+        if row['ai_review'] is None:
+            missed=store.one('SELECT message,created_at FROM content_auto_review_errors WHERE content_id=? AND version=?',(cid,row['version']))
+            if missed:row['ai_review']={'version':row['version'],'status':'failed','error':missed['message'],'created_at':missed['created_at']}
         return row
+    @app.post('/api/contents/{cid}/ai-review',status_code=202)
+    async def ai_review(cid:str,payload:AiReviewRequest,request:Request):
+        need_content(cid,request)
+        try:return submit_review(pipeline,cid,payload.version,account_id(request),payload.request_key)
+        except Conflict as exc:raise HTTPException(409,str(exc)) from None
+        except ValueError as exc:raise HTTPException(400,str(exc)) from None
+
     @app.post('/api/contents/{cid}/review')
     async def review(cid:str,payload:ReviewRequest,request:Request):
         row=need_content(cid,request)
@@ -646,7 +710,31 @@ def create_app(settings=None,providers_factory=ApiProviders):
                 (dumps(asset.model_dump()),version,'approved' if payload.action=='approve' else 'draft',cid,row['version'])).rowcount
             if not changed:raise HTTPException(409,'内容发生并发更新，请刷新')
             if payload.action=='save':db.execute('INSERT INTO revisions VALUES(?,?,?,?)',(cid,version,dumps(asset.model_dump()),now()))
-        return {'id':cid,'version':version,'status':'approved' if payload.action=='approve' else 'draft'}
+            else:db.execute('''INSERT INTO content_approvals VALUES(?,?,'manual',NULL,?)
+                ON CONFLICT(content_id,version) DO UPDATE SET method='manual',review_job_id=NULL,created_at=excluded.created_at''',(cid,version,now()))
+        result={'id':cid,'version':version,'status':'approved' if payload.action=='approve' else 'draft'}
+        if payload.action=='save' and payload.auto_review:
+            result['automatic_review']=schedule_automatic_review(pipeline,cid,version,owner_id=account_id(request))
+        return result
+    @app.get('/api/contents/{cid}/chat')
+    async def get_review_chat(cid:str,request:Request):
+        need_content(cid,request)
+        return chat_history(store,cid,account_id(request))
+
+    @app.post('/api/contents/{cid}/chat',status_code=202)
+    async def post_review_chat(cid:str,payload:ChatRequest,request:Request):
+        need_content(cid,request)
+        try:return submit_chat(pipeline,cid,account_id(request),payload)
+        except Conflict as exc:raise HTTPException(409,str(exc)) from None
+        except ValueError as exc:raise HTTPException(400,str(exc)) from None
+
+    @app.post('/api/contents/{cid}/chat/undo')
+    async def undo_review_chat(cid:str,payload:UndoRequest,request:Request):
+        need_content(cid,request)
+        try:return undo_chat(store,cid,account_id(request),payload)
+        except Conflict as exc:raise HTTPException(409,str(exc)) from None
+        except ValueError as exc:raise HTTPException(400,str(exc)) from None
+
     @app.post('/api/contents/{cid}/questions/{slot_id}/revise',status_code=202)
     async def revise_question(cid:str,slot_id:str,payload:RevisionRequest,request:Request):
         row=need_content(cid,request)
@@ -662,7 +750,7 @@ def create_app(settings=None,providers_factory=ApiProviders):
             expected={'content_id':cid,'slot_id':slot_id,'base_version':payload.version,
                       'mode':payload.mode,'instruction':payload.instruction,
                       'requested_difficulty':payload.difficulty}
-            if previous['kind']!='revise_question' or any(original.get(field)!=value for field,value in expected.items()):
+            if previous['kind']!='revise_question' or any(original.get(field)!=value for field,value in expected.items()) or bool(original.get('auto_review'))!=payload.auto_review:
                 raise HTTPException(409,'重复请求标识对应不同参数')
             return {'job_id':previous['id'],'status':previous['status'],'reused':True}
         if payload.version!=row['version']:raise HTTPException(409,'内容已更新，请刷新后重试')
@@ -718,7 +806,7 @@ def create_app(settings=None,providers_factory=ApiProviders):
                 q.pop('answer',None);q.pop('explanation',None);q.pop('difficulty_reason',None)
         asset.pop('visual_prompt',None)
         media=store.all("SELECT id,kind FROM media WHERE content_id=? AND version=? AND status='approved'",(cid,row['version']))
-        return {'id':cid,'version':row['version'],'asset':asset,'media':media}
+        return {'id':cid,'version':row['version'],'status':row['status'],'approval':current_approval(store,cid,row['version']),'asset':asset,'media':media}
     @app.post('/api/contents/{cid}/evaluations',status_code=201)
     async def evaluation(cid:str,payload:EvaluationRequest,request:Request,response:Response):
         row=need_content(cid,request)
@@ -778,6 +866,8 @@ def create_app(settings=None,providers_factory=ApiProviders):
         sources=json.loads(row['sources'])
         config.pop('request_key',None)
         calls=store.calls_for_job(row['job_id'])
+        ai_report=current_ai_review(store,cid,row['version'])
+        approval=current_approval(store,cid,row['version'])
         exploration=store.one('SELECT state FROM exploration_runs WHERE job_id=?',(row['job_id'],))
         bundle={'schema_version':'ca1-evidence-v1','exported_at':now(),
             'content_id':cid,'version':row['version'],'status':row['status'],
@@ -785,10 +875,13 @@ def create_app(settings=None,providers_factory=ApiProviders):
             'difficulty_assessment':difficulty_assessment_for(row),
             'difficulty_shadow':difficulty_shadow_for(row,full=True),
             'generation_calls':calls,
+            'approval':approval,'ai_review':ai_report,
+            'ai_review_calls':store.calls_for_job(ai_report['job_id']) if ai_report and ai_report.get('job_id') else [],
             'exploration':json.loads(exploration['state']) if exploration else None,
             'revisions':[dict(version=r['version'],asset=json.loads(r['asset']),created_at=r['created_at']) for r in store.all('SELECT * FROM revisions WHERE content_id=? ORDER BY version',(cid,))],
             'limitations':['Citation identifiers establish provenance, not factual correctness.',
-                'Call records describe initial generation; content may have been edited afterwards.']}
+                'Call records describe initial generation; content may have been edited afterwards.',
+                'AI review is a model judgment, not teacher review or proof of correctness.']}
         return Response(dumps(bundle),media_type='application/json',headers={'Content-Disposition':'attachment; filename="ca1-evidence.json"'})
     @app.get('/api/contents/{cid}/export')
     async def export_content(cid:str,request:Request,format:str='md',include_answers:bool=True,

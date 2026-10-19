@@ -1,18 +1,27 @@
+import { renderAiReviewPanel, bindAiReviewPanel, approvalLabelKey } from './ai-review.js';
+import { renderReviewChat, bindReviewChat } from './review-chat.js';
+import { renderStudioIntro, renderStudioChoices } from './studio-home.js';
+import { renderMascot } from './mascot-feedback.js';
+import { createRequestId } from './request-id.js';
+import { consumeDemoLink } from './demo-link.js';
+import { classroomGenerationDraft, classroomGenerationPreferences } from './demo-generation.js';
+import { readSessionBootstrap, sessionChangeRequiresReset } from './session-bootstrap.js';
 import { renderAsset, renderContentSources } from './content-renderer.js';
 import { renderContentNavigation, mountContentNavigation } from './content-navigation.js';
 import { createDraftStore, createDraftAutosave, draftKey } from './drafts.js';
 import { generationDraftData, editableAssetValues, restoreEditValues, applyEditValues, clearSubmittedEditDraft } from './draft-forms.js';
 import { createViewPositions } from './view-position.js';
+import { beginRouteFocus } from './route-focus.js';
 import { mountCitations } from './citations.js';
 import { renderRatingPanel, bindRatingPanel, renderExportDialog, readExportOptions, renderReviewBar } from './content-review.js';
-import { renderQuestionRevisionDialog, bindQuestionRevision, renderQuestionComparison } from './question-revision.js';
+import { renderQuestionComparison } from './question-revision.js';
 import { restoreGenerationDraft } from './generation-retry.js';
 import { renderLibraryRow, courseLibraryRows } from './content-library.js';
 import { downloadFile } from './downloads.js';
 import { documentControls } from './document-controls.js';
 import { renderFilePicker, installControlLanguage, refreshControlLanguage } from './control-language.js';
 import { createSessionClient, isSessionChange, accountCourseKey } from './auth.js';
-import { parsingDialog, parsingPage, parsingLabel, parserControls } from './parsing.js';
+import { parsingDialog, parsingPage, parsingLabel, parserControls, documentIndexNote } from './parsing.js';
 import { renderOutputFormats, renderMultimodal } from './multimodal.js';
 import { watchResource } from './live-updates.js';
 import { beginViewLoad, patchCollection } from './view-updates.js';
@@ -33,20 +42,23 @@ let pageInputs = null, modalInputs = null;
 let routeLoad = null;
 const draftStore = createDraftStore();
 const viewPositions = createViewPositions({window});
-let renderedView = null, editorSession = null;
+let renderedView = null, editorSession = null, reviewPanel = null, reviewChat = null;
 modal.addEventListener('close', () => { modalInputs?.destroy(); modalInputs = null; });
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const icon = name => `<img class="icon" src="/static/icons/${name}.svg" alt="">`;
 const titles = {home:'课程概览', documents:'课程资料', generate:'创作学习材料', contents:'内容与审核', jobs:'任务记录', progress:'生成进度', content:'内容详情', partial:'已完成题目', learning:'学习材料'};
-const labels = {ready:'索引就绪', parsed:'待建索引', draft:'待审核', approved:'已确认', queued:'排队中', running:'处理中', cancelled:'已停止', revise_question:'题目修改', succeeded:'已完成', failed:'处理失败', insufficient_evidence:'资料依据不足', parse:'资料解析', figures:'图片理解', pending:'待处理', parse_failed:'解析失败', index:'资料索引', generate:'内容生成', media:'媒体生成', vision:'视觉理解模型', text:'文本模型', embedding:'嵌入模型', speech:'语音模型', image:'图像模型'};
+const labels = {ready:'索引就绪', parsed:'待建索引', indexing:'索引建立中', draft:'待审核', approved:'已确认', queued:'排队中', running:'处理中', cancelled:'已停止', revise_question:'题目修改', review_chat:'审核对话', review_content:'AI 审核', succeeded:'已完成', failed:'处理失败', insufficient_evidence:'资料依据不足', parse:'资料解析', figures:'图片理解', pending:'待处理', parse_failed:'解析失败', index:'资料索引', generate:'内容生成', media:'媒体生成', vision:'视觉理解模型', text:'文本模型', embedding:'嵌入模型', speech:'语音模型', image:'图像模型'};
 const kinds = {lesson:'学习讲解', quiz:'测验练习', assignment:'课后作业'};
 const badge = status => `<span class="badge ${esc(status)}">${m(labels[status] || status)}</span>`;
+const documentBadge = doc => badge(['pending','parse_failed'].includes(doc.status)?doc.status:doc.active_jobs?.some(job=>job.kind==='index')?'indexing':doc.index_current?'ready':'parsed');
 const button = (label, action, style = '', attrs = '') => `<button class="${style}" data-action="${action}" ${attrs}>${label.includes('<') ? label : m(label)}</button>`;
 const heading = title => `<div class="page-heading"><h1>${m(title)}</h1></div>`;
-const empty = (title, description, action = '', label = '', symbol = 'book-open') => `<div class="empty-state">${icon(symbol)}<h2>${m(title)}</h2>${description?`<p>${m(description)}</p>`:''}${action?button(label, action):''}</div>`;
+const empty = (title, description, action = '', label = '', symbol = 'book-open') => `<div class="empty-state">${renderMascot('welcome')}<span class="empty-state-symbol" aria-hidden="true">${icon(symbol)}</span><h2>${m(title)}</h2>${description?`<p>${m(description)}</p>`:''}${action?button(label, action):''}</div>`;
 const date = value => `<time data-date="${esc(value)}">${esc(formatDate(value))}</time>`;
 const state = {course:'', cleanup:null, library:{course:'',filter:'all',query:''}, libraries:new Map(), documents:new Map(), courses:[], revision:0, route:{page:'home'}, drafts:new Map(), content:null, learningId:new URLSearchParams(location.search).get('learn')};
-let workspaceReady = false, workspaceOpened = false, authMode = 'login', sessionCheck = null;
+let workspaceReady = false, workspaceOpened = false, authMode = 'login', workspaceEntry = null;
+const initialSession = readSessionBootstrap(document);
+let pendingDemo = consumeDemoLink(location, history);
 let pendingRestore = null, restoreEmail = '', restoreAttemptUser = null;
 function captureRestoreLink() {
   if (!location.hash.startsWith('#restore-workspace?')) return false;
@@ -65,10 +77,12 @@ const generationPreferences = createGenerationPreferences({
     if(control)control.checked=detail.queryFusion;
     const explorationControl=$('#auto-explore');
     if(explorationControl)explorationControl.checked=detail.autoExplore;
+    const autoReviewControl=$('#auto-review');
+    if(autoReviewControl)autoReviewControl.checked=detail.autoReview;
     const subagentControl=$('#use-subagents');
     if(subagentControl)subagentControl.checked=detail.useSubagents;
     for(const option of $$('input[name="progress-mode"]',modal))option.checked=option.value===detail.progressMode;
-    if(detail.changed.some(key=>['queryFusion','autoExplore','useSubagents'].includes(key)))window.dispatchEvent(new CustomEvent('generationpreferenceschange',{detail}));
+    if(detail.changed.some(key=>['queryFusion','autoExplore','useSubagents','autoReview'].includes(key)))window.dispatchEvent(new CustomEvent('generationpreferenceschange',{detail}));
     if(detail.changed.includes('progressMode')&&state.route.page==='progress')void renderRoute();
   },
 });
@@ -95,15 +109,16 @@ function clearWorkspace(reason = '') {
   $('#account-button').removeAttribute('title');
   if (modal.open) modal.close(); $('#modal-content').replaceChildren();
   $('#notice').hidden = true; $('#notice-text').textContent = '';
-  $('.app-shell').hidden = true; $('.skip').hidden = true; $('#auth-gate').hidden = false;
   if (reason === 'expired') renderAuth('登录已过期或账号已切换，请重新登录。');
-  else renderAuthLoading();
+  else openWorkspaceShell();
 }
-function renderAuthLoading() {
-  $('#auth-content').innerHTML = `<h1 id="auth-title">${m('正在载入…')}</h1><p class="auth-loading" role="status">${m('正在检查登录状态…')}</p>`;
+function openWorkspaceShell() {
+  $('#auth-content').replaceChildren(); $('#auth-gate').hidden=true;
+  $('.app-shell').hidden=false; $('.skip').hidden=false;
 }
 function renderAuth(message = '') {
   const registering = authMode === 'register';
+  $('.app-shell').hidden=true; $('.skip').hidden=true;
   $('#auth-gate').hidden = false;
   $('#auth-content').innerHTML = `<h1 id="auth-title">${m(registering?'创建你的账号':'登录知序')}</h1>${message?`<p class="auth-message" role="status">${m(message)}</p>`:''}${pendingRestore?`<p class="auth-message">${m('有一份原有工作空间等待恢复，请使用对应邮箱登录或注册。')}${restoreEmail?`<br>${esc(restoreEmail)}`:''}</p>`:''}<form id="auth-form">${registering?`<label for="auth-name">${m('你的称呼')}<input id="auth-name" name="display_name" autocomplete="nickname" maxlength="80" required></label>`:''}<label for="auth-email">${m('邮箱')}<input id="auth-email" name="email" type="email" value="${pendingRestore?esc(restoreEmail):''}" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" maxlength="254" required></label><label for="auth-password">${m('密码')}<input id="auth-password" name="password" type="password" autocomplete="${registering?'new-password':'current-password'}" ${registering?'minlength="15"':''} maxlength="128" required ${registering?'aria-describedby="auth-password-hint"':''}>${registering?`<span id="auth-password-hint" class="auth-hint">${m('15–128 个字符')}</span>`:''}</label>${registering?`<label for="auth-confirm">${m('确认密码')}<input id="auth-confirm" name="password_confirmation" type="password" autocomplete="new-password" minlength="15" maxlength="128" required></label>`:''}<button type="submit" class="auth-submit">${m(registering?'创建账号':'登录')}</button></form><div class="auth-switch"><span>${m(registering?'已有账号？':'还没有账号？')}</span><button class="link" id="auth-switch" type="button">${m(registering?'去登录':'创建账号')}</button></div>`;
   $('#auth-switch').onclick = () => { authMode = registering?'login':'register'; renderAuth(); $('#auth-email').focus(); };
@@ -126,7 +141,6 @@ function renderAuth(message = '') {
 function receiveSession(session, {changed = false, reason = ''} = {}) {
   if (!session.user) {
     if (changed || !$('#auth-form') || reason) renderAuth(reason==='expired'?'登录已过期或账号已切换，请重新登录。':'');
-    if (reason === 'account_changed') queueMicrotask(() => checkSession({suspend:true}));
     return;
   }
   authMode = 'login';
@@ -135,6 +149,7 @@ function receiveSession(session, {changed = false, reason = ''} = {}) {
 }
 async function loadWorkspace(epoch) {
   const user = auth.session.user;
+  openWorkspaceShell();
   let claimError = null, claimed = false;
   try {
     if (pendingRestore && restoreAttemptUser !== user.id) {
@@ -161,28 +176,56 @@ async function loadWorkspace(epoch) {
   } catch (error) {
     if (isSessionChange(error) || epoch !== auth.epoch) return;
     $('#auth-gate').hidden = false;
+    $('.app-shell').hidden=true; $('.skip').hidden=true;
     $('#auth-content').innerHTML = `<h1 id="auth-title">${m('无法连接工作空间')}</h1><p class="auth-description">${m(error.uiMessage || error.message)}</p><button id="auth-retry" class="auth-submit">${m('重试')}</button><button id="auth-signout" class="link">${m('退出登录')}</button>`;
-    $('#auth-retry').onclick = () => { renderAuthLoading(); loadWorkspace(auth.epoch); };
+    $('#auth-retry').onclick = () => { loadWorkspace(auth.epoch); };
     $('#auth-signout').onclick = () => busy($('#auth-signout'),logout);
   }
 }
 function signalSessionChange() {
-  try { localStorage.setItem('zhixu.session-change',crypto.randomUUID()); } catch { /* Focus checks cover browsers with storage disabled. */ }
+  try { localStorage.setItem('zhixu.session-change',JSON.stringify({userId:auth.session.user?.id || null,nonce:createRequestId()})); } catch { /* Protected requests still enforce the current account. */ }
 }
 async function logout() { await auth.logout(); restoreAttemptUser = null; signalSessionChange(); $('#auth-email')?.focus(); }
-async function checkSession({suspend = false} = {}) {
-  if (suspend) auth.suspend('checking');
-  if (sessionCheck) return suspend ? sessionCheck.then(() => checkSession()) : sessionCheck;
-  sessionCheck = (async () => {
-    try { await auth.restore(); }
+async function enterWorkspace() {
+  if (workspaceEntry) return workspaceEntry;
+  workspaceEntry = (async () => {
+    await Promise.resolve();
+    try {
+      if (pendingDemo !== null) {
+        const token = pendingDemo; pendingDemo = null;
+        const session = await auth.enterDemo(token, next => {
+          if (next.demo_course_id) {
+            try { localStorage.setItem(accountCourseKey(next.user.id), next.demo_course_id); } catch {}
+            state.course = next.demo_course_id;
+          }
+          if (document.documentElement.lang !== 'en') window.uiPreferences.toggleLanguage();
+          if (document.documentElement.dataset.theme !== 'light') window.uiPreferences.toggleTheme();
+          refreshPreferences();
+        });
+        const course=session.demo_course_id;
+        const draft=classroomGenerationDraft(session,course);
+        if (draft) {
+          state.cleanup?.(); state.cleanup=null;
+          draftStore.save({kind:'generate',accountId:session.user.id,courseId:course},generationDraftData(draft));
+          state.drafts.set(course,ensureDifficultyDraft(draft));
+          classroomGenerationPreferences(generationPreferences);
+        }
+        signalSessionChange();
+        history.replaceState(null, '', location.pathname + location.search + '#documents');
+        if (workspaceReady) await renderRoute();
+      } else auth.initialize(initialSession);
+    }
     catch (error) {
       if (isSessionChange(error)) return;
-      if (workspaceReady || $('#auth-form')) return;
+      if (workspaceReady) return;
+      if (error.code?.includes('demo')) { renderAuth(error.message); return; }
+      if ($('#auth-form')) return;
+      $('#auth-gate').hidden=false; $('.app-shell').hidden=true; $('.skip').hidden=true;
       $('#auth-content').innerHTML = `<h1 id="auth-title">${m('无法连接工作空间')}</h1><p class="auth-description">${m('请检查网络连接，然后重试。')}</p><button id="auth-retry" class="auth-submit">${m('重试')}</button>`;
-      $('#auth-retry').onclick = () => { renderAuthLoading(); checkSession(); };
-    } finally { sessionCheck = null; }
+      $('#auth-retry').onclick = () => { $('#auth-gate').hidden=true; enterWorkspace(); };
+    } finally { workspaceEntry = null; }
   })();
-  return sessionCheck;
+  return workspaceEntry;
 }
 function notify(message) {
   setText($('#notice-text'), message);
@@ -276,10 +319,11 @@ function refreshPreferences() {
   languageToggle.setAttribute('aria-label', t(english ? '切换到中文' : '切换到英文'));
   languageToggle.title = t(english ? '切换到中文' : '切换到英文');
   }
-  if (!workspaceReady) document.title = `${t(authMode==='register'?'创建你的账号':'登录知序')} · ${t('知序')}`;
+  if (!workspaceReady && $('.app-shell').hidden) document.title = `${t(authMode==='register'?'创建你的账号':'登录知序')} · ${t('知序')}`;
 }
 async function renderRoute() {
   if (!workspaceReady || !auth.session.user) return;
+  const previousView = renderedView ? {...renderedView, id:state.route.id} : null;
   viewPositions.capture(renderedView, page);
   renderedView = null;
   state.cleanup?.(); state.cleanup = null;
@@ -292,7 +336,9 @@ async function renderRoute() {
   state.route = {page:name, id};
   renderNavigation(name);
   $('#toolbar-actions').innerHTML = '';
-  const loading = routeLoad = beginViewLoad(page, `<div class="loading" role="status">${m('正在载入…')}</div>`);
+  const loading = routeLoad = beginViewLoad(page, `<div class="loading" role="status">${renderMascot('reading')}<span>${m('正在载入…')}</span><span class="loading-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>`);
+  const routeFocus = beginRouteFocus({root:page, previous:previousView,
+    next:{account:auth.session.user.id, course:state.course, route:name, id}, signal:loading.signal});
   const read = path => api(path, 'GET', undefined, {signal:loading.signal});
   try {
     const result = await renderers[name](id, read);
@@ -303,11 +349,14 @@ async function renderRoute() {
     state.cleanup = result.bind?.() || null;
     pageInputs = mountInputControls(page);
     renderedView = {account:auth.session.user.id,course:state.course,route:name};
-    if (!viewPositions.restore(renderedView,page)) window.scrollTo({top:0,behavior:'instant'});
+    const restored = viewPositions.restore(renderedView,page);
+    if (!restored) window.scrollTo({top:0,behavior:'instant'});
+    routeFocus.finish({restored});
   } catch (error) {
     if (revision !== state.revision || loading.signal.aborted) return;
     loading.finish();
     page.innerHTML = empty('暂时无法载入', error.uiMessage || error.message, 'retry', '重新尝试');
+    routeFocus.finish();
   }
 }
 function materialRow(content, showCourse = false) {
@@ -318,13 +367,11 @@ async function renderHome(_id, read = api) {
   if (!state.course) return {...courseRequired(), toolbar:button('模型连接','settings','secondary')};
   const course = state.courses.find(item => item.id === state.course);
   const [docs, contents] = await Promise.all([read(courseUrl('documents')), read(courseUrl('contents'))]);
-  const drafts = contents.filter(content => content.status === 'draft').length;
   return {
     toolbar:button(icon('upload')+m('导入资料'),'upload','secondary'),
-    html:`<section class="overview-heading"><h1>${esc(course.name)}</h1><div class="course-stats"><div><strong>${docs.length}</strong><span>${m('资料')}</span></div><div><strong>${contents.length}</strong><span>${m('材料')}</span></div><div><strong>${drafts}</strong><span>${m('待审核')}</span></div></div></section>
-      <div class="home-grid"><section class="creation-section" ${a('创作材料','aria-label')}><div class="quick-create">${[['lesson','book-open'],['quiz','layers'],['assignment','file-text']].map(([kind,symbol])=>button(`${icon(symbol)}<strong>${m(kinds[kind])}</strong><img class="choice-arrow" src="/static/icons/arrow-up-right.svg" alt="">`,'create-kind','create-choice',`data-kind="${kind}"`)).join('')}</div></section>
-      <section class="home-panel materials-panel"><div class="heading-row"><h2>${m('最近材料')}</h2>${button(icon('arrow-right'),'contents','plain icon-button',`${a('查看全部材料','aria-label')} ${a('查看全部材料','title')}`)}</div>${contents.length?`<div class="collection">${contents.slice(0,4).map(content=>materialRow(content)).join('')}</div>`:`<div class="recent-empty">${icon('book-open')}<p>${m('暂无材料')}</p></div>`}</section>
-      <section class="home-panel documents-panel"><div class="heading-row"><h2>${m('课程资料')}</h2>${button(icon('arrow-right'),'documents','plain icon-button',`${a('管理课程资料','aria-label')} ${a('管理课程资料','title')}`)}</div>${docs.length?`<div class="collection">${docs.slice(0,3).map(doc=>`<div class="collection-row"><span class="file-icon">${icon('file-text')}</span><div class="row-main"><h3 id="document-name-${esc(doc.id)}">${esc(doc.name)}</h3><p>${m('{n} 页',{n:doc.pages})}</p>${renderExternalSource(doc)}</div>${badge(['pending','parse_failed'].includes(doc.status)?doc.status:doc.index_current?'ready':'parsed')}</div>`).join('')}</div>`:`<div class="recent-empty"><p>${m('暂无资料')}</p></div>`}</section></div>`
+    html:renderStudioIntro({course,documents:docs,contents})+`<div class="home-grid"><section class="creation-section" ${a('创作材料','aria-label')}>${renderStudioChoices()}</section>
+      <section class="home-panel materials-panel"><div class="heading-row"><h2>${m('最近材料')}</h2>${button(icon('arrow-right'),'contents','plain icon-button',`${a('查看全部材料','aria-label')} ${a('查看全部材料','title')}`)}</div>${contents.length?`<div class="collection">${contents.slice(0,4).map(content=>materialRow(content)).join('')}</div>`:`<div class="recent-empty">${renderMascot('reading')}<p>${m('从一个学习目标，开始第一份材料。')}</p>${button('开始新的创作','generate','secondary')}</div>`}</section>
+      <section class="home-panel documents-panel"><div class="heading-row"><h2>${m('课程资料')}</h2>${button(icon('arrow-right'),'documents','plain icon-button',`${a('管理课程资料','aria-label')} ${a('管理课程资料','title')}`)}</div>${docs.length?`<div class="collection">${docs.slice(0,3).map(doc=>`<div class="collection-row"><span class="file-icon">${icon('file-text')}</span><div class="row-main"><h3 id="document-name-${esc(doc.id)}">${esc(doc.name)}</h3><p>${m('{n} 页',{n:doc.pages})}</p>${renderExternalSource(doc)}</div>${documentBadge(doc)}</div>`).join('')}</div>`:`<div class="recent-empty">${renderMascot('welcome')}<p>${m('导入讲义，让创作有据可依。')}</p>${button('导入第一份资料','upload','secondary')}</div>`}</section></div>`
   };
 }
 
@@ -347,7 +394,7 @@ async function renderDocuments(_id, read = api) {
         if ($('[data-filter=all]').dataset.total !== String(total)) { $('[data-filter=all]').dataset.total=total; $('[data-filter=all]').innerHTML=m('全部 {n}',{n:total}); }
         const query = $('#file-search').value.trim().toLowerCase();
         const rows = docs.filter(doc => doc.name.toLowerCase().includes(query) && (filter==='deleted'?Boolean(doc.deleted_at):!doc.deleted_at&&(filter==='all'||(filter==='ready')===Boolean(doc.index_current))));
-        replaceRows($('#files'), rows.length ? `<div class="collection">${rows.map(doc=>`<div data-row-key="document:${esc(doc.id)}" class="collection-row document-row ${doc.enabled===false?'document-inactive':''}"><span class="file-icon">${icon('file-text')}</span><div class="row-main"><h3 id="document-name-${esc(doc.id)}">${esc(doc.name)}</h3><p>${m('{n} 页',{n:doc.pages})} · ${m('{n} 个知识片段',{n:doc.chunks})}${['needs_review','unreadable'].includes(doc.parsing?.status)?' · '+m(parsingLabel(doc.parsing.status)):''}${doc.active_jobs?.length?' · '+m('后台处理中'):''}${doc.figures?.length?' · '+m('可检索图片 {ready} / {total}',{ready:doc.figures.filter(f=>f.status==='ready').length,total:doc.figures.length}):''}</p>${renderExternalSource(doc)}</div>${badge(['pending','parse_failed'].includes(doc.status)?doc.status:doc.index_current?'ready':'parsed')}<div class="document-management">${documentControls(doc)}</div><div class="row-actions" ${doc.deleted_at?'hidden':''}>${button('文字与原图','parsing','secondary',`data-id="${esc(doc.id)}"`)}${button('阅读片段','chunks','secondary',`data-id="${esc(doc.id)}" data-name="${esc(doc.name)}"`)}${button(doc.index_current?'重建索引':'建立索引','index','secondary',`data-id="${esc(doc.id)}" ${doc.status==='pending'?'disabled':''}`)}</div></div>`).join('')}</div>` : empty(docs.length?'没有匹配的资料':'暂无资料',docs.length?'试试其他名称或筛选条件。':'',docs.length?'':'upload','导入资料','files'));
+        replaceRows($('#files'), rows.length ? `<div class="collection">${rows.map(doc=>`<div data-row-key="document:${esc(doc.id)}" class="collection-row document-row ${doc.enabled===false?'document-inactive':''}"><span class="file-icon">${icon('file-text')}</span><div class="row-main"><h3 id="document-name-${esc(doc.id)}">${esc(doc.name)}</h3><p>${m('{n} 页',{n:doc.pages})} · ${m('{n} 个知识片段',{n:doc.chunks})}${['needs_review','unreadable'].includes(doc.parsing?.status)?' · '+m(parsingLabel(doc.parsing.status)):''}${doc.active_jobs?.length?' · '+m('后台处理中'):''}${doc.figures?.length?' · '+m('配图就绪 {ready} / {total}',{ready:doc.figures.filter(f=>f.status==='ready'&&f.indexed).length,total:doc.figures.length}):''}</p>${documentIndexNote(doc)}${renderExternalSource(doc)}</div>${documentBadge(doc)}<div class="document-management">${documentControls(doc)}</div><div class="row-actions" ${doc.deleted_at?'hidden':''}>${button('文字与原图','parsing','secondary',`data-id="${esc(doc.id)}"`)}${button('阅读片段','chunks','secondary',`data-id="${esc(doc.id)}" data-name="${esc(doc.name)}"`)}${button(doc.index_current?'重建索引':'建立索引','index','secondary',`data-id="${esc(doc.id)}" ${doc.status==='pending'||doc.active_jobs?.some(job=>job.kind==='index')?'disabled':''}`)}</div></div>`).join('')}</div>` : empty(docs.length?'没有匹配的资料':'暂无资料',docs.length?'试试其他名称或筛选条件。':'',docs.length?'':'upload','导入资料','files'));
         $$('.document-enabled').forEach(input=>{input.onchange=()=>{
           const id=input.dataset.document,doc=docs.find(d=>d.id===id),enabled=input.checked;
           doc.enabled=enabled;
@@ -385,7 +432,13 @@ function bindDraftSaver(context, statusNode, restored) {
   return {...saver,get status(){return last;},destroy(options){saver.destroy(options);window.removeEventListener('beforeunload',protect);}};
 }
 function draftFor(course = state.course) {
-  if (!state.drafts.has(course)) state.drafts.set(course,{...defaultGenerationDraft(),...generationDraftData(draftStore.load(generationDraftScope(course))?.data)});
+  if (!state.drafts.has(course)) {
+    const saved=generationDraftData(draftStore.load(generationDraftScope(course))?.data);
+    const preset=classroomGenerationDraft(auth.session,course);
+    const initial=preset&&!saved.topic?.trim()?preset:saved;
+    if (initial===preset) classroomGenerationPreferences(generationPreferences);
+    state.drafts.set(course,{...defaultGenerationDraft(),...initial});
+  }
   return ensureDifficultyDraft(state.drafts.get(course));
 }
 async function renderGenerate(_id, read = api) {
@@ -397,12 +450,12 @@ async function renderGenerate(_id, read = api) {
   const ready = docs.filter(doc=>doc.index_current&&doc.enabled!==false).length;
   const select = (id,label,values) => `<label class="select-field">${m(label)}<select id="${id}" name="${id}">${values.map(([value,text])=>`<option value="${value}" ${String(draft[id])===value?'selected':''} data-i18n="${text}">${t(text)}</option>`).join('')}</select></label>`;
   return {
-    html:heading('创作学习材料')+`<div class="compose-layout"><form id="compose" class="compose-form"><fieldset><legend class="sr-only">${m('材料类型')}</legend><div class="type-switch">${Object.entries(kinds).map(([kind,title])=>`<label><input type="radio" name="material" value="${kind}" ${draft.material===kind?'checked':''}>${m(title)}</label>`).join('')}</div></fieldset>
-      <div class="writing-field"><label for="topic">${m('学习目标')}</label><textarea id="topic" name="topic" required minlength="2" ${a('输入知识点或学习目标','placeholder')}>${esc(draft.topic)}</textarea></div>
+    html:heading('创作学习材料')+`<div class="compose-layout"><form id="compose" class="compose-form"><fieldset><legend class="sr-only">${m('材料类型')}</legend><div class="type-switch">${Object.entries(kinds).map(([kind,title])=>`<label data-kind="${kind}"><input type="radio" name="material" value="${kind}" ${draft.material===kind?'checked':''}>${icon({lesson:'book-open',quiz:'check-square',assignment:'file-text'}[kind])}${m(title)}</label>`).join('')}</div></fieldset>
+      <div class="writing-field context-card context-card--goal"><label class="context-card-heading" for="topic">${icon('target')}${m('学习目标')}</label><textarea id="topic" name="topic" required minlength="2" ${a('输入知识点或学习目标','placeholder')}>${esc(draft.topic)}</textarea></div>
       <div class="compose-options"><div class="field-grid">${select('language','内容语言',[['zh','中文'],['en','English']])}</div><div class="field-grid" id="question-options">${select('question_type','题目形式',[['mixed','选择题与简答题'],['mcq','选择题'],['short_answer','简答题']])}<div class="number-field"><label for="count">${m('题目数量')}</label><input type="number" name="count" id="count" min="1" max="50" step="1" required value="${draft.count}"></div></div>${renderLessonDepth(draft)}</div>
       ${renderDifficultyControls(draft)}
-      ${renderExplanationOption(draft)}${renderOutputFormats()}${renderSwitch({id:'check-missing-details',label:'生成前追问',checked:draft.check_missing_details!==false,className:'clarification-check'})}<div class="draft-tools"><span id="generation-draft-status" role="status">${savedDraft?m(savedDraft.persisted?'已恢复草稿':'草稿仅暂存于当前页面'):''}</span><button type="button" class="link" id="clear-generation-draft">${m('清空表单')}</button></div><div class="submit-bar"><button type="submit" aria-describedby="generation-eligibility">${icon('wand-sparkles')}${m('开始生成')}</button></div></form>
-      <aside class="context-pane"><div class="context-title">${m('本次创作')}</div><h2 id="draft-kind"></h2><p id="draft-summary"></p><div class="context-divider"></div><div class="heading-row"><h3>${m('课程知识')}</h3><small>${m('{ready} / {total} 份就绪',{ready,total:docs.length})}</small></div>${docs.filter(doc=>doc.enabled!==false).slice(0,4).map(doc=>`<div class="context-file">${icon('file-text')}<span>${esc(doc.name)}</span></div>`).join('')||`<p>${m(docs.length?'暂无启用的资料':'尚未导入课程资料。')}</p>`}${button('管理课程资料','documents','link')}<div id="generation-eligibility" class="inline-note" role="status" hidden></div>${!status.capabilities.text.configured||!status.capabilities.embedding.configured?button('配置文本与嵌入模型','settings','link'):''}</aside></div>`,
+      ${renderExplanationOption(draft)}${renderOutputFormats()}${renderSwitch({id:'check-missing-details',label:'生成前追问',checked:draft.check_missing_details!==false,className:'clarification-check'})}<div class="draft-tools"><span id="generation-draft-status" role="status">${savedDraft?m(savedDraft.persisted?'已恢复草稿':'草稿仅暂存于当前页面'):''}</span><button type="button" class="link" id="clear-generation-draft">${m('清空表单')}</button></div><div class="submit-bar"><div id="generation-eligibility" class="inline-note" role="status" hidden></div><button type="submit" aria-describedby="generation-eligibility">${icon('wand-sparkles')}${m('开始生成')}</button></div></form>
+      <aside class="context-pane"><div class="context-title">${m('本次创作')}</div><h2 id="draft-kind"></h2><p id="draft-summary"></p><div class="context-divider"></div><section class="context-card context-card--sources"><div class="heading-row"><h3 class="context-card-heading">${icon('files')}${m('课程知识')}</h3><small>${m('{ready} / {total} 份就绪',{ready,total:docs.length})}</small></div>${docs.filter(doc=>doc.enabled!==false).slice(0,4).map(doc=>`<div class="context-file">${icon('file-text')}<span>${esc(doc.name)}</span></div>`).join('')||`<p>${m(docs.length?'暂无启用的资料':'尚未导入课程资料。')}</p>`}${button('管理课程资料','documents','link')}</section>${!status.capabilities.text.configured||!status.capabilities.embedding.configured?button('配置文本与嵌入模型','settings','link'):''}</aside></div>`,
     bind() {
       const form=$('#compose');
       const submitControl=$('button[type=submit]',form), submitLabel=submitControl.innerHTML;
@@ -516,7 +569,7 @@ async function renderGenerate(_id, read = api) {
         if(!form.reportValidity())return;
         $('.error-message',form)?.remove();
         if(flow.state.phase==='retry_generation'){perform(()=>flow.retry());return;}
-        const snapshot={...generationPayload(draft),...generationPreferences.requestFields(draft.material),count:draft.material==='lesson'?3:draft.count,course_id:course,request_key:crypto.randomUUID()};
+        const snapshot={...generationPayload(draft),...generationPreferences.requestFields(draft.material),count:draft.material==='lesson'?3:draft.count,course_id:course,request_key:createRequestId()};
         submittedDraft=JSON.stringify(generationDraftData(draft));
         perform(()=>flow.start(snapshot,{check:$('#check-missing-details',form).checked}));
       };
@@ -581,40 +634,96 @@ function renderMedia(media, review=false, version=0) {
     return `<div class="media-item"><div class="row-actions"><small>${m(label)}</small>${review?badge(item.status):''}</div>${player}<div class="row-actions"><a class="button secondary" href="/api/media/${encodeURIComponent(item.id)}/download" download>${m('下载')}</a>${review?button(item.status==='approved'?'媒体已确认':'确认媒体内容','approve-media','secondary',`data-id="${esc(item.id)}" data-version="${version}" ${item.status==='approved'?'disabled':''}`):''}</div></div>`;
   }).join('');
 }
+function renderReviewDocument(content) {
+  return `${renderContentNavigation(content.asset)}<article class="document-paper">${renderQuestionComparison(content)}${renderAsset(content.asset,true,content.difficulty_assessment,content.sources,{editableQuestions:true})}<div class="submit-bar"><div class="row-actions">${button('编辑内容','edit-content','secondary')}${button(content.status==='approved'&&content.approval?.method!=='ai'?'文字已确认':'人工确认此版本','approve-content','',content.status==='approved'&&content.approval?.method!=='ai'?'disabled':'')}</div></div><div id="edit-panel"></div></article>`;
+}
+function renderReviewDetails(content) {
+  return `<section class="inspector-section"><h2>${m('资料依据')}</h2>${renderContentSources(content.sources,content.asset)}</section><div data-content-multimodal>${renderMultimodal(content,renderMedia)}</div>${renderDifficultyAssessment(content)}${renderRatingPanel(content)}`;
+}
 async function renderContent(id, read = api) {
   const content=await read('/contents/'+encodeURIComponent(id));
   const cid=encodeURIComponent(id);
   const hasDraft=Boolean(draftStore.load(editDraftScope(content)));
   return {
     toolbar:button('返回内容库','contents','secondary'),
-    html:`${renderReviewBar(content)}<div class="draft-banner" data-edit-draft-notice ${hasDraft?'':'hidden'}><span>${m('有尚未提交的编辑草稿')}</span><div class="row-actions">${button('继续编辑','edit-content','link')}${button('丢弃草稿','discard-edit-draft','link')}</div></div><div class="review-layout"><div>${renderContentNavigation(content.asset)}<article class="document-paper">${renderQuestionComparison(content)}${renderAsset(content.asset,true,content.difficulty_assessment,content.sources,{editableQuestions:true})}<div class="submit-bar"><div class="row-actions">${button('编辑内容','edit-content','secondary')}${button(content.status==='approved'?'文字已确认':'确认文字','approve-content','',content.status==='approved'?'disabled':'')}</div></div><div id="edit-panel"></div></article></div>
-      <aside class="review-inspector"><section class="inspector-section"><h2>${m('资料依据')}</h2>${renderContentSources(content.sources,content.asset)}</section>
-      ${renderMultimodal(content, renderMedia)}
-      ${renderDifficultyAssessment(content)}
-      ${renderRatingPanel(content)}</aside></div>`,
+    html:`${renderReviewBar(content)}${renderAiReviewPanel(content)}<div class="draft-banner" data-edit-draft-notice ${hasDraft?'':'hidden'}><span>${m('有尚未提交的编辑草稿')}</span><div class="row-actions">${button('继续编辑','edit-content','link')}${button('丢弃草稿','discard-edit-draft','link')}</div></div><div class="review-layout review-layout--chat"><div data-review-document>${renderReviewDocument(content)}</div><aside class="review-inspector">${renderReviewChat(content)}<div data-review-details>${renderReviewDetails(content)}</div></aside></div>`,
     bind(){
       state.content=content; selectCourse(content.course_id);
-      const stopNavigation=mountContentNavigation(page);
-      const stopCitations=mountCitations(page,content.sources,content.asset);
-      const stopRating=bindRatingPanel(page,content,{
-        save:payload=>api(`/contents/${cid}/evaluations`,'POST',payload),
-        onSaved:evaluation=>{content.evaluation=evaluation;notify('当前版本的评价已保存。');}
+      const routeRevision=state.revision;
+      const stopReview=reviewPanel=bindAiReviewPanel(page,content,{
+        start:(payload,{signal})=>api(`/contents/${cid}/ai-review`,'POST',payload,{signal}),
+        load:({signal})=>api(`/contents/${cid}`,'GET',undefined,{signal}),
+        isActive:()=>routeRevision===state.revision,
+        isEditing:()=>Boolean(editorSession),
+        onUpdated:next=>{
+          if(next.version!==content.version||routeRevision!==state.revision)return;
+          const changed=content.status!==next.status||content.approval?.method!==next.approval?.method;
+          Object.assign(content,{status:next.status,approval:next.approval,ai_review:next.ai_review});
+          if(changed){
+            $('.content-review-bar').outerHTML=renderReviewBar(content);
+            const approve=$('[data-action="approve-content"]');
+            if(approve){approve.disabled=content.status==='approved'&&content.approval?.method!=='ai';setText(approve,approve.disabled?'文字已确认':'人工确认此版本');}
+            $('[data-content-multimodal]').innerHTML=renderMultimodal(content,renderMedia);
+          }
+        }
       });
-      return ()=>{disposeEditor();stopNavigation();stopCitations();stopRating();};
+      let stopNavigation, stopCitations, stopRating;
+      const bindDocument=()=>{
+        stopNavigation=mountContentNavigation(page);
+        stopCitations=mountCitations(page,content.sources,content.asset);
+        stopRating=bindRatingPanel(page,content,{
+          save:payload=>api(`/contents/${cid}/evaluations`,'POST',payload),
+          onSaved:evaluation=>{content.evaluation=evaluation;notify('当前版本的评价已保存。');}
+        });
+        const change=content.config?.question_revision;
+        if(change?.version===content.version){
+          const index=content.asset.questions.findIndex((question,index)=>(question.slot_id || `q${index+1}`)===change.slot_id);
+          $(`[data-content-anchor="question-${index+1}"]`,page)?.setAttribute('data-review-changed','true');
+        }
+      };
+      bindDocument();
+      const refreshController=new AbortController();
+      const stopChat=reviewChat=bindReviewChat(page,content,{
+        load:({signal})=>api(`/contents/${cid}/chat`,'GET',undefined,{signal}),
+        send:(payload,{signal})=>api(`/contents/${cid}/chat`,'POST',payload,{signal}),
+        undo:(payload,{signal})=>api(`/contents/${cid}/chat/undo`,'POST',payload,{signal}),
+        isActive:()=>routeRevision===state.revision,
+        isEditing:()=>Boolean(editorSession)||Boolean(draftStore.load(editDraftScope(content))),
+        getAutoReview:()=>generationPreferences.autoReview,
+        onContentUpdated:async()=>{
+          const next=await api(`/contents/${cid}`,'GET',undefined,{signal:refreshController.signal});
+          if(routeRevision!==state.revision)return;
+          if(editorSession||draftStore.load(editDraftScope(content)))throw new Error(t('请先保存或丢弃编辑草稿。'));
+          if(next.version<=content.version)return content;
+          stopNavigation();stopCitations();stopRating();
+          // Keep the conversation, composer and focus mounted while replacing the saved document.
+          stopReview.refresh(next);
+          Object.assign(content,next);
+          $('[data-review-document]',page).innerHTML=renderReviewDocument(content);
+          $('[data-review-details]',page).innerHTML=renderReviewDetails(content);
+          $('.content-review-bar',page).outerHTML=renderReviewBar(content);
+          bindDocument();updateEditorNotice();pageInputs?.refresh();
+          return content;
+        }
+      });
+      return ()=>{stopChat();if(reviewChat===stopChat)reviewChat=null;refreshController.abort();stopReview();if(reviewPanel===stopReview)reviewPanel=null;disposeEditor();stopNavigation();stopCitations();stopRating();};
     }
   };
 }
 function disposeEditor() {
   editorSession?.saver.destroy();
   editorSession=null;
+  reviewPanel?.refresh();
 }
 function updateEditorNotice() {
   const notice=$('[data-edit-draft-notice]');
   if (notice && state.content) notice.hidden=Boolean(editorSession) || !draftStore.load(editDraftScope(state.content));
+  reviewChat?.refresh();
 }
 function editContent() {
   const content=state.content, revision=state.revision;
   if (!content) return;
+  if(reviewChat?.isBusy()){notify('请等待当前对话完成。');return;}
   if (editorSession) { $('#edit-panel').scrollIntoView({block:'start',behavior:'instant'});return; }
   const scope=editDraftScope(content), saved=draftStore.load(scope);
   const asset=content.asset, base=editableAssetValues(asset), restored=restoreEditValues(asset,saved?.data);
@@ -625,6 +734,7 @@ function editContent() {
   const values=()=>Object.fromEntries(controls.map(input=>[input.dataset.path,input.value]));
   const saver=bindDraftSaver(scope,$('#edit-draft-status'),saved);
   editorSession={saver,scope,contentId:content.id};
+  reviewPanel?.refresh();
   updateEditorNotice();
   form.oninput=()=>{const next=values();if(Object.keys(base).every(key=>next[key]===base[key]))saver.clear();else saver.schedule(next);};
   pageInputs?.refresh();
@@ -638,14 +748,14 @@ function editContent() {
       const disabled=[...form.elements].map(control=>[control,control.disabled]);
       for (const [control] of disabled) control.disabled=true;
       try {
-        await api(`/contents/${encodeURIComponent(content.id)}/review`,'POST',{version:content.version,action:'save',asset:applyEditValues(asset,snapshot)});
+        const saveResult=await api(`/contents/${encodeURIComponent(content.id)}/review`,'POST',{version:content.version,action:'save',asset:applyEditValues(asset,snapshot),auto_review:generationPreferences.autoReview});
         // Clear this exact base-version draft, including when the user navigated
         // away while the save request was completing.
         saver.cancel();
         if (editorSession && draftKey(editorSession.scope)===draftKey(scope)) editorSession.saver.flush();
         clearSubmittedEditDraft(draftStore,scope,snapshot);
         if(revision!==state.revision)return;
-        notify('新版本已保存，请重新审核。');await renderRoute();
+        notify(saveResult.automatic_review ? (saveResult.automatic_review.status==='failed'?'新版本已保存，自动 AI 审核未启动，可在审核面板重试。':'新版本已保存，已安排 AI 审核。') : '新版本已保存，请重新审核。');await renderRoute();
       } finally { for(const [control,wasDisabled] of disabled)control.disabled=wasDisabled; }
     },form);
   };
@@ -686,7 +796,7 @@ async function renderJobs(_id, read = api) {
 async function renderLearning(_id, read = api) {
   document.body.classList.add('learning');
   const data=await read(`/learn/${encodeURIComponent(state.learningId)}?reveal_answers=${Boolean(state.reveal)}`);
-  return {html:`${renderContentNavigation(data.asset)}<article class="document-paper">${renderAsset(data.asset,false)}${!state.reveal&&data.asset.questions.length?`<div class="submit-bar">${button('查看答案与解析','reveal')}</div>`:''}${renderMedia(data.media)}</article>`,bind(){return mountContentNavigation(page);}};
+  return {html:`<p class="learning-approval"><span class="badge approved">${m(approvalLabelKey(data))}</span>${data.approval?.method==='ai'?m('AI 审核不等同于教师确认。'):''}</p>${renderContentNavigation(data.asset)}<article class="document-paper">${renderAsset(data.asset,false)}${!state.reveal&&data.asset.questions.length?`<div class="submit-bar">${button('查看答案与解析','reveal')}</div>`:''}${renderMedia(data.media)}</article>`,bind(){return mountContentNavigation(page);}};
 }
 const renderers={home:renderHome,documents:renderDocuments,generate:renderGenerate,contents:renderContents,jobs:renderJobs,progress:renderProgress,content:renderContent,partial:renderPartial,learning:renderLearning};
 
@@ -702,18 +812,20 @@ const actions={
   upload:()=>{
     if(!state.course) return actions['new-course']();
     const course=state.course;
-    dialog('导入课程资料',`<form id="upload-form">${renderFilePicker()}<p class="muted">PDF · TXT · Markdown · PNG · JPEG<br>${m('每份最大 10 MB · 300 页')}</p>${parserControls()}<div class="modal-actions">`+button('取消','close-modal','secondary','type="button"')+`<button type="submit">${m('导入并解析')}</button></div></form>`);
-    $('#upload-form').onsubmit=event=>{event.preventDefault();const form=event.currentTarget;busy($('button[type=submit]',form),async()=>{const data=new FormData(form);data.append('course_id',course);const result=await api('/documents','POST',data);modal.close();notify(result.deleted_at?'文件已在最近删除中，请恢复后使用。':result.duplicate?'这份资料已经导入。':result.job_id?'资料已保存，后台正在解析，可在任务页面查看进度。':result.parsing?.status==='good'?'资料已解析，可以查看片段并建立索引。':'资料已保留，部分页面需核对，请打开文字与原图。');go('documents');},form);};
+    dialog('导入课程资料',`<form id="upload-form">${renderFilePicker()}<p class="muted">PDF · TXT · Markdown · PNG · JPEG<br>${m('每份最大 10 MB · 300 页')}</p>${parserControls()}<div class="modal-actions">`+button('取消','close-modal','secondary','type="button"')+`<button type="submit">${m('导入并建立索引')}</button></div></form>`);
+    $('#upload-form').onsubmit=event=>{event.preventDefault();const form=event.currentTarget;busy($('button[type=submit]',form),async()=>{const data=new FormData(form);data.append('course_id',course);const result=await api('/documents','POST',data);modal.close();notify(result.deleted_at?'文件已在最近删除中，请恢复后使用。':result.message||(result.duplicate?'这份资料已经导入。':result.job_id?'资料已保存，后台正在解析，可在任务页面查看进度。':result.parsing?.status==='good'?'资料已解析，可以查看片段并建立索引。':'资料已保留，部分页面需核对，请打开文字与原图。'));go('documents');},form);};
   },
   settings:async()=>{
     if(!window.dispatchEvent(new Event('generationsettingsopen',{cancelable:true})))return;
     const epoch=auth.epoch;
     dialog('设置',renderSettings(generationPreferences.queryFusion,generationPreferences.progressMode,
-      generationPreferences.autoExplore,generationPreferences.useSubagents));
+      generationPreferences.autoExplore,generationPreferences.useSubagents,generationPreferences.autoReview));
     const panel=$('[data-settings-panel]',modal), control=$('#query-fusion',panel);
     control.onchange=()=>{if(epoch===auth.epoch)generationPreferences.setQueryFusion(control.checked);};
     const explorationControl=$('#auto-explore',panel);
     explorationControl.onchange=()=>{if(epoch===auth.epoch)generationPreferences.setAutoExplore(explorationControl.checked);};
+    const autoReviewControl=$('#auto-review',panel);
+    autoReviewControl.onchange=()=>{if(epoch===auth.epoch)generationPreferences.setAutoReview(autoReviewControl.checked);};
     const subagentControl=$('#use-subagents',panel);
     subagentControl.onchange=()=>{if(epoch===auth.epoch)generationPreferences.setUseSubagents(subagentControl.checked);};
     for(const option of $$('input[name="progress-mode"]',panel))option.onchange=()=>{if(epoch===auth.epoch&&option.checked)generationPreferences.setProgressMode(option.value);};
@@ -734,13 +846,13 @@ const actions={
     const select=$('#parsing-page');
     if(select){select.value=String(control.dataset.page||1);select.onchange=()=>{$('#parsing-detail').innerHTML=parsingPage(report,select.value);};select.onchange();}
   },
-  reparse:async control=>{const tier=$('[name=tier]',modal)?.value||'standard',images=Boolean($('[name=images]',modal)?.checked);const result=await api(`/documents/${encodeURIComponent(control.dataset.id)}/parse`,'POST',{tier,images});modal.close();notify(result.job_id?'资料已保存，后台正在解析，可在任务页面查看进度。':'资料已重新解析，请核对原图后重新建立索引。');go(result.job_id?'jobs':'documents');},
+  reparse:async control=>{const tier=$('[name=tier]',modal)?.value||'standard',images=Boolean($('[name=images]',modal)?.checked);const result=await api(`/documents/${encodeURIComponent(control.dataset.id)}/parse`,'POST',{tier,images});modal.close();notify(result.message||(result.job_id?'资料已保存，后台正在解析，可在任务页面查看进度。':'资料已重新解析，请核对原图后重新建立索引。'));go(result.job_id?'jobs':'documents');},
   'retry-figure':async control=>{const suffix=control.dataset.asset?'?asset_id='+encodeURIComponent(control.dataset.asset):'';await api(`/documents/${encodeURIComponent(control.dataset.id)}/figures/retry${suffix}`,'POST');modal.close();notify('图片处理任务已创建。');go('jobs');},
   'edit-figure':async control=>{const id=control.dataset.id,aid=control.dataset.asset;const figures=await api(`/documents/${encodeURIComponent(id)}/figures`),figure=figures.find(f=>f.asset_id===aid);dialog('编辑图片说明',`<form id="figure-edit"><label>${m('图片说明')}<textarea name="description" required maxlength="2400">${esc(figure?.annotation?.data.description||'')}</textarea></label><button type="submit">${m('保存')}</button></form>`);$('#figure-edit').onsubmit=event=>{event.preventDefault();const form=event.currentTarget;busy($('button[type=submit]',form),async()=>{await api(`/documents/${encodeURIComponent(id)}/figures/${encodeURIComponent(aid)}`,'PATCH',{description:new FormData(form).get('description')});modal.close();notify('保存后原图片索引失效，请更新图片索引。');go('documents');},form);};},
   'delete-document':async control=>{await api(`/documents/${encodeURIComponent(control.dataset.id)}`,'DELETE');notify('文件已移到最近删除，可随时恢复。');await renderRoute();},
   'restore-document':async control=>{await api(`/documents/${encodeURIComponent(control.dataset.id)}/restore`,'POST');notify('文件已恢复，开启“用于生成”即可继续使用原索引。');await renderRoute();},
   index:async control=>{await api(`/documents/${encodeURIComponent(control.dataset.id)}/index`,'POST');notify('索引任务已创建。');go('jobs');},
-  'job-details':async control=>{const revision=state.revision;const job=await api(`/jobs/${encodeURIComponent(control.dataset.id)}`);if(revision!==state.revision)return;if(job.course_id)selectCourse(job.course_id);if(['generate','revise_question','media'].includes(job.kind))return go('progress',job.id);if(job.status==='succeeded'&&(job.content_id||job.result?.content_id))return go('content',job.content_id||job.result.content_id);dialog('任务详情',`${badge(job.status)}${job.progress?`<p>${m('已完成 {done} / {total} 题',{done:job.progress.completed,total:job.progress.total})}</p>`:''}<div class="inline-note">${m(job.error||job.result?.message||(job.status==='succeeded'?'处理完成，可以返回资料库查看索引状态。':'任务正在处理，请稍后刷新状态。'))}</div>${job.status==='failed'&&job.progress?.resumable?`<div class="modal-actions">${button('继续生成','resume-generation','secondary',`data-id="${esc(job.id)}"`)}</div>`:''}`);},
+  'job-details':async control=>{const revision=state.revision;const job=await api(`/jobs/${encodeURIComponent(control.dataset.id)}`);if(revision!==state.revision)return;if(job.course_id)selectCourse(job.course_id);if(['review_content','review_chat'].includes(job.kind)&&job.content_id)return go('content',job.content_id);if(['generate','revise_question','media'].includes(job.kind))return go('progress',job.id);if(job.status==='succeeded'&&(job.content_id||job.result?.content_id))return go('content',job.content_id||job.result.content_id);dialog('任务详情',`${badge(job.status)}${job.progress?`<p>${m('已完成 {done} / {total} 题',{done:job.progress.completed,total:job.progress.total})}</p>`:''}<div class="inline-note">${m(job.error||job.result?.message||(job.status==='succeeded'?'处理完成，可以返回资料库查看索引状态。':'任务正在处理，请稍后刷新状态。'))}</div>${job.status==='failed'&&job.progress?.resumable?`<div class="modal-actions">${button('继续生成','resume-generation','secondary',`data-id="${esc(job.id)}"`)}</div>`:''}`);},
   'restore-generation':async control=>{
     const revision=state.revision;
     const saved=await api(`/jobs/${encodeURIComponent(control.dataset.id)}/generation-request`);
@@ -749,6 +861,7 @@ const actions={
     generationPreferences.setQueryFusion(Boolean(query_fusion));
     generationPreferences.setAutoExplore(Boolean(auto_explore));
     generationPreferences.setUseSubagents(saved.request.use_subagents === true);
+    generationPreferences.setAutoReview(saved.request.auto_review === true);
     state.drafts.set(saved.request.course_id,draft);
     selectCourse(saved.request.course_id);
     modal.close();
@@ -763,25 +876,7 @@ const actions={
     if(revision!==state.revision)return;
     await renderRoute();
   },
-  'revise-question':control=>{
-    const content=state.content, revision=state.revision;
-    if(!content)return;
-    const slotId=control.dataset.slotId;
-    dialog('修改此题',renderQuestionRevisionDialog(content,slotId));
-    const form=$('#question-revision-form',modal), close=$('.close-button',modal);
-    let pending=false;
-    const preventClose=event=>{if(pending)event.preventDefault();};
-    modal.addEventListener('cancel',preventClose);
-    const dispose=bindQuestionRevision(form,{
-      version:content.version,
-      isActive:()=>revision===state.revision && modal.open,
-      submit:payload=>api(`/contents/${encodeURIComponent(content.id)}/questions/${encodeURIComponent(slotId)}/revise`,'POST',payload),
-      pendingChanged:value=>{pending=value;if(close?.isConnected)close.disabled=value;},
-      onCreated:job=>{modal.close();go('progress',job.job_id);}
-    });
-    modal.addEventListener('close',()=>{dispose();modal.removeEventListener('cancel',preventClose);},{once:true});
-    $('[name="instruction"]',form).focus();
-  },
+  'revise-question':control=>{reviewChat?.selectQuestion(control.dataset.slotId);},
   'approve-content':async()=>{const content=state.content,revision=state.revision;await api(`/contents/${encodeURIComponent(content.id)}/review`,'POST',{version:content.version,action:'approve'});if(revision!==state.revision)return;notify('文字已确认，可以打开学习页或制作媒体。');await renderRoute();},
   'export-content':()=>{
     const content=state.content;
@@ -807,7 +902,7 @@ const actions={
     editorSession?.saver.clear();disposeEditor();draftStore.remove(editDraftScope(state.content));
     $('#edit-panel').innerHTML='';pageInputs?.refresh();updateEditorNotice();
   },
-  'make-media':async control=>{const revision=state.revision,content=state.content;const job=await api(`/contents/${encodeURIComponent(content.id)}/media`,'POST',{version:content.version,kind:control.dataset.kind,request_key:crypto.randomUUID()});if(revision===state.revision)go('progress',job.job_id);},
+  'make-media':async control=>{const revision=state.revision,content=state.content;const job=await api(`/contents/${encodeURIComponent(content.id)}/media`,'POST',{version:content.version,kind:control.dataset.kind,request_key:createRequestId()});if(revision===state.revision)go('progress',job.job_id);},
   'approve-media':async control=>{const revision=state.revision;await api(`/media/${encodeURIComponent(control.dataset.id)}/approve`,'POST',{version:Number(control.dataset.version)});if(revision!==state.revision)return;notify('媒体内容已确认。');await renderRoute();},
   reveal:async()=>{state.reveal=true;await renderRoute();}
 };
@@ -819,15 +914,11 @@ document.addEventListener('keydown',()=>inputMode('keyboard'),{capture:true});
 $('.skip').onclick=event=>{event.preventDefault();$('#main').focus();$('#main').scrollIntoView({block:'start',behavior:'instant'});};
 $('#notice .notice-close').onclick=()=>$('#notice').hidden=true;
 $('#course-select').onchange=async()=>{if(!workspaceReady)return;selectCourse($('#course-select').value);state.content=null;if(state.route.page==='content')go('contents');else if(['progress','partial'].includes(state.route.page))go('jobs');else await renderRoute();};
-window.addEventListener('hashchange',()=>{if(captureRestoreLink()){restoreAttemptUser=null;checkSession({suspend:true});return;}renderRoute();});
-window.addEventListener('pagehide',()=>auth.suspend('checking'));
-window.addEventListener('pageshow',event=>{if(event.persisted)checkSession({suspend:true});});
-window.addEventListener('storage',event=>{if(event.key==='zhixu.session-change')checkSession({suspend:true});else generationPreferences.syncStorage(event.key);});
-window.addEventListener('focus',()=>checkSession());
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkSession();});
+window.addEventListener('hashchange',()=>{const demo=consumeDemoLink(location,history);if(demo!==null){pendingDemo=demo;enterWorkspace();return;}if(captureRestoreLink()){restoreAttemptUser=null;if(auth.session.user)loadWorkspace(auth.epoch);return;}renderRoute();});
+window.addEventListener('storage',event=>{if(event.key==='zhixu.session-change'){if(sessionChangeRequiresReset(event.newValue,auth.session.user?.id))auth.clear('account_changed');}else generationPreferences.syncStorage(event.key);});
 $$('[data-theme-toggle]').forEach(control => control.onclick = () => { window.uiPreferences.toggleTheme(); refreshPreferences(); });
 $$('[data-language-toggle]').forEach(control => control.onclick = () => { window.uiPreferences.toggleLanguage(); refreshPreferences(); });
 window.addEventListener('appearancechange', refreshPreferences);
 installControlLanguage();
 refreshPreferences();
-checkSession();
+enterWorkspace();

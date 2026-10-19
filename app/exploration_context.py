@@ -10,6 +10,7 @@ import hashlib
 from pathlib import Path
 
 from . import document_storage, rag_runtime
+from .chunking import compatible_chunking
 from .document_lifecycle import state as document_state
 from .exploration_policy import document_source
 
@@ -78,7 +79,7 @@ def supplement_context(pipeline, request, selected, accepted, *, missing_require
         document = store.one('SELECT * FROM documents WHERE id=? AND course_id=?', (did, request.course_id))
         lifecycle = document_state(store, did)
         if (not document or document['status'] != 'ready' or not lifecycle['enabled'] or lifecycle['deleted_at']
-                or store.chunking_configuration(did) != pipeline.chunking_configuration()):
+                or not compatible_chunking(store.chunking_configuration(did), pipeline.chunking_configuration())):
             return None
         path = pipeline.settings.data_dir / 'documents' / (did + Path(document['name']).suffix.lower())
         try:

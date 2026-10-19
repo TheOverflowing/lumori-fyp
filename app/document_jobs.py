@@ -27,6 +27,29 @@ def enqueue(pipeline,kind,did,owner_id,**extra):
     return {'job_id':job['id'],'status':job['status']}
 
 
+def auto_index(pipeline,did,owner_id):
+    """Queue one owner-scoped text index after parsing/figure processing commits."""
+    if not pipeline.settings.document_auto_index:return {}
+    active=pipeline.store.one("SELECT id,status FROM jobs WHERE kind='index' AND json_extract(payload,'$.document_id')=? AND status IN ('queued','running')",(did,))
+    if active:return {'index_job':{'job_id':active['id'],'status':active['status']}}
+    document=pipeline.store.one('SELECT status FROM documents WHERE id=?',(did,))
+    if not document or document['status'] in ('pending','ready','parse_failed'):return {}
+    processing=pipeline.store.one("SELECT id FROM jobs WHERE kind IN ('parse','figures') AND json_extract(payload,'$.document_id')=? AND status='queued'",(did,))
+    if processing:return {}
+    if not pipeline.settings.embedding.configured:
+        return {'index_deferred':True,'message':'资料已保存。请先配置嵌入模型，再建立索引。'}
+    try:
+        job=enqueue(pipeline,'index',did,owner_id)
+    except Conflict:
+        return {'index_deferred':True,'message':'资料已保存；任务队列已满，请稍后点击“建立索引”重试。'}
+    return {'index_job':job,'message':'资料已解析，正在自动建立索引。'}
+
+
+def job_owner(store,jobid):
+    owner=store.one('SELECT user_id FROM job_owners WHERE job_id=?',(jobid,))
+    return owner['user_id'] if owner else None
+
+
 def source_bytes(pipeline,did):
     doc=pipeline.store.one('SELECT * FROM documents WHERE id=?',(did,))
     if not doc:raise ValueError('资料不存在。')
@@ -65,14 +88,16 @@ async def parse_document(pipeline,payload,jobid):
         except Exception:
             shutil.rmtree(directory,ignore_errors=True);raise
     result={'document_id':did,'chunks':len(chunks),'index_rebuild_required':True}
+    owner_id=job_owner(store,jobid)
     if options['images']:
-        owner=store.one('SELECT user_id FROM job_owners WHERE job_id=?',(jobid,))
         try:
-            result['figures_job']=enqueue(pipeline,'figures',did,owner['user_id'] if owner else None)
+            result['figures_job']=enqueue(pipeline,'figures',did,owner_id)
         except Conflict:
             # Parsing is already committed. A full account queue must not turn
             # usable text into a failed parse; image processing can start later.
             result.update(figures_deferred=True,message='文字解析已完成；任务队列已满，可稍后继续处理图片。')
+            result.update(auto_index(pipeline,did,owner_id))
+    else:result.update(auto_index(pipeline,did,owner_id))
     return result
 
 
@@ -190,9 +215,15 @@ async def enrich(pipeline,payload,jobid):
                 # Never store arbitrary provider output or credentials in error messages.
                 store.execute("UPDATE figure_semantics SET status='failed',error=?,updated_at=? WHERE document_id=? AND asset_id=?",('图片理解或嵌入失败，请检查模型连接后重试。',now(),did,asset['id']))
                 failed+=1
-        return dict(document_id=did,succeeded=succeeded,failed=failed,reused=reused,total=len(assets),
+        needs_index=store.one('SELECT status FROM documents WHERE id=?',(did,))['status']!='ready'
+        result=dict(document_id=did,succeeded=succeeded,failed=failed,reused=reused,total=len(assets),
             figure_limit_reached=report.get('figure_limit_reached',False),partial_failure=bool(failed),
-            message='部分图片处理失败，可在文字与原图页面重试。' if failed else '图片处理完成。')
+            message=('部分图片处理失败，可在文字与原图页面重试。' if failed else
+                     '图片处理完成。请在课程资料点击“建立索引”，完成整份资料的准备。' if needs_index else '图片处理完成。'))
+        indexing=auto_index(pipeline,did,job_owner(store,jobid))
+        if failed:indexing.pop('message',None)
+        result.update(indexing)
+        return result
 
 
 def retrieval_rows(pipeline,course_id,document_ids=None):

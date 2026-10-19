@@ -18,7 +18,7 @@ from .difficulty import (ASSESSMENT_NOTE, DIFFICULTY_RUBRIC, RUBRIC_NOTE, RUBRIC
                          difficulty_acceptance, acceptance_rank)
 from .providers import ProviderError, ProviderOutputError
 from .retrieval import normalize_vectors, rank_chunks, retrieval_config
-from .chunking import chunk_pages, chunking_config
+from .chunking import chunk_pages, chunking_config, compatible_chunking
 from .rag_candidates import query_input
 from .rag_runtime import (encoding_configuration, document_input, tokenizer_identity,
                           verified_counter, runtime_context)
@@ -256,11 +256,26 @@ class Pipeline:
             elif job['kind']=='revise_question':
                 from .question_revision import execute_revision
                 result=await execute_revision(self,payload,job_id)
+            elif job['kind']=='review_chat':
+                from .review_chat import execute_chat
+                result=await execute_chat(self,payload,job_id)
+            elif job['kind']=='review_content':
+                from .ai_review import execute_review
+                result=await execute_review(self,payload,job_id)
             elif job['kind']=='media':result=await self.media(payload,job_id)
             else:raise ValueError('未知任务类型。')
             status='insufficient_evidence' if result.get('insufficient_evidence') else 'succeeded'
             self.store.execute('UPDATE jobs SET status=?,result=?,updated_at=? WHERE id=?',(status,dumps(result),now(),job_id))
             job_progress.finish(self.store,job_id,status)
+            if (job['kind'] in ('generate','revise_question') or job['kind']=='review_chat' and result.get('modified')) and payload.get('auto_review') and result.get('content_id'):
+                try:
+                    from .ai_review_jobs import schedule_automatic_review
+                    automatic=schedule_automatic_review(self,result['content_id'],result.get('version',1),origin_job_id=job_id)
+                    result['automatic_review']=automatic
+                    self.store.execute('UPDATE jobs SET result=? WHERE id=?',(dumps(result),job_id))
+                except Exception:
+                    # The material and its parent task have already been saved.
+                    logging.getLogger(__name__).warning('Automatic review scheduling metadata could not be saved')
         except JobCancelled:
             if authorized and job['kind']=='parse':self.store.execute("UPDATE documents SET status='parse_failed' WHERE id=? AND status='pending'",(payload.get('document_id'),))
             self._finish_cancelled(job_id)
@@ -295,7 +310,7 @@ class Pipeline:
         elif job['kind'] in ('index','parse','figures'):
             row=self.store.one('SELECT course_id FROM documents WHERE id=?',(payload.get('document_id'),))
             course_id=row['course_id'] if row else None
-        elif job['kind']=='media':
+        elif job['kind'] in ('media','review_content','review_chat'):
             row=self.store.one('SELECT course_id FROM contents WHERE id=?',(payload.get('content_id'),))
             course_id=row['course_id'] if row else None
         if not self.store.one('SELECT course_id FROM course_owners WHERE course_id=? AND user_id=?',(course_id,owner['user_id'])):
@@ -333,7 +348,7 @@ class Pipeline:
         if document['status'] not in ('parsed','ready'):raise ValueError('资料尚未成功解析，请完成解析后再建立索引。')
         rows=self.store.document_chunks(document_id)
         previous=self.store.chunking_configuration(document_id)
-        rechunked=previous!=configuration
+        rechunked=not compatible_chunking(previous,configuration)
         if rechunked:
             source=self.settings.data_dir/'documents'/(document_id+Path(document['name']).suffix.lower())
             if not source.is_file():raise ValueError('原始资料文件缺失，无法重新切分；原索引仍被保留，请重新导入原文件。')
@@ -450,7 +465,7 @@ class Pipeline:
         if any(r['embedding_signature']!=embedding_signature for r in rows):
             raise ValueError('嵌入配置已更换，请重新为资料建立索引后生成。')
         if self.settings.chunk_strategy=='recursive_token_v1' and any(
-            self.store.chunking_configuration(did)!=self.chunking_configuration() for did in {r['document_id'] for r in rows}):
+            not compatible_chunking(self.store.chunking_configuration(did),self.chunking_configuration()) for did in {r['document_id'] for r in rows}):
             raise ValueError('切分配置已更换，请重新为资料建立索引后生成。')
 
         try:

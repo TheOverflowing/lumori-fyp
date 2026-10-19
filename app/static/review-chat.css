@@ -1,0 +1,62 @@
+.review-layout--chat { grid-template-columns:minmax(0,1fr) 380px; gap:28px; }
+.review-layout--chat>.review-inspector { display:block; position:sticky; top:100px; max-height:calc(100dvh - 120px); overflow-y:auto; scrollbar-width:thin; padding:1px 3px 3px 1px; }
+.review-layout--chat>*, .review-chat, .review-chat-body { min-width:0; }
+.review-layout--chat [data-review-changed=true] { box-shadow:-3px 0 0 var(--success); padding-left:15px; margin-left:-18px; border-radius:2px; }
+.review-chat { margin-bottom:28px; border:1px solid var(--line); border-radius:18px; background:var(--surface-raised); box-shadow:var(--shadow-soft); overflow:hidden; }
+.review-chat-disclosure>summary { display:flex; align-items:center; justify-content:space-between; min-height:62px; padding:16px 20px; color:var(--text); list-style:none; }
+.review-chat-disclosure>summary::-webkit-details-marker { display:none; }
+.review-chat-heading { display:flex; align-items:center; gap:10px; font-size:.9rem; font-weight:550; }
+.review-chat-heading>img { width:19px; height:19px; opacity:.75; }
+.review-chat-toggle { width:8px; height:8px; border-right:1.5px solid var(--secondary); border-bottom:1.5px solid var(--secondary); transform:rotate(45deg); transition:transform 160ms var(--curve); margin-right:3px; }
+.review-chat-disclosure[open]>summary .review-chat-toggle { transform:rotate(225deg); }
+.review-chat-context { display:flex; align-items:center; gap:12px; padding:0 18px 14px; border-bottom:1px solid var(--line); }
+.review-chat-context>label { flex-shrink:0; margin:0; font-size:.7rem; color:var(--secondary); }
+.review-chat-context>select { margin:0; min-width:0; min-height:42px; font-size:.75rem; padding:9px 28px 9px 11px; border-radius:10px; background-color:var(--surface-soft); }
+.review-chat-log { min-height:140px; max-height:clamp(140px,calc(100dvh - 470px),400px); overflow-y:auto; overscroll-behavior-y:contain; scrollbar-width:thin; padding:18px; scroll-padding:14px; }
+.review-chat-empty { display:flex; align-items:center; flex-direction:column; justify-content:center; text-align:center; min-height:170px; padding:15px 5px; }
+.review-chat-empty>img { width:29px; height:29px; margin-bottom:16px; opacity:.55; }
+.review-chat-empty>p { margin:0 0 8px; font-size:.85rem; font-weight:500; color:var(--text); }
+.review-chat-empty>span { max-width:250px; color:var(--secondary); font-size:.75rem; line-height:1.8; }
+.review-chat-message { padding:0; min-width:0; font-size:.79rem; line-height:1.8; }
+.review-chat-message+.review-chat-message { margin-top:24px; }
+.review-chat-message>header { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:5px 10px; margin-bottom:8px; font-size:.67rem; color:var(--secondary); }
+.review-chat-message>header>small { font-size:.65rem; }
+.review-chat-message[data-role=user] { padding:13px 14px; border-radius:13px 13px 3px 13px; background:var(--surface-soft); }
+.review-chat-message[data-role=assistant]>header>span { color:var(--blue); font-weight:550; }
+.review-chat-message .readable-text { color:var(--text); }
+.review-chat-comparison { margin-top:13px; border-top:1px solid var(--line); }
+.review-chat-comparison>summary { min-height:44px; display:flex; align-items:center; gap:8px; font-size:.72rem; list-style:none; }
+.review-chat-comparison>summary::-webkit-details-marker { display:none; }
+.review-chat-comparison>summary::before { content:'›'; font-size:1rem; transition:transform 160ms var(--curve); }
+.review-chat-comparison[open]>summary::before { transform:rotate(90deg); }
+.review-chat-comparison section+section { margin-top:18px; }
+.review-chat-comparison h4 { margin:2px 0 10px; font-size:.74rem; font-weight:550; }
+.review-chat-change { margin-top:8px; padding:11px 12px; border-left:2px solid var(--border-strong); background:var(--surface-soft); border-radius:0 8px 8px 0; font-size:.73rem; line-height:1.85; }
+.review-chat-change[data-side=after] { border-left-color:var(--success); background:var(--success-soft); }
+.review-chat-change>span { display:block; margin-bottom:5px; font-size:.65rem; color:var(--secondary); }
+.review-chat-change ol { margin:0; padding-left:20px; }
+.review-chat-change li+li { margin-top:6px; }
+.review-chat-undo.link { margin-top:8px; min-height:44px; font-size:.7rem; }
+.review-chat-status { margin:0; padding:8px 18px 12px; font-size:.68rem; line-height:1.6; color:var(--secondary); }
+.review-chat-error { margin:0 18px 13px; padding:10px 12px; border-radius:9px; background:var(--warning-soft); color:var(--text); font-size:.73rem; line-height:1.65; overflow-wrap:anywhere; }
+.review-chat-error p { margin:0; }
+.review-chat-error .link { font-size:.72rem; min-height:44px; }
+.review-chat-form { padding:0 14px 12px; }
+.review-chat-form textarea { margin:0; width:100%; resize:vertical; min-height:94px; max-height:200px; font-size:.8rem; line-height:1.7; border-radius:12px; background:var(--surface); }
+.review-chat-compose-footer { display:flex; justify-content:space-between; align-items:center; gap:10px; padding-top:8px; }
+.review-chat-compose-footer>span { font-size:.62rem; line-height:1.5; color:var(--secondary); }
+.review-chat-compose-footer>button { min-width:72px; min-height:44px; border-radius:11px; font-size:.74rem; }
+.review-chat [hidden] { display:none; }
+.review-chat :is(summary,select,textarea,button,.review-chat-log):focus-visible { outline:2px solid var(--focus-ring); outline-offset:3px; }
+.review-chat-disclosure>summary:focus-visible { outline-offset:-5px; border-radius:18px; }
+html[data-theme=dark] .review-chat-heading>img, html[data-theme=dark] .review-chat-empty>img { filter:brightness(0) invert(.85); }
+@media(max-width:1200px) and (min-width:1001px) { .review-layout--chat { grid-template-columns:minmax(0,1fr) 340px; gap:20px; }.review-layout--chat .document-paper { padding:28px; } }
+@media(max-width:1000px) {
+  .review-layout--chat { display:flex; flex-direction:column; gap:24px; }
+  .review-layout--chat>.review-inspector { display:contents; position:static; max-height:none; overflow:visible; padding:0; }
+  .review-layout--chat .review-chat { order:-1; width:100%; margin:0; }
+  .review-layout--chat>[data-review-document], .review-layout--chat [data-review-details] { width:100%; }
+  .review-chat-log { min-height:170px; max-height:360px; }
+}
+@media(max-width:480px) { .review-chat-disclosure>summary { padding:14px 16px; }.review-chat-context { padding:0 14px 12px; }.review-chat-log { padding:16px 14px; max-height:320px; }.review-chat-status { padding-left:14px; padding-right:14px; }.review-chat-compose-footer>span { font-size:.58rem; } }
+@media(prefers-reduced-motion:reduce) { .review-chat-toggle, .review-chat-comparison>summary::before { transition:none; } }

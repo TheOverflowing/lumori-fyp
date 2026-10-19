@@ -33,6 +33,15 @@ CREATE TABLE IF NOT EXISTS media(id TEXT PRIMARY KEY,content_id TEXT NOT NULL RE
 CREATE TABLE IF NOT EXISTS evaluations(id TEXT PRIMARY KEY,content_id TEXT NOT NULL,version INTEGER NOT NULL,metrics TEXT NOT NULL,created_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS current_evaluations(content_id TEXT NOT NULL REFERENCES contents(id),version INTEGER NOT NULL,evaluation_id TEXT NOT NULL REFERENCES evaluations(id),updated_at TEXT NOT NULL,PRIMARY KEY(content_id,version));
 CREATE TABLE IF NOT EXISTS evaluation_history(id TEXT PRIMARY KEY,evaluation_id TEXT NOT NULL REFERENCES evaluations(id),metrics TEXT NOT NULL,saved_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS content_ai_reviews(job_id TEXT PRIMARY KEY REFERENCES jobs(id),content_id TEXT NOT NULL REFERENCES contents(id),version INTEGER NOT NULL,report TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS ix_content_ai_reviews_version ON content_ai_reviews(content_id,version);
+CREATE TABLE IF NOT EXISTS content_approvals(content_id TEXT NOT NULL REFERENCES contents(id),version INTEGER NOT NULL,method TEXT NOT NULL,review_job_id TEXT,created_at TEXT NOT NULL,PRIMARY KEY(content_id,version));
+CREATE TABLE IF NOT EXISTS content_auto_review_errors(content_id TEXT NOT NULL REFERENCES contents(id),version INTEGER NOT NULL,message TEXT NOT NULL,created_at TEXT NOT NULL,PRIMARY KEY(content_id,version));
+CREATE TABLE IF NOT EXISTS ai_review_requests(request_key TEXT PRIMARY KEY,owner_id TEXT NOT NULL REFERENCES users(id),content_id TEXT NOT NULL REFERENCES contents(id),version INTEGER NOT NULL,job_id TEXT NOT NULL REFERENCES jobs(id));
+CREATE TABLE IF NOT EXISTS review_chat_messages(id TEXT PRIMARY KEY,content_id TEXT NOT NULL REFERENCES contents(id),owner_id TEXT NOT NULL REFERENCES users(id),role TEXT NOT NULL,text TEXT NOT NULL,version INTEGER NOT NULL,job_id TEXT REFERENCES jobs(id),details TEXT NOT NULL,created_at TEXT NOT NULL,undone_by TEXT);
+CREATE INDEX IF NOT EXISTS ix_review_chat_content ON review_chat_messages(content_id,owner_id);
+CREATE UNIQUE INDEX IF NOT EXISTS ix_review_chat_assistant_job ON review_chat_messages(job_id) WHERE role='assistant' AND job_id IS NOT NULL;
+CREATE TABLE IF NOT EXISTS review_chat_undos(request_key TEXT PRIMARY KEY,content_id TEXT NOT NULL REFERENCES contents(id),owner_id TEXT NOT NULL REFERENCES users(id),request TEXT NOT NULL,result TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS calls(id TEXT PRIMARY KEY,job_id TEXT,capability TEXT NOT NULL,model TEXT NOT NULL,status TEXT NOT NULL,usage TEXT NOT NULL,created_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS job_evidence(job_id TEXT PRIMARY KEY REFERENCES jobs(id),evidence TEXT NOT NULL,updated_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS job_timelines(job_id TEXT PRIMARY KEY REFERENCES jobs(id) ON DELETE CASCADE,timeline TEXT NOT NULL,updated_at TEXT NOT NULL);
@@ -223,7 +232,9 @@ class Store:
             else:
                 # Offline scripts retain their old global accounting semantics.
                 count=db.execute('SELECT count(*) FROM calls WHERE substr(created_at,1,10)=?',(date,)).fetchone()[0]
-            if count>=limit: raise LocalCallLimit('今日 API 调用次数已达到本地上限；次日 UTC 重置或调整配置。',scope='daily')
+            # A temporary daily suspension still respects cancellation, the job
+            # cap above, and the durable ledger used again after its deadline.
+            if limit is not None and count>=limit: raise LocalCallLimit('今日 API 调用次数已达到本地上限；次日 UTC 重置或调整配置。',scope='daily')
             call_id=uid()
             db.execute('INSERT INTO calls(id,job_id,capability,model,status,usage,created_at) VALUES(?,?,?,?,?,?,?)',(call_id,job_id,capability,model,'started','{}',now()))
             return call_id

@@ -3,12 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#eff1ee">
+  <meta name="theme-color" content="#FAF7EE">
   <script src="/static/preferences.js"></script>
   <title>知序 — 教学创作空间</title>
   <link rel="modulepreload" href="/static/i18n.js">
   <link rel="modulepreload" href="/static/translations.js">
   <link rel="modulepreload" href="/static/auth.js">
+  <link rel="stylesheet" href="/static/lumori-theme.css">
+  <link rel="icon" type="image/svg+xml" href="/static/assets/lumori-mark.svg">
   <link rel="stylesheet" href="/static/style.css">
   <link rel="stylesheet" href="/static/material.css">
   <link rel="stylesheet" href="/static/preferences.css">
@@ -24,18 +26,22 @@
   <link rel="stylesheet" href="/static/content-review.css">
   <link rel="stylesheet" href="/static/content-navigation.css">
   <link rel="stylesheet" href="/static/drafts.css">
+  <link rel="stylesheet" href="/static/studio.css">
+  <link rel="stylesheet" href="/static/ai-review.css">
+  <link rel="stylesheet" href="/static/review-chat.css">
   <script type="module" src="/static/app.js"></script>
 </head>
 <body>
+  <!-- SESSION_BOOTSTRAP -->
   <a class="skip" href="#main" hidden><span data-i18n="跳转到内容">跳转到内容</span></a>
-  <section id="auth-gate" class="auth-gate" aria-labelledby="auth-title">
-    <header class="auth-header"><a class="identity" href="/" data-i18n-aria-label="知序" aria-label="知序"><img src="/static/icons/book-open.svg" alt=""><span data-i18n="知序">知序</span></a><div class="appearance-controls" role="group" data-i18n-aria-label="外观与语言" aria-label="外观与语言"><button data-theme-toggle class="plain icon-button" type="button" aria-label="切换到深色模式"><img src="/static/icons/moon.svg" alt=""></button><button data-language-toggle class="plain" type="button" aria-label="Switch to English" lang="en">EN</button></div></header>
-    <div class="auth-card"><div id="auth-content"><h1 id="auth-title" data-i18n="正在载入…">正在载入…</h1><p class="auth-loading" role="status" data-i18n="正在检查登录状态…">正在检查登录状态…</p></div></div>
-    <noscript><p class="auth-noscript">请启用 JavaScript 后使用知序。 Enable JavaScript to use Learning Studio.</p></noscript>
+  <section id="auth-gate" class="auth-gate" aria-labelledby="auth-title" hidden>
+    <header class="auth-header"><a class="identity" href="/" data-i18n-aria-label="知序" aria-label="知序"><img src="/static/assets/lumori-mark.svg" alt=""><span data-i18n="知序">知序</span></a><div class="appearance-controls" role="group" data-i18n-aria-label="外观与语言" aria-label="外观与语言"><button data-theme-toggle class="plain icon-button" type="button" aria-label="切换到深色模式"><img src="/static/icons/moon.svg" alt=""></button><button data-language-toggle class="plain" type="button" aria-label="Switch to English" lang="en">EN</button></div></header>
+    <div class="auth-card"><div id="auth-content"></div></div>
   </section>
+  <noscript><p class="auth-noscript">请启用 JavaScript 后使用知序。 Enable JavaScript to use Learning Studio.</p></noscript>
   <div class="app-shell" hidden>
     <aside class="sidebar" data-i18n-aria-label="工作空间" aria-label="工作空间">
-      <a class="identity" href="#home"><img src="/static/icons/book-open.svg" alt=""><span><span data-i18n="知序">知序</span></span></a>
+      <a class="identity" href="#home"><img src="/static/assets/lumori-mark.svg" alt=""><span><span data-i18n="知序">知序</span></span></a>
       <div class="course-switcher"><label class="sr-only" for="course-select"><span data-i18n="当前课程">当前课程</span></label><select id="course-select"><option value="" data-i18n="正在载入…">正在载入…</option></select><button class="plain icon-button" data-action="new-course" data-i18n-aria-label="新建课程" aria-label="新建课程" data-i18n-title="新建课程" title="新建课程"><img src="/static/icons/plus.svg" alt=""></button></div>
       
       <nav id="navigation" data-i18n-aria-label="主导航" aria-label="主导航">
@@ -54,5 +60,6 @@
   </div>
   <div id="notice" class="notice" hidden><span id="notice-text" role="status" aria-live="polite"></span><button class="notice-close" data-i18n-aria-label="关闭提示" aria-label="关闭提示"><span data-i18n="关闭">关闭</span></button></div>
   <dialog id="modal" aria-labelledby="modal-title"><div id="modal-content"></div></dialog>
+  <!-- WORKSPACE_STARTUP -->
 </body>
 </html>

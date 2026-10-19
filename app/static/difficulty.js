@@ -49,7 +49,7 @@ export function renderDifficultyControls(draft) {
       <div id="distribution-difficulty-options"><div class="difficulty-counts">${levels.map(level=>`<div class="number-field"><label for="difficulty-${level}">${m(names[level])}</label><input id="difficulty-${level}" type="number" name="difficulty_${level}" data-difficulty-count="${level}" min="0" max="50" step="1" required value="${escape(draft.difficulty_counts[level])}" aria-describedby="difficulty-preview difficulty-validation"></div>`).join('')}</div><div class="difficulty-presets">${levels.map(level=>`<button type="button" class="secondary" data-difficulty-preset="${level}">${m({easy:'全部简单',medium:'全部中等',hard:'全部困难'}[level])}</button>`).join('')}</div></div>
       <div id="difficulty-preview" class="difficulty-preview" role="status" aria-live="polite"></div><p id="difficulty-validation" class="difficulty-validation" role="status" aria-live="polite"></p>
     </fieldset>
-    <label class="learner-profile">${m('目标学生与已学基础')}<textarea name="learner_profile" id="learner-profile" required minlength="2" rows="2">${escape(draft.learner_profile)}</textarea></label>
+    <label class="learner-profile context-card context-card--learners"><span class="context-card-heading"><img class="icon" src="/static/icons/users.svg" alt="" aria-hidden="true">${m('目标学生与已学基础')}</span><textarea name="learner_profile" id="learner-profile" required minlength="2" rows="2">${escape(draft.learner_profile)}</textarea></label>
 
   </section>`;
 }

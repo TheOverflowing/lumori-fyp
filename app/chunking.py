@@ -46,6 +46,25 @@ def chunking_config(*, strategy="recursive_v1", max_chars=1200, overlap_chars=12
     return {"strategy": strategy, "max_chars": max_chars, "overlap_chars": overlap_chars}
 
 
+def compatible_chunking(saved, current):
+    """Compare tokenization behavior, retaining paths only as provenance.
+
+    The caller obtains current's SHA-256 from the local tokenizer file. A
+    relocation alone cannot change chunks; all other settings remain strict.
+    """
+    if not isinstance(saved, dict) or not isinstance(current, dict):
+        return saved == current
+    if saved.get('strategy') == current.get('strategy') == 'recursive_token_v1':
+        digest = current.get('tokenizer_sha256')
+        if not isinstance(digest, str) or not re.fullmatch('[0-9a-f]{64}', digest):
+            return False
+        if saved.get('tokenizer_sha256') != digest:
+            return False
+        return ({k: v for k, v in saved.items() if k != 'tokenizer_path'} ==
+                {k: v for k, v in current.items() if k != 'tokenizer_path'})
+    return saved == current
+
+
 def _sha(text):
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 

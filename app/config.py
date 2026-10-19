@@ -2,10 +2,22 @@ from dataclasses import dataclass, field
 from pathlib import Path
 import hashlib
 import json
+import math
 import os
+import time
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def _daily_limit_suspension_until(value):
+    try:
+        deadline = float(value)
+    except (TypeError, ValueError, OverflowError):
+        raise ValueError('DAILY_API_LIMIT_SUSPENDED_UNTIL must be a finite nonnegative Unix timestamp') from None
+    if not math.isfinite(deadline) or deadline < 0:
+        raise ValueError('DAILY_API_LIMIT_SUSPENDED_UNTIL must be a finite nonnegative Unix timestamp')
+    return deadline
 
 @dataclass(frozen=True)
 class Endpoint:
@@ -47,6 +59,8 @@ class Settings:
     image: Endpoint = field(default_factory=lambda: Endpoint(path='/images/generations'))
     vision: Endpoint = field(default_factory=lambda: Endpoint(path='/chat/completions'))
     document_backend: str = 'legacy'
+    # Explicit/offline Settings keep manual indexing; the web/env profile enables it.
+    document_auto_index: bool = False
     mineru_python: Path = ROOT / '.venv-mineru/bin/python'
     mineru_runtime: Path = ROOT / 'tmp/mineru-runtime'
     docling_python: Path = ROOT / '.venv-docling/bin/python'
@@ -80,6 +94,8 @@ class Settings:
     document_visual_max_pages: int = 30
     document_parse_timeout: float = 120
     max_daily_calls: int = 100
+    # An absolute deadline survives restarts without extending the suspension.
+    daily_api_limit_suspended_until: float = 0.0
     exploration_enabled: bool = True
     exploration_search_provider: str = 'hybrid'
     exploration_dns_mode: str = 'auto'
@@ -134,6 +150,15 @@ class Settings:
     auth_throttle_window_seconds: int = 900
     auth_login_limit: int = 10
     auth_register_limit: int = 10
+    demo_login_token_sha256: str = field(default='', repr=False)
+    demo_login_email: str = ''
+    demo_login_course_id: str = ''
+
+    @property
+    def effective_daily_call_limit(self):
+        if time.time() < self.daily_api_limit_suspended_until:
+            return None
+        return self.max_daily_calls
 
     @classmethod
     def from_env(cls):
@@ -156,6 +181,7 @@ class Settings:
                    rerank=ep('RERANK', '/rerank'),
                    vision=ep('VISION','/chat/completions') if os.getenv('VISION_BASE_URL') else ep('TEXT','/chat/completions'),
                    document_backend=os.getenv('DOCUMENT_BACKEND','mineru'),
+                   document_auto_index=os.getenv('DOCUMENT_AUTO_INDEX','true').lower() in ('true','1','yes'),
                    mineru_python=Path(os.getenv('MINERU_PYTHON',str(ROOT/'.venv-mineru/bin/python'))),
                    mineru_runtime=Path(os.getenv('MINERU_RUNTIME',str(ROOT/'tmp/mineru-runtime'))),
                    docling_python=Path(os.getenv('DOCLING_PYTHON',str(ROOT/'.venv-docling/bin/python'))),
@@ -181,6 +207,8 @@ class Settings:
                    chunk_max_chars=int(os.getenv('CHUNK_MAX_CHARS', '1200')),
                    chunk_overlap_chars=int(os.getenv('CHUNK_OVERLAP_CHARS', '120')),
                    max_daily_calls=max(1, int(os.getenv('MAX_DAILY_API_CALLS', '100'))),
+                   daily_api_limit_suspended_until=_daily_limit_suspension_until(
+                       os.getenv('DAILY_API_LIMIT_SUSPENDED_UNTIL', '0')),
                    exploration_enabled=os.getenv('EXPLORATION_ENABLED','true').lower() in ('true','1','yes'),
                    exploration_search_provider=os.getenv('EXPLORATION_SEARCH_PROVIDER','hybrid'),
                    exploration_dns_mode=os.getenv('EXPLORATION_DNS_MODE','auto'),
@@ -233,4 +261,7 @@ class Settings:
                    auth_session_hours=max(1, int(os.getenv('AUTH_SESSION_HOURS', '168'))),
                    auth_throttle_window_seconds=max(1, int(os.getenv('AUTH_THROTTLE_WINDOW_SECONDS', '900'))),
                    auth_login_limit=max(1, int(os.getenv('AUTH_LOGIN_LIMIT', '10'))),
-                   auth_register_limit=max(1, int(os.getenv('AUTH_REGISTER_LIMIT', '10'))))
+                   auth_register_limit=max(1, int(os.getenv('AUTH_REGISTER_LIMIT', '10'))),
+                   demo_login_token_sha256=os.getenv('DEMO_LOGIN_TOKEN_SHA256', ''),
+                   demo_login_email=os.getenv('DEMO_LOGIN_EMAIL', ''),
+                   demo_login_course_id=os.getenv('DEMO_LOGIN_COURSE_ID', ''))

@@ -155,3 +155,38 @@ def test_embedding_key_reuse_rejects_another_origin(monkeypatch):
     monkeypatch.setenv('RERANK_USE_EMBEDDING_KEY','true')
     monkeypatch.delenv('RERANK_API_KEY',raising=False)
     with pytest.raises(ValueError,match='相同网关'):Settings.from_env()
+
+
+def test_relocated_identical_tokenizer_reuses_index_and_generates(rig, tmp_path):
+    client, app, wire = rig
+    path = configure(app, tmp_path)
+    course, did = seed(client)
+    original_chunks = app.state.store.document_chunks(did)
+    relocated = tmp_path / 'server-tokenizer.json'
+    relocated.write_bytes(path.read_bytes())
+    app.state.settings.rag_tokenizer_path = relocated
+    path.unlink()  # The old Mac location need not exist on the server.
+    document = client.get('/api/documents', params={'course_id': course}).json()[0]
+    assert document['chunking_current'] and document['index_current']
+    before = wire.calls
+    indexed = done(client, client.post('/api/documents/' + did + '/index'))
+    assert indexed['result']['reused'] and wire.calls == before
+    assert app.state.store.document_chunks(did) == original_chunks
+    job = done(client, client.post('/api/generations', json=request(course, 'relocated-tokenizer')))
+    assert job['status'] == 'succeeded', job
+
+
+@pytest.mark.parametrize('change', ['hash', 'budget'])
+def test_real_tokenizer_or_budget_change_still_blocks_before_api(rig, tmp_path, change):
+    client, app, wire = rig
+    path = configure(app, tmp_path)
+    course, did = seed(client)
+    if change == 'hash':
+        path.write_text(path.read_text() + ' ')
+    else:
+        app.state.settings.chunk_max_tokens += 1
+    assert not client.get('/api/documents', params={'course_id': course}).json()[0]['chunking_current']
+    before = wire.calls
+    job = done(client, client.post('/api/generations', json=request(course, 'incompatible-tokenizer')))
+    assert job['status'] == 'failed' and '切分配置' in job['error']
+    assert wire.calls == before

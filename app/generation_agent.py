@@ -28,7 +28,7 @@ from .question_quality import (QuestionChecks, CONDITIONS, DIFFICULTY, CHECK_INS
     REVISION as QUALITY_REVISION, question_check_issues, solver_check_issues, tool_check_scope, review_boolean_issues)
 
 VERSION = 'education-agent-v1'
-PROMPT_REVISION = '20260924-grounded-task-v6'
+PROMPT_REVISION = '20260930-explicit-option-labels-v7'
 HARNESS_QUALITY_REVISION = '20260919-correctness-first-v1'
 NOTE = 'Separate model calls; not independent model families, teacher validation or empirical learner difficulty. Tool results prove computations for their inputs, not correspondence with question prose.'
 
@@ -292,13 +292,16 @@ class GenerationAgent:
                     raise ValueError('生成依据已停用或删除，请重新生成。')
 
     def remaining_daily(self):
+        limit = self.settings.effective_daily_call_limit
+        if limit is None:
+            return math.inf  # Internal comparisons only; never persisted or returned as JSON.
         owner = self.store.one('SELECT user_id FROM job_owners WHERE job_id=?', (self.job_id,))
         if owner:
             n = self.store.one('''SELECT count(*) AS n FROM calls c JOIN job_owners o ON o.job_id=c.job_id
                 WHERE o.user_id=? AND substr(c.created_at,1,10)=?''', (owner['user_id'], now()[:10]))['n']
         else:
             n = self.store.one('SELECT count(*) AS n FROM calls WHERE substr(created_at,1,10)=?', (now()[:10],))['n']
-        return self.settings.max_daily_calls - n
+        return limit - n
 
     def record_call_limit(self, error):
         self.state['resource_limit'] = error.resource_limit
@@ -1336,6 +1339,15 @@ class GenerationAgent:
                 'question': {k: getattr(q, k) for k in ('kind', 'stem', 'options')},
                 'reference_chunks': self.model_sources(), 'rubric': DIFFICULTY_RUBRIC, 'rubric_note': RUBRIC_NOTE,
                 'tools': TOOL_CONTRACTS, 'schema': solution_model.model_json_schema()}
+            # Option text may itself be "A" or "B". Give the checker the same
+            # positional labels shown by the UI, without exposing the answer.
+            option_labels = [{'label': chr(65 + i), 'text': text}
+                             for i, text in enumerate(q.options)] if q.kind == 'mcq' else []
+            solver_contract['option_labels'] = option_labels
+            solver_contract['option_label_instruction'] = (
+                'Use option_labels.label for question_checks.option_checks.label and for an MCQ answer. '
+                'Labels identify positions, not option text. Never copy option_labels.text into a label. '
+                'For example the fourth option is D even if its text is a sentence or the letter A.')
             visible_context = {'sections': [s.model_dump() for s in candidate.sections],
                 'scope': 'Before answering the learner sees only the question stem, options and these sections. '
                          'Reference chunks and answers are private checking context. '
@@ -1441,6 +1453,8 @@ class GenerationAgent:
             'tool_results': tool_prompt_view(tool_results), 'reference_chunks': self.model_sources(),
                 'recent_question_stems': recent, 'schema': review_model.model_json_schema()}
             review_contract['student_visible_context'] = visible_context
+            review_contract['option_labels'] = option_labels
+            review_contract['option_label_instruction'] = solver_contract['option_label_instruction']
             if quality_policy:
                 review_contract['tool_check_scope'] = scope
             if brief:

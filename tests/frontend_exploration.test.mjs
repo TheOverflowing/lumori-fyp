@@ -15,12 +15,12 @@ test('exploration requires strict opt-in, restores per account, and preserves ex
   prefs.setAutoExplore(true);assert.equal(prefs.autoExplore,false);
   store.setItem(generationPreferencesKey('a'),'{"query_fusion":true,"progress_mode":"simple"}');
   prefs.setAccount('a');assert.equal(prefs.autoExplore,false);
-  prefs.setAutoExplore(true);assert.deepEqual(prefs.requestFields(),{query_fusion:true,auto_explore:true});
+  prefs.setAutoExplore(true);assert.deepEqual(prefs.requestFields(),{query_fusion:true,auto_explore:true,auto_review:true});
   assert.equal(prefs.progressMode,'simple');assert.deepEqual(changes[0].changed,['autoExplore']);
-  prefs.setQueryFusion(false);prefs.setProgressMode('detailed');assert.deepEqual(prefs.requestFields(),{auto_explore:true});
-  prefs.setAccount('b');assert.deepEqual(prefs.requestFields(),{});
+  prefs.setQueryFusion(false);prefs.setProgressMode('detailed');assert.deepEqual(prefs.requestFields(),{auto_explore:true,auto_review:true});
+  prefs.setAccount('b');assert.deepEqual(prefs.requestFields(),{auto_review:true});
   prefs.setAccount('a');assert.equal(prefs.autoExplore,true);
-  prefs.setAutoExplore('true');assert.deepEqual(prefs.requestFields(),{});
+  prefs.setAutoExplore('true');assert.deepEqual(prefs.requestFields(),{auto_review:true});
   prefs.setAccount(null);assert.equal(prefs.autoExplore,false);
 });
 

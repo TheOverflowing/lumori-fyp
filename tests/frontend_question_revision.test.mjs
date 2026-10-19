@@ -78,6 +78,31 @@ test('retries after uncertain replies reuse request key and only edited instruct
   assert.notEqual(payloads[1].request_key,payloads[2].request_key);view.dispose();
 });
 
+test('question revisions capture the current automatic review choice for rewrite and explanation modes',async()=>{
+  const payloads=[];let autoReview=false;
+  const view=harness({getAutoReview:()=>autoReview,submit:async payload=>{
+    payloads.push(payload);throw new Error('Connection interrupted');
+  }});
+  await view.send();
+  assert.equal(Object.hasOwn(payloads[0],'auto_review'),false,'review remains off unless explicitly enabled');
+  autoReview=true;
+  await view.send();await view.send();
+  assert.equal(payloads[1].auto_review,true);
+  assert.notEqual(payloads[0].request_key,payloads[1].request_key,'changing review choice creates a distinct request');
+  assert.deepEqual(payloads[1],payloads[2],'unchanged retries reuse the same payload and idempotency key');
+  view.mode.value='explanation';view.change();await view.send();
+  assert.equal(payloads[3].auto_review,true);assert.equal(payloads[3].mode,'explanation');
+  assert.equal(Object.hasOwn(payloads[3],'difficulty'),false);
+  view.dispose();
+});
+
+test('revision payload requires an explicit boolean to enable automatic review',()=>{
+  const view=harness();
+  for(const value of [false,undefined,null,'true',1])assert.equal(Object.hasOwn(revisionPayload(view.form,4,value),'auto_review'),false);
+  assert.equal(revisionPayload(view.form,4,true).auto_review,true);
+  view.dispose();
+});
+
 test('pending revision blocks duplicate submissions and session/route changes ignore late replies',async()=>{
   let resolve, calls=0, opened=0;
   const view=harness({submit:()=>{calls++;return new Promise(done=>{resolve=done;});},onCreated(){opened++;}});

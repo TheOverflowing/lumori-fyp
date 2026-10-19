@@ -3,7 +3,7 @@ import { t, m, a } from './i18n.js';
 const nativeMessages = new WeakMap();
 
 export function renderFilePicker() {
-  return `<div class="file-field"><span id="upload-file-label">${m('选择文件')}</span><label class="localized-file-picker"><input class="localized-file-input" type="file" name="file" accept=".pdf,.txt,.md,.png,.jpg,.jpeg" required aria-labelledby="upload-file-label" aria-describedby="upload-file-name" ${a('选择文件','title')}><span class="file-picker-button" aria-hidden="true">${m('选择文件')}</span><span id="upload-file-name" data-file-name role="status">${m('未选择文件')}</span></label></div>`;
+  return `<div class="file-field"><span id="upload-file-label">${m('选择文件')}</span><label class="localized-file-picker"><input class="localized-file-input" type="file" name="file" accept=".pdf,.txt,.md,.png,.jpg,.jpeg" required aria-labelledby="upload-file-label" aria-describedby="upload-file-name" ${a('选择文件','title')}><img class="file-picker-icon" src="/static/icons/upload.svg" alt="" aria-hidden="true" width="32" height="32"><span class="file-picker-button" aria-hidden="true">${m('选择文件')}</span><span id="upload-file-name" data-file-name role="status">${m('未选择文件')}</span></label></div>`;
 }
 
 // Store the translation key so existing business-rule errors can change language too.

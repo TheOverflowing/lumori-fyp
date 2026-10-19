@@ -1,3 +1,4 @@
+import { createRequestId } from './request-id.js';
 import { a, m, setText, t } from './i18n.js';
 import { renderReadableText } from './readable-text.js';
 
@@ -19,17 +20,18 @@ export function renderQuestionRevisionDialog(content, slotId) {
   </form>`;
 }
 
-export function revisionPayload(form, version) {
+export function revisionPayload(form, version, autoReview = false) {
   const mode = form.querySelector('[name="mode"]:checked')?.value;
   const instruction = form.querySelector('[name="instruction"]').value.trim();
   const difficulty = form.querySelector('[name="difficulty"]').value;
   if (!['rewrite','explanation'].includes(mode) || [...instruction].length < 2 || [...instruction].length > 2000) throw new Error('修改要求需为 2–2000 个字符。');
   if (mode === 'rewrite' && difficulty && !Object.hasOwn(levels,difficulty)) throw new Error('请选择目标难度。');
-  return {version,instruction,mode,...(mode === 'rewrite' && difficulty ? {difficulty} : {})};
+  return {version,instruction,mode,...(mode === 'rewrite' && difficulty ? {difficulty} : {}),
+    ...(autoReview === true ? {auto_review:true} : {})};
 }
 
 // Keep one idempotency key per form payload, including after uncertain replies.
-export function bindQuestionRevision(form, {version, submit, onCreated, isActive=()=>true, pendingChanged=()=>{}, makeKey=()=>crypto.randomUUID()}) {
+export function bindQuestionRevision(form, {version, submit, onCreated, getAutoReview=()=>false, isActive=()=>true, pendingChanged=()=>{}, makeKey=()=>createRequestId()}) {
   const button = form.querySelector('button[type="submit"]'), error = form.querySelector('[data-revision-error]');
   const difficulty = form.querySelector('[data-revision-difficulty]');
   let pending = false, disposed = false, fingerprint = '', requestKey;
@@ -44,7 +46,7 @@ export function bindQuestionRevision(form, {version, submit, onCreated, isActive
     if (pending || !active() || !form.reportValidity()) return;
     error.hidden = true;
     let payload;
-    try { payload = revisionPayload(form,version); } catch (cause) { setText(error,cause.message); error.hidden=false; return; }
+    try { payload = revisionPayload(form,version,getAutoReview()); } catch (cause) { setText(error,cause.message); error.hidden=false; return; }
     const nextFingerprint = JSON.stringify(payload);
     if (fingerprint !== nextFingerprint) { fingerprint=nextFingerprint; requestKey=makeKey(); }
     pending = true;

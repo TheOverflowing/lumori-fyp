@@ -1,6 +1,13 @@
 import { m, a } from './i18n.js';
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const parsingLabel = status => ({good:'已提取文字',needs_review:'解析需核对',unreadable:'未识别到文字',legacy_unverified:'暂无解析报告'}[status] || '解析需核对');
+export function documentIndexNote(document) {
+  if (document.active_jobs?.some(job => job.kind === 'index')) return `<p class="muted">${m('正在建立资料索引，完成后即可用于生成。')}</p>`;
+  if (document.index_current || ['pending','parse_failed'].includes(document.status)) return '';
+  if (document.index_error) return `<p class="muted">${m('建立索引失败，请查看任务记录或点击“建立索引”重试。')} ${m(document.index_error)}</p>`;
+  if (!document.figures?.some(figure => figure.status === 'ready' && figure.indexed)) return '';
+  return `<p class="muted">${m('配图已处理，但资料索引尚未完成。请点击“建立索引”重试。')}</p>`;
+}
 const warningLabels = {
   no_text_extracted:'本页未识别到文字，请对照原图。',
   sparse_or_suspicious_text_requires_review:'本页文字较少或包含异常字符，请核对是否遗漏。',
@@ -29,10 +36,10 @@ export function parsingPage(report, number) {
 }
 
 export function parserControls(options={}) {
-  return `<fieldset class="parser-options"><legend>${m('解析选项')}</legend><label>${m('MinerU 解析档位')}<select name="tier"><option value="standard" ${options.tier!=='advanced'?'selected':''}>Standard</option><option value="advanced" ${options.tier==='advanced'?'selected':''}>Advanced</option></select></label><label class="figure-toggle"><input type="checkbox" name="images" value="true" ${options.images?'checked':''}>${m('理解配图并加入检索')}</label></fieldset>`;
+  return `<fieldset class="parser-options"><legend>${m('解析选项')}</legend><label>${m('MinerU 解析档位')}<select name="tier"><option value="standard" ${options.tier!=='advanced'?'selected':''}>Standard</option><option value="advanced" ${options.tier==='advanced'?'selected':''}>Advanced</option></select></label><label class="figure-toggle"><input type="checkbox" name="images" value="true" ${options.images?'checked':''}>${m('理解配图并加入检索')}</label><p class="muted">${m('解析和配图处理完成后，系统会自动建立资料索引。')}</p></fieldset>`;
 }
 
 export function figureCard(figure, documentId) {
   const annotation=figure.annotation;
-  return `<div class="figure-description"><p>${m('图片处理状态')}：${m(({pending:'待处理',running:'处理中',ready:'可检索',failed:'处理失败'})[figure.status]||'待处理')}</p>${annotation?`<p><strong>${m(annotation.origin==='user'?'人工编辑的图片说明':'AI 图片说明（需核对）')}</strong></p><p>${esc(annotation.data.description)}</p><p class="muted">${esc([...annotation.data.keywords_zh,...annotation.data.keywords_en].join(' · '))}</p>${annotation.data.uncertainties?.length?`<p>${m('不确定信息')}：${esc(annotation.data.uncertainties.join('；'))}</p>`:''}`:''}${figure.error?`<p>${m(figure.error)}</p>`:''}<button class="secondary" data-action="edit-figure" data-id="${esc(documentId)}" data-asset="${esc(figure.asset_id)}">${m('编辑图片说明')}</button> <button class="secondary" data-action="retry-figure" data-id="${esc(documentId)}" data-asset="${esc(figure.asset_id)}">${m('重试或更新图片索引')}</button></div>`;
+  return `<div class="figure-description"><p>${m('图片处理状态')}：${m(({pending:'待处理',running:'处理中',ready:'配图就绪',failed:'处理失败'})[figure.status]||'待处理')}</p>${annotation?`<p><strong>${m(annotation.origin==='user'?'人工编辑的图片说明':'AI 图片说明（需核对）')}</strong></p><p>${esc(annotation.data.description)}</p><p class="muted">${esc([...annotation.data.keywords_zh,...annotation.data.keywords_en].join(' · '))}</p>${annotation.data.uncertainties?.length?`<p>${m('不确定信息')}：${esc(annotation.data.uncertainties.join('；'))}</p>`:''}`:''}${figure.error?`<p>${m(figure.error)}</p>`:''}<button class="secondary" data-action="edit-figure" data-id="${esc(documentId)}" data-asset="${esc(figure.asset_id)}">${m('编辑图片说明')}</button> <button class="secondary" data-action="retry-figure" data-id="${esc(documentId)}" data-asset="${esc(figure.asset_id)}">${m('重试或更新图片索引')}</button></div>`;
 }

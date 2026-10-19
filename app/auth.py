@@ -185,6 +185,23 @@ class AuthService:
         with self.store.connect() as db:
             return self._new_session(db, user)
 
+    def demo_login(self, token, client_ip='local', existing_session=None):
+        digest = self.settings.demo_login_token_sha256
+        email = self.settings.demo_login_email
+        if not re.fullmatch(r'[0-9a-f]{64}', digest) or not email:
+            raise AuthError(404, 'demo_login_disabled', '演示登录未启用。')
+        self._consume_attempt('demo_login', '', client_ip)
+        if (not isinstance(token, str) or not _TOKEN_PATTERN.fullmatch(token)
+                or not hmac.compare_digest(_digest(token), digest)):
+            raise AuthError(401, 'invalid_demo_link', '演示链接无效，请使用提供的完整链接。')
+        user = self.store.one('SELECT * FROM users WHERE email=?', (email,))
+        if not user:
+            raise AuthError(404, 'demo_login_disabled', '演示账号不可用。')
+        if existing_session and existing_session.user['id'] == user['id']:
+            return existing_session
+        with self.store.connect() as db:
+            return self._new_session(db, user)
+
     def authenticate(self, token):
         if not isinstance(token, str) or not _TOKEN_PATTERN.fullmatch(token):
             return None

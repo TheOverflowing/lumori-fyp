@@ -29,6 +29,7 @@ class GenerateRequest(Model):
     request_key: str = Field(min_length=8, max_length=100)
     query_fusion: bool = Field(default=False, strict=True)
     auto_explore: bool = Field(default=False, strict=True)
+    auto_review: bool = Field(default=False, strict=True)
     # None keeps historical/server-configured jobs on their original route.
     # New web requests explicitly choose True or False for assessments.
     use_subagents: bool | None = Field(default=None, strict=True)
@@ -66,6 +67,8 @@ class GenerateRequest(Model):
             values.pop('query_fusion', None)
         if not self.auto_explore:
             values.pop('auto_explore', None)
+        if not self.auto_review:
+            values.pop('auto_review', None)
         if self.use_subagents is None:
             values.pop('use_subagents', None)
         # Historical preparation fingerprints must keep their original shape.
@@ -154,6 +157,7 @@ class LearningAsset(Model):
 class ReviewRequest(Model):
     version: int = Field(ge=1)
     action: Literal['save', 'approve']
+    auto_review: bool = Field(default=False, strict=True)
     asset: LearningAsset | None = None
 
 class MediaRequest(Model):

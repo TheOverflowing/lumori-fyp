@@ -205,3 +205,35 @@ test('auth markup starts gated and provides localized accessible form and secret
   assert.match(app,/history\.replaceState\(null, '', location\.pathname \+ location\.search \+ '#home'\)/);
   for (const key of ['登录知序','创建你的账号','邮箱','确认密码','退出登录','有一份原有工作空间等待恢复，请使用对应邮箱登录或注册。']) assert.ok(english[key]);
 });
+
+test('demo entry uses one bearer POST without a preliminary session check', async () => {
+  let selected;
+  const {client,requests}=clientWith([response({...session(userB),demo_course_id:'demo-course'})]);
+  client.initialize(session(userA));
+  await client.enterDemo('opaque-demo-bearer',next=>selected=next.demo_course_id);
+  assert.equal(client.session.user.id,userB.id);
+  assert.equal(selected,'demo-course');
+  assert.equal(client.session.demo_course_id,'demo-course');
+  assert.equal(requests.length,1);
+  assert.equal(requests[0].url,'/api/auth/demo-login');
+  assert.deepEqual(JSON.parse(requests[0].body),{token:'opaque-demo-bearer'});
+  client.initialize(session(userA));
+  assert.equal(client.session.demo_course_id,undefined);
+});
+
+test('demo fragment is removed immediately and retains no password', async () => {
+  const {consumeDemoLink}=await import('../app/static/demo-link.js');
+  let replacement;
+  assert.equal(consumeDemoLink({hash:'#demo?token=opaque',pathname:'/',search:''},{replaceState:(_a,_b,url)=>replacement=url}),'opaque');
+  assert.equal(replacement,'/#documents');
+  assert.equal(consumeDemoLink({hash:'#content/abc'},{replaceState:()=>assert.fail()}),null);
+});
+
+test('reopening demo as the same account retains workspace and in-flight reads',async()=>{
+  const waiting=deferred();const resets=[];
+  const {client,requests}=clientWith([response(session(userB)),()=>waiting.promise,response({...session(userB),demo_course_id:'demo-course'})],{onReset:()=>resets.push('reset')});
+  await client.restore();const old=client.request('/jobs');const count=resets.length;
+  await client.enterDemo('same-demo-link');assert.equal(resets.length,count);
+  assert.equal(requests[1].signal.aborted,false);
+  waiting.resolve(response([{id:'own-job'}]));assert.deepEqual(await old,[{id:'own-job'}]);
+});

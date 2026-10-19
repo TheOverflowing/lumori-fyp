@@ -340,3 +340,32 @@ def test_explicit_resume_retries_only_interrupted_schema_repair_and_keeps_both_c
     assert [entry['resume_count'] for entry in repair['history']] == [0, 1]
     assert offline_harness == ['author', 'solve', 'review', 'review_schema_repair', 'review_schema_repair']
     assert rig.text_call_count() == 5 and len(rig.contents()) == 1
+
+
+def test_mcq_text_is_distinct_from_positional_labels(agent_case, offline_harness, monkeypatch):
+    """Regression: the fourth option's sentence must not become its label."""
+    original = AgentWire.__call__
+    texts = ['A', 'B', 'C', 'The queue is empty, so nothing is removed.']
+
+    def respond(self, request):
+        response = original(self, request)
+        contract = json.loads(json.loads(request.content)['messages'][1]['content'])
+        if contract['task'] == 'agent_author':
+            body = json.loads(response.json()['choices'][0]['message']['content'])
+            body['questions'][0].update(kind='mcq', options=texts, answer='A')
+            return self.response(body)
+        return response
+
+    monkeypatch.setattr(AgentWire, '__call__', respond)
+    rig = agent_case(count=1, settings_options=OPTIONS)
+    payload = json.loads(rig.job()['payload'])
+    payload['question_type'] = 'mcq'
+    rig.store.execute('UPDATE jobs SET payload=? WHERE id=?', (dumps(payload), rig.job_id))
+    assert rig.run()['status'] == 'succeeded', rig.job()
+    for contract in rig.wire.contracts:
+        if contract['task'] in ('agent_solve', 'agent_review'):
+            assert contract['option_labels'] == [
+                {'label': label, 'text': text} for label, text in zip('ABCD', texts)]
+            if contract['task'] == 'agent_solve':
+                assert 'answer' not in contract['question']
+            assert contract['schema']['$defs']['OptionCheck']['properties']['label']['pattern'] == '^[A-Z]$'

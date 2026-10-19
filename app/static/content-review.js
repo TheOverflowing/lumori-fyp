@@ -1,3 +1,4 @@
+import { approvalLabelKey } from './ai-review.js';
 import { a, locale, m, setText, t } from './i18n.js';
 import { bindDifficultyEvaluation, readQuestionDifficulties, renderQuestionDifficultyEvaluation } from './difficulty.js';
 
@@ -12,7 +13,7 @@ export function renderReviewBar(content) {
   const status = Object.hasOwn(statuses,content.status) ? content.status : '';
   const id = escape(encodeURIComponent(content.id));
   return `<div class="review-bar content-review-bar">
-    <div class="content-review-meta"><span class="badge ${status}">${m(statuses[status] || '未记录')}</span><small>${m('版本 {n}',{n:content.version})}</small></div>
+    <div class="content-review-meta"><span class="badge ${status}">${status==='approved'?m(approvalLabelKey(content)):m(statuses[status] || '未记录')}</span><small>${m('版本 {n}',{n:content.version})}</small></div>
     <div class="content-review-actions"><button type="button" class="secondary" data-action="export-content">${m('导出')}</button>${status==='approved'?`<a class="button secondary" href="/?learn=${id}" target="_blank" rel="noopener">${m('打开学习页')}</a>`:''}</div>
   </div>`;
 }
